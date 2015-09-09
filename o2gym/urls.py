@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^', include('business.urls')),
     url(r'^', include('weibo.urls')),
     url(r'^', include('usr.urls')),
+    url(r'^', include('order.urls')),
     url(r'^', include('recommend.urls')),
 ]

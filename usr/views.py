@@ -3,14 +3,33 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-
+from django.contrib.auth import get_user_model
+from rest_framework.decorators import api_view
+import json
 
 from usr.models import *
 from usr.serializers import *
 from weibo.serializers import *
+from business.serializers import *
 
 import pprint
+import datetime
 
+@api_view(['POST'])
+def register(request):
+    VALID_USER_FIELDS = [f.name for f in get_user_model()._meta.fields]
+    DEFAULTS = {
+    }
+    serialized = UserRegisterationSerializer(data=request.data)
+    if serialized.is_valid():
+        user_data = {field: data for (field, data) in request.data.items() if field in VALID_USER_FIELDS}
+        user_data.update(DEFAULTS)
+        user = get_user_model().objects.create_user(
+            **user_data
+        )
+        return Response(UserRegisterationSerializer(instance=user).data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserList(generics.CreateAPIView):
 	queryset = User.objects.all()
@@ -19,6 +38,7 @@ class UserList(generics.CreateAPIView):
 		resp = super(UserList, self).create(request, args, kwargs)
 		tl = TimeLine.objects.create(name=get_object_or_404(User, name=request.data["name"]))
 		tl.followedby.add(tl)
+		wh = WorkingDays.objects.create(name=request.data["name"])
 		return Response({"result": 0})
 
 class UserItem(generics.RetrieveUpdateDestroyAPIView):
@@ -59,6 +79,13 @@ class Album(generics.ListAPIView):
 	serializer_class = ImageSerializer 
 	def get_queryset(self):
 		return User.objects.get(name=self.kwargs.get('name')).album.all()
+
+class Courses(generics.ListAPIView):
+	lookup_field = "name"
+	serializer_class = CourseSerializer 
+	def get_queryset(self):
+		return User.objects.get(name=self.kwargs.get('name')).teaching.all()
+
 
 class Refresh(generics.ListAPIView):
 	lookup_field = "name"
@@ -106,3 +133,32 @@ class PersonUp(APIView):
 		serializer = UserSerializer(person)
 		return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
+class WorkingDaysView(APIView):
+	def get(self, request, name):
+		wd = get_object_or_404(WorkingDays, name=name)
+		#filter all past date
+		today = datetime.date.today()
+		excep_work = filter(bool,wd.excep_work.split("|"))
+		excep_rest = filter(bool,wd.excep_rest.split("|"))
+		excep_work_filtered = [ a for a in excep_work if
+				datetime.datetime.strptime(a,"%Y/%m/%d").date() > today]
+		excep_rest_filtered = [ a for a in excep_rest if
+				datetime.datetime.strptime(a,"%Y/%m/%d").date() > today]
+		wd.excep_rest = "|".join(excep_rest_filtered)
+		wd.excep_work = "|".join(excep_work_filtered)
+		wd.save()
+		serializer = WorkingDaysSerializer(wd)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+	def patch(self, request, name):
+		wd = get_object_or_404(WorkingDays, name=name)
+		wd.weekrest = request.DATA["weekrest"]
+		wd.excep_work = request.DATA["excep_work"]
+		wd.excep_rest = request.DATA["excep_rest"]
+		wd.out_hours = request.DATA["out_hours"]
+		wd.noon_hours = request.DATA["noon_hours"]
+		wd.save()
+		serializer = WorkingDaysSerializer(wd)
+		return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+		
+		

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render,get_object_or_404
 from rest_framework import generics
+from rest_framework.permissions import AllowAny
+from rest_framework.renderers import StaticHTMLRenderer
 from rest_framework.response import Response
 from weibo.models import *
 from weibo.serializers import *
@@ -13,6 +15,8 @@ import pprint
 from django.conf import settings
 import os
 import uuid
+
+from rest_framework.decorators import api_view,renderer_classes
 
 # Create your views here.
 
@@ -135,3 +139,10 @@ class PicToken(APIView):
 		print(token)
 		return Response({"key":filename, "token":token}, status=status.HTTP_202_ACCEPTED)
 
+
+class ArticlePage(APIView):
+	renderer_classes = (StaticHTMLRenderer,)
+	permission_classes = (AllowAny,)
+	def get(self, reqesut, weiboid):
+		article = get_object_or_404(LongWeibo, weiboid=weiboid)
+		return Response(article.content)

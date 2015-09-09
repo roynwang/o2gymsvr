@@ -9,6 +9,11 @@ class LongWeiboSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = LongWeibo
 
+class LongWeiboHtmlSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = LongWeibo
+		fields = ["content"]
+
 
 class WeiboSerializer(serializers.ModelSerializer):
 	class Meta:

@@ -41,6 +41,7 @@ INSTALLED_APPS = (
 		'recommend',
 		'usr',
 		'weibo',
+		'order',
 		'business',
 		)
 
@@ -111,9 +112,9 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-cn'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Chongqing'
 
 USE_I18N = True
 
@@ -128,11 +129,25 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
-		'PAGINATE_BY': 2,
-		'PAGINATE_BY_PARAM': 'page_size',
-	    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
-	    'PAGE_SIZE': 10,
-		'MAX_PAGINATE_BY': 100 
+		#'PAGINATE_BY': 2,
+		#'PAGINATE_BY_PARAM': 'page_size',
+		'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
+		'PAGE_SIZE': 10,
+		#'MAX_PAGINATE_BY': 100 ,
+
+		'DEFAULT_PERMISSION_CLASSES': (
+
+			'rest_framework.permissions.AllowAny',
+			#'rest_framework.permissions.IsAuthenticated',
+			),
+		'DEFAULT_AUTHENTICATION_CLASSES': (
+			'rest_framework.authentication.SessionAuthentication',
+			'rest_framework.authentication.BasicAuthentication',
+			'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+			),
+		}
+JWT_AUTH = {
+		'JWT_VERIFY_EXPIRATION': False
 		}
 QNACCESSKEY = '6skaNTW7Ja8B6tYX-3j9j588_jdRmgNWZV2NYJ0H'
 QNSECRETKEY = 'QLtvaMzRthYDOcPHBYvax5hda2uu7oh4BpKjiMHk'
