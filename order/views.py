@@ -99,8 +99,9 @@ def pay_order(billid):
 
 def pay_callback(request):
 	if request.DATA["type"] == "charge.succeeded":
-		charge = request.DATA["data"]["object"]
-		if charge["paid"] == True:
+		charge = request.DATA
+		if charge["paid"] == False:
+			print "update status ... ... ..."
 			order_no = charget["order_no"]
 			print order_no
 			order = get_object_or_404(Order, billid=int(order_no))
