@@ -86,18 +86,10 @@ class ScheduleList(generics.ListCreateAPIView):
 		order = Order.objects.get(id=request.POST["order"])
 		ordered_count = Schedule.objects.filter(order=request.POST["order"],deleted=False).count()
 		order_count = order.product.amount
-		if ordered_count == order_count:
+		if order.status == "paid" and ordered_count == order_count:
 			order.status = "inprogress" 
 			order.save()
 		return ret
-
-
-class ScheduleBulkCreate(ListBulkCreateAPIView):
-	def create(self, request):
-		#delete old
-		#order = request.args["order"]
-		Schedule.objects.filter(order=order,done=False).delete()
-		super(ScheduleBulkCreate, self)
 
 class ScheduleForReadPagination(pagination.CursorPagination):
 	ordering = 'date'
@@ -122,7 +114,7 @@ class ScheduleForRead(generics.ListAPIView):
 		else:
 			#queryset = Schedule.objects.filter(custom=usr.id,
 			#		date__range=daterange).order_by('date','hour')
-			queryset = Schedule.objects.filter(custom=usr.id, done=False)
+			queryset = Schedule.objects.filter(custom=usr.id, rate=None)
 			print queryset
 		return queryset
 
@@ -168,4 +160,57 @@ class DayAvaiableTime(APIView):
 		ava = [h for h in ava if h not in na]
 		ret = {"out":out,"na": na,"availiable":ava, "noon":noonhours}
 		return Response(ret, status=status.HTTP_200_OK)
+
+class AllEvalOptionsView(generics.ListCreateAPIView):
+	queryset = BodyEvalOptions.objects.all()
+	serializer_class = BodyEvalOptionsSerializer
+	pagination_class = None
+
+
+class BodyEvalDateView(generics.ListAPIView):
+	pagination_class = None
+	serializer_class = BodyEvalDateSerializer 
+	def get_queryset(self):
+		return BodyEval.objects.filter(name=self.kwargs.get("name")).values('date').distinct()
+
+
+class BodyEvalByDateView(ListBulkCreateAPIView):
+	pagination_class = None
+	serializer_class = BodyEvalSerializer
+	def get_queryset(self):
+		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+		date_str = datetime.datetime.strftime(date,"%Y-%m-%d")
+		name = self.kwargs.get("name")
+		return BodyEval.objects.filter(date=date_str, name=name)
+
+class TrainDateView(generics.ListAPIView):
+	pagination_class = None
+	serializer_class = TrainDateSerializer 
+	def get_queryset(self):
+		return Train.objects.filter(name=self.kwargs.get("name")).values('date').distinct()
+
+class TrainByDateView(ListBulkCreateAPIView):
+	pagination_class = None
+	serializer_class = TrainSerializer
+	def get_queryset(self):
+		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+		date_str = datetime.datetime.strftime(date,"%Y-%m-%d")
+		name = self.kwargs.get("name")
+		return Train.objects.filter(date=date_str, name=name)
+
+	def create(self, request, *args, **kwargs):
+		bulk = isinstance(request.DATA, list)
+		ret = super(TrainByDateView, self).create(request, *args, **kwargs)
+		print("xxxxxxxxxxxxxxxxxxxx")
+		scheduleid = -1
+
+		if bulk and "course" in request.DATA[0]:
+			scheduleid = request.DATA[0]["course"]
+		if not bulk and "course" in request.DATA:
+			scheduleid = request.DATA["course"]
+		if scheduleid != -1:
+			schedule = get_object_or_404(Schedule,id=scheduleid)
+			schedule.done = True
+			schedule.save()
+		return ret
 

@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^', include('usr.urls')),
     url(r'^', include('order.urls')),
     url(r'^', include('recommend.urls')),
+    url(r'^', include('sms.urls')),
 ]

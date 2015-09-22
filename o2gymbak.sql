@@ -82,7 +82,7 @@ CREATE TABLE `auth_permission` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `content_type_id` (`content_type_id`,`codename`),
   CONSTRAINT `auth__content_type_id_508cf46651277a81_fk_django_content_type_id` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -91,7 +91,7 @@ CREATE TABLE `auth_permission` (
 
 LOCK TABLES `auth_permission` WRITE;
 /*!40000 ALTER TABLE `auth_permission` DISABLE KEYS */;
-INSERT INTO `auth_permission` VALUES (1,'Can add log entry',1,'add_logentry'),(2,'Can change log entry',1,'change_logentry'),(3,'Can delete log entry',1,'delete_logentry'),(4,'Can add permission',2,'add_permission'),(5,'Can change permission',2,'change_permission'),(6,'Can delete permission',2,'delete_permission'),(7,'Can add group',3,'add_group'),(8,'Can change group',3,'change_group'),(9,'Can delete group',3,'delete_group'),(10,'Can add user',4,'add_user'),(11,'Can change user',4,'change_user'),(12,'Can delete user',4,'delete_user'),(13,'Can add content type',5,'add_contenttype'),(14,'Can change content type',5,'change_contenttype'),(15,'Can delete content type',5,'delete_contenttype'),(16,'Can add session',6,'add_session'),(17,'Can change session',6,'change_session'),(18,'Can delete session',6,'delete_session'),(19,'Can add recommend',7,'add_recommend'),(20,'Can change recommend',7,'change_recommend'),(21,'Can delete recommend',7,'delete_recommend'),(22,'Can add user',8,'add_user'),(23,'Can change user',8,'change_user'),(24,'Can delete user',8,'delete_user'),(25,'Can add time line',9,'add_timeline'),(26,'Can change time line',9,'change_timeline'),(27,'Can delete time line',9,'delete_timeline'),(28,'Can add working days',10,'add_workingdays'),(29,'Can change working days',10,'change_workingdays'),(30,'Can delete working days',10,'delete_workingdays'),(31,'Can add weibo',11,'add_weibo'),(32,'Can change weibo',11,'change_weibo'),(33,'Can delete weibo',11,'delete_weibo'),(34,'Can add long weibo',12,'add_longweibo'),(35,'Can change long weibo',12,'change_longweibo'),(36,'Can delete long weibo',12,'delete_longweibo'),(37,'Can add images',13,'add_images'),(38,'Can change images',13,'change_images'),(39,'Can delete images',13,'delete_images'),(40,'Can add order',14,'add_order'),(41,'Can change order',14,'change_order'),(42,'Can delete order',14,'delete_order'),(43,'Can add product',15,'add_product'),(44,'Can change product',15,'change_product'),(45,'Can delete product',15,'delete_product'),(46,'Can add course',16,'add_course'),(47,'Can change course',16,'change_course'),(48,'Can delete course',16,'delete_course'),(49,'Can add gym',17,'add_gym'),(50,'Can change gym',17,'change_gym'),(51,'Can delete gym',17,'delete_gym'),(52,'Can add schedule',18,'add_schedule'),(53,'Can change schedule',18,'change_schedule'),(54,'Can delete schedule',18,'delete_schedule');
+INSERT INTO `auth_permission` VALUES (1,'Can add log entry',1,'add_logentry'),(2,'Can change log entry',1,'change_logentry'),(3,'Can delete log entry',1,'delete_logentry'),(4,'Can add permission',2,'add_permission'),(5,'Can change permission',2,'change_permission'),(6,'Can delete permission',2,'delete_permission'),(7,'Can add group',3,'add_group'),(8,'Can change group',3,'change_group'),(9,'Can delete group',3,'delete_group'),(10,'Can add user',4,'add_user'),(11,'Can change user',4,'change_user'),(12,'Can delete user',4,'delete_user'),(13,'Can add content type',5,'add_contenttype'),(14,'Can change content type',5,'change_contenttype'),(15,'Can delete content type',5,'delete_contenttype'),(16,'Can add session',6,'add_session'),(17,'Can change session',6,'change_session'),(18,'Can delete session',6,'delete_session'),(19,'Can add recommend',7,'add_recommend'),(20,'Can change recommend',7,'change_recommend'),(21,'Can delete recommend',7,'delete_recommend'),(22,'Can add user',8,'add_user'),(23,'Can change user',8,'change_user'),(24,'Can delete user',8,'delete_user'),(25,'Can add time line',9,'add_timeline'),(26,'Can change time line',9,'change_timeline'),(27,'Can delete time line',9,'delete_timeline'),(28,'Can add working days',10,'add_workingdays'),(29,'Can change working days',10,'change_workingdays'),(30,'Can delete working days',10,'delete_workingdays'),(31,'Can add weibo',11,'add_weibo'),(32,'Can change weibo',11,'change_weibo'),(33,'Can delete weibo',11,'delete_weibo'),(34,'Can add long weibo',12,'add_longweibo'),(35,'Can change long weibo',12,'change_longweibo'),(36,'Can delete long weibo',12,'delete_longweibo'),(37,'Can add images',13,'add_images'),(38,'Can change images',13,'change_images'),(39,'Can delete images',13,'delete_images'),(40,'Can add order',14,'add_order'),(41,'Can change order',14,'change_order'),(42,'Can delete order',14,'delete_order'),(43,'Can add product',15,'add_product'),(44,'Can change product',15,'change_product'),(45,'Can delete product',15,'delete_product'),(46,'Can add course',16,'add_course'),(47,'Can change course',16,'change_course'),(48,'Can delete course',16,'delete_course'),(49,'Can add gym',17,'add_gym'),(50,'Can change gym',17,'change_gym'),(51,'Can delete gym',17,'delete_gym'),(52,'Can add schedule',18,'add_schedule'),(53,'Can change schedule',18,'change_schedule'),(54,'Can delete schedule',18,'delete_schedule'),(55,'Can add body eval',19,'add_bodyeval'),(56,'Can change body eval',19,'change_bodyeval'),(57,'Can delete body eval',19,'delete_bodyeval'),(58,'Can add body eval options',20,'add_bodyevaloptions'),(59,'Can change body eval options',20,'change_bodyevaloptions'),(60,'Can delete body eval options',20,'delete_bodyevaloptions'),(61,'Can add train',21,'add_train'),(62,'Can change train',21,'change_train'),(63,'Can delete train',21,'delete_train'),(64,'Can add sms',22,'add_sms'),(65,'Can change sms',22,'change_sms'),(66,'Can delete sms',22,'delete_sms');
 /*!40000 ALTER TABLE `auth_permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -116,7 +116,7 @@ CREATE TABLE `auth_user` (
   `date_joined` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,7 +125,7 @@ CREATE TABLE `auth_user` (
 
 LOCK TABLES `auth_user` WRITE;
 /*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
-INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$20000$YaqEzoAYu9wH$8OzrmcuwJvbSd9WOQO6HuuVhDw69o/d1IU8X507E4S8=',NULL,0,'alex','','','',0,1,'2015-09-04 10:39:58'),(2,'pbkdf2_sha256$20000$qttSFSe3PKPt$fGQ3+Ph4DKtSKcRPcogSX7CQfdeZiesHfdGZtfW/INs=',NULL,0,'royn','','','',0,1,'2015-09-04 10:39:58');
+INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$20000$YaqEzoAYu9wH$8OzrmcuwJvbSd9WOQO6HuuVhDw69o/d1IU8X507E4S8=',NULL,0,'alex','','','',0,1,'2015-09-04 10:39:58'),(2,'pbkdf2_sha256$20000$qttSFSe3PKPt$fGQ3+Ph4DKtSKcRPcogSX7CQfdeZiesHfdGZtfW/INs=',NULL,0,'royn','','','',0,1,'2015-09-04 10:39:58'),(9,'pbkdf2_sha256$20000$k1cCXVoMJY3q$1QmJLrIpTj2uHH98RmqeR0fT3LECQbMrEFxobrk1sZ0=',NULL,0,'18612261069','','','',0,1,'2015-09-18 10:12:06'),(10,'pbkdf2_sha256$20000$K39PhkEexqXx$A8Clb3Tg+/1IxZr8RThWCrNSfODhSzP/Zj/EhiVnITg=',NULL,0,'18311286007','','','',0,1,'2015-09-21 06:15:56');
 /*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -183,6 +183,61 @@ CREATE TABLE `auth_user_user_permissions` (
 LOCK TABLES `auth_user_user_permissions` WRITE;
 /*!40000 ALTER TABLE `auth_user_user_permissions` DISABLE KEYS */;
 /*!40000 ALTER TABLE `auth_user_user_permissions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `business_bodyeval`
+--
+
+DROP TABLE IF EXISTS `business_bodyeval`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `business_bodyeval` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL,
+  `date` date NOT NULL,
+  `option` varchar(64) NOT NULL,
+  `value` varchar(64) NOT NULL,
+  `unit` varchar(64) NOT NULL,
+  `group` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `business_bodyeval`
+--
+
+LOCK TABLES `business_bodyeval` WRITE;
+/*!40000 ALTER TABLE `business_bodyeval` DISABLE KEYS */;
+INSERT INTO `business_bodyeval` VALUES (2,'alex','2015-09-14','身高','185','cm','1.基础信息'),(3,'alex','2015-09-14','体重','192','kg','1.基础信息'),(4,'alex','2015-09-14','胸围','356','cm','1.基础信息'),(5,'alex','2015-09-14','身高','134','cm','1.基础信息'),(6,'alex','2015-09-14','体重','246','kg','1.基础信息'),(7,'alex','2015-09-14','胸围','789','cm','1.基础信息'),(8,'alex','2015-09-14','身高','190','cm','1.基础信息'),(9,'alex','2015-09-14','体重','190','kg','1.基础信息'),(10,'alex','2015-09-14','胸围','190','cm','1.基础信息'),(11,'royn','2015-09-16','身高','180','cm','1.基础信息'),(12,'royn','2015-09-16','体重','75','kg','1.基础信息'),(13,'royn','2015-09-16','胸围','100','cm','1.基础信息'),(14,'18612261069','2015-09-18','身高','180','cm','1.基础信息'),(15,'18612261069','2015-09-18','体重','20','kg','1.基础信息'),(16,'18612261069','2015-09-18','胸围','110','cm','1.基础信息');
+/*!40000 ALTER TABLE `business_bodyeval` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `business_bodyevaloptions`
+--
+
+DROP TABLE IF EXISTS `business_bodyevaloptions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `business_bodyevaloptions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `option` varchar(64) NOT NULL,
+  `unit` varchar(64) NOT NULL,
+  `group` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `business_bodyevaloptions`
+--
+
+LOCK TABLES `business_bodyevaloptions` WRITE;
+/*!40000 ALTER TABLE `business_bodyevaloptions` DISABLE KEYS */;
+INSERT INTO `business_bodyevaloptions` VALUES (1,'身高','cm','1.基础信息'),(2,'体重','kg','1.基础信息'),(3,'胸围','cm','1.基础信息');
+/*!40000 ALTER TABLE `business_bodyevaloptions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -317,7 +372,7 @@ CREATE TABLE `business_gym_coaches` (
   KEY `business_gym_coaches_user_id_72a6a6f0e91cbed2_fk_usr_user_id` (`user_id`),
   CONSTRAINT `business_gym_coaches_gym_id_60b407e2182c38fd_fk_business_gym_id` FOREIGN KEY (`gym_id`) REFERENCES `business_gym` (`id`),
   CONSTRAINT `business_gym_coaches_user_id_72a6a6f0e91cbed2_fk_usr_user_id` FOREIGN KEY (`user_id`) REFERENCES `usr_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -326,7 +381,7 @@ CREATE TABLE `business_gym_coaches` (
 
 LOCK TABLES `business_gym_coaches` WRITE;
 /*!40000 ALTER TABLE `business_gym_coaches` DISABLE KEYS */;
-INSERT INTO `business_gym_coaches` VALUES (3,1,1),(4,1,3);
+INSERT INTO `business_gym_coaches` VALUES (8,1,1),(7,1,8);
 /*!40000 ALTER TABLE `business_gym_coaches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -357,7 +412,7 @@ CREATE TABLE `business_schedule` (
   CONSTRAINT `business_schedule_coach_id_1fb4f947da649052_fk_usr_user_id` FOREIGN KEY (`coach_id`) REFERENCES `usr_user` (`id`),
   CONSTRAINT `business_schedule_custom_id_2c5d73d6ccce4c1a_fk_usr_user_id` FOREIGN KEY (`custom_id`) REFERENCES `usr_user` (`id`),
   CONSTRAINT `business_schedule_order_id_1bf741cd6a5dc2a8_fk_order_order_id` FOREIGN KEY (`order_id`) REFERENCES `order_order` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -366,8 +421,41 @@ CREATE TABLE `business_schedule` (
 
 LOCK TABLES `business_schedule` WRITE;
 /*!40000 ALTER TABLE `business_schedule` DISABLE KEYS */;
-INSERT INTO `business_schedule` VALUES (35,'2015-09-01',0,'','',1,1,2,'2015-09-06 05:23:44',0,0,35),(39,'2015-09-02',20,'','',1,1,2,'2015-09-06 05:24:02',0,0,40),(40,'2015-09-03',2,'','',1,1,2,'2015-09-06 05:24:09',0,0,35),(44,'2015-09-09',0,'','',13,1,2,'2015-09-08 08:10:28',0,0,NULL),(45,'2015-09-09',10,'','',14,1,2,'2015-09-08 08:38:32',0,0,NULL),(46,'2015-09-10',0,'','',15,1,2,'2015-09-08 10:17:39',0,0,NULL),(47,'2015-09-11',2,'','',15,1,2,'2015-09-08 10:17:39',0,0,NULL),(48,'2015-09-09',2,'','',16,1,2,'2015-09-08 15:28:22',0,0,NULL),(49,'2015-09-10',8,'','',17,1,1,'2015-09-08 16:09:31',0,0,NULL),(50,'2015-09-23',11,'','',17,1,1,'2015-09-08 16:09:31',0,0,NULL),(51,'2015-09-24',13,'','',17,1,1,'2015-09-08 16:09:31',0,0,NULL);
+INSERT INTO `business_schedule` VALUES (35,'2015-09-01',0,'很好的','',1,1,2,'2015-09-13 17:40:15',0,1,40),(39,'2015-09-02',20,'','',1,1,2,'2015-09-13 17:41:02',0,1,40),(40,'2015-09-03',2,'','',1,1,2,'2015-09-14 17:39:35',0,1,35),(44,'2015-09-09',0,'','',13,1,2,'2015-09-14 17:41:56',0,1,45),(46,'2015-09-10',0,'','',15,1,2,'2015-09-08 10:17:39',0,0,NULL),(47,'2015-09-11',2,'','',15,1,2,'2015-09-08 10:17:39',0,0,NULL),(48,'2015-09-09',2,'好评','',16,1,2,'2015-09-16 13:57:58',0,1,40),(49,'2015-09-10',8,'','',17,1,1,'2015-09-08 16:09:31',0,0,NULL),(50,'2015-09-23',11,'','',17,1,1,'2015-09-08 16:09:31',0,0,NULL),(51,'2015-09-24',13,'','',17,1,1,'2015-09-08 16:09:31',0,0,NULL),(53,'2015-09-24',18,'','',18,1,2,'2015-09-14 09:41:32',0,0,NULL),(54,'2015-09-25',7,'','',18,1,2,'2015-09-14 09:41:32',0,0,NULL),(55,'2015-09-30',2,'','',18,1,2,'2015-09-14 09:42:19',0,0,NULL),(56,'2015-09-17',3,'','',19,1,2,'2015-09-17 08:36:38',0,1,NULL),(57,'2015-09-22',2,'','',14,1,2,'2015-09-16 09:27:15',0,0,NULL),(58,'2015-09-17',12,'','',20,1,2,'2015-09-16 09:33:10',0,0,NULL),(60,'2015-09-23',8,'','',21,1,7,'2015-09-18 10:17:58',0,0,NULL),(64,'2015-09-20',6,'','',21,1,7,'2015-09-18 10:23:12',0,0,NULL),(65,'2015-09-19',18,'','',21,1,7,'2015-09-18 13:01:18',0,0,NULL),(66,'2015-09-19',6,'','',22,1,7,'2015-09-18 13:01:41',0,0,NULL),(67,'2015-09-24',8,'','',22,1,7,'2015-09-18 13:01:41',0,0,NULL),(68,'2015-09-23',17,'','',22,1,7,'2015-09-18 13:01:41',0,0,NULL),(69,'2015-09-19',8,'','',23,1,7,'2015-09-18 13:12:16',0,0,NULL),(70,'2015-09-22',17,'','',23,1,7,'2015-09-18 13:12:16',0,0,NULL),(71,'2015-09-26',24,'','',23,1,7,'2015-09-18 13:12:16',0,0,NULL),(72,'2015-09-20',0,'','',24,1,7,'2015-09-19 12:54:04',0,0,NULL),(73,'2015-09-23',1,'','',25,1,7,'2015-09-19 18:28:01',0,0,NULL),(74,'2015-09-23',6,'','',26,1,7,'2015-09-19 18:29:14',0,0,NULL),(75,'2015-09-23',21,'','',28,1,7,'2015-09-19 18:32:19',0,0,NULL),(76,'2015-09-25',2,'','',29,1,7,'2015-09-19 18:39:27',0,0,NULL),(77,'2015-09-24',2,'','',30,1,7,'2015-09-19 18:42:12',0,0,NULL),(78,'2015-09-24',21,'','',31,1,7,'2015-09-19 18:48:24',0,0,NULL),(79,'2015-09-25',12,'','',32,1,7,'2015-09-19 18:49:56',0,0,NULL),(80,'2015-09-24',6,'','',33,1,7,'2015-09-19 18:54:03',0,0,NULL),(81,'2015-09-22',21,'','',34,1,7,'2015-09-20 03:30:09',0,0,NULL),(82,'2015-09-23',13,'','',35,1,7,'2015-09-20 03:41:52',0,0,NULL),(83,'2015-09-24',23,'','',36,1,7,'2015-09-20 03:42:24',0,0,NULL),(84,'2015-09-24',16,'','',37,1,7,'2015-09-20 03:45:17',0,0,NULL),(85,'2015-09-24',11,'','',37,1,7,'2015-09-20 03:46:02',0,0,NULL),(86,'2015-09-23',15,'','',38,1,8,'2015-09-21 06:16:46',0,0,NULL),(87,'2015-09-25',3,'','',39,8,7,'2015-09-21 07:17:30',0,0,NULL),(88,'2015-09-23',12,'','',40,8,7,'2015-09-21 07:19:11',0,0,NULL);
 /*!40000 ALTER TABLE `business_schedule` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `business_train`
+--
+
+DROP TABLE IF EXISTS `business_train`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `business_train` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `weight` varchar(64) NOT NULL,
+  `repeattimes` varchar(64) NOT NULL,
+  `groupid` int(11) NOT NULL,
+  `action_name` varchar(64) NOT NULL,
+  `action_order` int(11) NOT NULL,
+  `course_id` int(11) DEFAULT NULL,
+  `date` date NOT NULL,
+  `name` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `business_train_course_id_46db80dd043c00_fk_business_schedule_id` (`course_id`),
+  CONSTRAINT `business_train_course_id_46db80dd043c00_fk_business_schedule_id` FOREIGN KEY (`course_id`) REFERENCES `business_schedule` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `business_train`
+--
+
+LOCK TABLES `business_train` WRITE;
+/*!40000 ALTER TABLE `business_train` DISABLE KEYS */;
+INSERT INTO `business_train` VALUES (1,'1','2',0,'撒地方',1,40,'2015-09-15','alex'),(2,'10','10',0,'阿三地方',0,40,'2015-09-15','alex'),(3,'10','10',0,'阿萨德f',0,40,'2015-09-15','alex'),(4,'100','100',0,'双方深蹲',0,40,'2015-09-15','alex'),(5,'100','1',0,'撒地方',0,44,'2015-09-15','alex'),(6,'10','10',0,'我腿',0,NULL,'2015-09-16','royn'),(7,'20','20',1,'我腿',0,NULL,'2015-09-16','royn'),(8,'10','10',0,'三分',0,NULL,'2015-09-16','royn'),(9,'10','10',1,'name',1,NULL,'2015-09-16','alex'),(10,'10','10',0,'三分',0,NULL,'2015-09-16','royn'),(13,'10','10',0,'哈哈哈',0,NULL,'2015-09-16','royn'),(14,'10','10',0,'0916',0,48,'2015-09-16','alex'),(15,'10','10',0,'动作2',1,56,'2015-09-17','alex'),(16,'10','10',0,'好',0,56,'2015-09-17','alex'),(17,'10','10',0,'卧推',0,NULL,'2015-09-18','18612261069');
+/*!40000 ALTER TABLE `business_train` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -416,7 +504,7 @@ CREATE TABLE `django_content_type` (
   `model` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `django_content_type_app_label_45f3b1d93ec8c61c_uniq` (`app_label`,`model`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -425,7 +513,7 @@ CREATE TABLE `django_content_type` (
 
 LOCK TABLES `django_content_type` WRITE;
 /*!40000 ALTER TABLE `django_content_type` DISABLE KEYS */;
-INSERT INTO `django_content_type` VALUES (1,'admin','logentry'),(3,'auth','group'),(2,'auth','permission'),(4,'auth','user'),(16,'business','course'),(17,'business','gym'),(18,'business','schedule'),(5,'contenttypes','contenttype'),(14,'order','order'),(15,'order','product'),(7,'recommend','recommend'),(6,'sessions','session'),(9,'usr','timeline'),(8,'usr','user'),(10,'usr','workingdays'),(13,'weibo','images'),(12,'weibo','longweibo'),(11,'weibo','weibo');
+INSERT INTO `django_content_type` VALUES (1,'admin','logentry'),(3,'auth','group'),(2,'auth','permission'),(4,'auth','user'),(19,'business','bodyeval'),(20,'business','bodyevaloptions'),(16,'business','course'),(17,'business','gym'),(18,'business','schedule'),(21,'business','train'),(5,'contenttypes','contenttype'),(14,'order','order'),(15,'order','product'),(7,'recommend','recommend'),(6,'sessions','session'),(22,'sms','sms'),(9,'usr','timeline'),(8,'usr','user'),(10,'usr','workingdays'),(13,'weibo','images'),(12,'weibo','longweibo'),(11,'weibo','weibo');
 /*!40000 ALTER TABLE `django_content_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -442,7 +530,7 @@ CREATE TABLE `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -451,7 +539,7 @@ CREATE TABLE `django_migrations` (
 
 LOCK TABLES `django_migrations` WRITE;
 /*!40000 ALTER TABLE `django_migrations` DISABLE KEYS */;
-INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2015-09-04 10:37:46'),(2,'auth','0001_initial','2015-09-04 10:37:46'),(3,'admin','0001_initial','2015-09-04 10:37:46'),(4,'contenttypes','0002_remove_content_type_name','2015-09-04 10:37:47'),(5,'auth','0002_alter_permission_name_max_length','2015-09-04 10:37:47'),(6,'auth','0003_alter_user_email_max_length','2015-09-04 10:37:47'),(7,'auth','0004_alter_user_username_opts','2015-09-04 10:37:47'),(8,'auth','0005_alter_user_last_login_null','2015-09-04 10:37:47'),(9,'auth','0006_require_contenttypes_0002','2015-09-04 10:37:47'),(10,'sessions','0001_initial','2015-09-04 10:37:47');
+INSERT INTO `django_migrations` VALUES (1,'contenttypes','0001_initial','2015-09-04 10:37:46'),(2,'auth','0001_initial','2015-09-04 10:37:46'),(3,'admin','0001_initial','2015-09-04 10:37:46'),(4,'contenttypes','0002_remove_content_type_name','2015-09-04 10:37:47'),(5,'auth','0002_alter_permission_name_max_length','2015-09-04 10:37:47'),(6,'auth','0003_alter_user_email_max_length','2015-09-04 10:37:47'),(7,'auth','0004_alter_user_username_opts','2015-09-04 10:37:47'),(8,'auth','0005_alter_user_last_login_null','2015-09-04 10:37:47'),(9,'auth','0006_require_contenttypes_0002','2015-09-04 10:37:47'),(10,'sessions','0001_initial','2015-09-04 10:37:47'),(11,'business','0001_initial','2015-09-13 16:16:07'),(12,'sms','0001_initial','2015-09-17 10:25:43');
 /*!40000 ALTER TABLE `django_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -511,7 +599,7 @@ CREATE TABLE `order_order` (
   CONSTRAINT `order_order_gym_id_196cd238bd689be6_fk_business_gym_name` FOREIGN KEY (`gym_id`) REFERENCES `business_gym` (`name`),
   CONSTRAINT `order_order_parentorder_id_51a00572e948edb1_fk_order_order_id` FOREIGN KEY (`parentorder_id`) REFERENCES `order_order` (`id`),
   CONSTRAINT `order_order_product_id_c2415c8535d8fae_fk_order_product_id` FOREIGN KEY (`product_id`) REFERENCES `order_product` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -520,7 +608,7 @@ CREATE TABLE `order_order` (
 
 LOCK TABLES `order_order` WRITE;
 /*!40000 ALTER TABLE `order_order` DISABLE KEYS */;
-INSERT INTO `order_order` VALUES (1,'2015-09-06 05:24:09',NULL,'alex','royn',144136344022,NULL,'done',NULL,1,0),(13,'2015-09-08 08:37:43',NULL,'alex','royn',144169982721,NULL,'paid',NULL,2,100),(14,'2015-09-08 08:38:32',NULL,'alex','royn',144170151221,NULL,'unpaid',NULL,2,100),(15,'2015-09-08 10:17:39',NULL,'alex','royn',144170745921,NULL,'unpaid',NULL,1,100),(16,'2015-09-08 15:28:22',NULL,'alex','royn',144172610121,NULL,'unpaid',NULL,2,2000),(17,'2015-09-08 16:09:31',NULL,'royn','royn',144172857011,NULL,'inprogress',NULL,1,500);
+INSERT INTO `order_order` VALUES (1,'2015-09-14 17:39:35',NULL,'alex','royn',144136344022,NULL,'done',NULL,1,100),(13,'2015-09-08 08:37:43',NULL,'alex','royn',144169982721,NULL,'paid',NULL,2,100),(14,'2015-09-08 08:38:32',NULL,'alex','royn',144170151221,NULL,'unpaid',NULL,2,100),(15,'2015-09-08 10:17:39',NULL,'alex','royn',144170745921,NULL,'unpaid',NULL,1,100),(16,'2015-09-08 15:28:22',NULL,'alex','royn',144172610121,NULL,'unpaid',NULL,2,2000),(17,'2015-09-08 16:09:31',NULL,'royn','royn',144172857011,NULL,'inprogress',NULL,1,500),(18,'2015-09-14 09:42:19',NULL,'alex','royn',144222369121,NULL,'inprogress',NULL,1,500),(19,'2015-09-16 09:12:38',NULL,'alex','royn',144239475821,NULL,'unpaid',NULL,2,2000),(20,'2015-09-16 09:33:10',NULL,'alex','royn',144239598921,NULL,'unpaid',NULL,2,2000),(21,'2015-09-18 13:01:18',NULL,'18612261069','royn',144257147771,NULL,'inprogress',NULL,1,500),(22,'2015-09-18 13:01:41',NULL,'18612261069','royn',144258130071,NULL,'inprogress',NULL,1,500),(23,'2015-09-18 13:12:16',NULL,'18612261069','royn',144258193671,NULL,'unpaid',NULL,1,500),(24,'2015-09-19 12:53:59',NULL,'18612261069','royn',144266723971,NULL,'unpaid',NULL,1,500),(25,'2015-09-19 18:28:01',NULL,'18612261069','royn',144268728071,NULL,'unpaid',NULL,1,500),(26,'2015-09-19 18:29:14',NULL,'18612261069','royn',144268735371,NULL,'unpaid',NULL,1,500),(27,'2015-09-19 18:29:49',NULL,'18612261069','royn',144268738971,NULL,'unpaid',NULL,1,500),(28,'2015-09-19 18:32:13',NULL,'18612261069','royn',144268753271,NULL,'unpaid',NULL,1,500),(29,'2015-09-19 18:39:26',NULL,'18612261069','royn',144268796671,NULL,'unpaid',NULL,1,500),(30,'2015-09-19 18:42:10',NULL,'18612261069','royn',144268813071,NULL,'unpaid',NULL,1,500),(31,'2015-09-19 18:48:24',NULL,'18612261069','royn',144268850471,NULL,'unpaid',NULL,1,500),(32,'2015-09-19 18:49:56',NULL,'18612261069','royn',144268859671,NULL,'unpaid',NULL,1,500),(33,'2015-09-19 18:54:03',NULL,'18612261069','royn',144268884371,NULL,'unpaid',NULL,1,500),(34,'2015-09-20 03:30:09',NULL,'18612261069','royn',144271980871,NULL,'unpaid',NULL,1,500),(35,'2015-09-20 03:41:52',NULL,'18612261069','royn',144272051271,NULL,'unpaid',NULL,1,500),(36,'2015-09-20 03:42:24',NULL,'18612261069','royn',144272054371,NULL,'unpaid',NULL,1,500),(37,'2015-09-20 03:45:17',NULL,'18612261069','royn',144272071671,NULL,'unpaid',NULL,1,500),(38,'2015-09-21 06:16:46',NULL,'18311286007','royn',144281620681,NULL,'paid',NULL,1,500),(39,'2015-09-21 07:17:30',NULL,'18612261069','18311286007',144281985078,NULL,'unpaid',NULL,3,2000),(40,'2015-09-21 07:19:11',NULL,'18612261069','18311286007',144281995178,NULL,'unpaid',NULL,3,2000);
 /*!40000 ALTER TABLE `order_order` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -542,7 +630,7 @@ CREATE TABLE `order_product` (
   PRIMARY KEY (`id`),
   KEY `order_product_coach_id_127ed22bb9b06814_fk_usr_user_name` (`coach_id`),
   CONSTRAINT `order_product_coach_id_127ed22bb9b06814_fk_usr_user_name` FOREIGN KEY (`coach_id`) REFERENCES `usr_user` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -551,7 +639,7 @@ CREATE TABLE `order_product` (
 
 LOCK TABLES `order_product` WRITE;
 /*!40000 ALTER TABLE `order_product` DISABLE KEYS */;
-INSERT INTO `order_product` VALUES (1,'royn','','3节体验课',3,500,200),(2,'royn','','10节优惠装',10,2000,1800);
+INSERT INTO `order_product` VALUES (1,'royn','','3节体验课',3,500,200),(2,'royn','','10节优惠装',10,2000,1800),(3,'18311286007','','测试课程',10,2000,1800);
 /*!40000 ALTER TABLE `order_product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -599,6 +687,32 @@ INSERT INTO `recommend_recommend` VALUES (1,'2015-09-09 12:40:34','gym',NULL,NUL
 UNLOCK TABLES;
 
 --
+-- Table structure for table `sms_sms`
+--
+
+DROP TABLE IF EXISTS `sms_sms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sms_sms` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `number` bigint(20) NOT NULL,
+  `vcode` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `number` (`number`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sms_sms`
+--
+
+LOCK TABLES `sms_sms` WRITE;
+/*!40000 ALTER TABLE `sms_sms` DISABLE KEYS */;
+INSERT INTO `sms_sms` VALUES (7,18612261069,271878),(8,18311286007,207321);
+/*!40000 ALTER TABLE `sms_sms` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `usr_timeline`
 --
 
@@ -611,7 +725,7 @@ CREATE TABLE `usr_timeline` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_id` (`name_id`),
   CONSTRAINT `usr_timeline_name_id_2aa3e95a889da96f_fk_usr_user_name` FOREIGN KEY (`name_id`) REFERENCES `usr_user` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -620,7 +734,7 @@ CREATE TABLE `usr_timeline` (
 
 LOCK TABLES `usr_timeline` WRITE;
 /*!40000 ALTER TABLE `usr_timeline` DISABLE KEYS */;
-INSERT INTO `usr_timeline` VALUES (2,'alex'),(1,'royn'),(3,'xudongbo');
+INSERT INTO `usr_timeline` VALUES (5,'18311286007'),(4,'18612261069'),(2,'alex'),(1,'royn'),(3,'xudongbo');
 /*!40000 ALTER TABLE `usr_timeline` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -640,7 +754,7 @@ CREATE TABLE `usr_timeline_feed` (
   KEY `usr_timeline_feed_weibo_id_95b6e5b9e3d26b_fk_weibo_weibo_id` (`weibo_id`),
   CONSTRAINT `usr_timeline_feed_timeline_id_48a79b117394169_fk_usr_timeline_id` FOREIGN KEY (`timeline_id`) REFERENCES `usr_timeline` (`id`),
   CONSTRAINT `usr_timeline_feed_weibo_id_95b6e5b9e3d26b_fk_weibo_weibo_id` FOREIGN KEY (`weibo_id`) REFERENCES `weibo_weibo` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -649,7 +763,7 @@ CREATE TABLE `usr_timeline_feed` (
 
 LOCK TABLES `usr_timeline_feed` WRITE;
 /*!40000 ALTER TABLE `usr_timeline_feed` DISABLE KEYS */;
-INSERT INTO `usr_timeline_feed` VALUES (2,1,1),(4,1,2),(5,1,3),(7,1,4),(9,1,5),(11,1,6),(1,2,1),(3,2,2),(6,2,3),(8,2,4),(10,2,5),(12,2,6);
+INSERT INTO `usr_timeline_feed` VALUES (2,1,1),(4,1,2),(5,1,3),(7,1,4),(9,1,5),(11,1,6),(13,1,7),(15,1,8),(1,2,1),(3,2,2),(6,2,3),(8,2,4),(10,2,5),(12,2,6),(14,2,7),(16,2,8),(17,4,9),(18,4,10),(19,4,11),(20,4,12),(21,4,13),(22,4,14),(23,4,15),(24,4,16),(25,4,17),(26,4,18),(27,4,19),(28,4,20);
 /*!40000 ALTER TABLE `usr_timeline_feed` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -669,7 +783,7 @@ CREATE TABLE `usr_timeline_followedby` (
   KEY `usr_timeline__to_timeline_id_5ac8ce23084dbe0b_fk_usr_timeline_id` (`to_timeline_id`),
   CONSTRAINT `usr_timeline__to_timeline_id_5ac8ce23084dbe0b_fk_usr_timeline_id` FOREIGN KEY (`to_timeline_id`) REFERENCES `usr_timeline` (`id`),
   CONSTRAINT `usr_timelin_from_timeline_id_5e93d7e27be6ab5e_fk_usr_timeline_id` FOREIGN KEY (`from_timeline_id`) REFERENCES `usr_timeline` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -678,7 +792,7 @@ CREATE TABLE `usr_timeline_followedby` (
 
 LOCK TABLES `usr_timeline_followedby` WRITE;
 /*!40000 ALTER TABLE `usr_timeline_followedby` DISABLE KEYS */;
-INSERT INTO `usr_timeline_followedby` VALUES (1,1,1),(3,1,2),(2,2,2),(4,3,3);
+INSERT INTO `usr_timeline_followedby` VALUES (1,1,1),(3,1,2),(2,2,2),(4,3,3),(5,4,4),(6,5,5);
 /*!40000 ALTER TABLE `usr_timeline_followedby` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -698,7 +812,7 @@ CREATE TABLE `usr_timeline_refresh` (
   KEY `usr_timeline_refresh_weibo_id_52b6874552e9095b_fk_weibo_weibo_id` (`weibo_id`),
   CONSTRAINT `usr_timeline_refresh_weibo_id_52b6874552e9095b_fk_weibo_weibo_id` FOREIGN KEY (`weibo_id`) REFERENCES `weibo_weibo` (`id`),
   CONSTRAINT `usr_timeline_ref_timeline_id_47e144be2975acd1_fk_usr_timeline_id` FOREIGN KEY (`timeline_id`) REFERENCES `usr_timeline` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -707,6 +821,7 @@ CREATE TABLE `usr_timeline_refresh` (
 
 LOCK TABLES `usr_timeline_refresh` WRITE;
 /*!40000 ALTER TABLE `usr_timeline_refresh` DISABLE KEYS */;
+INSERT INTO `usr_timeline_refresh` VALUES (1,4,9),(2,4,10),(3,4,11),(4,4,12),(5,4,13),(6,4,14),(7,4,15),(8,4,16),(9,4,17),(10,4,18),(11,4,19),(12,4,20);
 /*!40000 ALTER TABLE `usr_timeline_refresh` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -729,7 +844,7 @@ CREATE TABLE `usr_user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `displayname` (`displayname`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -738,7 +853,7 @@ CREATE TABLE `usr_user` (
 
 LOCK TABLES `usr_user` WRITE;
 /*!40000 ALTER TABLE `usr_user` DISABLE KEYS */;
-INSERT INTO `usr_user` VALUES (1,'royn','教练',1,'2015-09-08 16:15:28','http://i.imgur.com/oI1bF48.jpg',0,NULL),(2,'alex','用户',0,'2015-09-04 10:41:58','http://7xiwfp.com1.z0.glb.clouddn.com/f7fbe62e2bcd11e5900a7831c1cd33b6?imageView2/1/w/200/h/200',0,0),(3,'xudongbo','徐东波',1,'2015-09-08 16:10:52','http://www.touxiang.cn/uploads/20131114/14-065802_226.jpg',1,NULL);
+INSERT INTO `usr_user` VALUES (1,'royn','教练',1,'2015-09-15 11:33:40','http://7xiwfp.com1.z0.glb.clouddn.com/9b247ea15b9d11e596477831c1cd33b6.jpg',0,NULL),(2,'alex','用户',0,'2015-09-04 10:41:58','http://7xiwfp.com1.z0.glb.clouddn.com/f7fbe62e2bcd11e5900a7831c1cd33b6?imageView2/1/w/200/h/200',0,0),(3,'xudongbo','徐东波',1,'2015-09-08 16:10:52','http://www.touxiang.cn/uploads/20131114/14-065802_226.jpg',1,NULL),(7,'18612261069','18612261069',0,'2015-09-18 13:00:53','http://7xiwfp.com1.z0.glb.clouddn.com/4adfdc175e0511e595027831c1cd33b6.jpg',0,NULL),(8,'18311286007','测试教练',1,'2015-09-21 06:18:15','http://7xiwfp.com1.z0.glb.clouddn.com/85b8e5cf602811e5b6097831c1cd33b6.jpg',0,NULL);
 /*!40000 ALTER TABLE `usr_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -874,7 +989,7 @@ CREATE TABLE `usr_workingdays` (
   `noon_hours` varchar(32) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -883,7 +998,7 @@ CREATE TABLE `usr_workingdays` (
 
 LOCK TABLES `usr_workingdays` WRITE;
 /*!40000 ALTER TABLE `usr_workingdays` DISABLE KEYS */;
-INSERT INTO `usr_workingdays` VALUES (1,'royn','1','','','',''),(2,'alex','','','','',''),(3,'xudongbo','','','','','');
+INSERT INTO `usr_workingdays` VALUES (1,'royn','1','','','',''),(2,'alex','','','','',''),(3,'xudongbo','','','','',''),(4,'18612261069','','','','',''),(5,'18311286007','','','','','');
 /*!40000 ALTER TABLE `usr_workingdays` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -902,7 +1017,7 @@ CREATE TABLE `weibo_images` (
   PRIMARY KEY (`id`),
   KEY `weibo_images_by_id_24d38e17d08dcf5a_fk_usr_user_id` (`by_id`),
   CONSTRAINT `weibo_images_by_id_24d38e17d08dcf5a_fk_usr_user_id` FOREIGN KEY (`by_id`) REFERENCES `usr_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -911,7 +1026,7 @@ CREATE TABLE `weibo_images` (
 
 LOCK TABLES `weibo_images` WRITE;
 /*!40000 ALTER TABLE `weibo_images` DISABLE KEYS */;
-INSERT INTO `weibo_images` VALUES (1,'http://newslounge.net/wp-content/uploads/2013/12/0cbd1704f4340cc6484dbacde68bbe31.jpg',1,'2015-09-04 10:43:19'),(2,'http://stat.ameba.jp/user_images/20121204/20/grfft-sugaya/8c/a6/j/o0396052212316078702.jpg',1,'2015-09-04 10:43:19'),(3,'http://terracehouse-fujitv.net/wp-content/uploads/2013/12/55-1.png',1,'2015-09-07 10:43:42');
+INSERT INTO `weibo_images` VALUES (1,'http://newslounge.net/wp-content/uploads/2013/12/0cbd1704f4340cc6484dbacde68bbe31.jpg',1,'2015-09-04 10:43:19'),(2,'http://stat.ameba.jp/user_images/20121204/20/grfft-sugaya/8c/a6/j/o0396052212316078702.jpg',1,'2015-09-04 10:43:19'),(3,'http://terracehouse-fujitv.net/wp-content/uploads/2013/12/55-1.png',1,'2015-09-07 10:43:42'),(4,'http://7xiwfp.com1.z0.glb.clouddn.com/d306865c5c4611e58d127831c1cd33b6.jpg',1,'2015-09-16 07:44:57'),(5,'http://7xiwfp.com1.z0.glb.clouddn.com/8bce44ab5c4911e59e927831c1cd33b6.jpg',1,'2015-09-16 08:04:26'),(6,'http://7xiwfp.com1.z0.glb.clouddn.com/eec391de5ded11e5bc5f7831c1cd33b6.jpg',7,'2015-09-18 10:13:40'),(7,'http://7xiwfp.com1.z0.glb.clouddn.com/f4d870265ded11e586a57831c1cd33b6.jpg',7,'2015-09-18 10:13:50'),(8,'http://7xiwfp.com1.z0.glb.clouddn.com/050937005dee11e5a69a7831c1cd33b6.jpg',7,'2015-09-18 10:14:18'),(9,'http://7xiwfp.com1.z0.glb.clouddn.com/0aa702ab5dee11e591957831c1cd33b6.jpg',7,'2015-09-18 10:14:27'),(10,'http://7xiwfp.com1.z0.glb.clouddn.com/0ebdc0995dee11e5a6237831c1cd33b6.jpg',7,'2015-09-18 10:14:34'),(11,'http://7xiwfp.com1.z0.glb.clouddn.com/1ac3aeae5dee11e585317831c1cd33b6.jpg',7,'2015-09-18 10:14:54'),(12,'http://7xiwfp.com1.z0.glb.clouddn.com/2265b2915dee11e5a8d67831c1cd33b6.jpg',7,'2015-09-18 10:15:07'),(13,'http://7xiwfp.com1.z0.glb.clouddn.com/27e482a35dee11e58fc87831c1cd33b6.jpg',7,'2015-09-18 10:15:16'),(14,'http://7xiwfp.com1.z0.glb.clouddn.com/2c219f425dee11e5b79f7831c1cd33b6.jpg',7,'2015-09-18 10:15:25'),(15,'http://7xiwfp.com1.z0.glb.clouddn.com/60c5d6d15dee11e5b24d7831c1cd33b6.jpg',7,'2015-09-18 10:16:51'),(16,'http://7xiwfp.com1.z0.glb.clouddn.com/e784377a5df711e59a4a7831c1cd33b6.jpg',7,'2015-09-18 11:25:03'),(17,'http://7xiwfp.com1.z0.glb.clouddn.com/d409ffee5df811e5abaa7831c1cd33b6.jpg',7,'2015-09-18 11:31:40');
 /*!40000 ALTER TABLE `weibo_images` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -978,7 +1093,7 @@ CREATE TABLE `weibo_weibo` (
   CONSTRAINT `weibo_weibo_coach_id_9a9752595cb34cf_fk_usr_user_id` FOREIGN KEY (`coach_id`) REFERENCES `usr_user` (`id`),
   CONSTRAINT `weibo_weibo_commentto_id_b9c874c184928f5_fk_weibo_weibo_id` FOREIGN KEY (`commentto_id`) REFERENCES `weibo_weibo` (`id`),
   CONSTRAINT `weibo_weibo_fwdfrom_id_76da9dd05234cc74_fk_weibo_weibo_id` FOREIGN KEY (`fwdfrom_id`) REFERENCES `weibo_weibo` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -987,7 +1102,7 @@ CREATE TABLE `weibo_weibo` (
 
 LOCK TABLES `weibo_weibo` WRITE;
 /*!40000 ALTER TABLE `weibo_weibo` DISABLE KEYS */;
-INSERT INTO `weibo_weibo` VALUES (1,'测试','','[\"http://newslounge.net/wp-content/uploads/2013/12/0cbd1704f4340cc6484dbacde68bbe31.jpg\",\"http://stat.ameba.jp/user_images/20121204/20/grfft-sugaya/8c/a6/j/o0396052212316078702.jpg\"]',0,'2015-09-04 10:43:19','royn',0,NULL,0,NULL,0,0,0,NULL,NULL),(2,'hahahah','','[\"http://terracehouse-fujitv.net/wp-content/uploads/2013/12/55-1.png\"]',0,'2015-09-07 10:43:42','royn',0,NULL,0,NULL,1,0,1,NULL,NULL),(3,'','','',0,'2015-09-07 14:39:51','royn',0,NULL,0,NULL,0,0,0,1,NULL),(4,'','','',0,'2015-09-07 14:40:08','royn',0,NULL,0,NULL,0,0,0,3,NULL),(5,'','','',0,'2015-09-08 16:10:55','royn',0,NULL,0,NULL,0,0,0,3,NULL),(6,'','','',0,'2015-09-08 16:15:28','royn',0,NULL,1,2,1,0,0,NULL,NULL);
+INSERT INTO `weibo_weibo` VALUES (1,'测试','','[\"http://newslounge.net/wp-content/uploads/2013/12/0cbd1704f4340cc6484dbacde68bbe31.jpg\",\"http://stat.ameba.jp/user_images/20121204/20/grfft-sugaya/8c/a6/j/o0396052212316078702.jpg\"]',0,'2015-09-04 10:43:19','royn',0,NULL,0,NULL,0,0,0,NULL,NULL),(2,'hahahah','','[\"http://terracehouse-fujitv.net/wp-content/uploads/2013/12/55-1.png\"]',0,'2015-09-07 10:43:42','royn',0,NULL,0,NULL,1,0,1,NULL,NULL),(3,'','','',0,'2015-09-07 14:39:51','royn',0,NULL,0,NULL,0,0,0,1,NULL),(4,'','','',0,'2015-09-07 14:40:08','royn',0,NULL,0,NULL,0,0,0,3,NULL),(5,'','','',0,'2015-09-08 16:10:55','royn',0,NULL,0,NULL,0,0,0,3,NULL),(6,'','','',0,'2015-09-08 16:15:28','royn',0,NULL,1,2,1,0,0,NULL,NULL),(7,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/d306865c5c4611e58d127831c1cd33b6.jpg\"]',0,'2015-09-16 07:44:57','royn',0,NULL,0,NULL,0,0,0,NULL,NULL),(8,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/8bce44ab5c4911e59e927831c1cd33b6.jpg\"]',0,'2015-09-16 08:04:26','royn',0,NULL,0,NULL,0,0,0,NULL,NULL),(9,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/eec391de5ded11e5bc5f7831c1cd33b6.jpg\"]',0,'2015-09-18 10:13:40','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(10,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/f4d870265ded11e586a57831c1cd33b6.jpg\"]',0,'2015-09-18 10:13:50','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(11,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/050937005dee11e5a69a7831c1cd33b6.jpg\"]',0,'2015-09-18 10:14:18','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(12,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/0aa702ab5dee11e591957831c1cd33b6.jpg\"]',0,'2015-09-18 10:14:27','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(13,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/0ebdc0995dee11e5a6237831c1cd33b6.jpg\"]',0,'2015-09-18 10:14:34','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(14,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/1ac3aeae5dee11e585317831c1cd33b6.jpg\"]',0,'2015-09-18 10:14:54','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(15,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/2265b2915dee11e5a8d67831c1cd33b6.jpg\"]',0,'2015-09-18 10:15:07','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(16,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/27e482a35dee11e58fc87831c1cd33b6.jpg\"]',0,'2015-09-18 10:15:16','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(17,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/2c219f425dee11e5b79f7831c1cd33b6.jpg\"]',0,'2015-09-18 10:15:25','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(18,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/60c5d6d15dee11e5b24d7831c1cd33b6.jpg\"]',0,'2015-09-18 10:16:51','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(19,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/e784377a5df711e59a4a7831c1cd33b6.jpg\"]',0,'2015-09-18 11:25:03','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(20,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/d409ffee5df811e5abaa7831c1cd33b6.jpg\"]',0,'2015-09-18 11:31:40','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL);
 /*!40000 ALTER TABLE `weibo_weibo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1000,4 +1115,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-10  0:31:45
+-- Dump completed on 2015-09-23  0:18:00

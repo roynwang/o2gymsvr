@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import datetime
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = (
 		'weibo',
 		'order',
 		'business',
+		'sms',
 		)
 
 
@@ -136,9 +138,9 @@ REST_FRAMEWORK = {
 		#'MAX_PAGINATE_BY': 100 ,
 
 		'DEFAULT_PERMISSION_CLASSES': (
-
 			'rest_framework.permissions.AllowAny',
 			#'rest_framework.permissions.IsAuthenticated',
+			#'rest_framework.permissions.IsAuthenticatedOrReadOnly',
 			),
 		'DEFAULT_AUTHENTICATION_CLASSES': (
 			'rest_framework.authentication.SessionAuthentication',
@@ -147,8 +149,23 @@ REST_FRAMEWORK = {
 			),
 		}
 JWT_AUTH = {
-		'JWT_VERIFY_EXPIRATION': False
+		#'JWT_VERIFY_EXPIRATION': False,
+		'JWT_ALLOW_REFRESH': True,
+		'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=30),
+		'JWT_EXPIRATION_DELTA':datetime.timedelta(days=30),
 		}
 QNACCESSKEY = '6skaNTW7Ja8B6tYX-3j9j588_jdRmgNWZV2NYJ0H'
 QNSECRETKEY = 'QLtvaMzRthYDOcPHBYvax5hda2uu7oh4BpKjiMHk'
 QNBUKET = 'gymgo'
+
+UCPAASHOST = "https://api.ucpaas.com"
+UCPAASPORT = ""
+UCPAASSOFTVER = "2014-06-30"
+UCPAASJSON = "json"
+UCPAASXML = "xml"
+UCPAASSID = "f52a037bfe68d879caa7aa88681b32ca"
+UCPAASTOKEN = "6115f06113d62abe266fccc9af07cf22"
+UCPAASAPPID = "6645449487fa4105bdfa2487ba88d2cf"
+UCPAASTEMPLATE = 13286
+
+DEFAULT_AVATAR = "http://7xiwfp.com1.z0.glb.clouddn.com/default_avatar.png"

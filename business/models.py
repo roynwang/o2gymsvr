@@ -52,4 +52,29 @@ class Schedule(models.Model):
 	def __unicode__(self):
 		return str(self.date) + str(self.hour)
 
-	
+class BodyEval(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=64)
+	date = models.DateField(auto_now=True)
+	option = models.CharField(max_length=64)
+	value = models.CharField(max_length=64)
+	unit = models.CharField(max_length=64)
+	group = models.CharField(max_length=64)
+
+class BodyEvalOptions(models.Model):
+	id = models.AutoField(primary_key=True)
+	option = models.CharField(max_length=64)
+	unit = models.CharField(max_length=64)
+	group = models.CharField(max_length=64)
+
+
+class Train(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=64)
+	date = models.DateField(auto_now=True)
+	weight = models.CharField(max_length=64)
+	repeattimes = models.CharField(max_length=64)
+	groupid = models.IntegerField()
+	action_name = models.CharField(max_length=64)
+	action_order = models.IntegerField()
+	course = models.ForeignKey('Schedule', related_name="record", null=True)

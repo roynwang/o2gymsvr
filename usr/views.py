@@ -36,9 +36,11 @@ class UserList(generics.CreateAPIView):
 	serializer_class = UserSerializer
 	def create(self, request, *args, **kwargs):
 		resp = super(UserList, self).create(request, args, kwargs)
+
 		tl = TimeLine.objects.create(name=get_object_or_404(User, name=request.data["name"]))
 		tl.followedby.add(tl)
 		wh = WorkingDays.objects.create(name=request.data["name"])
+
 		return Response({"result": 0})
 
 class UserItem(generics.RetrieveUpdateDestroyAPIView):

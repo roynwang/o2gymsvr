@@ -21,4 +21,13 @@ urlpatterns = patterns('',
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/w/(?P<date>[0-9]{8})/$',ScheduleForRead.as_view()),
 		#read availiable hours in day
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/d/(?P<date>[0-9]{8})/$',DayAvaiableTime.as_view()),
+
+		#body eval
+		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/e/$',BodyEvalDateView.as_view()),
+		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/e/(?P<date>[0-9]{8})/$',BodyEvalByDateView.as_view()),
+		url(r'^api/e/$',AllEvalOptionsView.as_view()),
+
+		#train
+		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/t/$',TrainDateView.as_view()),
+		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/t/(?P<date>[0-9]{8})/$',TrainByDateView.as_view()),
 		)

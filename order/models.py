@@ -32,3 +32,4 @@ class Product(models.Model):
 	price = models.IntegerField()
 	promotion = models.IntegerField(blank=True)
 
+
