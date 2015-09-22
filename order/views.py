@@ -97,3 +97,13 @@ def pay_order(billid):
 	order.paidtime = datetime.now()
 	order.save()
 
+def pay_callback(request):
+	if request.DATA["type"] == "charge.succeeded":
+		charge = request.DATA["data"]["object"]
+		if charge["paid"] == True:
+			order_no = charget["order_no"]
+			print order_no
+			order = get_object_or_404(Order, billid=int(order_no))
+			order.status = "paid"
+	return Response({'msg':'done'}, status=status.HTTP_200_OK)
+
