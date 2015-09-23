@@ -9,6 +9,10 @@ from rest_framework import status
 import time
 from ipware.ip import get_ip
 from django.http import JsonResponse
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import api_view, permission_classes
+import json
+from django.http import JsonResponse
 
 
 def create_pay(request, billid,channel):
@@ -97,14 +101,22 @@ def pay_order(billid):
 	order.paidtime = datetime.now()
 	order.save()
 
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+@permission_classes((AllowAny,))
 def pay_callback(request):
-	if request.DATA["type"] == "charge.succeeded":
-		charge = request.DATA
-		if charge["paid"] == False:
+	j = json.loads(request.body)
+	print j
+	if j["type"] == "charge.succeeded":
+		charge = j["data"]["object"]
+		if charge["paid"] == True:
 			print "update status ... ... ..."
-			order_no = charget["order_no"]
+			order_no = charge["order_no"]
 			print order_no
 			order = get_object_or_404(Order, billid=int(order_no))
 			order.status = "paid"
-	return Response({'msg':'done'}, status=status.HTTP_200_OK)
+			order.save()
+			print order.status
+	return JsonResponse({'msg':'done'}, status=status.HTTP_200_OK)
 
