@@ -12,7 +12,7 @@ STATUS_TYPE = (("unpaid","Initialized"),
 
 class Order(models.Model):
 	id = models.AutoField(primary_key=True)
-	created = models.DateTimeField(auto_now=True)
+	created = models.DateTimeField(auto_now_add=True)
 	gym = models.ForeignKey("business.Gym", to_field="name", related_name="orders", null=True)
 	custom = models.ForeignKey("usr.User", to_field="name", related_name="orders", null=True)
 	coach = models.ForeignKey("usr.User", to_field="name", related_name="income_orders", null=True)
@@ -21,6 +21,7 @@ class Order(models.Model):
 	status = models.CharField(max_length=32)
 	parentorder = models.ForeignKey("self", related_name="sub_orders", null=True)
 	product = models.ForeignKey("Product", related_name="sold", null=True)
+	channel = models.CharField(max_length=10)
 	amount = models.IntegerField()
 
 class Product(models.Model):
