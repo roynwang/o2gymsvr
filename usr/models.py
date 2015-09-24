@@ -18,6 +18,10 @@ class User(models.Model):
 	upnum = models.IntegerField(default=0)
 
 	recommand_p = models.IntegerField(blank=True, null=True)
+
+	#for coach
+	tags = models.CharField(max_length=64, blank=True, default="")
+	introduction = models.CharField(max_length=1024, blank=True, default="") 
 	
 	def __unicode__(self):
 		return self.name
