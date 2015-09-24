@@ -12,6 +12,8 @@ import datetime
 import time
 from pytz import timezone
 from rest_framework_bulk import ListBulkCreateAPIView 
+import requests
+from django.conf import settings
 
 
 # Create your views here.
@@ -110,12 +112,12 @@ class ScheduleForRead(generics.ListAPIView):
 			#queryset = Schedule.objects.filter(coach=usr.id,
 			#		date__range=daterange).order_by('date','hour')
 			queryset = Schedule.objects.filter(coach=usr.id, done=False)
-			print queryset
+			#print queryset
 		else:
 			#queryset = Schedule.objects.filter(custom=usr.id,
 			#		date__range=daterange).order_by('date','hour')
 			queryset = Schedule.objects.filter(custom=usr.id, rate=None)
-			print queryset
+			#print queryset
 		return queryset
 
 class DayAvaiableTime(APIView):
@@ -213,4 +215,40 @@ class TrainByDateView(ListBulkCreateAPIView):
 			schedule.done = True
 			schedule.save()
 		return ret
+
+#class NearByView(generics.ListAPIView):
+
+class NearByView(APIView):
+	#pagination_class = None
+	serializer_class = GymSerializer
+	def get(self,request):
+		#http://yuntuapi.amap.com/datasearch/around?key=a2be60fd9e30425d8e7c003ba81a1f12&center=116.28113,40.03241&tableid=560353bae4b0fe6c79f8f0d0
+		key = settings.GAODE_KEY
+		tableid = settings.GAODE_TABLEID
+		url = settings.GAODE_URL
+		#print self.request.GET
+		loc = str(request.GET["longitude"]) + "," + str(request.GET["latitude"])
+		params = {
+				"key":key,
+				"tableid":tableid,
+				"center": loc,
+				"sortrule": "_distance"
+				}
+		resp = requests.get(url,params=params).json()
+		gymlist = []
+		dislist = {}
+		for gym in resp["datas"]:
+			gymlist.append(gym["_id"])
+			dislist[gym["_id"]] = int(gym["_distance"])
+		ret =  Gym.objects.filter(mapid__in = gymlist)
+		allgym = []
+		for item in ret:
+			item.distance = dislist[str(item.mapid)]
+			print item.distance
+			allgym.append(item)
+		#print ret[0].distance
+		serializer = GymSerializer(allgym, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 

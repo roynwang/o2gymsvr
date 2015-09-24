@@ -8,9 +8,15 @@ class CourseSerializer(serializers.ModelSerializer):
 		model = Course
 
 class GymSerializer(serializers.ModelSerializer):
-	coaches_set = CoachSimpleSerializer(source="coaches", many=True, read_only=True)
+	coaches_set= CoachSimpleSerializer(source="coaches", many=True, read_only=True)
 	class Meta:
 		model = Gym
+
+'''
+class GymWithDisSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Gym
+'''
 
 
 class ScheduleSerializer(serializers.ModelSerializer):

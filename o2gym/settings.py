@@ -134,7 +134,7 @@ REST_FRAMEWORK = {
 		#'PAGINATE_BY': 2,
 		#'PAGINATE_BY_PARAM': 'page_size',
 		'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.CursorPagination',
-		'PAGE_SIZE': 10,
+		'PAGE_SIZE': 12,
 		#'MAX_PAGINATE_BY': 100 ,
 
 		'DEFAULT_PERMISSION_CLASSES': (
@@ -169,3 +169,7 @@ UCPAASAPPID = "6645449487fa4105bdfa2487ba88d2cf"
 UCPAASTEMPLATE = 13286
 
 DEFAULT_AVATAR = "http://7xiwfp.com1.z0.glb.clouddn.com/default_avatar.png"
+
+GAODE_KEY = "a2be60fd9e30425d8e7c003ba81a1f12"
+GAODE_TABLEID = "560353bae4b0fe6c79f8f0d0"
+GAODE_URL = "http://yuntuapi.amap.com/datasearch/around"

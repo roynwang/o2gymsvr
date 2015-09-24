@@ -341,6 +341,8 @@ CREATE TABLE `business_gym` (
   `imgs` varchar(1024) NOT NULL,
   `recommand_p` int(11) DEFAULT NULL,
   `address` varchar(256) NOT NULL,
+  `mapid` int(11) NOT NULL,
+  `distance` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
@@ -352,7 +354,7 @@ CREATE TABLE `business_gym` (
 
 LOCK TABLES `business_gym` WRITE;
 /*!40000 ALTER TABLE `business_gym` DISABLE KEYS */;
-INSERT INTO `business_gym` VALUES (1,'西山华府','健身房','[\"http://viet.nam.travel/wp-content/uploads/2014/09/gyms-in-vietnam.jpg\"]',NULL,'海淀区 马连洼 西山华府');
+INSERT INTO `business_gym` VALUES (1,'西山华府游泳健身会所','健身房','[\"http://viet.nam.travel/wp-content/uploads/2014/09/gyms-in-vietnam.jpg\"]',NULL,'海淀区 马连洼 西山华府',1,0);
 /*!40000 ALTER TABLE `business_gym` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -372,7 +374,7 @@ CREATE TABLE `business_gym_coaches` (
   KEY `business_gym_coaches_user_id_72a6a6f0e91cbed2_fk_usr_user_id` (`user_id`),
   CONSTRAINT `business_gym_coaches_gym_id_60b407e2182c38fd_fk_business_gym_id` FOREIGN KEY (`gym_id`) REFERENCES `business_gym` (`id`),
   CONSTRAINT `business_gym_coaches_user_id_72a6a6f0e91cbed2_fk_usr_user_id` FOREIGN KEY (`user_id`) REFERENCES `usr_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -381,7 +383,7 @@ CREATE TABLE `business_gym_coaches` (
 
 LOCK TABLES `business_gym_coaches` WRITE;
 /*!40000 ALTER TABLE `business_gym_coaches` DISABLE KEYS */;
-INSERT INTO `business_gym_coaches` VALUES (8,1,1),(7,1,8);
+INSERT INTO `business_gym_coaches` VALUES (10,1,1),(9,1,8);
 /*!40000 ALTER TABLE `business_gym_coaches` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -709,7 +711,7 @@ CREATE TABLE `sms_sms` (
 
 LOCK TABLES `sms_sms` WRITE;
 /*!40000 ALTER TABLE `sms_sms` DISABLE KEYS */;
-INSERT INTO `sms_sms` VALUES (7,18612261069,181446),(8,18311286007,207321);
+INSERT INTO `sms_sms` VALUES (7,18612261069,638419),(8,18311286007,207321);
 /*!40000 ALTER TABLE `sms_sms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -755,7 +757,7 @@ CREATE TABLE `usr_timeline_feed` (
   KEY `usr_timeline_feed_weibo_id_95b6e5b9e3d26b_fk_weibo_weibo_id` (`weibo_id`),
   CONSTRAINT `usr_timeline_feed_timeline_id_48a79b117394169_fk_usr_timeline_id` FOREIGN KEY (`timeline_id`) REFERENCES `usr_timeline` (`id`),
   CONSTRAINT `usr_timeline_feed_weibo_id_95b6e5b9e3d26b_fk_weibo_weibo_id` FOREIGN KEY (`weibo_id`) REFERENCES `weibo_weibo` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -764,7 +766,7 @@ CREATE TABLE `usr_timeline_feed` (
 
 LOCK TABLES `usr_timeline_feed` WRITE;
 /*!40000 ALTER TABLE `usr_timeline_feed` DISABLE KEYS */;
-INSERT INTO `usr_timeline_feed` VALUES (2,1,1),(4,1,2),(5,1,3),(7,1,4),(9,1,5),(11,1,6),(13,1,7),(15,1,8),(1,2,1),(3,2,2),(6,2,3),(8,2,4),(10,2,5),(12,2,6),(14,2,7),(16,2,8),(17,4,9),(18,4,10),(19,4,11),(20,4,12),(21,4,13),(22,4,14),(23,4,15),(24,4,16),(25,4,17),(26,4,18),(27,4,19),(28,4,20);
+INSERT INTO `usr_timeline_feed` VALUES (2,1,1),(4,1,2),(5,1,3),(7,1,4),(9,1,5),(11,1,6),(13,1,7),(15,1,8),(1,2,1),(3,2,2),(6,2,3),(8,2,4),(10,2,5),(12,2,6),(14,2,7),(16,2,8),(17,4,9),(18,4,10),(19,4,11),(20,4,12),(21,4,13),(22,4,14),(23,4,15),(24,4,16),(25,4,17),(26,4,18),(27,4,19),(28,4,20),(29,4,21),(30,4,22),(31,4,23),(32,4,24);
 /*!40000 ALTER TABLE `usr_timeline_feed` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -813,7 +815,7 @@ CREATE TABLE `usr_timeline_refresh` (
   KEY `usr_timeline_refresh_weibo_id_52b6874552e9095b_fk_weibo_weibo_id` (`weibo_id`),
   CONSTRAINT `usr_timeline_refresh_weibo_id_52b6874552e9095b_fk_weibo_weibo_id` FOREIGN KEY (`weibo_id`) REFERENCES `weibo_weibo` (`id`),
   CONSTRAINT `usr_timeline_ref_timeline_id_47e144be2975acd1_fk_usr_timeline_id` FOREIGN KEY (`timeline_id`) REFERENCES `usr_timeline` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -822,7 +824,7 @@ CREATE TABLE `usr_timeline_refresh` (
 
 LOCK TABLES `usr_timeline_refresh` WRITE;
 /*!40000 ALTER TABLE `usr_timeline_refresh` DISABLE KEYS */;
-INSERT INTO `usr_timeline_refresh` VALUES (1,4,9),(2,4,10),(3,4,11),(4,4,12),(5,4,13),(6,4,14),(7,4,15),(8,4,16),(9,4,17),(10,4,18),(11,4,19),(12,4,20);
+INSERT INTO `usr_timeline_refresh` VALUES (1,4,9),(2,4,10),(3,4,11),(4,4,12),(5,4,13),(6,4,14),(7,4,15),(8,4,16),(9,4,17),(10,4,18),(11,4,19),(12,4,20),(13,4,21),(14,4,22),(15,4,23),(16,4,24);
 /*!40000 ALTER TABLE `usr_timeline_refresh` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1018,7 +1020,7 @@ CREATE TABLE `weibo_images` (
   PRIMARY KEY (`id`),
   KEY `weibo_images_by_id_24d38e17d08dcf5a_fk_usr_user_id` (`by_id`),
   CONSTRAINT `weibo_images_by_id_24d38e17d08dcf5a_fk_usr_user_id` FOREIGN KEY (`by_id`) REFERENCES `usr_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1027,7 +1029,7 @@ CREATE TABLE `weibo_images` (
 
 LOCK TABLES `weibo_images` WRITE;
 /*!40000 ALTER TABLE `weibo_images` DISABLE KEYS */;
-INSERT INTO `weibo_images` VALUES (1,'http://newslounge.net/wp-content/uploads/2013/12/0cbd1704f4340cc6484dbacde68bbe31.jpg',1,'2015-09-04 10:43:19'),(2,'http://stat.ameba.jp/user_images/20121204/20/grfft-sugaya/8c/a6/j/o0396052212316078702.jpg',1,'2015-09-04 10:43:19'),(3,'http://terracehouse-fujitv.net/wp-content/uploads/2013/12/55-1.png',1,'2015-09-07 10:43:42'),(4,'http://7xiwfp.com1.z0.glb.clouddn.com/d306865c5c4611e58d127831c1cd33b6.jpg',1,'2015-09-16 07:44:57'),(5,'http://7xiwfp.com1.z0.glb.clouddn.com/8bce44ab5c4911e59e927831c1cd33b6.jpg',1,'2015-09-16 08:04:26'),(6,'http://7xiwfp.com1.z0.glb.clouddn.com/eec391de5ded11e5bc5f7831c1cd33b6.jpg',7,'2015-09-18 10:13:40'),(7,'http://7xiwfp.com1.z0.glb.clouddn.com/f4d870265ded11e586a57831c1cd33b6.jpg',7,'2015-09-18 10:13:50'),(8,'http://7xiwfp.com1.z0.glb.clouddn.com/050937005dee11e5a69a7831c1cd33b6.jpg',7,'2015-09-18 10:14:18'),(9,'http://7xiwfp.com1.z0.glb.clouddn.com/0aa702ab5dee11e591957831c1cd33b6.jpg',7,'2015-09-18 10:14:27'),(10,'http://7xiwfp.com1.z0.glb.clouddn.com/0ebdc0995dee11e5a6237831c1cd33b6.jpg',7,'2015-09-18 10:14:34'),(11,'http://7xiwfp.com1.z0.glb.clouddn.com/1ac3aeae5dee11e585317831c1cd33b6.jpg',7,'2015-09-18 10:14:54'),(12,'http://7xiwfp.com1.z0.glb.clouddn.com/2265b2915dee11e5a8d67831c1cd33b6.jpg',7,'2015-09-18 10:15:07'),(13,'http://7xiwfp.com1.z0.glb.clouddn.com/27e482a35dee11e58fc87831c1cd33b6.jpg',7,'2015-09-18 10:15:16'),(14,'http://7xiwfp.com1.z0.glb.clouddn.com/2c219f425dee11e5b79f7831c1cd33b6.jpg',7,'2015-09-18 10:15:25'),(15,'http://7xiwfp.com1.z0.glb.clouddn.com/60c5d6d15dee11e5b24d7831c1cd33b6.jpg',7,'2015-09-18 10:16:51'),(16,'http://7xiwfp.com1.z0.glb.clouddn.com/e784377a5df711e59a4a7831c1cd33b6.jpg',7,'2015-09-18 11:25:03'),(17,'http://7xiwfp.com1.z0.glb.clouddn.com/d409ffee5df811e5abaa7831c1cd33b6.jpg',7,'2015-09-18 11:31:40');
+INSERT INTO `weibo_images` VALUES (1,'http://newslounge.net/wp-content/uploads/2013/12/0cbd1704f4340cc6484dbacde68bbe31.jpg',1,'2015-09-04 10:43:19'),(2,'http://stat.ameba.jp/user_images/20121204/20/grfft-sugaya/8c/a6/j/o0396052212316078702.jpg',1,'2015-09-04 10:43:19'),(3,'http://terracehouse-fujitv.net/wp-content/uploads/2013/12/55-1.png',1,'2015-09-07 10:43:42'),(4,'http://7xiwfp.com1.z0.glb.clouddn.com/d306865c5c4611e58d127831c1cd33b6.jpg',1,'2015-09-16 07:44:57'),(5,'http://7xiwfp.com1.z0.glb.clouddn.com/8bce44ab5c4911e59e927831c1cd33b6.jpg',1,'2015-09-16 08:04:26'),(6,'http://7xiwfp.com1.z0.glb.clouddn.com/eec391de5ded11e5bc5f7831c1cd33b6.jpg',7,'2015-09-18 10:13:40'),(7,'http://7xiwfp.com1.z0.glb.clouddn.com/f4d870265ded11e586a57831c1cd33b6.jpg',7,'2015-09-18 10:13:50'),(8,'http://7xiwfp.com1.z0.glb.clouddn.com/050937005dee11e5a69a7831c1cd33b6.jpg',7,'2015-09-18 10:14:18'),(9,'http://7xiwfp.com1.z0.glb.clouddn.com/0aa702ab5dee11e591957831c1cd33b6.jpg',7,'2015-09-18 10:14:27'),(10,'http://7xiwfp.com1.z0.glb.clouddn.com/0ebdc0995dee11e5a6237831c1cd33b6.jpg',7,'2015-09-18 10:14:34'),(11,'http://7xiwfp.com1.z0.glb.clouddn.com/1ac3aeae5dee11e585317831c1cd33b6.jpg',7,'2015-09-18 10:14:54'),(12,'http://7xiwfp.com1.z0.glb.clouddn.com/2265b2915dee11e5a8d67831c1cd33b6.jpg',7,'2015-09-18 10:15:07'),(13,'http://7xiwfp.com1.z0.glb.clouddn.com/27e482a35dee11e58fc87831c1cd33b6.jpg',7,'2015-09-18 10:15:16'),(14,'http://7xiwfp.com1.z0.glb.clouddn.com/2c219f425dee11e5b79f7831c1cd33b6.jpg',7,'2015-09-18 10:15:25'),(15,'http://7xiwfp.com1.z0.glb.clouddn.com/60c5d6d15dee11e5b24d7831c1cd33b6.jpg',7,'2015-09-18 10:16:51'),(16,'http://7xiwfp.com1.z0.glb.clouddn.com/e784377a5df711e59a4a7831c1cd33b6.jpg',7,'2015-09-18 11:25:03'),(17,'http://7xiwfp.com1.z0.glb.clouddn.com/d409ffee5df811e5abaa7831c1cd33b6.jpg',7,'2015-09-18 11:31:40'),(18,'http://7xiwfp.com1.z0.glb.clouddn.com/412a62ab61df11e58f8e7831c1cd33b6.jpg',7,'2015-09-23 10:38:41'),(19,'http://7xiwfp.com1.z0.glb.clouddn.com/41a8ae9961ed11e5bf317831c1cd33b6.jpg',7,'2015-09-23 12:18:55'),(20,'http://7xiwfp.com1.z0.glb.clouddn.com/4f2fb26661ed11e584af7831c1cd33b6.jpg',7,'2015-09-23 12:19:17'),(21,'http://7xiwfp.com1.z0.glb.clouddn.com/c044497d61f111e590d87831c1cd33b6.jpg',7,'2015-09-23 12:51:05');
 /*!40000 ALTER TABLE `weibo_images` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1094,7 +1096,7 @@ CREATE TABLE `weibo_weibo` (
   CONSTRAINT `weibo_weibo_coach_id_9a9752595cb34cf_fk_usr_user_id` FOREIGN KEY (`coach_id`) REFERENCES `usr_user` (`id`),
   CONSTRAINT `weibo_weibo_commentto_id_b9c874c184928f5_fk_weibo_weibo_id` FOREIGN KEY (`commentto_id`) REFERENCES `weibo_weibo` (`id`),
   CONSTRAINT `weibo_weibo_fwdfrom_id_76da9dd05234cc74_fk_weibo_weibo_id` FOREIGN KEY (`fwdfrom_id`) REFERENCES `weibo_weibo` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1103,7 +1105,7 @@ CREATE TABLE `weibo_weibo` (
 
 LOCK TABLES `weibo_weibo` WRITE;
 /*!40000 ALTER TABLE `weibo_weibo` DISABLE KEYS */;
-INSERT INTO `weibo_weibo` VALUES (1,'测试','','[\"http://newslounge.net/wp-content/uploads/2013/12/0cbd1704f4340cc6484dbacde68bbe31.jpg\",\"http://stat.ameba.jp/user_images/20121204/20/grfft-sugaya/8c/a6/j/o0396052212316078702.jpg\"]',0,'2015-09-04 10:43:19','royn',0,NULL,0,NULL,0,0,0,NULL,NULL),(2,'hahahah','','[\"http://terracehouse-fujitv.net/wp-content/uploads/2013/12/55-1.png\"]',0,'2015-09-07 10:43:42','royn',0,NULL,0,NULL,1,0,1,NULL,NULL),(3,'','','',0,'2015-09-07 14:39:51','royn',0,NULL,0,NULL,0,0,0,1,NULL),(4,'','','',0,'2015-09-07 14:40:08','royn',0,NULL,0,NULL,0,0,0,3,NULL),(5,'','','',0,'2015-09-08 16:10:55','royn',0,NULL,0,NULL,0,0,0,3,NULL),(6,'','','',0,'2015-09-08 16:15:28','royn',0,NULL,1,2,1,0,0,NULL,NULL),(7,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/d306865c5c4611e58d127831c1cd33b6.jpg\"]',0,'2015-09-16 07:44:57','royn',0,NULL,0,NULL,0,0,0,NULL,NULL),(8,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/8bce44ab5c4911e59e927831c1cd33b6.jpg\"]',0,'2015-09-16 08:04:26','royn',0,NULL,0,NULL,0,0,0,NULL,NULL),(9,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/eec391de5ded11e5bc5f7831c1cd33b6.jpg\"]',0,'2015-09-18 10:13:40','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(10,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/f4d870265ded11e586a57831c1cd33b6.jpg\"]',0,'2015-09-18 10:13:50','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(11,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/050937005dee11e5a69a7831c1cd33b6.jpg\"]',0,'2015-09-18 10:14:18','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(12,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/0aa702ab5dee11e591957831c1cd33b6.jpg\"]',0,'2015-09-18 10:14:27','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(13,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/0ebdc0995dee11e5a6237831c1cd33b6.jpg\"]',0,'2015-09-18 10:14:34','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(14,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/1ac3aeae5dee11e585317831c1cd33b6.jpg\"]',0,'2015-09-18 10:14:54','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(15,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/2265b2915dee11e5a8d67831c1cd33b6.jpg\"]',0,'2015-09-18 10:15:07','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(16,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/27e482a35dee11e58fc87831c1cd33b6.jpg\"]',0,'2015-09-18 10:15:16','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(17,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/2c219f425dee11e5b79f7831c1cd33b6.jpg\"]',0,'2015-09-18 10:15:25','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(18,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/60c5d6d15dee11e5b24d7831c1cd33b6.jpg\"]',0,'2015-09-18 10:16:51','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(19,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/e784377a5df711e59a4a7831c1cd33b6.jpg\"]',0,'2015-09-18 11:25:03','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(20,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/d409ffee5df811e5abaa7831c1cd33b6.jpg\"]',0,'2015-09-18 11:31:40','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL);
+INSERT INTO `weibo_weibo` VALUES (1,'测试','','[\"http://newslounge.net/wp-content/uploads/2013/12/0cbd1704f4340cc6484dbacde68bbe31.jpg\",\"http://stat.ameba.jp/user_images/20121204/20/grfft-sugaya/8c/a6/j/o0396052212316078702.jpg\"]',0,'2015-09-04 10:43:19','royn',0,NULL,0,NULL,0,0,0,NULL,NULL),(2,'hahahah','','[\"http://terracehouse-fujitv.net/wp-content/uploads/2013/12/55-1.png\"]',0,'2015-09-07 10:43:42','royn',0,NULL,0,NULL,1,0,1,NULL,NULL),(3,'','','',0,'2015-09-07 14:39:51','royn',0,NULL,0,NULL,0,0,0,1,NULL),(4,'','','',0,'2015-09-07 14:40:08','royn',0,NULL,0,NULL,0,0,0,3,NULL),(5,'','','',0,'2015-09-08 16:10:55','royn',0,NULL,0,NULL,0,0,0,3,NULL),(6,'','','',0,'2015-09-08 16:15:28','royn',0,NULL,1,2,1,0,0,NULL,NULL),(7,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/d306865c5c4611e58d127831c1cd33b6.jpg\"]',0,'2015-09-16 07:44:57','royn',0,NULL,0,NULL,0,0,0,NULL,NULL),(8,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/8bce44ab5c4911e59e927831c1cd33b6.jpg\"]',0,'2015-09-16 08:04:26','royn',0,NULL,0,NULL,0,0,0,NULL,NULL),(9,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/eec391de5ded11e5bc5f7831c1cd33b6.jpg\"]',0,'2015-09-18 10:13:40','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(10,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/f4d870265ded11e586a57831c1cd33b6.jpg\"]',0,'2015-09-18 10:13:50','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(11,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/050937005dee11e5a69a7831c1cd33b6.jpg\"]',0,'2015-09-18 10:14:18','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(12,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/0aa702ab5dee11e591957831c1cd33b6.jpg\"]',0,'2015-09-18 10:14:27','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(13,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/0ebdc0995dee11e5a6237831c1cd33b6.jpg\"]',0,'2015-09-18 10:14:34','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(14,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/1ac3aeae5dee11e585317831c1cd33b6.jpg\"]',0,'2015-09-18 10:14:54','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(15,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/2265b2915dee11e5a8d67831c1cd33b6.jpg\"]',0,'2015-09-18 10:15:07','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(16,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/27e482a35dee11e58fc87831c1cd33b6.jpg\"]',0,'2015-09-18 10:15:16','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(17,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/2c219f425dee11e5b79f7831c1cd33b6.jpg\"]',0,'2015-09-18 10:15:25','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(18,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/60c5d6d15dee11e5b24d7831c1cd33b6.jpg\"]',0,'2015-09-18 10:16:51','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(19,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/e784377a5df711e59a4a7831c1cd33b6.jpg\"]',0,'2015-09-18 11:25:03','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(20,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/d409ffee5df811e5abaa7831c1cd33b6.jpg\"]',0,'2015-09-18 11:31:40','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(21,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/412a62ab61df11e58f8e7831c1cd33b6.jpg\"]',0,'2015-09-23 10:38:41','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(22,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/41a8ae9961ed11e5bf317831c1cd33b6.jpg\"]',0,'2015-09-23 12:18:55','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(23,'新照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/4f2fb26661ed11e584af7831c1cd33b6.jpg\"]',0,'2015-09-23 12:19:17','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL),(24,'发布了照片','','[\"http://7xiwfp.com1.z0.glb.clouddn.com/c044497d61f111e590d87831c1cd33b6.jpg\"]',0,'2015-09-23 12:51:05','18612261069',0,NULL,0,NULL,0,0,0,NULL,NULL);
 /*!40000 ALTER TABLE `weibo_weibo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1116,4 +1118,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-23 17:28:20
+-- Dump completed on 2015-09-24 15:59:48

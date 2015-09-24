@@ -26,8 +26,9 @@ class Gym(models.Model):
 	imgs = models.CharField(max_length=1024)
 	address = models.CharField(max_length=256)
 	coaches = models.ManyToManyField('usr.User', related_name="gym")
-
 	recommand_p = models.IntegerField(blank=True, null=True)
+	mapid = models.IntegerField()
+	distance = models.IntegerField(default=0)
 
 	def __unicode__(self):
 		return self.name
