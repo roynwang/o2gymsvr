@@ -54,11 +54,16 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 			print "rating ... ..."
 			print request.DATA
 			order = Order.objects.get(id=request.DATA["order"])
+			coach = order.coach
+			coach.rate += request.DATA["rate"]
+			coach.course_count += 1
 			ordered_count = Schedule.objects.filter(order=request.DATA["order"],deleted=False,done=True).count()
-			order_count = order.product.amount
+			coach.order_count += 1
 			if ordered_count == order_count:
 				order.status = "done" 
 				order.save()
+				order_count = order.product.amount
+			coach.save()
 		return ret
 
 

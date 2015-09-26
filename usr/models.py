@@ -22,6 +22,10 @@ class User(models.Model):
 	#for coach
 	tags = models.CharField(max_length=64, blank=True, default="")
 	introduction = models.CharField(max_length=1024, blank=True, default="") 
+
+	order_count = models.IntegerField(default=0)
+	rate = models.IntegerField(default=0)
+	course_count = models.BigIntegerField(default=0)
 	
 	def __unicode__(self):
 		return self.name

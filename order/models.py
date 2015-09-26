@@ -22,6 +22,8 @@ class Order(models.Model):
 	parentorder = models.ForeignKey("self", related_name="sub_orders", null=True)
 	product = models.ForeignKey("Product", related_name="sold", null=True)
 	channel = models.CharField(max_length=10)
+
+	#this is mean price
 	amount = models.IntegerField()
 
 class Product(models.Model):
