@@ -16,7 +16,7 @@ class Order(models.Model):
 	gym = models.ForeignKey("business.Gym", to_field="name", related_name="orders", null=True)
 	custom = models.ForeignKey("usr.User", to_field="name", related_name="orders", null=True)
 	coach = models.ForeignKey("usr.User", to_field="name", related_name="income_orders", null=True)
-	billid = models.BigIntegerField(blank=True, db_index=True)
+	billid = models.CharField(max_length=20, blank=True, db_index=True)
 	paidtime = models.DateTimeField(blank=True, null=True)
 	status = models.CharField(max_length=32)
 	parentorder = models.ForeignKey("self", related_name="sub_orders", null=True)

@@ -90,7 +90,7 @@ def create_order(customer, coach, product):
 	coachobj = get_object_or_404(User,id=coach)
 	productobj = get_object_or_404(Product,id=product)
 	print "xxxxxxxxxxxxxx"
-	return Order.objects.create(billid=billid, custom=customobj, coach=coachobj, product=productobj,
+	return Order.objects.create(billid=str(billid), custom=customobj, coach=coachobj, product=productobj,
 			amount=productobj.price, status="unpaid")
 def update_order(billid, status):
 	order = Order.objects.get(billid=billid)
