@@ -583,7 +583,7 @@ CREATE TABLE `order_order` (
   `gym_id` varchar(32) DEFAULT NULL,
   `custom_id` varchar(64) DEFAULT NULL,
   `coach_id` varchar(64) DEFAULT NULL,
-  `billid` bigint(20) NOT NULL,
+  `billid` varchar(20) NOT NULL,
   `paidtime` datetime DEFAULT NULL,
   `status` varchar(32) NOT NULL,
   `parentorder_id` int(11) DEFAULT NULL,
