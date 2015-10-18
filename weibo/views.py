@@ -146,3 +146,10 @@ class ArticlePage(APIView):
 	def get(self, reqesut, weiboid):
 		article = get_object_or_404(LongWeibo, weiboid=weiboid)
 		return Response(article.content)
+
+class ImageItem(generics.RetrieveDestroyAPIView):
+	#queryset = Images.objects.all()
+	serializer_class = ImageSerializer 
+	def get_queryset(self):
+		usr = get_object_or_404(User, id=self.kwargs.get("by"))
+		return Images.objects.all().filter(by=usr)

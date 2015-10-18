@@ -78,3 +78,4 @@ class WorkingDaysSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = WorkingDays
 
+

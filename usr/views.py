@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 import json
 
 from usr.models import *
+from order.models import *
 from usr.serializers import *
 from weibo.serializers import *
 from business.serializers import *
@@ -82,6 +83,13 @@ class Album(generics.ListAPIView):
 	page_size = 20
 	def get_queryset(self):
 		return User.objects.get(name=self.kwargs.get('name')).album.all()
+class AlbumUpdate(APIView):
+	def post(self, request, name):
+		usr = get_object_or_404(User, name=name)
+		#usr.album.empty()
+		print request(request.DATA["pics"])
+		usr.ablum.add(request.DATA["pics"])
+		return Response({"result":0}, status=status.HTTP_202_ACCEPTED)
 
 class Courses(generics.ListAPIView):
 	lookup_field = "name"
@@ -162,6 +170,32 @@ class WorkingDaysView(APIView):
 		wd.save()
 		serializer = WorkingDaysSerializer(wd)
 		return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+class CoachComments(generics.ListAPIView): 
+	serializer_class = ScheduleSerializer
+	def get_queryset(self):
+		usr = get_object_or_404(User, name=self.kwargs.get("name"))
+		return usr.sealed_time.exclude(rate__isnull=True)
+
+class CustomerList(generics.ListAPIView):
+	serializer_class = SimpleUserSerilaizer
+	pagination_class = None
+	def get_queryset(self):
+		usr = get_object_or_404(User, name=self.kwargs["name"])
+		customers =  Order.objects.filter(coach = usr).values_list("custom",flat=True)
+		return User.objects.filter(name__in = customers).order_by("name")
+		#return usr.income_orders.customer
+		#return Product.objects.filter(coach=usr)
+
+class ModifyGym(APIView):
+	def post(self, request, name):
+		usr = get_object_or_404(User, name=self.kwargs["name"])
+		newgym = get_object_or_404(Gym,id=request.DATA['gym'])
+		usr.gym = [newgym]
+		usr.save()
+		serializer = GymSerializer(newgym)
+		return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+		
+	
 
 		
 		

@@ -27,6 +27,9 @@ class User(models.Model):
 	rate = models.IntegerField(default=0)
 	course_count = models.BigIntegerField(default=0)
 	
+	sex = models.BooleanField(default=True)
+	signature = models.CharField(max_length=64, blank=True)
+
 	def __unicode__(self):
 		return self.name
 

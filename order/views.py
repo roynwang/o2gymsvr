@@ -75,6 +75,8 @@ class ProductList(generics.ListCreateAPIView):
 		usr = get_object_or_404(User, name=self.kwargs["name"])
 		return Product.objects.filter(coach=usr)
 
+
+
 class ProductItem(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = ProductSerializer
 	queryset = Product.objects.all()

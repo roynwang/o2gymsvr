@@ -24,6 +24,12 @@ class ScheduleSerializer(serializers.ModelSerializer):
 	coachprofile = CoachSerializer(source='coach', read_only=True)
 	class Meta:
 		model = Schedule
+'''
+class ScheduleSimpleSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Schedule
+'''
+
 
 class BodyEvalSerializer(serializers.ModelSerializer):
 	class Meta:
