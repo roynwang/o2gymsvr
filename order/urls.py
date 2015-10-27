@@ -8,4 +8,5 @@ urlpatterns = patterns('',
 		url(r'^api/p/(?P<pk>[0-9]+)/$',ProductItem.as_view()),
 		url(r'^api/pay/(?P<billid>[0-9]+)/(?P<channel>wx|alipay)/$',create_pay),
 		url(r'^api/pay/callback/$',pay_callback),
+		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/manualorder/$',ManualOrder.as_view()),
 		)

@@ -1,3 +1,12 @@
 #rest framework 2.7
 #django-ipware
-pip install pingpp
+
+yum install epel-release python python-pip django mysql-python python-devel mysql-devel MySQL-python
+
+yum install python python-pip django mysql-python python-devel mysql-devel MySQL-python
+
+
+
+
+pip install django djangorestframework mysql-python pingpp qiniu djangorestframework-bulk pytz 
+djangorestframework-jwt django-ipware uwsgi django-fields

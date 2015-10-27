@@ -181,8 +181,10 @@ class CustomerList(generics.ListAPIView):
 	pagination_class = None
 	def get_queryset(self):
 		usr = get_object_or_404(User, name=self.kwargs["name"])
-		customers =  Order.objects.filter(coach = usr).values_list("custom",flat=True)
-		return User.objects.filter(name__in = customers).order_by("name")
+		customers =  usr.income_orders.values_list("custom",flat=True)
+		#customers =  Order.objects.filter(coach = usr).values_list("custom",flat=True)
+		print customers
+		return User.objects.filter(name__in = customers)
 		#return usr.income_orders.customer
 		#return Product.objects.filter(coach=usr)
 

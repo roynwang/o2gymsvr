@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
 
@@ -8,13 +9,13 @@ class User(models.Model):
 	displayname = models.CharField(max_length=128,unique=True)
 	iscoach = models.BooleanField(default=False)
 	created = models.DateTimeField(auto_now=True)
-	avatar = models.CharField(max_length=256)
+	avatar = models.CharField(max_length=256,default=settings.DEFAULT_AVATAR)
 
-	upped = models.ManyToManyField("weibo.Weibo", related_name="up_by")
-	fwded = models.ManyToManyField("weibo.Weibo", related_name="fwd_by")
-	commented = models.ManyToManyField("weibo.Weibo", related_name="comment_by")
+	upped = models.ManyToManyField("weibo.Weibo", related_name="up_by", null=True)
+	fwded = models.ManyToManyField("weibo.Weibo", related_name="fwd_by", null=True)
+	commented = models.ManyToManyField("weibo.Weibo", related_name="comment_by",null=True)
 
-	upped_person = models.ManyToManyField("self", related_name="up_by")
+	upped_person = models.ManyToManyField("self", related_name="up_by",null=True)
 	upnum = models.IntegerField(default=0)
 
 	recommand_p = models.IntegerField(blank=True, null=True)

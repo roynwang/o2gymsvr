@@ -1,6 +1,7 @@
 from django.shortcuts import render,get_object_or_404
 from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework.views import APIView 
 from order.serializers import *
 from order.payprocess import *
 from usr.models import *
@@ -13,6 +14,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
 import json
 from django.http import JsonResponse
+from django.utils import timezone
 
 
 def create_pay(request, billid,channel):
@@ -35,12 +37,19 @@ class OrderList(generics.ListCreateAPIView):
 		role = 'usr'
 		if usr.iscoach:
 			role = "coach"
-		#testc = get_object_or_404(User, name="alex")
-		#create_order(usr,testc)
+		ret = None
 		if role == "coach":
-			return Order.objects.filter(coach = usr)
+			ret = Order.objects.filter(coach = usr)
 		else:
-			return Order.objects.filter(custom = usr)
+			ret = Order.objects.filter(custom = usr)
+
+		cname = self.request.GET.get("coach")
+		if cname:
+			print "xxxxxxxxxxxxx"
+			c = get_object_or_404(User, name = cname)
+			print c
+			ret = ret.filter(coach = c)
+		return ret
 	def create(self,request, *args, **kwargs):
 		print request.data
 		obj = create_order(request.data["custom"],request.data["coach"], request.data["product"])
@@ -73,7 +82,7 @@ class ProductList(generics.ListCreateAPIView):
 	pagination_class = None
 	def get_queryset(self):
 		usr = get_object_or_404(User, name=self.kwargs["name"])
-		return Product.objects.filter(coach=usr)
+		return usr.products.exclude(product_type=1)
 
 
 
@@ -126,4 +135,70 @@ def pay_callback(request):
 			coach.save()
 			print order.status
 	return JsonResponse({'msg':'done'}, status=status.HTTP_200_OK)
+
+
+class ManualOrder(APIView):
+	def post(self,request,name):
+		coach = get_object_or_404(User,name=name)
+		print "coach"
+		print coach.id
+
+		#get/create customer
+		phone = self.request.data["customer_phone"]
+		displayname = self.request.data["customer_displayname"]
+		customer, created = User.objects.get_or_create(name=phone,displayname=displayname)
+		#create product
+		print "created customer"
+		print customer
+		print customer.id
+		
+
+		#create product
+		introduction = self.request.data["product_introduction"]
+		price = self.request.data["product_price"]
+		amount = self.request.data["product_amount"]
+		promotion = self.request.data["product_promotion"]
+		product = Product.objects.create(coach=coach,
+				introduction=introduction,
+				price = price,
+				amount = amount,
+				promotion = promotion,
+				product_type = 1)
+		print "created product"
+		print product.id
+
+		#create order
+		billid = getbillid(coach.id, customer.id)
+		order = Order.objects.create(
+				custom = customer,
+				coach = coach,
+				billid = billid,
+				paidtime = timezone.now(),
+				status = "paid",
+				product = product,
+				amount = price,
+				channel = "offline")
+		serializer = OrderSerializer(order)
+		return Response(serializer.data, status=status.HTTP_201_CREATED)
+				
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
 

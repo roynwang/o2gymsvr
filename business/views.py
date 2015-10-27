@@ -4,7 +4,7 @@ from business.serializers import *
 from order.models import *
 from usr.models import *
 from rest_framework import generics,pagination
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,get_object_or_404,redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -259,6 +259,32 @@ class NearByView(APIView):
 		#print ret[0].distance
 		serializer = GymSerializer(allgym, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
+class GymMap(APIView):
+	def get(self,request, pk):
+		_id = get_object_or_404(Gym, id=pk).mapid
+		#http://restapi.amap.com/v3/staticmap?markers=mid,0xFF0000,:116.37359,39.92437&key=a2be60fd9e30425d8e7c003ba81a1f12
+		#get locaction by id
+		#http://yuntuapi.amap.com/datasearch/id?tableid=52b155b6e4b0bc61deeb7629&_id=372&key=
+
+		key = settings.GAODE_KEY
+		tableid = settings.GAODE_TABLEID
+		queryurl = "http://yuntuapi.amap.com/datasearch/id"
+		mapurl = "http://restapi.amap.com/v3/staticmap"
+		params = {
+				"key":key,
+				"tableid":tableid,
+				"_id": _id,
+				}
+		print params
+		resp = requests.get(queryurl, params).json()
+		if resp["info"] != "OK":
+			return Response({resp["info"]}, status=status.HTTP_400_BAD_REQUEST)
+		loc = resp["datas"][0]["_location"]
+		ret = mapurl + "?markers:mid,0xFF0000,:" + loc + "&key=" + key	
+		return redirect(ret)
+
+
+	
 
 
 

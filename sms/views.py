@@ -47,9 +47,10 @@ class SMSVerify(APIView):
 			usr = User.objects.get(name=number)
 		except:
 			usr = None
-		auth_usr = None
+		auth_usr = get_user_model().objects.get(username=number)
+		print "----------"
+		print auth_usr
 		if not usr:
-			auth_usr = get_user_model().objects.create_user(username=number,password=str(randint(100000,999999)))
 			usr = User.objects.create(name=number,
 					displayname=number,
 					avatar=settings.DEFAULT_AVATAR
@@ -58,9 +59,8 @@ class SMSVerify(APIView):
 			tl = TimeLine.objects.create(name=usr)
 			tl.followedby.add(tl)
 			wh = WorkingDays.objects.create(name=number)
-
-		else: 
-			auth_usr = get_user_model().objects.get(username=number)
+		if not auth_usr:
+			auth_usr = get_user_model().objects.create_user(username=number,password=str(randint(100000,999999)))
 		payload = jwt_payload_handler(auth_usr)
 		return {'token':jwt_encode_handler(payload)}
 

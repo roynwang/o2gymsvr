@@ -53,9 +53,9 @@ class TimeLineSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-	gym = serializers.StringRelatedField(many=True)
+	gym = serializers.StringRelatedField(many=True,read_only=True)
 	gym_id = serializers.PrimaryKeyRelatedField(source="gym",many=True,read_only=True)
-	upped_person = serializers.StringRelatedField(many=True)
+	upped_person = serializers.StringRelatedField(many=True, read_only=True)
 	class Meta:
 		model = User
 		#exclude = ("upped","fwded","commented")

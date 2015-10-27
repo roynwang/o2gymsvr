@@ -7,6 +7,8 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
+	url(r'^ios-notifications/', include('ios_notifications.urls')),
+	url(r'^', include('traincategory.urls')),
     url(r'^', include('business.urls')),
     url(r'^', include('weibo.urls')),
     url(r'^', include('usr.urls')),
