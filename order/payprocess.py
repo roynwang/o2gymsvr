@@ -1,7 +1,8 @@
 import pingpp
 
 class PayProcess:
-	app_key = 'sk_test_Oyj9a5enfDa9W1WLu9i1CyDK'
+	#app_key = 'sk_test_Oyj9a5enfDa9W1WLu9i1CyDK'
+	app_key = 'sk_live_rLS4CSOeT0uPmvHGa58e584K'
 	appid = 'app_y9ujPCq9WbrDn50y' 
 	@staticmethod
 	def get_charge(order_no, channel, amount, client_ip, subject,body):
