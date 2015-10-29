@@ -1,14 +1,17 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
+from datetime import datetime
+
 
 # Create your models here.
 
 class User(models.Model):
 	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=64, db_index=True, unique=True)
-	displayname = models.CharField(max_length=128,unique=True)
+	displayname = models.CharField(max_length=128)
 	iscoach = models.BooleanField(default=False)
-	created = models.DateTimeField(auto_now=True)
+	created = models.DateTimeField(default=datetime.now())
 	avatar = models.CharField(max_length=256,default=settings.DEFAULT_AVATAR)
 
 	upped = models.ManyToManyField("weibo.Weibo", related_name="up_by", null=True)

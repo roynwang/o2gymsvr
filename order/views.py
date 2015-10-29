@@ -142,16 +142,14 @@ class ManualOrder(APIView):
 		coach = get_object_or_404(User,name=name)
 		print "coach"
 		print coach.id
-
 		#get/create customer
 		phone = self.request.data["customer_phone"]
 		displayname = self.request.data["customer_displayname"]
 		if User.objects.filter(name=phone).exists():
 			customer = User.objects.get(name=phone)
 		else:
-			customer, created = User.objects.create(name=phone,displayname=displayname,iscoach=False)
+			customer = User.objects.create(name=phone,displayname=displayname,iscoach=False)
 		print customer
-
 		#create product
 		introduction = self.request.data["product_introduction"]
 		price = self.request.data["product_price"]

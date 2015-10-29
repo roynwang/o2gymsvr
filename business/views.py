@@ -158,7 +158,7 @@ class DayAvaiableTime(APIView):
 		ava = [h for h in range(0,26) if not h in out]
 		print date
 		print datetime.datetime.today()
-		if (str((date.weekday() + 1)%7) in weekrest) or (date <= datetime.datetime.today()):
+		if str((date.weekday() + 1)%7) in weekrest:
 			ret = {"out":out,"na": ava,"availiable":[], "noon":noonhours}
 			return Response(ret, status=status.HTTP_200_OK)
 
