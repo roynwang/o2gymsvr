@@ -15,6 +15,9 @@ import os
 import datetime
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEMPLATE_DIRS = (
+		os.path.join(BASE_DIR, 'templates'),
+		)
 
 
 # Quick-start development settings - unsuitable for production
@@ -65,7 +68,7 @@ ROOT_URLCONF = 'o2gym.urls'
 TEMPLATES = [
 		{
 			'BACKEND': 'django.template.backends.django.DjangoTemplates',
-			'DIRS': [],
+			'DIRS': TEMPLATE_DIRS,
 			'APP_DIRS': True,
 			'OPTIONS': {
 				'context_processors': [
@@ -174,3 +177,4 @@ DEFAULT_AVATAR = "http://7xiwfp.com1.z0.glb.clouddn.com/default_avatar.png"
 GAODE_KEY = "a2be60fd9e30425d8e7c003ba81a1f12"
 GAODE_TABLEID = "560353bae4b0fe6c79f8f0d0"
 GAODE_URL = "http://yuntuapi.amap.com/datasearch/around"
+
