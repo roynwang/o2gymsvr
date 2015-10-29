@@ -146,12 +146,10 @@ class ManualOrder(APIView):
 		#get/create customer
 		phone = self.request.data["customer_phone"]
 		displayname = self.request.data["customer_displayname"]
-		customer, created = User.objects.get_or_create(name=phone,displayname=displayname)
-		#create product
-		print "created customer"
-		print customer
-		print customer.id
-		
+		if User.objects.filter(name=phone).exists():
+			customer = User.objects.get(name=phone)
+		else:
+			customer, created = User.objects.create(name=phone,displayname=displayname)
 
 		#create product
 		introduction = self.request.data["product_introduction"]
@@ -181,21 +179,6 @@ class ManualOrder(APIView):
 		serializer = OrderSerializer(order)
 		return Response(serializer.data, status=status.HTTP_201_CREATED)
 				
-		
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
