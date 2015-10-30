@@ -13,6 +13,7 @@ import time
 from pytz import timezone
 from rest_framework_bulk import ListBulkCreateAPIView 
 import requests
+import calendar
 from django.conf import settings
 
 
@@ -107,28 +108,27 @@ class ScheduleForReadPagination(pagination.CursorPagination):
 	ordering = 'date'
 
 class ScheduleForRead(generics.ListAPIView):
-	pagination_class = ScheduleForReadPagination
 	serializer_class = ScheduleSerializer 
-	def get_queryset(self):
+	def list(self, request, *args, **kwargs):
+		duration = 7
 		usr = get_object_or_404(User, name=self.kwargs.get("name"))
 		startdate = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
-		enddate = startdate + datetime.timedelta(days=7)
+		enddate = startdate + datetime.timedelta(days=duration)
 
-		startdate_str = datetime.datetime.strftime(startdate,"%Y-%m-%d")
-		enddate_str = datetime.datetime.strftime(enddate,"%Y-%m-%d")
-		daterange = [startdate_str, enddate_str]
+		daterange = [startdate, enddate]
 
 		if usr.iscoach:
-			#queryset = Schedule.objects.filter(coach=usr.id,
-			#		date__range=daterange).order_by('date','hour')
-			queryset = Schedule.objects.filter(coach=usr.id, done=False)
-			#print queryset
+			queryset = Schedule.objects.filter(coach=usr.id, date__range=daterange).order_by("date")
 		else:
-			#queryset = Schedule.objects.filter(custom=usr.id,
-			#		date__range=daterange).order_by('date','hour')
-			queryset = Schedule.objects.filter(custom=usr.id, rate=None)
-			#print queryset
-		return queryset
+			queryset = Schedule.objects.filter(custom=usr.id, date__range=daterange).order_by("date")
+
+		baseUrl = request.build_absolute_uri()[:-9]
+		nextstart = baseUrl + datetime.date.strftime(enddate + datetime.timedelta(days=1), "%Y%m%d") + "/"
+		prevstart = baseUrl + datetime.date.strftime(startdate - datetime.timedelta(days=duration+1),"%Y%m%d") + "/"
+		if startdate > datetime.datetime.today() + datetime.timedelta(days=31):
+			nextstart = None
+		serializer = self.get_serializer(queryset, many=True)
+		return Response({"next":nextstart,"previous":prevstart, "results":serializer.data})
 
 class DayAvaiableTime(APIView):
 	def get(self,request,name,date):
@@ -198,8 +198,32 @@ class BodyEvalByDateView(ListBulkCreateAPIView):
 class TrainDateView(generics.ListAPIView):
 	pagination_class = None
 	serializer_class = TrainDateSerializer 
-	def get_queryset(self):
-		return Train.objects.filter(name=self.kwargs.get("name")).values('date').distinct()
+	def add_months(self, sourcedate,months):
+		month = sourcedate.month - 1 + months
+		year = int(sourcedate.year + month / 12 )
+		month = month % 12 + 1
+		day = min(sourcedate.day,calendar.monthrange(year,month)[1])
+		return datetime.date(year,month,day)
+	def list(self, request, *args, **kwargs):
+		#1. set start date
+		month = datetime.date.today()
+		month = datetime.date(month.year, month.month, 1)
+		if "month" in request.GET:
+			month = datetime.datetime.strptime(request.GET["month"],"%Y%m")
+		qc = Train.objects.filter(name=self.kwargs.get("name"), date__year=month.year, date__month=month.month).values('date').distinct().order_by("-date")
+		serializer = self.get_serializer(qc, many=True)
+		print serializer.data
+		baseUrl =  "http://" + request.get_host() + request.path
+		nextstart = datetime.date.strftime(self.add_months(month, 1), "%Y%m")
+		prevstart = datetime.date.strftime(self.add_months(month, -1),"%Y%m")
+		return Response({
+			"next": baseUrl + "?month="+nextstart,
+			"previous": baseUrl + "?month="+prevstart,
+			"results": serializer.data
+			})
+
+		def get_queryset(self):
+			return Train.objects.filter(name=self.kwargs.get("name")).values('date').distinct().order_by('-date')
 
 class TrainByDateView(ListBulkCreateAPIView):
 	pagination_class = None
@@ -284,7 +308,7 @@ class GymMap(APIView):
 		return redirect(ret)
 
 
-	
+
 
 
 
