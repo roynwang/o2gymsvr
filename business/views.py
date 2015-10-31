@@ -115,12 +115,20 @@ class ScheduleForRead(generics.ListAPIView):
 		startdate = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
 		enddate = startdate + datetime.timedelta(days=duration)
 
-		daterange = [startdate, enddate]
+		#mindate = startdate - datetime.timedelta(days=40)
+		maxdate = startdate + datetime.timedelta(days=40)
 
-		if usr.iscoach:
-			queryset = Schedule.objects.filter(coach=usr.id, date__range=daterange).order_by("date")
-		else:
-			queryset = Schedule.objects.filter(custom=usr.id, date__range=daterange).order_by("date")
+		queryset = None
+		while(True):
+			daterange = [startdate, enddate]
+			if usr.iscoach:
+				queryset = Schedule.objects.filter(coach=usr.id, date__range=daterange).order_by("date")
+			else:
+				queryset = Schedule.objects.filter(custom=usr.id, date__range=daterange).order_by("date")
+			#startdate = startdate - datetime.timedelta(days=duration)
+			enddate = enddate + datetime.timedelta(days=duration)
+			if queryset.count() > 5 or enddate>maxdate:
+				break
 
 		baseUrl = request.build_absolute_uri()[:-9]
 		nextstart = baseUrl + datetime.date.strftime(enddate + datetime.timedelta(days=1), "%Y%m%d") + "/"
