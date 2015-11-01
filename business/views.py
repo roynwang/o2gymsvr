@@ -159,14 +159,18 @@ class DayAvaiableTime(APIView):
 			noonhours = map(lambda x: int(x), workingday.noon_hours.split("|"))
 
 
+
+
 		#print "weekdays: " + str(date.weekday())
 		#print "weekdays: " + str((date.weekday() + 1)%7)
+		print working
 
 		out = map(lambda x: int(x), outhours)
 		ava = [h for h in range(0,26) if not h in out]
-		print date
-		print datetime.datetime.today()
-		if str((date.weekday() + 1)%7) in weekrest:
+		#print date
+		#print datetime.datetime.today()
+	
+		if ((str((date.weekday() + 1)%7) in weekrest) and (not date in working)) or (date in rest):
 			ret = {"out":out,"na": ava,"availiable":[], "noon":noonhours}
 			return Response(ret, status=status.HTTP_200_OK)
 
