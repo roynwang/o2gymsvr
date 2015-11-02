@@ -158,9 +158,6 @@ class DayAvaiableTime(APIView):
 		if len(workingday.noon_hours) != 0:
 			noonhours = map(lambda x: int(x), workingday.noon_hours.split("|"))
 
-
-
-
 		#print "weekdays: " + str(date.weekday())
 		#print "weekdays: " + str((date.weekday() + 1)%7)
 		print working
@@ -261,6 +258,14 @@ class TrainByDateView(ListBulkCreateAPIView):
 			schedule.done = True
 			schedule.save()
 		return ret
+class TrainByScheduleView(generics.ListAPIView):
+	pagination_class = None
+	serializer_class = TrainSerializer
+	def get_queryset(self):
+		#date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+		#date_str = datetime.datetime.strftime(date,"%Y-%m-%d")
+		name = self.kwargs.get("name")
+		return Train.objects.filter(name=name,  course=self.kwargs.get("schedule"))
 
 #class NearByView(generics.ListAPIView):
 
@@ -318,7 +323,9 @@ class GymMap(APIView):
 		loc = resp["datas"][0]["_location"]
 		ret = mapurl + "?markers:mid,0xFF0000,:" + loc + "&key=" + key	
 		return redirect(ret)
-
+		
+		
+		
 
 
 
