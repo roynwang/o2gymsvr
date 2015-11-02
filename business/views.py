@@ -122,9 +122,9 @@ class ScheduleForRead(generics.ListAPIView):
 		while(True):
 			daterange = [startdate, enddate]
 			if usr.iscoach:
-				queryset = Schedule.objects.filter(coach=usr.id, date__range=daterange).order_by("date")
+				queryset = Schedule.objects.filter(coach=usr.id, date__range=daterange).order_by("date","hour")
 			else:
-				queryset = Schedule.objects.filter(custom=usr.id, date__range=daterange).order_by("date")
+				queryset = Schedule.objects.filter(custom=usr.id, date__range=daterange).order_by("date","hour")
 			#startdate = startdate - datetime.timedelta(days=duration)
 			enddate = enddate + datetime.timedelta(days=duration)
 			if queryset.count() > 5 or enddate>maxdate:
