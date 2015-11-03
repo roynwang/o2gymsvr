@@ -18,4 +18,5 @@ urlpatterns = patterns('',
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/rest/$', WorkingDaysView.as_view()),
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/gym/$', ModifyGym.as_view()),
         url(r'^api/(?P<by>[a-zA-Z0-9]{4,20})/u/(?P<personname>[a-zA-Z0-9]{4,20})/(?P<upaction>up|down)/$', PersonUp.as_view()),
+        url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/income/$', InCome.as_view()),
 		)

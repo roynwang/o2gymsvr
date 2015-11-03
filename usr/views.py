@@ -6,6 +6,7 @@ from rest_framework import status
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view
 import json
+from django.db.models import Sum
 
 from usr.models import *
 from order.models import *
@@ -197,7 +198,25 @@ class ModifyGym(APIView):
 		serializer = GymSerializer(newgym)
 		return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 		
-	
+
+class InCome(APIView):
+	def cal_course_income(self,query):
+		price = 0
+		for course in query:
+			product = course.order.product
+			#tmpprice = float(course.order.amount)/float(product.amount)
+			tmpprice = course.order.amount/product.amount
+			price += tmpprice
+			print str(course.order.amount) + ":" + str(product.amount) + ": " + str(tmpprice)
+		return price
+	def get(self, request, name):
+		usr = get_object_or_404(User, name=name)
+		orders = usr.income_orders.exclude(paidtime__isnull=True)
+		sold = orders.aggregate(Sum('amount'))["amount__sum"]
+		courses = usr.sealed_time.exclude(done=True)
+
+		return Response({"sold_price": sold, "completed_course":courses.count(),
+			"completed_course_price":self.cal_course_income(courses)})
 
 		
 		
