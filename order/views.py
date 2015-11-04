@@ -127,6 +127,8 @@ def pay_callback(request):
 			print order_no
 			order = get_object_or_404(Order, billid=int(order_no))
 			order.status = "paid"
+			order.paidtime = datetime.now()
+			order.channel = charge["channel"]
 			coach = order.coach
 			coach.order_count += 1
 			if order.schedule_set.count() == order.product.amount:
