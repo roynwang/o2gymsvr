@@ -211,9 +211,16 @@ class InCome(APIView):
 		return price
 	def get(self, request, name):
 		usr = get_object_or_404(User, name=name)
-		orders = usr.income_orders.exclude(paidtime__isnull=True)
+		duration = 30
+		today = datetime.date.today()
+		start = today - datetime.timedelta(days=duration)
+		print start
+		print today
+		orders = usr.income_orders.exclude(paidtime__isnull=True).filter(paidtime__range=[start,today])
 		sold = orders.aggregate(Sum('amount'))["amount__sum"]
-		courses = usr.sealed_time.exclude(done=True)
+		courses = usr.sealed_time.filter(date__range=[start,today],done=True)
+		#courses = orders.value_list("schedule")
+		print courses
 
 		return Response({"sold_price": sold, "completed_course":courses.count(),
 			"completed_course_price":self.cal_course_income(courses)})
