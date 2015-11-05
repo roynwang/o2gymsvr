@@ -3,6 +3,8 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 import json
 from random import randint
 from sms.models import *
@@ -44,6 +46,7 @@ def get_or_create_user_return_token(number,pwd):
 	payload = jwt_payload_handler(auth_usr)
 	return {'token':jwt_encode_handler(payload)}
 
+@permission_classes((AllowAny, ))
 class PwdLogin(APIView):
 	def login_with_pwd(self,request):
 		jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -65,6 +68,7 @@ class PwdLogin(APIView):
 		return self.login_with_pwd(request)
 
 
+@permission_classes((AllowAny, ))
 class SMSGet(generics.CreateAPIView):
 	pagination_class = None
 	queryset = Sms.objects.all()
@@ -86,6 +90,7 @@ class SMSGet(generics.CreateAPIView):
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@permission_classes((AllowAny, ))
 class SMSVerify(APIView):
 	def post(self,request,number):
 		print "xxxxxxxxxxxxx"
