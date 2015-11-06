@@ -27,17 +27,24 @@ def get_or_create_user_return_token(number,pwd):
 		usr = User.objects.get(name=number)
 	except:
 		usr = None
-	auth_usr = get_user_model().objects.get(username=number)
+	try:
+		auth_usr = get_user_model().objects.get(username=number)
+	except:
+		auth_usr = None
 	print "----------"
 	print auth_usr
 	if not usr:
+		print "creating user"
 		usr = User.objects.create(name=number,
 				displayname=number,
 				avatar=settings.DEFAULT_AVATAR
 				)
 		#create timeline and working hours
+
+		print "creating tl"
 		tl = TimeLine.objects.create(name=usr)
 		tl.followedby.add(tl)
+		tl.save()
 		wh = WorkingDays.objects.create(name=number)
 	if not auth_usr:
 		auth_usr = get_user_model().objects.create_user(username=number)
@@ -58,7 +65,7 @@ class PwdLogin(APIView):
 		print "...."
 		if user is not None:
 			print "...."
-			login(request, user)
+			#login(request, user)
 			payload = jwt_payload_handler(user)
 			return Response({'token':jwt_encode_handler(payload)})
 		else:
@@ -96,9 +103,9 @@ class SMSVerify(APIView):
 		print "xxxxxxxxxxxxx"
 		sms = get_object_or_404(Sms,number=number)
 		ret = None
-		print request.GET
-		if str(sms.vcode) == request.POST["vcode"]:
-			ret = Response(get_or_create_user_return_token(number, request.POST["password"]) , status=status.HTTP_200_OK)
+		print request.DATA
+		if str(sms.vcode) == request.DATA["vcode"]:
+			ret = Response(get_or_create_user_return_token(number, request.DATA["password"]) , status=status.HTTP_200_OK)
 			#generate token
 			sms.vcode = randint(100000,999999)
 			sms.save()
