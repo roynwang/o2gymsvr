@@ -27,9 +27,11 @@ TEMPLATE_DIRS = (
 SECRET_KEY = 'z1x7$-+ji55#m)z0o*-*a&j4jlw7_augg2%%5n)*ft^wk5#(-l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["www.o2-fit.com", "192.168.1.106"]
+#ALLOWED_HOSTS = ["www.o2-fit.com", "192.168.1.106"]
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -136,7 +138,7 @@ STATIC_ROOT = "/var/www/o2fit.com/static/"
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
 		    os.path.join(BASE_DIR, "static"),
-		    '/var/www/o2-fit/static/',
+#		    '/var/www/static/'
 			)
 
 REST_FRAMEWORK = {
