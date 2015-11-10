@@ -62,14 +62,14 @@ class PwdLogin(APIView):
 		username = request.POST['username']
 		password = request.POST['password']
 		user = authenticate(username=username, password=password)
-		print "...."
+		print "1111111111"
 		if user is not None:
-			print "...."
+			print "22222"
 			#login(request, user)
 			payload = jwt_payload_handler(user)
 			return Response({'token':jwt_encode_handler(payload)})
 		else:
-			ret = Response({"result":"failed"}, status=status.HTTP_403_FORBIDDEN)
+			return Response({"result":"failed"}, status=status.HTTP_403_FORBIDDEN)
 	def post(self,request):
 		print("xxxxxxxxxxxxxxxxxx")
 		return self.login_with_pwd(request)

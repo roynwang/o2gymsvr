@@ -36,30 +36,29 @@
 
     <div class="container">
 
-      <form class="form-signin" action="index.html">
+		<div class="form-signin">
         <h2 class="form-signin-heading">管理端</h2>
         <div class="login-wrap">
             <div class="user-login-info">
-                <input type="text" class="form-control" placeholder="手机号码" autofocus>
-                <input type="password" class="form-control" placeholder="密码">
+                <input id="phone" type="text" class="form-control" placeholder="手机号码" autofocus>
+                <input id="pwd" type="password" class="form-control" placeholder="密码">
+				<input type="hidden" name="next" value="{{ next }}" />
             </div>
             <label class="checkbox">
                 <input type="checkbox" value="remember-me">下次自动登录
                 <span class="pull-right">
                     <a data-toggle="modal" href="#myModal"> 忘记密码?</a>
-
                 </span>
             </label>
-            <button class="btn btn-lg btn-login btn-block" type="submit">登录</button>
+			<a class="text-danger" id="login-error"></a>
+            <button id="btn-login" class="btn btn-lg btn-login btn-block" type="submit">登录</button>
             <div class="registration">
                 还没有管理账号?
                 <a class="" href="registration.html">
                     现在申请账号
                 </a>
             </div>
-
         </div>
-
           <!-- Modal -->
           <div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="myModal" class="modal fade">
               <div class="modal-dialog">
@@ -70,8 +69,7 @@
                       </div>
                       <div class="modal-body">
                           <p>输入你的电话号码</p>
-                          <input type="text" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
-
+                          <input id="phonenumber" type="text" name="email" placeholder="Email" autocomplete="off" class="form-control placeholder-no-fix">
                       </div>
                       <div class="modal-footer">
                           <button data-dismiss="modal" class="btn btn-default" type="button">取消</button>
@@ -81,9 +79,7 @@
               </div>
           </div>
           <!-- modal -->
-
-      </form>
-
+      </div>
     </div>
 
 
@@ -92,7 +88,9 @@
 
     <!--Core js-->
 	<script src="{% static "js/jquery.js" %}" ></script>
+	<script src="{% static "js/jquery.cookie.js" %}" ></script>
 	<script src="{% static "bs3/js/bootstrap.min.js" %}" ></script>
+	<script src="{% static "js/console/login.js" %}" ></script>
 
   </body>
 </html>
