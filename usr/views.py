@@ -212,7 +212,7 @@ class InCome(APIView):
 	def get(self, request, name):
 		usr = get_object_or_404(User, name=name)
 		duration = 30
-		today = datetime.date.today()
+		today = datetime.date.today() + datetime.timedelta(days=1)
 		start = today - datetime.timedelta(days=duration)
 		print start
 		print today
