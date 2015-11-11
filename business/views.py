@@ -92,7 +92,7 @@ class ScheduleList(generics.ListCreateAPIView):
 		queryset = Schedule.objects.filter(coach=coach.id, 
 				date=date,
 				date__in=working
-				).exclude(date__in=rest)
+				).exclude(date__in=rest).order_by("hour")
 		return queryset
 	def create(self, request, *args, **kwargs):
 		ret = super(ScheduleList, self).create(request, args,kwargs)

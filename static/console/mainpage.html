@@ -1,3 +1,32 @@
+ <div class="row">
+    <div class="col-md-4">
+        <div class="mini-stat clearfix">
+            <span class="mini-stat-icon orange"><i class="fa fa-tag"></i></span>
+            <div class="mini-stat-info">
+                <span>{{sale.sold_count}}</span>
+				今日订单数
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mini-stat clearfix">
+            <span class="mini-stat-icon pink"><i class="fa fa-money"></i></span>
+            <div class="mini-stat-info">
+                <span>{{sale.sold_price}}</span>
+				今日销售额
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="mini-stat clearfix">
+            <span class="mini-stat-icon green"><i class="fa  fa-calendar"></i></span>
+            <div class="mini-stat-info">
+                <span>{{coursecount}}</span>
+				今日课程数
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row">
 	<div class="col-sm-12">
 		<section class="panel">
@@ -33,7 +62,7 @@
 	</div>
 </div>
 <div class="row" ng-repeat="cg in calendarRowGroup">
-	<div class="col-md-4" ng-repeat="coach in cg">
+	<div class="col-md-4" ng-repeat="coach in cg ">
 		<div class="event-calendar clearfix">
 			<div class="col-lg-12 event-list-block">
 				<div class="cal-day">
@@ -41,10 +70,11 @@
 					<img src="{{coach.avatar}}" style="border-radius:
 					5px;-webkit-border-radius: 5px;width: 40px;">
 					{{coach.displayname}}
+                    <button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> </button>
 				</div>
 				<div class="slimScrollDiv">
 					<ul class="event-list" ng-slimscroll height="200">
-						<li ng-repeat="book in coach.books">
+						<li ng-repeat="book in coach.books | orderBy:book.hour">
                           <img src="{{book.customerprofile.avatar}}" style="border-radius:
 						  50%;-webkit-border-radius: 50%;width: 28px; margin-right:10px"/>  {{book.customerprofile.displayname}}
 						  <span class="label label-success pull-right">{{timemap[book.hour]}}</span>

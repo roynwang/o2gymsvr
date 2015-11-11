@@ -49,18 +49,32 @@ app.config(function ($stateProvider, $urlRouterProvider, RestangularProvider) {
 	 var date = "20151029"
 	 $scope.calendarRowGroup = []
 	 var g = -1
+     
+	$scope.coursecount = 0
+    function  renderSale(){
+		var gymid = $.cookie("gym")
+        Restangular.one('api/g/', gymid)
+		.one("sold/",date)
+		.get()
+		.then(function(data){
+			$scope.sale = data
+		})
+	}
 
 	 function renderCoaches(){
 		var gymid = $.cookie("gym")
         Restangular.one('api/g/', gymid).get().then(function(gym){
 			$scope.coaches = gym.coaches_set
 			$.each($scope.coaches, function(i,item){
-				console.log(i)
+				//render income
 				Restangular.one("api/",item.name).one("income/").get().then(function(data){
 					$scope.coaches[i].income = data
 				})
+
+				//render booked schedule
 				Restangular.one("api/",item.name).one("b/",date).get().then(function(data){
 					$scope.coaches[i].books = data
+					$scope.coursecount += data.length
 					if ( i%2 == 0 ){
 						$scope.calendarRowGroup.push([])	
 						g += 1
@@ -68,6 +82,8 @@ app.config(function ($stateProvider, $urlRouterProvider, RestangularProvider) {
 					$scope.calendarRowGroup[g].push($scope.coaches[i])
 					$scope.timemap = TimeMap
 				})
+
+				//render the today income
 			})
 			console.log($scope.coaches)
 		})
@@ -77,6 +93,7 @@ app.config(function ($stateProvider, $urlRouterProvider, RestangularProvider) {
 			setTimeout(recur, 1000)
 		 }else {
 	 		renderCoaches()
+			renderSale()
 		}
 	 }
 	 recur()

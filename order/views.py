@@ -8,13 +8,16 @@ from usr.models import *
 from django.http import HttpResponseNotFound
 from rest_framework import status
 import time
+import datetime
 from ipware.ip import get_ip
 from django.http import JsonResponse
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
 import json
+import pytz
 from django.http import JsonResponse
 from django.utils import timezone
+from django.db.models import Sum
 
 
 def create_pay(request, billid,channel):
@@ -179,8 +182,25 @@ class ManualOrder(APIView):
 				channel = "offline")
 		serializer = OrderSerializer(order)
 		return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class GymSoldRange(APIView):
+	def get(self,request,gymid):
+		pass
 				
 
+class GymSoldDay(APIView):
+	def get(self,request,gymid, day):
+		utc = pytz.utc
+		tz = pytz.timezone('Asia/Chongqing')
+		start = datetime.datetime.strptime(day,"%Y%m%d")
+		start = tz.localize(start)
+		end = start + datetime.timedelta(days=1)
+		print start
+		print end
+		orders = Order.objects.filter(coach__gym=gymid,paidtime__range=[start,end])
+		sold_price = orders.aggregate(Sum("amount"))["amount__sum"]
+		sold_count = orders.count()  
+		return Response({"sold_price": sold_price, "sold_count":sold_count})
 
 
 
