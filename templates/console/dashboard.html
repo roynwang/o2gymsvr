@@ -34,7 +34,7 @@
     <![endif]-->
 	 <script src="//cdn.bootcss.com/angular.js/1.4.7/angular.js"></script>
      <script src="//cdn.bootcss.com/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
-     <script src="/static/js/console/app.js"></script>
+
 </head>
  <head>
      <meta charset="utf-8">
@@ -225,15 +225,13 @@
 </aside>
 <!--sidebar end-->
 <section id="main-content">
-<section class="wrapper">
-
- <div class="container content" ng-app="JobApp">
+<section class="wrapper" ng-app="JobApp">
 	 <div ui-view> 载入中... ...</div>
- </div>
 </section>
 </section>
 
 <script src="/static/js/jquery.js"></script>
+<script src="//cdn.bootcss.com/restangular/1.5.1/restangular.min.js"></script>
 <script src="/static/js/jquery-ui/jquery-ui-1.10.1.custom.min.js"></script>
 <script src="/static/bs3/js/bootstrap.min.js"></script>
 <script src="/static/js/jquery.dcjqaccordion.2.7.js"></script>
@@ -277,6 +275,7 @@
 <script src="{% static "js/jquery.cookie.js" %}" ></script>
 <script>
 	//load user info by token
+	var USER = null
 	function getusrauth(){
 		console.log($.cookie())
 		if($.cookie("token")){
@@ -288,6 +287,9 @@
 	}
 	function refreshuser(authinfo){
 		$.get("/api/" + authinfo.username + "/", function(data){
+			USER = data
+			$.cookie("user", USER, {path:"/"})
+			$.cookie("gym", USER.gym_id[0], {path:"/"})
 			$("#username").html(data.displayname)
 			$("#useravatar").attr("src", data.avatar)
 		}).fail(function(resp){
@@ -298,7 +300,11 @@
 	$(function(){
 		refreshuser(getusrauth())
 	})
+
 </script>
+
+<script src="/static/js/console/app.js"></script>
+
 
 
  </body>
