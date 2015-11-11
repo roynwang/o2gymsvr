@@ -4,8 +4,9 @@ $(function(){
 		var pwd = $("#pwd").val()
 		//validate the user
 		$.post("/api/lg/",{username:usrname, password:pwd}, function(data,status){
-			$.cookie("token",data.token)
+			$.cookie("token",data.token,{ path: '/' })
 			$("#login-error").html("登录成功,2秒后跳转")
+			console.log($.cookie("token",data.token))
 			setTimeout(function(){
 			  window.location = "/console/dashboard/"
 			}, 2000)

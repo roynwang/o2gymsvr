@@ -469,8 +469,8 @@ if (Skycons) {
 
 }
 
+/*
 if (Gauge) {
-    /*Knob*/
     var opts = {
         lines: 12, // The number of lines to draw
         angle: 0, // The length of each line
@@ -496,3 +496,4 @@ if (Gauge) {
     gauge.setTextField(document.getElementById("gauge-textfield"));
 
 }
+*/
