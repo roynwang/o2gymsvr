@@ -18,4 +18,5 @@ urlpatterns = [
 		url(r'^', include('order.urls')),
 		url(r'^', include('recommend.urls')),
 		url(r'^', include('sms.urls')),
+		url(r'^', include('fee.urls')),
 		]

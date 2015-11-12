@@ -51,7 +51,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
             url: "/sale",
             templateUrl: "/static/console/sale.html",
         })
-
+        .state('salary', {
+            url: "/salary",
+            templateUrl: "/static/console/salarysetting.html",
+        })
 })
 
 app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams",
@@ -83,6 +86,48 @@ app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams",
                     dataset: data
                 });
             })
+    }
+])
+app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
+    function($scope, Restangular, NgTableParams, ngTableSimpleList) {
+        var gymid = $.cookie("gym")
+		var that = this
+	    var originalData = []
+        Restangular.one('api/g/', gymid)
+            .one("salarysetting/")
+			.get()
+            .then(function(data) {
+				originalData = data
+                that.tableParams = new NgTableParams({
+                    sorting: {
+                    }
+                }, {
+                    dataset: angular.copy(originalData)
+                });
+            })
+    self.cancel = cancel;
+    self.save = save;
+
+    //////////
+
+    function cancel(row, rowForm) {
+      var originalRow = resetRow(row, rowForm);
+      angular.extend(row, originalRow);
+    }
+    
+    function resetRow(row, rowForm){
+      row.isEditing = false;
+      rowForm.$setPristine();
+      self.tableTracker.untrack(row);
+      return _.findWhere(originalData, function(r){
+        return r.id === row.id;
+      });
+    }
+
+    function save(row, rowForm) {
+      var originalRow = resetRow(row, rowForm);
+      angular.extend(originalRow, row);
+    }
     }
 ])
 
