@@ -17,7 +17,7 @@ import json
 import pytz
 from django.http import JsonResponse
 from django.utils import timezone
-from django.db.models import Sum
+from django.db.models import Sum, Count
 
 
 def create_pay(request, billid,channel):
@@ -184,8 +184,17 @@ class ManualOrder(APIView):
 		return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class GymSoldRange(APIView):
+
 	def get(self,request,gymid):
-		pass
+
+		end = datetime.date.today()
+		start = end - datetime.timedelta(days=60)
+		orders = Order.objects.filter(coach__gym=gymid,paidtime__range=[start,end]) \
+				.extra({'paidday': "date_format(date(CONVERT_TZ(`paidtime`,'+00:00','+08:00')),'%%Y%%m%%d')"}) \
+				.values('paidday') \
+				.annotate(sold_pirce=Sum('amount')) \
+				.annotate(sold_count=Count('amount'))
+		return Response(orders)
 				
 
 class GymSoldDay(APIView):

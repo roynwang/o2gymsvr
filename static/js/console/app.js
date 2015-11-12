@@ -46,18 +46,36 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
         .state('customers', {
             url: "/customers",
             templateUrl: "/static/console/customers.html",
-            controller: "CustomerCtrl"
         })
+        .state('sale', {
+            url: "/sale",
+            templateUrl: "/static/console/sale.html",
+        })
+
 })
+
+app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams",
+    function($scope, Restangular, NgTableParams, ngTableSimpleList) {
+        var gymid = $.cookie("gym")
+        Restangular.one('api/g/', gymid).get().then(function(gym) {
+                    $scope.coaches = gym.coaches_set
+                    $.each($scope.coaches, function(i, item) {
+                        //render income
+                        Restangular.one("api/", item.name).one("income/").get().then(function(data) {
+                            $scope.coaches[i].income = data
+                        })
+					})
+		})
+	}])
 app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams",
     function($scope, Restangular, NgTableParams, ngTableSimpleList) {
         var gymid = $.cookie("gym")
-		var t = this
+		var that = this
         Restangular.one('api/g/', gymid)
             .one("customers/")
             .get()
             .then(function(data) {
-                t.tableParams = new NgTableParams({
+                that.tableParams = new NgTableParams({
                     sorting: {
                         name: "asc"
                     }
