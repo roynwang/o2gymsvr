@@ -25,6 +25,7 @@
 	<link href="{% static "consolecss/style.css" %}" rel="stylesheet">
 	<link href="{% static "consolecss/o2custom.css" %}" rel="stylesheet">
 	<link href="{% static "consolecss/style-responsive.css" %}" rel="stylesheet"/>
+	<link href="{% static "consolecss/ng-table.min.css" %}" rel="stylesheet"/>
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]>
     <script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -45,7 +46,7 @@
 <div class="brand">
 
     <a href="index.html" class="logo">
-        <img src="images/logo.png" alt="">
+        <img src="/static/images/logo.png" alt="" style="width:40px;display:inline-block">
     </a>
     <div class="sidebar-toggle-box">
         <div class="fa fa-bars"></div>
@@ -91,11 +92,18 @@
         <div class="leftside-navigation">
             <ul class="sidebar-menu" id="nav-accordion">
                 <li>
-                    <a class="active" href="index.html">
+                    <a class="active" href="#/">
                         <i class="fa fa-dashboard"></i>
-                        <span>Dashboard</span>
+                        <span>前台</span>
                     </a>
                 </li>
+	            <li>
+                    <a href="#customers">
+                        <i class="fa fa-group"></i>
+                        <span>客户信息</span>
+                    </a>
+                </li>
+    
                 <li class="sub-menu">
                     <a href="javascript:;">
                         <i class="fa fa-laptop"></i>
@@ -264,6 +272,9 @@
 <script src="/static/js/flot-chart/jquery.flot.growraf.js"></script>
 <script src="/static/js/dashboard.js"></script>
 -->
+
+
+<script src="/static/js/ng-table.min.js" ></script>
 <script src="/static/js/jquery.customSelect.min.js" ></script>
 <!--common script init for all pages-->
 <script src="/static/js/scripts.js"></script>

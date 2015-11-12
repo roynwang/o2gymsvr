@@ -1,0 +1,10 @@
+    <div class="col-md-12" ng-controller="CustomerCtrl as demo">
+		<!--<h3>客户信息</h3>-->
+      <table ng-table="demo.tableParams" class="table table-condensed table-bordered table-striped">
+        <tr ng-repeat="row in $data">
+          <td data-title="'姓名'" filter="{displayname: 'text'}" sortable="'displayname'">{{row.displayname}}</td>
+          <td data-title="'电话'" filter="{name: 'text'}" sortable="'number'">{{row.name}}</td>
+          <td data-title="'性别'">{{row.sex?"男":"女"}}</td>
+        </tr>
+      </table>
+    </div>

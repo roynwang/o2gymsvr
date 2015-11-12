@@ -203,6 +203,18 @@ class GymSoldDay(APIView):
 		return Response({"sold_price": sold_price, "sold_count":sold_count})
 
 
+class GymCustomers(generics.ListAPIView):
+	pagination_class = None
+	serializer_class = SimpleUserSerilaizer
+	def get_queryset(self):
+		gym = get_object_or_404(Gym, id=self.kwargs["gymid"])
+		print "xxxxxxxxxxxx"
+		coaches = gym.coaches.values_list("name",flat=True)
+		orders = Order.objects.filter(coach__in=coaches)
+		print "xxxxxxxxxxxx"
+		customers = orders.values_list("custom",flat=True).distinct()
+		print customers
+		return User.objects.filter(name__in = customers).distinct()
 
 		
 
