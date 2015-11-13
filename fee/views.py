@@ -17,7 +17,6 @@ class GymCoachSalarySettingView(generics.ListAPIView):
 
 class GymCoachSalarySettingItemView(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = CoachSalarySettingSerializer 
-	lookup_field = "coach"
 	def get_queryset(self):
 		return GymFee.objects.get(gym=self.kwargs["gymid"]).coach_salary_setting.all()
 
