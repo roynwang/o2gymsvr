@@ -143,14 +143,29 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
                 }
             });
         }
-
-
-
         function save(row, rowForm) {
             var originalRow = resetRow(row, rowForm);
             angular.extend(originalRow, row);
+
 			//save the row
 			console.log(row)
+
+			Restangular.one('api/g/', gymid)
+				.all("salarysetting")
+				.getList()
+				.then(function(data){
+					var cs = _.find(data,function(obj){
+						return obj.id === row.id
+					})
+					cs.base_salary = row.base_salary
+					cs.yanglao = row.yanglao
+					cs.yiliao = row.yiliao
+					cs.shiye = row.shiye
+					cs.gongjijin = row.gongjijin
+					cs.xiaoshou = row.xiaoshou
+					cs.xuke = row.xuke
+					cs.patch()
+			})
 
         }
     }
