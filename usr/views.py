@@ -216,7 +216,7 @@ class InCome(APIView):
 		start = today - datetime.timedelta(days=duration)
 		print start
 		print today
-		orders = usr.income_orders.exclude(paidtime__isnull=True).filter(paidtime__range=[start,today])
+		orders = usr.income_orders.filter(paidtime__range=[start,today])
 		sold = orders.aggregate(Sum('amount'))["amount__sum"] 
 		courses = usr.sealed_time.filter(date__range=[start,today],done=True)
 		#courses = orders.value_list("schedule")
