@@ -51,8 +51,8 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
             url: "/sale",
             templateUrl: "/static/console/sale.html",
         })
-        .state('salary', {
-            url: "/salary",
+        .state('salarysetting', {
+            url: "/salarysetting",
             templateUrl: "/static/console/salarysetting.html",
         })
 })
@@ -61,19 +61,20 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams",
     function($scope, Restangular, NgTableParams, ngTableSimpleList) {
         var gymid = $.cookie("gym")
         Restangular.one('api/g/', gymid).get().then(function(gym) {
-                    $scope.coaches = gym.coaches_set
-                    $.each($scope.coaches, function(i, item) {
-                        //render income
-                        Restangular.one("api/", item.name).one("income/").get().then(function(data) {
-                            $scope.coaches[i].income = data
-                        })
-					})
-		})
-	}])
+            $scope.coaches = gym.coaches_set
+            $.each($scope.coaches, function(i, item) {
+                //render income
+                Restangular.one("api/", item.name).one("income/").get().then(function(data) {
+                    $scope.coaches[i].income = data
+                })
+            })
+        })
+    }
+])
 app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams",
     function($scope, Restangular, NgTableParams, ngTableSimpleList) {
         var gymid = $.cookie("gym")
-		var that = this
+        var that = this
         Restangular.one('api/g/', gymid)
             .one("customers/")
             .get()
@@ -89,45 +90,69 @@ app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams",
     }
 ])
 app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
-    function($scope, Restangular, NgTableParams, ngTableSimpleList) {
+    function($scope, Restangular, NgTableParams) {
         var gymid = $.cookie("gym")
-		var that = this
-	    var originalData = []
+        var self = this
+        var originalData = []
         Restangular.one('api/g/', gymid)
             .one("salarysetting/")
-			.get()
+            .get()
             .then(function(data) {
-				originalData = data
-                that.tableParams = new NgTableParams({
-                    sorting: {
-                    }
+                originalData = data
+                self.tableParams = new NgTableParams({
+                    sorting: {}
                 }, {
                     dataset: angular.copy(originalData)
                 });
             })
-    self.cancel = cancel;
-    self.save = save;
 
-    //////////
+        self.cancel = cancel;
+        self.save = save;
 
-    function cancel(row, rowForm) {
-      var originalRow = resetRow(row, rowForm);
-      angular.extend(row, originalRow);
-    }
-    
-    function resetRow(row, rowForm){
-      row.isEditing = false;
-      rowForm.$setPristine();
-      self.tableTracker.untrack(row);
-      return _.findWhere(originalData, function(r){
-        return r.id === row.id;
-      });
-    }
+        //////////
 
-    function save(row, rowForm) {
-      var originalRow = resetRow(row, rowForm);
-      angular.extend(originalRow, row);
-    }
+        function cancel(row, rowForm) {
+            var originalRow = resetRow(row, rowForm);
+            angular.extend(row, originalRow);
+        }
+
+        function resetRow(row, rowForm) {
+            row.isEditing = false;
+            rowForm.$setPristine();
+            //self.tableTracker.untrack(row);
+			for ( let i in originalData){
+				if(originalData[i].id === row.id){
+					return originalData[i]
+				}
+			}
+			/*
+            return _.findWhere(originalData, function(r) {
+                return r.id === row.id;
+            });
+			*/
+        }
+
+        function del(row) {
+            _.remove(self.tableParams.settings().dataset, function(item) {
+                return row === item;
+            });
+            self.tableParams.reload().then(function(data) {
+                if (data.length === 0 && self.tableParams.total() > 0) {
+                    self.tableParams.page(self.tableParams.page() - 1);
+                    self.tableParams.reload();
+                }
+            });
+        }
+
+
+
+        function save(row, rowForm) {
+            var originalRow = resetRow(row, rowForm);
+            angular.extend(originalRow, row);
+			//save the row
+			console.log(row)
+
+        }
     }
 ])
 
