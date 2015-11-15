@@ -55,7 +55,38 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
             url: "/salarysetting",
             templateUrl: "/static/console/salarysetting.html",
         })
+        .state('salarysummary', {
+            url: "/salarysummary",
+            templateUrl: "/static/console/salarysummary.html",
+        })
 })
+app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams",
+    function($scope, Restangular, NgTableParams, ngTableSimpleList) {
+        var gymid = $.cookie("gym")
+        var that = this
+
+        function calSum(data) {
+            console.log(data)
+            return data.base_salary + (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100
+
+        }
+        Restangular.one('api/g/', gymid)
+            .one("salary/")
+            .get()
+            .then(function(data) {
+                $.each(data, function(i) {
+                    data[i].sum = calSum(data[i])
+                })
+                that.tableParams = new NgTableParams({
+                    sorting: {
+                        name: "asc"
+                    }
+                }, {
+                    dataset: data
+                });
+            })
+    }
+])
 
 app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams",
     function($scope, Restangular, NgTableParams, ngTableSimpleList) {
@@ -120,12 +151,21 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
             row.isEditing = false;
             rowForm.$setPristine();
             //self.tableTracker.untrack(row);
+<<<<<<< HEAD
 			for ( var i in originalData){
 				if(originalData[i].id === row.id){
 					return originalData[i]
 				}
 			}
 			/*
+=======
+            for (let i in originalData) {
+                if (originalData[i].id === row.id) {
+                    return originalData[i]
+                }
+            }
+            /*
+>>>>>>> c6fd79c0a1db6a008ba521543c83ad13526c5c8f
             return _.findWhere(originalData, function(r) {
                 return r.id === row.id;
             });
@@ -143,29 +183,30 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
                 }
             });
         }
+
         function save(row, rowForm) {
             var originalRow = resetRow(row, rowForm);
             angular.extend(originalRow, row);
 
-			//save the row
-			console.log(row)
+            //save the row
+            console.log(row)
 
-			Restangular.one('api/g/', gymid)
-				.all("salarysetting")
-				.getList()
-				.then(function(data){
-					var cs = _.find(data,function(obj){
-						return obj.id === row.id
-					})
-					cs.base_salary = row.base_salary
-					cs.yanglao = row.yanglao
-					cs.yiliao = row.yiliao
-					cs.shiye = row.shiye
-					cs.gongjijin = row.gongjijin
-					cs.xiaoshou = row.xiaoshou
-					cs.xuke = row.xuke
-					cs.patch()
-			})
+            Restangular.one('api/g/', gymid)
+                .all("salarysetting")
+                .getList()
+                .then(function(data) {
+                    var cs = _.find(data, function(obj) {
+                        return obj.id === row.id
+                    })
+                    cs.base_salary = row.base_salary
+                    cs.yanglao = row.yanglao
+                    cs.yiliao = row.yiliao
+                    cs.shiye = row.shiye
+                    cs.gongjijin = row.gongjijin
+                    cs.xiaoshou = row.xiaoshou
+                    cs.xuke = row.xuke
+                    cs.patch()
+                })
 
         }
     }
