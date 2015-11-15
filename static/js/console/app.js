@@ -151,19 +151,11 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
             row.isEditing = false;
             rowForm.$setPristine();
             //self.tableTracker.untrack(row);
-<<<<<<< HEAD
 			for ( var i in originalData){
 				if(originalData[i].id === row.id){
 					return originalData[i]
 				}
 			}
-			/*
-=======
-            for (let i in originalData) {
-                if (originalData[i].id === row.id) {
-                    return originalData[i]
-                }
-            }
             /*
 >>>>>>> c6fd79c0a1db6a008ba521543c83ad13526c5c8f
             return _.findWhere(originalData, function(r) {
