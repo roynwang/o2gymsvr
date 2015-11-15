@@ -29,7 +29,13 @@ def create_pay(request, billid,channel):
 			order.product.introduction,
 			order.product.introduction)
 	return JsonResponse(ch,status=status.HTTP_201_CREATED)
-	
+
+def isFirstOrder(coach,customer):
+	#coach = get_object_or_404(User,id = coach)
+	#customer = get_object_or_404(User,id = customer)
+	count = Order.objects.filter(coach=coach, custom = customer).exclude(status="unpaid").count()
+	print count
+	return count == 0
 
 class OrderList(generics.ListCreateAPIView):
 	serializer_class = OrderSerializer
@@ -99,13 +105,12 @@ def getbillid(customerid, coachid):
 	
 def create_order(customer, coach, product):
 	billid = getbillid(customer, coach)
-	print "xxxxxxxxxxxxxx"
 	customobj = get_object_or_404(User,id=customer)
 	coachobj = get_object_or_404(User,id=coach)
 	productobj = get_object_or_404(Product,id=product)
-	print "xxxxxxxxxxxxxx"
+	isfirst = isFirstOrder(coachobj,customobj)
 	return Order.objects.create(billid=str(billid), custom=customobj, coach=coachobj, product=productobj,
-			amount=productobj.price, status="unpaid")
+			amount=productobj.price, status="unpaid",isfirst=isfirst)
 def update_order(billid, status):
 	order = Order.objects.get(billid=billid)
 	order.status = status
@@ -168,9 +173,11 @@ class ManualOrder(APIView):
 				product_type = 1)
 		print "created product"
 		print product.id
-
 		#create order
 		billid = getbillid(coach.id, customer.id)
+		isfirst = isFirstOrder(coach,customer)
+		print "is first"
+		print isfirst
 		order = Order.objects.create(
 				custom = customer,
 				coach = coach,
@@ -179,14 +186,13 @@ class ManualOrder(APIView):
 				status = "paid",
 				product = product,
 				amount = price,
-				channel = "offline")
+				channel = "offline",
+				isfirst = isfirst)
 		serializer = OrderSerializer(order)
 		return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class GymSoldRange(APIView):
-
 	def get(self,request,gymid):
-
 		end = datetime.date.today()
 		start = end - datetime.timedelta(days=60)
 		orders = Order.objects.filter(coach__gym=gymid,paidtime__range=[start,end]) \
