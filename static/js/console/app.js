@@ -67,7 +67,7 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams",
 
         function calSum(data) {
             console.log(data)
-            return data.base_salary + (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100
+            return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100
 
         }
         Restangular.one('api/g/', gymid)
