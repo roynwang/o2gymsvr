@@ -217,12 +217,12 @@ class InCome(APIView):
 		print start
 		print today
 		orders = usr.income_orders.filter(paidtime__range=[start,today])
-		sold = orders.aggregate(Sum('amount'))["amount__sum"] 
+		sold = orders.aggregate(Sum('amount'))["amount__sum"] or 0
 		courses = usr.sealed_time.filter(date__range=[start,today],done=True)
+		sold_xu = orders.filter(isfirst=False).aggregate(Sum('amount'))["amount__sum"] or 0
 		#courses = orders.value_list("schedule")
-		if sold is None:
-			sold = 0
-		return Response({"sold_price": sold, "completed_course":courses.count(), "completed_course_price":self.cal_course_income(courses)})
+		return Response({"sold_xu":sold_xu, "sold_price": sold, "completed_course":courses.count()
+			or 0, "completed_course_price":self.cal_course_income(courses)})
 
 		
 		
