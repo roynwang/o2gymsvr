@@ -22,6 +22,29 @@ Date.prototype.Format = function(fmt) { //author: meizz
             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
 }
+Date.isLeapYear = function(year) {
+    return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
+};
+
+Date.getDaysInMonth = function(year, month) {
+    return [31, (Date.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+};
+
+Date.prototype.isLeapYear = function() {
+    return Date.isLeapYear(this.getFullYear());
+};
+
+Date.prototype.getDaysInMonth = function() {
+    return Date.getDaysInMonth(this.getFullYear(), this.getMonth());
+};
+
+Date.prototype.addMonths = function(value) {
+    var n = this.getDate();
+    this.setDate(1);
+    this.setMonth(this.getMonth() + value);
+    this.setDate(Math.min(n, this.getDaysInMonth()));
+    return this;
+};
 
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
 
@@ -29,7 +52,8 @@ var app = angular.module('JobApp', [
     'ui.router',
     'restangular',
     'jkuri.slimscroll',
-    "ngTable"
+    "ngTable",
+    'ui.bootstrap',
 ])
 app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
     // For any unmatched url, send to /route1
@@ -85,7 +109,20 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams",
                     dataset: data
                 });
             })
+
+        that.startday = new Date().addMonths(-1)
+        that.endday = new Date();
+        that.open = function($event) {
+            if ($event == "start") {
+                that.startopened = true
+            } else {
+                that.endopened = true
+            }
+        };
+        that.startopend = false
+        that.endopend = false
     }
+
 ])
 
 app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams",
@@ -151,13 +188,12 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
             row.isEditing = false;
             rowForm.$setPristine();
             //self.tableTracker.untrack(row);
-			for ( var i in originalData){
-				if(originalData[i].id === row.id){
-					return originalData[i]
-				}
-			}
+            for (var i in originalData) {
+                if (originalData[i].id === row.id) {
+                    return originalData[i]
+                }
+            }
             /*
->>>>>>> c6fd79c0a1db6a008ba521543c83ad13526c5c8f
             return _.findWhere(originalData, function(r) {
                 return r.id === row.id;
             });

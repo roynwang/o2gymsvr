@@ -1,8 +1,8 @@
 <div class="row" ng-controller="SalarySummaryCtrl as ctrl">
 	<div class="col-sm-12">
 		<section class="panel">
-		<header class="panel-heading">
-		工资
+		<header class="panel-heading row">
+		<h4 class="col-sm-1">工资</h4>
 		<!--
 		<span class="tools pull-right">
 			<a href="javascript:;" class="fa fa-chevron-down"></a>
@@ -10,6 +10,40 @@
 			<a href="javascript:;" class="fa fa-times"></a>
 		</span>
 		-->
+		<div class="col-md-1 pull-right">
+			<button type="button" class="btn btn-info "><i class="fa fa-refresh"></i> 刷新</button>
+		</div>
+        <div class="col-md-3 pull-right">
+            <p class="input-group">
+              <input type="text" 
+				class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date" 
+				uib-datepicker-popup="yyyy-MM-dd"
+				 ng-model="ctrl.endday"
+				 is-open="ctrl.endopened" 
+				show-button-bar="false">
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" 
+                ng-click="ctrl.open('end')"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+        </div>
+        <div class="col-md-3 pull-right">
+            <p class="input-group">
+              <input type="text" 
+				class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date" 
+				uib-datepicker-popup="yyyy-MM-dd"
+				 ng-model="ctrl.startday"
+				 is-open="ctrl.startopened" 
+				show-button-bar="false">
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" 
+				ng-click="ctrl.open('start')"><i class="glyphicon glyphicon-calendar"></i></button>
+              </span>
+            </p>
+        </div>
+
+
+
 		</header>
 		<div class="panel-body">
 			<table class="table table-hover" ng-table="ctrl.tableParams">
