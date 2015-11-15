@@ -120,7 +120,7 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
             row.isEditing = false;
             rowForm.$setPristine();
             //self.tableTracker.untrack(row);
-			for ( let i in originalData){
+			for ( var i in originalData){
 				if(originalData[i].id === row.id){
 					return originalData[i]
 				}
