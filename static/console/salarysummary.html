@@ -1,8 +1,8 @@
-<div class="row" ng-controller="CoachSaleCtrl as ctrl">
+<div class="row" ng-controller="SalarySummaryCtrl as ctrl">
 	<div class="col-sm-12">
 		<section class="panel">
 		<header class="panel-heading">
-		最近30天销售统计
+		工资
 		<!--
 		<span class="tools pull-right">
 			<a href="javascript:;" class="fa fa-chevron-down"></a>
@@ -12,21 +12,18 @@
 		-->
 		</header>
 		<div class="panel-body">
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th>教练</th>
-						<th>销售量(元)</th>
-						<th>上课数(节)</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="coach in coaches">
-						<td>{{coach.displayname}}</td>
-						<td>{{coach.income.sold_price}}</td>
-						<td>{{coach.income.completed_course}}</td>
-					</tr>
-				</tbody>
+			<table class="table table-hover" ng-table="ctrl.tableParams">
+				<tr ng-repeat="row in $data">
+					<td data-title="'姓名'">{{row.coachname}}</td>
+					<td data-title="'底薪'">{{row.base_salary}}</td>
+					<td data-title="'养老'">-{{row.base_salary * row.yanglao / 100}}({{row.yanglao}}%)</td>
+					<td data-title="'医疗'">-{{row.base_salary * row.yiliao / 100}}({{row.yiliao}}%)</td>
+					<td data-title="'失业'">-{{row.base_salary * row.shiye / 100}}({{row.shiye}}%)</td>
+					<td data-title="'公积金'">-{{row.base_salary * row.gongjijin/100}}({{row.gongjijin}}%)</td>
+					<td data-title="'销售提成'">{{row.sale.sold}}*{{row.xiaoshou}}%={{row.sale.sold*row.xiaoshou/100}}</td>
+					<td data-title="'续课奖励'">{{row.sale.sold_xu}}*{{row.xuke}}%={{row.sale.sold_xu*row.xuke/100}}</td>
+					<td data-title="'合计'">{{row.sum}}</td>
+				</tr>
 			</table>
 		</div>
 		</section>
