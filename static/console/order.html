@@ -1,0 +1,71 @@
+<div class="col-md-12" ng-controller="OrderDetailCtrl as ctrl">
+    <section class="panel">
+        <header class="panel-heading">
+            <h4 class="text-center">
+<i back-button class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
+预约
+</h4>
+        </header>
+        <div class="form-group panel-body">
+            <div class="row" style="margin-bottom:20px">
+                <h3 class="text-center"><img ng-src="{{ctrl.coach.avatar}}" style="-webkit-border-radius: 50%;
+    height: 60px;"> {{ctrl.coach.displayname}}</h3>
+            </div>
+            <div class="row">
+                <div class="col-md-12" ng-model="ctrl.booked">
+                    <p>课程状态(已上:{{ctrl.done.length}}/待上:{{ctrl.booked.length}}/待约{{ctrl.sum
+                        - ctrl.booked.length}})</p>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar progress-bar-success" style="width: {{ctrl.done.length/ctrl.sum*100}}%">
+                            <span class="sr-only">35% Complete (success)</span>
+                        </div>
+                        <div class="progress-bar progress-bar-warning" style="width: {{ctrl.booked.length/ctrl.sum*100}}%">
+                            <span class="sr-only">20% Complete (warning)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <table class="table table-hover" ng-table="ctrl.tableParams">
+                    <tr ng-repeat="row in $data">
+                        <td data-title="'日期'">{{row.date}}</td>
+                        <td data-title="'时间'">{{timemap[row.hour]}}</td>
+                        <td data-title="'状态'"><span class="label label-mini {{row.done?'label-success':'label-info'}}">{{row.done?"已完成":"待上课"}}</span>
+                        </td>
+                        <td data-title="'操作'">
+                            <button 
+							class="btn btn-danger btn-xs"
+							 hidden="{{row.done?'true':'false'}}" 
+							ng-click="ctrl.cancelbook(row.date, row.hour)">取消</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <p class="input-group">
+                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
+                    uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.day" is-open="ctrl.dayopened"
+                    show-button-bar="false"
+					ng-change="ctrl.refreshtimetable()">
+                    <span class="input-group-btn">
+                <button type="button" class="btn btn-primary" 
+					ng-click="ctrl.open()">
+					<i class="fa fa-calendar"></i></button>
+              </span>
+                </p>
+
+                <table class="table" ng-model="ctrl.day">
+                    <tr ng-repeat="row in ctrl.timemapgroup">
+                        <td ng-repeat-start="i in [0,1,2,3,4]" ng-repeat-end
+						 class="{{row[i]['status']?'bg-danger':''}}" ng-click="ctrl.book(row[i]['id'])">
+                            {{timemap[row[i]["id"]]}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <p class="text-center"><a class="btn btn-success btn-lg text-center" style="margin-top:20px">提交订单</a>
+            </p>
+        </div>
+</div>

@@ -17,13 +17,13 @@
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
                         <span class="input-group-addon btn-primary"><i class="fa fa-user"></i></span>
-                        <input type="text" class="form-control" placeholder="客户姓名">
+                        <input type="text" class="form-control" placeholder="客户姓名" ng-model="ctrl.mo.customer_displayname">
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
                         <span class="input-group-addon btn-primary"><i class="fa fa-phone"></i></span>
-                        <input type="text" class="form-control" placeholder="客户电话">
+                        <input type="text" class="form-control" placeholder="客户电话" ng-model="ctrl.mo.customer_phone">
                     </div>
                 </div>
             </div>
@@ -31,17 +31,17 @@
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
                         <span class="input-group-addon btn-primary"><i class="fa  fa-calendar-o"></i></span>
-                        <input type="text" class="form-control" placeholder="课程数量">
+                        <input type="text" class="form-control" placeholder="课程数量" ng-model="ctrl.mo.product_amount">
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
                         <span class="input-group-addon btn-primary"><i class="fa fa-cny"></i></span>
-                        <input type="text" class="form-control" placeholder="课程总价">
+                        <input type="text" class="form-control" placeholder="课程总价" ng-model="ctrl.mo.product_price">
                     </div>
                 </div>
             </div>
 
-			<p class="text-center"><a class="btn btn-success btn-lg text-center" style="margin-top:20px">提交订单</a></p>
+			<p class="text-center"><a class="btn btn-success btn-lg text-center" style="margin-top:20px" ng-click="ctrl.submitorder()">提交订单</a></p>
         </div>
 </div>
