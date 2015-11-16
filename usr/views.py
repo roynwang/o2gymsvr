@@ -14,8 +14,19 @@ from usr.serializers import *
 from weibo.serializers import *
 from business.serializers import *
 
+import calendar
 import pprint
-import datetime
+import datetime 
+
+
+def add_months(sourcedate,months):
+	month = sourcedate.month - 1 + months
+	year = int(sourcedate.year + month / 12 )
+	month = month % 12 + 1
+	day = min(sourcedate.day,calendar.monthrange(year,month)[1])
+	return datetime.date(year,month,day)
+
+
 
 @api_view(['POST'])
 def register(request):
@@ -211,14 +222,21 @@ class InCome(APIView):
 		return price
 	def get(self, request, name):
 		usr = get_object_or_404(User, name=name)
-		duration = 30
-		today = datetime.date.today() + datetime.timedelta(days=1)
-		start = today - datetime.timedelta(days=duration)
+		if "end" in request.GET:
+			end = datetime.datetime.strptime(request.GET["end"], "%Y%m%d")
+		else:
+			end = datetime.date.today()
+
+		if "start" in request.GET:
+			start = datetime.datetime.strptime(request.GET["start"], "%Y%m%d")
+		else:
+			start = add_months(end, -1)
+		end = end + datetime.timedelta(days=1)
 		print start
-		print today
-		orders = usr.income_orders.filter(paidtime__range=[start,today])
+		print end
+		orders = usr.income_orders.filter(paidtime__range=[start,end])
 		sold = orders.aggregate(Sum('amount'))["amount__sum"] or 0
-		courses = usr.sealed_time.filter(date__range=[start,today],done=True)
+		courses = usr.sealed_time.filter(date__range=[start,end],done=True)
 		sold_xu = orders.filter(isfirst=False).aggregate(Sum('amount'))["amount__sum"] or 0
 		#courses = orders.value_list("schedule")
 		return Response({"sold_xu":sold_xu, "sold_price": sold, "completed_course":courses.count()

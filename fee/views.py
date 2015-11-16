@@ -7,8 +7,16 @@ from .serializers import *
 from business.models import *
 from rest_framework.response import Response
 from usr.models import *
-from datetime import date, datetime, timedelta
+import datetime
+import calendar
 from django.db.models import Sum
+def add_months(sourcedate,months):
+	month = sourcedate.month - 1 + months
+	year = int(sourcedate.year + month / 12 )
+	month = month % 12 + 1
+	day = min(sourcedate.day,calendar.monthrange(year,month)[1])
+	return datetime.date(year,month,day)
+
 
 # Create your views here.
 class GymCoachSalarySettingView(generics.ListAPIView):
@@ -37,15 +45,29 @@ class GymSync(APIView):
 class CoachSalaryView(APIView):
 	def getsale(self,coach,start, end):
 		orders = coach.income_orders.filter(paidtime__range=[start,end])
+		for order in orders.all():
+			print order.paidtime
 		sold = orders.aggregate(Sum('amount'))["amount__sum"] or 0
 		sold_xu = orders.filter(isfirst=False).aggregate(Sum('amount'))["amount__sum"] or 0
 		return {"sold":sold, "sold_xu":sold}
 
 	def get(self, request, gymid):
 		gymfee = get_object_or_404(GymFee, gym = self.kwargs["gymid"])
-		end = date.today() + timedelta(days=1)
-		start = end - timedelta(days=30)
+		
+		if "end" in request.GET:
+			end = datetime.datetime.strptime(request.GET["end"], "%Y%m%d")
+		else:
+			end = datetime.date.today()
+
+		if "start" in request.GET:
+			start = datetime.datetime.strptime(request.GET["start"], "%Y%m%d")
+		else:
+			start = add_months(end, -1)
+		end = end + datetime.timedelta(days=1)
+
 		resp = []
+		print start
+		print end
 		for coach in gymfee.coach_salary_setting.all():
 			sl = CoachSalarySettingSerializer(coach)
 			tmp = sl.data

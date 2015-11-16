@@ -85,33 +85,42 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
         })
 })
 app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams",
-    function($scope, Restangular, NgTableParams, ngTableSimpleList) {
+    function($scope, Restangular, NgTableParams) {
         var gymid = $.cookie("gym")
         var that = this
+        that.startday = new Date().addMonths(-1)
+        that.endday = new Date();
 
         function calSum(data) {
             console.log(data)
             return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100
 
         }
-        Restangular.one('api/g/', gymid)
-            .one("salary/")
-            .get()
-            .then(function(data) {
-                $.each(data, function(i) {
-                    data[i].sum = calSum(data[i])
-                })
-                that.tableParams = new NgTableParams({
-                    sorting: {
-                        name: "asc"
-                    }
-                }, {
-                    dataset: data
-                });
-            })
 
-        that.startday = new Date().addMonths(-1)
-        that.endday = new Date();
+        function refresh() {
+            Restangular.one('api/g/', gymid)
+                .one("salary/")
+                .get({
+                    start: that.startday.Format("yyyyMMdd"),
+                    end: that.endday.Format("yyyyMMdd")
+                })
+                .then(function(data) {
+                    $.each(data, function(i) {
+                        data[i].sum = calSum(data[i])
+                    })
+                    that.tableParams = new NgTableParams({
+                        sorting: {
+                            name: "asc"
+                        }
+                    }, {
+                        dataset: data
+                    });
+                })
+        }
+
+        refresh()
+        that.refresh = refresh
+
         that.open = function($event) {
             if ($event == "start") {
                 that.startopened = true
@@ -128,15 +137,44 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams",
 app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams",
     function($scope, Restangular, NgTableParams, ngTableSimpleList) {
         var gymid = $.cookie("gym")
-        Restangular.one('api/g/', gymid).get().then(function(gym) {
-            $scope.coaches = gym.coaches_set
-            $.each($scope.coaches, function(i, item) {
-                //render income
-                Restangular.one("api/", item.name).one("income/").get().then(function(data) {
-                    $scope.coaches[i].income = data
+		var that = this
+        that.startday = new Date().addMonths(-1)
+        that.endday = new Date();
+
+        function calSum(data) {
+            console.log(data)
+            return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100
+
+        }
+
+        function refresh() {
+            Restangular.one('api/g/', gymid).get().then(function(gym) {
+                $scope.coaches = gym.coaches_set
+                $.each($scope.coaches, function(i, item) {
+                    //render income
+                    Restangular.one("api/", item.name).one("income/").get().then(function(data) {
+                        $scope.coaches[i].income = data
+                    })
                 })
             })
-        })
+        }
+
+        refresh()
+        that.refresh = refresh
+
+        that.open = function($event) {
+            if ($event == "start") {
+                that.startopened = true
+            } else {
+                that.endopened = true
+            }
+        };
+        that.startopend = false
+        that.endopend = false
+
+
+
+
     }
 ])
 app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams",

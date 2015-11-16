@@ -2,7 +2,8 @@
 	<div class="col-sm-12">
 		<section class="panel">
 		<header class="panel-heading row">
-		<h4 class="col-sm-1">工资</h4>
+		<h4 class="col-sm-4">工资&nbsp;&nbsp;{{ctrl.startday.Format("yyyy-MM-dd")}} ~
+		{{ctrl.endday.Format("yyyy-MM-dd")}}</h4>
 		<!--
 		<span class="tools pull-right">
 			<a href="javascript:;" class="fa fa-chevron-down"></a>
@@ -11,7 +12,7 @@
 		</span>
 		-->
 		<div class="col-md-1 pull-right">
-			<button type="button" class="btn btn-info "><i class="fa fa-refresh"></i> 刷新</button>
+			<button ng-click="ctrl.refresh()" type="button" class="btn btn-info "><i class="fa fa-refresh"></i> 刷新</button>
 		</div>
         <div class="col-md-3 pull-right">
             <p class="input-group">
@@ -22,8 +23,9 @@
 				 is-open="ctrl.endopened" 
 				show-button-bar="false">
               <span class="input-group-btn">
-                <button type="button" class="btn btn-default" 
-                ng-click="ctrl.open('end')"><i class="glyphicon glyphicon-calendar"></i></button>
+                <button type="button" class="btn btn-primary" 
+					ng-click="ctrl.open('end')">
+					<i class="fa fa-calendar"></i></button>
               </span>
             </p>
         </div>
@@ -36,8 +38,10 @@
 				 is-open="ctrl.startopened" 
 				show-button-bar="false">
               <span class="input-group-btn">
-                <button type="button" class="btn btn-default" 
-				ng-click="ctrl.open('start')"><i class="glyphicon glyphicon-calendar"></i></button>
+                <button type="button" class="btn btn-primary" 
+					ng-click="ctrl.open('start')">
+					<i class="fa fa-calendar"></i>
+				</button>
               </span>
             </p>
         </div>
