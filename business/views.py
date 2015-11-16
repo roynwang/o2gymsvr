@@ -4,6 +4,8 @@ from business.serializers import *
 from order.models import *
 from usr.models import *
 from rest_framework import generics,pagination
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from django.shortcuts import render,get_object_or_404,redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -182,6 +184,7 @@ class DayAvaiableTime(APIView):
 		ret = {"out":out,"na": na,"availiable":ava, "noon":noonhours}
 		return Response(ret, status=status.HTTP_200_OK)
 
+@permission_classes((AllowAny, ))
 class AllEvalOptionsView(generics.ListCreateAPIView):
 	queryset = BodyEvalOptions.objects.all()
 	serializer_class = BodyEvalOptionsSerializer
@@ -234,6 +237,7 @@ class TrainDateView(generics.ListAPIView):
 		def get_queryset(self):
 			return Train.objects.filter(name=self.kwargs.get("name")).values('date').distinct().order_by('-date')
 
+@permission_classes((AllowAny, ))
 class TrainByDateView(ListBulkCreateAPIView):
 	pagination_class = None
 	serializer_class = TrainSerializer
