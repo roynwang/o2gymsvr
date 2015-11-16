@@ -120,7 +120,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.done = []
         that.sum = 0
         that.product = null
-		that.order = null
+        that.order = null
         that.day = new Date()
         that.availiable = []
 
@@ -129,9 +129,9 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         };
         that.dayopened = false
 
-		that.gohome = function(){
+        that.gohome = function() {
             $state.transitionTo('index')
-		}
+        }
 
         that.submitBook = function() {
             var removelist = _.where(that.tableParams.data, {
@@ -140,17 +140,27 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             var addlist = _.where(that.tableParams.data, {
                 pendingaction: "add"
             })
-			_.each(addlist, function(item, i){
-				var datestr = item.date.replace(/-/g,"")
-				item.coach = that.order.coachdetail.id
-				item.custom = that.order.customerdetail.id
-				item.order = that.order.id
-				Restangular.one("api/",coachname)
-						.post("b/" + datestr, item)
-						.then(function(data){
-							console.log(data)
-						})
-			})
+            _.each(removelist, function(item, i) {
+                var datestr = item.date.replace(/-/g, "")
+                Restangular.one("api/", coachname)
+                    .one("b/" + datestr, item.hour)
+                    .remove()
+                    .then(function(data) {
+                        console.log("remove success")
+                    })
+            })
+
+            _.each(addlist, function(item, i) {
+                var datestr = item.date.replace(/-/g, "")
+                item.coach = that.order.coachdetail.id
+                item.custom = that.order.customerdetail.id
+                item.order = that.order.id
+                Restangular.one("api/", coachname)
+                    .post("b/" + datestr, item)
+                    .then(function(data) {
+                        console.log(data)
+                    })
+            })
 
         }
         that.cancelbook = function(date, hour) {
@@ -168,13 +178,20 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             }
             that.refreshtimetable(true)
             that.tableParams.total(that.tableParams.data)
-            //that.tableParams.reload()
+                //that.tableParams.reload()
             console.log(that.tableParams.data)
         }
         that.book = function(i) {
-			if(i == undefined || (i + 1)>= TimeMap.length){
-				return
-			}
+            if (i == undefined || (i + 1) >= TimeMap.length) {
+                return
+            }
+            //
+            var r = _.filter(that.tableParams.data, function(item) {
+                return item.pendingaction != "remove"
+            })
+            if (r.length == that.sum) {
+                return
+            }
             that.tableParams.data.push({
                 date: that.day.Format("yyyy-MM-dd"),
                 hour: i,
@@ -182,6 +199,9 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             })
             that.tableParams.total(that.tableParams.data)
             that.refreshtimetable(true)
+        }
+        that.bookvisiable = function(actual, expected) {
+            return actual.pendingaction != "remove"
         }
         that.refreshtimetable = function(norefresh) {
             function isAva(h, ava) {
@@ -246,7 +266,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             .then(function(data) {
                 that.coach = data.coachdetail
                     //get product
-				that.order = data
+                that.order = data
                 Restangular.one("api/p", data.product)
                     .get()
                     .then(function(product) {
@@ -264,10 +284,10 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                             sorting: {
                                 name: "asc"
                             },
-							count: data.booked.length
+                            count: data.booked.length
                         }, {
                             dataset: data.booked,
-							counts: []
+                            counts: []
                         });
                         that.refreshtimetable()
                     })

@@ -42,6 +42,10 @@
 						<li ng-repeat="book in coach.books | orderBy:book.hour">
                           <img ng-src="{{book.customerprofile.avatar}}" style="border-radius:
 						  50%;-webkit-border-radius: 50%;width: 28px; margin-right:10px"/>  {{book.customerprofile.displayname}}
+
+						  <a href="#/order/{{book.coachprofile.name}}/{{book.order}}"
+								  class="pull-right btn btn-danger btn-xs" style="margin-left:10px"><i
+									  class="fa fa-calendar"></i></a>
 						  <span class="label label-success pull-right">{{timemap[book.hour]}}</span>
 						</li>
 					</div>
