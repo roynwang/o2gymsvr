@@ -35,7 +35,7 @@
 					<!--<span>Today</span>-->
 					<img ng-if="calendarRowGroup" ng-src="{{coach.avatar}}" style="border-radius:5px;-webkit-border-radius: 5px;width: 40px;">
 					{{coach.displayname}}
-                    <button type="button" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> </button>
+                    <a href="#/neworder/{{coach.name}}" class="btn btn-primary pull-right"><i class="fa fa-plus"></i> </a>
 				</div>
 				<div class="slimScrollDiv">
 					<ul class="event-list" ng-slimscroll height="200">

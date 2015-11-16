@@ -55,11 +55,26 @@ var app = angular.module('JobApp', [
     "ngTable",
     'ui.bootstrap',
 ])
+app.directive('backButton', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            element.bind('click', goBack);
+
+            function goBack() {
+                history.back();
+                scope.$apply();
+            }
+        }
+    }
+});
+
 app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
     // For any unmatched url, send to /route1
     RestangularProvider.setDefaultHeaders({
         Authorization: "JWT " + $.cookie("token")
     });
+	RestangularProvider.setRequestSuffix('/')
     $urlRouterProvider.otherwise("/");
     $stateProvider
         .state('index', {
@@ -83,7 +98,25 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
             url: "/salarysummary",
             templateUrl: "/static/console/salarysummary.html",
         })
+        .state('neworder', {
+            url: "/neworder/:coachname",
+            templateUrl: "/static/console/neworder.html",
+        })
 })
+app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams',
+    function($scope, Restangular, NgTableParams, $stateParams) {
+        console.log($stateParams)
+        var that = this
+        var coachname = $stateParams.coachname
+        Restangular.one("api/", coachname)
+            .get()
+            .then(function(data) {
+                that.coach = data
+            })
+
+    }
+])
+
 app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams",
     function($scope, Restangular, NgTableParams) {
         var gymid = $.cookie("gym")
@@ -137,7 +170,7 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams",
 app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams",
     function($scope, Restangular, NgTableParams, ngTableSimpleList) {
         var gymid = $.cookie("gym")
-		var that = this
+        var that = this
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
 
