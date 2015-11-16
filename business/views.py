@@ -17,6 +17,7 @@ from rest_framework_bulk import ListBulkCreateAPIView
 import requests
 import calendar
 from django.conf import settings
+import json
 
 
 # Create your views here.
@@ -97,9 +98,11 @@ class ScheduleList(generics.ListCreateAPIView):
 				).exclude(date__in=rest).order_by("hour")
 		return queryset
 	def create(self, request, *args, **kwargs):
+		print json.dumps(request.data)
 		ret = super(ScheduleList, self).create(request, args,kwargs)
-		order = Order.objects.get(id=request.POST["order"])
-		ordered_count = Schedule.objects.filter(order=request.POST["order"],deleted=False).count()
+		print request.data["order"]
+		order = Order.objects.get(id=request.data["order"])
+		ordered_count = Schedule.objects.filter(order=request.data["order"],deleted=False).count()
 		order_count = order.product.amount
 		if order.status == "paid" and ordered_count == order_count:
 			order.status = "inprogress" 

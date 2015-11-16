@@ -2,7 +2,7 @@
     <section class="panel">
         <header class="panel-heading">
             <h4 class="text-center">
-<i back-button class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
+<i ng-click="ctrl.gohome()" class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
 预约
 </h4>
         </header>
@@ -35,18 +35,18 @@
                         <td data-title="'操作'">
                             <button 
 							class="btn btn-danger btn-xs"
-							 hidden="{{row.done?'true':'false'}}" 
+							 ng-hide="row.done"
 							ng-click="ctrl.cancelbook(row.date, row.hour)">取消</button>
                         </td>
                     </tr>
                 </table>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-5">
                 <p class="input-group">
                     <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
                     uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.day" is-open="ctrl.dayopened"
                     show-button-bar="false"
-					ng-change="ctrl.refreshtimetable()">
+					ng-change="ctrl.refreshtimetable(false)">
                     <span class="input-group-btn">
                 <button type="button" class="btn btn-primary" 
 					ng-click="ctrl.open()">
@@ -54,7 +54,7 @@
               </span>
                 </p>
 
-                <table class="table" ng-model="ctrl.day">
+                <table class="table table-bordered" ng-model="ctrl.day">
                     <tr ng-repeat="row in ctrl.timemapgroup">
                         <td ng-repeat-start="i in [0,1,2,3,4]" ng-repeat-end
 						 class="{{row[i]['status']?'bg-danger':''}}" ng-click="ctrl.book(row[i]['id'])">
@@ -63,9 +63,10 @@
                     </tr>
                 </table>
             </div>
-
-
-            <p class="text-center"><a class="btn btn-success btn-lg text-center" style="margin-top:20px">提交订单</a>
+			<div class="row">
+	            <p class="text-center"><a class="btn btn-success btn-lg text-center"
+					style="margin-top:20px" ng-click="ctrl.submitBook()">提交预约</a>
+			</div>
             </p>
         </div>
 </div>

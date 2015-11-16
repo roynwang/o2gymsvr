@@ -107,87 +107,122 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
             templateUrl: "/static/console/order.html",
         })
 })
-app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams',
-    function($scope, Restangular, NgTableParams, $stateParams) {
+app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state',
+    function($scope, Restangular, NgTableParams, $stateParams, $state) {
         console.log($stateParams)
         var that = this
         var coachname = $stateParams.coachname
         var orderid = $stateParams.orderid
+
+        $scope.timemap = TimeMap
+
         that.booked = []
         that.done = []
         that.sum = 0
         that.product = null
+		that.order = null
         that.day = new Date()
         that.availiable = []
-
-
-        that.newadd = []
-        that.newremove = []
 
         that.open = function() {
             that.dayopened = true
         };
         that.dayopened = false
 
+		that.gohome = function(){
+            $state.transitionTo('index')
+		}
+
+        that.submitBook = function() {
+            var removelist = _.where(that.tableParams.data, {
+                pendingaction: "remove"
+            })
+            var addlist = _.where(that.tableParams.data, {
+                pendingaction: "add"
+            })
+			_.each(addlist, function(item, i){
+				var datestr = item.date.replace(/-/g,"")
+				item.coach = that.order.coachdetail.id
+				item.custom = that.order.customerdetail.id
+				item.order = that.order.id
+				Restangular.one("api/",coachname)
+						.post("b/" + datestr, item)
+						.then(function(data){
+							console.log(data)
+						})
+			})
+
+        }
         that.cancelbook = function(date, hour) {
-            var t = _.findWhere(that.tableParams.data, {
+            var tar = {
                 date: date,
                 hour: hour
-            })
-            that.tableParams.data = that.tableParams.data.splice(that.tableParams.data.indexOf(t), 1)
-            that.newadd.data = _.without(that.tableParams.data, t)
-            if (t != undefined && t.date == that.day.Format("yyyy-MM-dd")) {
-                that.availiable.push(hour)
-                that.availiable.push(hour + 1)
-                that.refreshtimetable(true)
-
-                that.tableParams.total(that.tableParams.data.length)
-                that.tableParams.reload()
             }
+            var b = _.findWhere(that.tableParams.data, tar)
+                //set to 'remove' for existed item
+            if (b.pendingaction == undefined) {
+                b.pendingaction = "remove"
+            } else if (b.pendingaction == "add") { //remove directly for new added item
+                var i = that.tableParams.data.indexOf(b)
+                that.tableParams.data.splice(i, 1)
+            }
+            that.refreshtimetable(true)
+            that.tableParams.total(that.tableParams.data)
+            //that.tableParams.reload()
+            console.log(that.tableParams.data)
         }
-
         that.book = function(i) {
-            console.log(i)
-            if (that.availiable.indexOf(i) >= 0 && that.availiable.indexOf(i + 1) >= 0) {
-                //update availiable
-                that.availiable.splice(that.availiable.indexOf(i), 1)
-                that.availiable.splice(that.availiable.indexOf(i + 1), 1)
-
-                that.refreshtimetable(true)
-                    //update newadd and booked
-                that.tableParams.data.push({
-                    date: that.day.Format("yyyy-MM-dd"),
-                    hour: i
-                })
-                that.newadd.push({
-                    date: that.day.Format("yyyy-MM-dd"),
-                    hour: i
-                })
-
-                that.tableParams.total(that.tableParams.data.length)
-                console.log(that.tableParams.data)
-            }
+			if(i == undefined || (i + 1)>= TimeMap.length){
+				return
+			}
+            that.tableParams.data.push({
+                date: that.day.Format("yyyy-MM-dd"),
+                hour: i,
+                pendingaction: "add"
+            })
+            that.tableParams.total(that.tableParams.data)
+            that.refreshtimetable(true)
         }
         that.refreshtimetable = function(norefresh) {
+            function isAva(h, ava) {
+                for (var i in that.tableParams.data) {
+                    var item = that.tableParams.data[i]
+                    if (that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction == "remove" && (item.hour == h || item.hour + 1 == h)) {
+                        return true
+                    }
+                    if (that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction != "remove" && (item.hour == h || item.hour + 1 == h)) {
+                        return false
+                    }
+                }
+                if (ava.indexOf(h) >= 0) {
+                    return true
+                }
+                if (h == TimeMap.length - 1) {
+                    return true
+                }
+                return false
+
+            }
+
             function t(ava) {
                 that.timemapgroup = []
                 for (var i = 0; i < TimeMap.length; i++) {
                     if (i % 5 == 0) {
                         that.timemapgroup.push([])
                     }
-                    // if in ava or in newadd
-
-                    if (ava.indexOf(i) >= 0 || i == 26) {
-                        that.timemapgroup[Math.floor(i / 5)].push({
+                    var g = Math.floor(i / 5)
+                    if (isAva(i, ava)) {
+                        that.timemapgroup[g].push({
                             id: i,
                             status: false
                         })
                     } else {
-                        that.timemapgroup[Math.floor(i / 5)].push({
+                        that.timemapgroup[g].push({
                             id: i,
                             status: true
                         })
                     }
+
                 }
                 console.log(that.timemapgroup)
             }
@@ -204,7 +239,6 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             }
         }
 
-        that.refreshtimetable()
 
         Restangular.one("api/", coachname)
             .one("o/", orderid)
@@ -212,13 +246,13 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             .then(function(data) {
                 that.coach = data.coachdetail
                     //get product
+				that.order = data
                 Restangular.one("api/p", data.product)
                     .get()
                     .then(function(product) {
                         that.product = product
                         that.sum = product.amount
                             //get booked
-
                         console.log(data.booked)
                         that.booked = _.where(data.booked, {
                             done: false
@@ -226,24 +260,24 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                         that.done = _.where(data.booked, {
                             done: true
                         })
-
-                        $scope.timemap = TimeMap
                         that.tableParams = new NgTableParams({
-
                             sorting: {
                                 name: "asc"
-                            }
+                            },
+							count: data.booked.length
                         }, {
-                            dataset: data.booked
+                            dataset: data.booked,
+							counts: []
                         });
+                        that.refreshtimetable()
                     })
             })
 
     }
 ])
 
-app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams','$state',
-    function($scope, Restangular, NgTableParams, $stateParams,$state) {
+app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state',
+    function($scope, Restangular, NgTableParams, $stateParams, $state) {
         console.log($stateParams)
         var that = this
         var coachname = $stateParams.coachname
@@ -261,10 +295,13 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
             })
         that.submitorder = function() {
             Restangular.one("api/", coachname)
-                .post("manualorder",that.mo)
+                .post("manualorder", that.mo)
                 .then(function(data) {
                     console.log(data)
-					$state.transitionTo('orderdetail',{coachname:coachname,orderid:data.id})
+                    $state.transitionTo('orderdetail', {
+                        coachname: coachname,
+                        orderid: data.id
+                    })
                 })
         }
     }
@@ -429,7 +466,7 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
                 return row === item;
             });
             self.tableParams.reload().then(function(data) {
-                if (data.length === 0 && self.tableParams.total() > 0) {
+                if (data.length === 0 && self.tableParams.total > 0) {
                     self.tableParams.page(self.tableParams.page() - 1);
                     self.tableParams.reload();
                 }
