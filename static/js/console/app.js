@@ -201,9 +201,9 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             console.log(that.tableParams.data)
         }
         that.book = function(i) {
-            if (i == undefined || (i + 1) >= TimeMap.length) {
-                return
-            }
+			if(!isAva(i,that.availiable) || !isAva(i+1,that.availiable)){
+				return
+			}
             //
             var r = _.filter(that.tableParams.data, function(item) {
                 return item.pendingaction != "remove"
@@ -222,26 +222,32 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.bookvisiable = function(actual, expected) {
             return actual.pendingaction != "remove"
         }
-        that.refreshtimetable = function(norefresh) {
-            function isAva(h, ava) {
-                for (var i in that.tableParams.data) {
-                    var item = that.tableParams.data[i]
-                    if (that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction == "remove" && (item.hour == h || item.hour + 1 == h)) {
-                        return true
-                    }
-                    if (that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction != "remove" && (item.hour == h || item.hour + 1 == h)) {
-                        return false
-                    }
-                }
-                if (ava.indexOf(h) >= 0) {
-                    return true
-                }
-                if (h == TimeMap.length - 1) {
-                    return true
-                }
-                return false
 
+        function isAva(h, ava) {
+			if (h == undefined || (h + 1) > TimeMap.length) {
+                return false
             }
+
+            for (var i in that.tableParams.data) {
+                var item = that.tableParams.data[i]
+                if (that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction == "remove" && (item.hour == h || item.hour + 1 == h)) {
+                    return true
+                }
+                if (that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction != "remove" && (item.hour == h || item.hour + 1 == h)) {
+                    return false
+                }
+            }
+            if (ava.indexOf(h) >= 0) {
+                return true
+            }
+            if (h == TimeMap.length - 1) {
+                return true
+            }
+            return false
+
+        }
+        that.refreshtimetable = function(norefresh) {
+
 
             function t(ava) {
                 that.timemapgroup = []
