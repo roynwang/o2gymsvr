@@ -135,6 +135,7 @@
                     <ul class="sub">
                         <li><a href="boxed_page.html">技术支持</a></li>
                         <li><a href="horizontal_menu.html">付费信息</a></li>
+                        <li><a href="#feedback">意见和建议</a></li>
                     </ul>
                 </li>
             </ul>            </div>
@@ -210,7 +211,7 @@
 	function refreshuser(authinfo){
 		$.get("/api/" + authinfo.username + "/", function(data){
 			USER = data
-			$.cookie("user", USER, {path:"/"})
+			$.cookie("user", USER.name, {path:"/"})
 			$.cookie("gym", USER.gym_id[0], {path:"/"})
 			$("#username").html(data.displayname)
 			$("#useravatar").attr("src", data.avatar)

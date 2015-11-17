@@ -106,7 +106,21 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
             url: "/order/:coachname/:orderid",
             templateUrl: "/static/console/order.html",
         })
+        .state('feedback', {
+            url: "/feedback",
+            templateUrl: "/static/console/feedback.html",
+		})
 })
+app.controller("FeedbackControl", ['$scope', "Restangular",
+    function($scope, Restangular) {
+		this.feedback.feedback = ""
+		this.feedback.name = $.cookie("user")
+		Restangular.post("api/","feedback",this.feedback)
+				.then(function(data){
+					console.log("submit feedback success")
+				})
+	}])
+
 app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state',
     function($scope, Restangular, NgTableParams, $stateParams, $state) {
         console.log($stateParams)

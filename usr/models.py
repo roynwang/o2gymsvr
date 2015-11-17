@@ -56,3 +56,8 @@ class WorkingDays(models.Model):
 	out_hours = models.CharField(max_length=64, default="")
 	noon_hours = models.CharField(max_length=32, default="")
 
+class FeedBack(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=64, db_index=True)
+	feedback = models.CharField(max_length=1024, default="")
+	created = models.DateTimeField(default=datetime.now())
