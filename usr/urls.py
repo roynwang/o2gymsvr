@@ -2,6 +2,7 @@ from django.conf.urls import patterns, url,include
 from usr.views import *
 
 urlpatterns = patterns('',
+        url(r'^api/fb/$', FeedbackList.as_view()),
 		url(r'^api/n/',register),
 		url(r'^api/v/$','rest_framework_jwt.views.obtain_jwt_token'),
 		url(r'^api/t/', 'rest_framework_jwt.views.refresh_jwt_token'),
@@ -19,4 +20,5 @@ urlpatterns = patterns('',
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/gym/$', ModifyGym.as_view()),
         url(r'^api/(?P<by>[a-zA-Z0-9]{4,20})/u/(?P<personname>[a-zA-Z0-9]{4,20})/(?P<upaction>up|down)/$', PersonUp.as_view()),
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/income/$', InCome.as_view()),
+
 		)

@@ -1,71 +1,67 @@
 <div class="row" ng-controller="CoachSaleCtrl as ctrl">
-	<div class="col-sm-12">
-		<section class="panel">
-		<header class="panel-heading row">
-		<h4 class="col-sm-4">销售&nbsp;&nbsp;{{ctrl.startday.Format("yyyy-MM-dd")}} ~
+    <div class="col-sm-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="row">
+                    <h4 class="col-sm-4">销售&nbsp;&nbsp;{{ctrl.startday.Format("yyyy-MM-dd")}} ~
 		{{ctrl.endday.Format("yyyy-MM-dd")}}</h4>
-		<!--
+                    <!--
 		<span class="tools pull-right">
 			<a href="javascript:;" class="fa fa-chevron-down"></a>
 			<a href="javascript:;" class="fa fa-cog"></a>
 			<a href="javascript:;" class="fa fa-times"></a>
 		</span>
 		-->
-		<div class="col-md-1 pull-right">
-			<button ng-click="ctrl.refresh()" type="button" class="btn btn-info "><i class="fa fa-refresh"></i> 刷新</button>
-		</div>
-        <div class="col-md-3 pull-right">
-            <p class="input-group">
-              <input type="text" 
-				class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date" 
-				uib-datepicker-popup="yyyy-MM-dd"
-				 ng-model="ctrl.endday"
-				 is-open="ctrl.endopened" 
-				show-button-bar="false">
-              <span class="input-group-btn">
+                    <div class="col-md-1 pull-right">
+                        <button ng-click="ctrl.refresh()" type="button" class="btn btn-info "><i class="fa fa-refresh"></i> 刷新</button>
+                    </div>
+                    <div class="col-md-3 pull-right">
+                        <p class="input-group">
+                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
+                            uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.endday"
+                            is-open="ctrl.endopened" show-button-bar="false">
+                            <span class="input-group-btn">
                 <button type="button" class="btn btn-primary" 
 					ng-click="ctrl.open('end')">
 					<i class="fa fa-calendar"></i></button>
               </span>
-            </p>
-        </div>
-        <div class="col-md-3 pull-right">
-            <p class="input-group">
-              <input type="text" 
-				class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date" 
-				uib-datepicker-popup="yyyy-MM-dd"
-				 ng-model="ctrl.startday"
-				 is-open="ctrl.startopened" 
-				show-button-bar="false">
-              <span class="input-group-btn">
+                        </p>
+                    </div>
+                    <div class="col-md-3 pull-right">
+                        <p class="input-group">
+                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
+                            uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.startday"
+                            is-open="ctrl.startopened" show-button-bar="false">
+                            <span class="input-group-btn">
                 <button type="button" class="btn btn-primary" 
 					ng-click="ctrl.open('start')">
 					<i class="fa fa-calendar"></i>
 				</button>
               </span>
-            </p>
-        </div>
-		</header>
-		<div class="panel-body">
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th>教练</th>
-						<th>总销售量(元)</th>
-						<th>续课销售量(元)</th>
-						<th>上课数(节)</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="coach in coaches">
-						<td>{{coach.displayname}}</td>
-						<td>{{coach.income.sold_price}}</td>
-						<td>{{coach.income.sold_xu}}</td>
-						<td>{{coach.income.completed_course}}</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		</section>
-	</div>
+                        </p>
+                    </div>
+                </div>
+            </header>
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>教练</th>
+                            <th>总销售量(元)</th>
+                            <th>续课销售量(元)</th>
+                            <th>上课数(节)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="coach in coaches">
+                            <td>{{coach.displayname}}</td>
+                            <td>{{coach.income.sold_price}}</td>
+                            <td>{{coach.income.sold_xu}}</td>
+                            <td>{{coach.income.completed_course}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
 </div>

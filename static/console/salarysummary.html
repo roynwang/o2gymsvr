@@ -1,69 +1,62 @@
 <div class="row" ng-controller="SalarySummaryCtrl as ctrl">
-	<div class="col-sm-12">
-		<section class="panel">
-		<header class="panel-heading row">
-		<h4 class="col-sm-4">工资&nbsp;&nbsp;{{ctrl.startday.Format("yyyy-MM-dd")}} ~
+    <div class="col-sm-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="row">
+                    <h4 class="col-sm-4">工资&nbsp;&nbsp;{{ctrl.startday.Format("yyyy-MM-dd")}} ~
 		{{ctrl.endday.Format("yyyy-MM-dd")}}</h4>
-		<!--
+                    <!--
 		<span class="tools pull-right">
 			<a href="javascript:;" class="fa fa-chevron-down"></a>
 			<a href="javascript:;" class="fa fa-cog"></a>
 			<a href="javascript:;" class="fa fa-times"></a>
 		</span>
 		-->
-		<div class="col-md-1 pull-right">
-			<button ng-click="ctrl.refresh()" type="button" class="btn btn-info "><i class="fa fa-refresh"></i> 刷新</button>
-		</div>
-        <div class="col-md-3 pull-right">
-            <p class="input-group">
-              <input type="text" 
-				class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date" 
-				uib-datepicker-popup="yyyy-MM-dd"
-				 ng-model="ctrl.endday"
-				 is-open="ctrl.endopened" 
-				show-button-bar="false">
-              <span class="input-group-btn">
+                    <div class="col-md-1 pull-right">
+                        <button ng-click="ctrl.refresh()" type="button" class="btn btn-info "><i class="fa fa-refresh"></i> 刷新</button>
+                    </div>
+                    <div class="col-md-3 pull-right">
+                        <p class="input-group">
+                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
+                            uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.endday"
+                            is-open="ctrl.endopened" show-button-bar="false">
+                            <span class="input-group-btn">
                 <button type="button" class="btn btn-primary" 
 					ng-click="ctrl.open('end')">
 					<i class="fa fa-calendar"></i></button>
               </span>
-            </p>
-        </div>
-        <div class="col-md-3 pull-right">
-            <p class="input-group">
-              <input type="text" 
-				class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date" 
-				uib-datepicker-popup="yyyy-MM-dd"
-				 ng-model="ctrl.startday"
-				 is-open="ctrl.startopened" 
-				show-button-bar="false">
-              <span class="input-group-btn">
+                        </p>
+                    </div>
+                    <div class="col-md-3 pull-right">
+                        <p class="input-group">
+                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
+                            uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.startday"
+                            is-open="ctrl.startopened" show-button-bar="false">
+                            <span class="input-group-btn">
                 <button type="button" class="btn btn-primary" 
 					ng-click="ctrl.open('start')">
 					<i class="fa fa-calendar"></i>
 				</button>
               </span>
-            </p>
-        </div>
-
-
-
-		</header>
-		<div class="panel-body">
-			<table class="table table-hover" ng-table="ctrl.tableParams">
-				<tr ng-repeat="row in $data">
-					<td data-title="'姓名'">{{row.coachname}}</td>
-					<td data-title="'底薪'">{{row.base_salary}}</td>
-					<td data-title="'养老'">-{{row.base_salary * row.yanglao / 100}}({{row.yanglao}}%)</td>
-					<td data-title="'医疗'">-{{row.base_salary * row.yiliao / 100}}({{row.yiliao}}%)</td>
-					<td data-title="'失业'">-{{row.base_salary * row.shiye / 100}}({{row.shiye}}%)</td>
-					<td data-title="'公积金'">-{{row.base_salary * row.gongjijin/100}}({{row.gongjijin}}%)</td>
-					<td data-title="'销售提成'">{{row.sale.sold}}*{{row.xiaoshou}}%={{row.sale.sold*row.xiaoshou/100}}</td>
-					<td data-title="'续课奖励'">{{row.sale.sold_xu}}*{{row.xuke}}%={{row.sale.sold_xu*row.xuke/100}}</td>
-					<td data-title="'合计'">{{row.sum}}</td>
-				</tr>
-			</table>
-		</div>
-		</section>
-	</div>
+                        </p>
+                    </div>
+                </div>
+            </header>
+            <div class="panel-body">
+                <table class="table table-hover" ng-table="ctrl.tableParams">
+                    <tr ng-repeat="row in $data">
+                        <td data-title="'姓名'">{{row.coachname}}</td>
+                        <td data-title="'底薪'">{{row.base_salary}}</td>
+                        <td data-title="'养老'">-{{row.base_salary * row.yanglao / 100}}({{row.yanglao}}%)</td>
+                        <td data-title="'医疗'">-{{row.base_salary * row.yiliao / 100}}({{row.yiliao}}%)</td>
+                        <td data-title="'失业'">-{{row.base_salary * row.shiye / 100}}({{row.shiye}}%)</td>
+                        <td data-title="'公积金'">-{{row.base_salary * row.gongjijin/100}}({{row.gongjijin}}%)</td>
+                        <td data-title="'销售提成'">{{row.sale.sold}}*{{row.xiaoshou}}%={{row.sale.sold*row.xiaoshou/100}}</td>
+                        <td data-title="'续课奖励'">{{row.sale.sold_xu}}*{{row.xuke}}%={{row.sale.sold_xu*row.xuke/100}}</td>
+                        <td data-title="'合计'">{{row.sum}}</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+    </div>
 </div>

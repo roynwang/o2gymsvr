@@ -78,4 +78,6 @@ class WorkingDaysSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = WorkingDays
 
-
+class FeedBackSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = FeedBack

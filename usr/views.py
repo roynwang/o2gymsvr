@@ -243,4 +243,7 @@ class InCome(APIView):
 			or 0, "completed_course_price":self.cal_course_income(courses)})
 
 		
-		
+class FeedbackList(generics.ListCreateAPIView):
+	queryset = FeedBack.objects.all()
+	serializer_class = FeedBackSerializer 
+
