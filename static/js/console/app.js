@@ -548,8 +548,8 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
 
 app.controller("MainPageCtrl", ['$scope', "Restangular",
         function($scope, Restangular) {
-            //var date = new Date().format("yyyy-MM-dd");
-            var date = "20151029"
+            var date = new Date().format("yyyyMMdd");
+            //var date = "20151029"
             $scope.calendarRowGroup = []
             var g = -1
 
