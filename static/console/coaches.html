@@ -1,0 +1,48 @@
+<div class="col-md-12" ng-controller="CoachesControl as ctrl">
+    <div class="row" ng-repeat="i in ctrl.rows">
+        <div class="col-md-4" ng-repeat="c in [0,1,2]">
+            <!--widget start-->
+            <aside class="profile-nav alt" ng-if="(3*i + c) <= ctrl.coaches.length">
+                <div style=" border: 5px dashed #1fb5ad;
+	font-ize:30pt;
+	width: 100%;
+	height: 257px;
+	line-height: 200px;
+    border-radius: 3px;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 24px;
+    font-weight: bold;
+	cursor: pointer;
+    color: #7f858a;" ng-show="(3*i + c) == ctrl.coaches.length">
+					+添加教练
+                </div>
+                <section class="panel" ng-hide="(3*i + c) == ctrl.coaches.length">
+                    <div class="user-heading alt gray-bg">
+                        <a href="#">
+                            <img alt="" ng-src="{{ctrl.coaches[3*i + c].avatar}}">
+                        </a>
+                        <h1>{{ctrl.coaches[3*i + c].displayname}}</h1>
+                        <!--<p>Project Manager</p>-->
+                    </div>
+
+                    <ul class="nav nav-pills nav-stacked">
+                        <li>
+                            <a href="javascript:;"><i class="fa  fa-file"></i> 订单完成 <span class="badge label-success pull-right r-activity"> {{ctrl.coaches[3*i + c].order_count}}</span>
+                        </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;"><i class="fa  fa-file-o"></i> 授课完成<span class="badge label-danger pull-right r-activity">{{ctrl.coaches[3*i + c].course_count}}</span>
+                        </a>
+                        </li>
+                    </ul>
+                </section>
+            </aside>
+            <aside class="profile-nav alt" ng-if="ctrl.coaches[3*i + c] == ctrl.coaches.length">
+                <section class="panel">
+                </section>
+            </aside>
+            <!--widget end-->
+        </div>
+    </div>
+</div>

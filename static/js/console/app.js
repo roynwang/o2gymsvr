@@ -110,7 +110,24 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
             url: "/feedback",
             templateUrl: "/static/console/feedback.html",
         })
+        .state('coaches', {
+            url: "/coaches",
+            templateUrl: "/static/console/coaches.html",
+        })
 })
+app.controller("CoachesControl", ['$scope', "Restangular",
+    function($scope, Restangular) {
+        var that = this
+        var gymid = $.cookie("gym")
+        Restangular.one("api/g", gymid)
+            .get()
+            .then(function(data) {
+                that.rowcount = Math.ceil((data.coaches_set.length + 1) / 3)
+                that.coaches = data.coaches_set
+				that.rows = _.range(0,that.rowcount)
+            })
+    }
+])
 app.controller("FeedbackControl", ['$scope', "Restangular",
     function($scope, Restangular) {
         this.feedback = {}
@@ -201,9 +218,9 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             console.log(that.tableParams.data)
         }
         that.book = function(i) {
-			if(!isAva(i,that.availiable) || !isAva(i+1,that.availiable)){
-				return
-			}
+            if (!isAva(i, that.availiable) || !isAva(i + 1, that.availiable)) {
+                return
+            }
             //
             var r = _.filter(that.tableParams.data, function(item) {
                 return item.pendingaction != "remove"
@@ -224,7 +241,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         }
 
         function isAva(h, ava) {
-			if (h == undefined || (h + 1) > TimeMap.length) {
+            if (h == undefined || (h + 1) > TimeMap.length) {
                 return false
             }
 
@@ -548,7 +565,7 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
 
 app.controller("MainPageCtrl", ['$scope', "Restangular",
         function($scope, Restangular) {
-            var date = new Date().format("yyyyMMdd");
+            var date = new Date().Format("yyyyMMdd");
             //var date = "20151029"
             $scope.calendarRowGroup = []
             var g = -1
