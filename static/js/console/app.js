@@ -119,26 +119,36 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal",
     function($scope, Restangular, $uibModal) {
         var that = this
         var gymid = $.cookie("gym")
-        Restangular.one("api/g", gymid)
-            .get()
-            .then(function(data) {
-                that.rowcount = Math.ceil((data.coaches_set.length + 1) / 3)
-                that.coaches = data.coaches_set
-                that.rows = _.range(0, that.rowcount)
-            })
+
+        that.loadcoaches = function() {
+            Restangular.one("api/g", gymid)
+                .get()
+                .then(function(data) {
+                    that.rowcount = Math.ceil((data.coaches_set.length + 1) / 3)
+                    that.coaches = data.coaches_set
+                    that.rows = _.range(0, that.rowcount)
+                })
+        }
+
+		that.loadcoaches()
+
         that.newcoach = function(size) {
             var modalInstance = $uibModal.open({
                 animation: $scope.animationsEnabled,
                 templateUrl: 'newcoach.html',
                 controller: 'NewCoachCtrl',
                 size: size,
-                resolve: {}
+                resolve: {
+                    reload: function(){ return that.loadcoaches},
+					test: function(){ return "hahah"}
+                }
             });
         }
 
     }
 ])
-app.controller('NewCoachCtrl', function($scope, Restangular, $uibModalInstance) {
+app.controller('NewCoachCtrl', function($scope, Restangular, $uibModalInstance, reload, test) {
+	console.log(test)
     $scope.newcoach = {
         displayname: "",
         name: "",
@@ -152,7 +162,8 @@ app.controller('NewCoachCtrl', function($scope, Restangular, $uibModalInstance) 
             })
             .then(function(data) {
                 $uibModalInstance.close("");
-            	$state.transitionTo('coaches')
+                //$state.transitionTo('coaches')
+                reload()
             })
     }
     $scope.ok = function() {
@@ -160,10 +171,10 @@ app.controller('NewCoachCtrl', function($scope, Restangular, $uibModalInstance) 
             .post("u", $scope.newcoach)
             .then(function(data) {
                     //set the gym
-					changeGym($scope.newcoach.name,$.cookie("gym"))
+                    changeGym($scope.newcoach.name, $.cookie("gym"))
                 },
                 function(res) {
-					changeGym($scope.newcoach.name,$.cookie("gym"))
+                    changeGym($scope.newcoach.name, $.cookie("gym"))
                 }
             )
     };
@@ -613,7 +624,9 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
             var date = new Date().Format("yyyyMMdd");
             //var date = "20151029"
             $scope.calendarRowGroup = []
-            var g = -1
+            $scope.timemap = TimeMap
+            var g = 0
+            $scope.calendarRowGroup.push([])
 
             $scope.coursecount = 0
 
@@ -633,20 +646,28 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
                     $scope.coaches = gym.coaches_set
                     $.each($scope.coaches, function(i, item) {
                         //render income
+						/*
                         Restangular.one("api/", item.name).one("income/").get().then(function(data) {
                             $scope.coaches[i].income = data
                         })
+						*/
 
                         //render booked schedule
+						
                         Restangular.one("api/", item.name).one("b/", date).get().then(function(data) {
                             $scope.coaches[i].books = data
                             $scope.coursecount += data.length
+							/*
                             if (i % 2 == 0) {
                                 $scope.calendarRowGroup.push([])
                                 g += 1
-                            }
+                            }*/
+							if($scope.calendarRowGroup[g].length == 3){
+									g ++
+            						$scope.calendarRowGroup.push([])
+							}
+
                             $scope.calendarRowGroup[g].push($scope.coaches[i])
-                            $scope.timemap = TimeMap
                         })
 
                         //render the today income
