@@ -6,7 +6,9 @@ from usr.serializers import *
 
 
 
-
+class ProductSimpleSerializer(serializers.ModelSerializer):
+	class Meta:
+		model =	Product
 
 class OrderDetailSerializer(serializers.ModelSerializer):
 	coachdetail = SimpleUserSerilaizer(source="coach",read_only = True)
@@ -25,9 +27,17 @@ class OrderSerializer(serializers.ModelSerializer):
 	coachdetail = SimpleUserSerilaizer(source="coach", read_only = True)
 	customerdetail = SimpleUserSerilaizer(source="custom", read_only = True)
 	#booked = serializers.SerializerMethodField()
+	complete_status = serializers.SerializerMethodField()
 
 	class Meta:
 		model =	Order 
+
+	def get_complete_status(self, obj):
+		completed = Schedule.objects.filter(order=obj,deleted = False, done = True).count()
+		sum_amount = obj.product.amount
+		return str(completed) + "/" + str(sum_amount)
+		
+		
 
 class ProductSerializer(serializers.ModelSerializer):
 	coachdetail = SimpleUserSerilaizer(source="coach", read_only=True)
@@ -39,4 +49,4 @@ class ProductSerializer(serializers.ModelSerializer):
 	class Meta:
 		model =	Product
 
-	
+

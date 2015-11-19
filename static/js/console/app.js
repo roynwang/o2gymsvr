@@ -125,12 +125,18 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
 		that.statusmap = {
 			"inprogress":"进行中",
 			"unpaid":"待支付",
+			"paid":"待预约",
 			"done":"已完成"
 		}
         Restangular.one('api/', $stateParams.customername)
             .one("o/")
             .get()
             .then(function(data) {
+				_.map(data.results, function(item){
+					if(eval(item.complete_status) == 1){
+						item.status = "done"
+					}
+				})
                 that.tableParams = new NgTableParams({
                     sorting: {}
                 }, {

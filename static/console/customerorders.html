@@ -2,7 +2,11 @@
 	<!--<h3>客户信息</h3>-->
 	<section class="panel">
 	<header class="panel-heading">
-	订单列表
+            <h4 class="text-center">
+<i back-button class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
+订单列表
+</h4>
+
 	</header>
 	<div class="panel-body">
 		<table ng-table="demo.tableParams" class="table table-condensed table-striped">
@@ -10,8 +14,10 @@
 				<td data-title="'订单号'">{{row.billid}}</td>
 				<td data-title="'金额'">{{row.amount}}</td>
 				<td data-title="'状态'">{{demo.statusmap[row.status]}}</td>
+				<td data-title="'完成度'">{{row.complete_status}}</td>
 				<td><a class="btn btn-primary"
-						href="#order/{{row.coachdetail.name}}/{{row.id}}">预约</a></td>
+						href="#order/{{row.coachdetail.name}}/{{row.id}}">{{row.status ==
+						"done"?"查看":"预约"}}</a></td>
 			</tr>
 		</table>
 	</div>
