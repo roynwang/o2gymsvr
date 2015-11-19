@@ -13,7 +13,8 @@
 		</span>
 		-->
                     <div class="col-md-1 pull-right">
-                        <button ng-click="ctrl.refresh()" type="button" class="btn btn-info "><i class="fa fa-refresh"></i> 刷新</button>
+                        <button ng-click="ctrl.refresh()" type="button" class="btn btn-info "
+							style="position: relative;right: 10px;"><i class="fa fa-refresh"></i> 刷新</button>
                     </div>
                     <div class="col-md-3 pull-right">
                         <p class="input-group">
@@ -53,7 +54,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="coach in coaches">
+                        <tr ng-repeat="coach in coaches" style="color:#333">
                             <td>{{coach.displayname}}</td>
                             <td>{{coach.income.sold_price}}</td>
                             <td>{{coach.income.sold_xu}}</td>

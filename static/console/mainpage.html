@@ -28,7 +28,7 @@
     </div>
 </div>
 <div class="row" ng-repeat="cg in calendarRowGroup" style="margin-bottom:20px">
-	<div class="col-md-4" ng-repeat="coach in cg ">
+	<div ng-if="cg != undefined" class="col-md-4" ng-repeat="coach in cg ">
 		<div class="event-calendar clearfix">
 			<div class="col-lg-12 event-list-block">
 				<div class="cal-day">
