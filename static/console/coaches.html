@@ -3,7 +3,7 @@
         <div class="col-md-4" ng-repeat="c in [0,1,2]">
             <!--widget start-->
             <aside class="profile-nav alt" ng-if="(3*i + c) <= ctrl.coaches.length">
-                <div style=" border: 5px dashed #1fb5ad;
+                <div ng-click="ctrl.newcoach()" style=" border: 5px dashed #1fb5ad;
 	font-ize:30pt;
 	width: 100%;
 	height: 257px;
@@ -15,7 +15,7 @@
     font-weight: bold;
 	cursor: pointer;
     color: #7f858a;" ng-show="(3*i + c) == ctrl.coaches.length">
-					+添加教练
+                    +添加教练
                 </div>
                 <section class="panel" ng-hide="(3*i + c) == ctrl.coaches.length">
                     <div class="user-heading alt gray-bg">
@@ -46,3 +46,28 @@
         </div>
     </div>
 </div>
+<script type="text/ng-template" id="newcoach.html">
+    <div class="modal-header">
+        <h3 class="modal-title">添加教练</h3>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">姓名</label>
+                <div class="col-lg-8">
+                    <input type="text" ng-model="newcoach.displayname" class="form-control" placeholder="">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-lg-2 control-label">手机号码</label>
+                <div class="col-lg-8">
+                    <input type="text" ng-model="newcoach.name"  class="form-control" placeholder="">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+        <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

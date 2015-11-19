@@ -115,8 +115,8 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
             templateUrl: "/static/console/coaches.html",
         })
 })
-app.controller("CoachesControl", ['$scope', "Restangular",
-    function($scope, Restangular) {
+app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal",
+    function($scope, Restangular, $uibModal) {
         var that = this
         var gymid = $.cookie("gym")
         Restangular.one("api/g", gymid)
@@ -124,10 +124,54 @@ app.controller("CoachesControl", ['$scope', "Restangular",
             .then(function(data) {
                 that.rowcount = Math.ceil((data.coaches_set.length + 1) / 3)
                 that.coaches = data.coaches_set
-				that.rows = _.range(0,that.rowcount)
+                that.rows = _.range(0, that.rowcount)
             })
+        that.newcoach = function(size) {
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'newcoach.html',
+                controller: 'NewCoachCtrl',
+                size: size,
+                resolve: {}
+            });
+        }
+
     }
 ])
+app.controller('NewCoachCtrl', function($scope, Restangular, $uibModalInstance) {
+    $scope.newcoach = {
+        displayname: "",
+        name: "",
+        iscoach: true
+    }
+
+    function changeGym(coachphone, gymid) {
+        Restangular.one("api/", $scope.newcoach.name)
+            .post("gym", {
+                gym: $.cookie("gym")
+            })
+            .then(function(data) {
+                $uibModalInstance.close("");
+            })
+    }
+    $scope.ok = function() {
+        Restangular.one("api/")
+            .post("u", $scope.newcoach)
+            .then(function(data) {
+                    //set the gym
+					changeGym($scope.newcoach.name,$.cookie("gym"))
+                },
+                function(res) {
+					changeGym($scope.newcoach.name,$.cookie("gym"))
+                }
+            )
+    };
+
+    $scope.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+    };
+})
+
 app.controller("FeedbackControl", ['$scope', "Restangular",
     function($scope, Restangular) {
         this.feedback = {}
