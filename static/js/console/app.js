@@ -86,6 +86,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
             url: "/customers",
             templateUrl: "/static/console/customers.html",
         })
+        .state('customerorders', {
+            url: "/customer/:customername/orders",
+            templateUrl: "/static/console/customerorders.html",
+        })
         .state('sale', {
             url: "/sale",
             templateUrl: "/static/console/sale.html",
@@ -115,6 +119,26 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
             templateUrl: "/static/console/coaches.html",
         })
 })
+app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams",
+    function($scope, Restangular, NgTableParams, $stateParams) {
+        var that = this
+		that.statusmap = {
+			"inprogress":"进行中",
+			"unpaid":"待支付",
+			"done":"已完成"
+		}
+        Restangular.one('api/', $stateParams.customername)
+            .one("o/")
+            .get()
+            .then(function(data) {
+                that.tableParams = new NgTableParams({
+                    sorting: {}
+                }, {
+                    dataset: data.results
+                });
+            })
+    }
+])
 app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal",
     function($scope, Restangular, $uibModal) {
         var that = this
@@ -130,7 +154,7 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal",
                 })
         }
 
-		that.loadcoaches()
+        that.loadcoaches()
 
         that.newcoach = function(size) {
             var modalInstance = $uibModal.open({
@@ -139,8 +163,12 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal",
                 controller: 'NewCoachCtrl',
                 size: size,
                 resolve: {
-                    reload: function(){ return that.loadcoaches},
-					test: function(){ return "hahah"}
+                    reload: function() {
+                        return that.loadcoaches
+                    },
+                    test: function() {
+                        return "hahah"
+                    }
                 }
             });
         }
@@ -148,7 +176,7 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal",
     }
 ])
 app.controller('NewCoachCtrl', function($scope, Restangular, $uibModalInstance, reload, test) {
-	console.log(test)
+    console.log(test)
     $scope.newcoach = {
         displayname: "",
         name: "",
@@ -646,26 +674,26 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
                     $scope.coaches = gym.coaches_set
                     $.each($scope.coaches, function(i, item) {
                         //render income
-						/*
+                        /*
                         Restangular.one("api/", item.name).one("income/").get().then(function(data) {
                             $scope.coaches[i].income = data
                         })
 						*/
 
                         //render booked schedule
-						
+
                         Restangular.one("api/", item.name).one("b/", date).get().then(function(data) {
                             $scope.coaches[i].books = data
                             $scope.coursecount += data.length
-							/*
-                            if (i % 2 == 0) {
+                                /*
+                                                     if (i % 2 == 0) {
+                                                         $scope.calendarRowGroup.push([])
+                                                         g += 1
+                                                     }*/
+                            if ($scope.calendarRowGroup[g].length == 3) {
+                                g++
                                 $scope.calendarRowGroup.push([])
-                                g += 1
-                            }*/
-							if($scope.calendarRowGroup[g].length == 3){
-									g ++
-            						$scope.calendarRowGroup.push([])
-							}
+                            }
 
                             $scope.calendarRowGroup[g].push($scope.coaches[i])
                         })

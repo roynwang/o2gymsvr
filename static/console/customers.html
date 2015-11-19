@@ -11,6 +11,7 @@
 				<td data-title="'姓名'" filter="{displayname: 'text'}" sortable="'displayname'">{{row.displayname}}</td>
 				<td data-title="'电话'" filter="{name: 'text'}" sortable="'number'">{{row.name}}</td>
 				<td data-title="'性别'">{{row.sex?"男":"女"}}</td>
+				<td><a class="btn btn-primary" href="#customer/{{row.name}}/orders">历史订单</a></td>
 			</tr>
 		</table>
 	</div>
