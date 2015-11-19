@@ -152,6 +152,7 @@ app.controller('NewCoachCtrl', function($scope, Restangular, $uibModalInstance) 
             })
             .then(function(data) {
                 $uibModalInstance.close("");
+            	$state.transitionTo('coaches')
             })
     }
     $scope.ok = function() {
