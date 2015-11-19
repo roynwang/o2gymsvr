@@ -684,7 +684,7 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
                         Restangular.one("api/", item.name).one("b/", date).get().then(function(data) {
 							var g = Math.floor(i/3)
 							if($scope.calendarRowGroup[g] == undefined){
-								$scope.calendarRowGroup[g] = new Array(3)
+								$scope.calendarRowGroup[g] = []
 							}
                             $scope.coaches[i].books = data
                             $scope.coursecount += data.length
