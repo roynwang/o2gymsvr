@@ -30,19 +30,19 @@ def add_months(sourcedate,months):
 
 @api_view(['POST'])
 def register(request):
-    VALID_USER_FIELDS = [f.name for f in get_user_model()._meta.fields]
-    DEFAULTS = {
-    }
-    serialized = UserRegisterationSerializer(data=request.data)
-    if serialized.is_valid():
-        user_data = {field: data for (field, data) in request.data.items() if field in VALID_USER_FIELDS}
-        user_data.update(DEFAULTS)
-        user = get_user_model().objects.create_user(
-            **user_data
-        )
-        return Response(UserRegisterationSerializer(instance=user).data, status=status.HTTP_201_CREATED)
-    else:
-        return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
+	VALID_USER_FIELDS = [f.name for f in get_user_model()._meta.fields]
+	DEFAULTS = {
+			}
+	serialized = UserRegisterationSerializer(data=request.data)
+	if serialized.is_valid():
+		user_data = {field: data for (field, data) in request.data.items() if field in VALID_USER_FIELDS}
+		user_data.update(DEFAULTS)
+		user = get_user_model().objects.create_user(
+				**user_data
+				)
+		return Response(UserRegisterationSerializer(instance=user).data, status=status.HTTP_201_CREATED)
+	else:
+		return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserList(generics.CreateAPIView):
 	queryset = User.objects.all()
@@ -197,18 +197,22 @@ class CustomerList(generics.ListAPIView):
 		#customers =  Order.objects.filter(coach = usr).values_list("custom",flat=True)
 		print customers
 		return User.objects.filter(name__in = customers)
-		#return usr.income_orders.customer
-		#return Product.objects.filter(coach=usr)
 
 class ModifyGym(APIView):
 	def post(self, request, name):
 		usr = get_object_or_404(User, name=self.kwargs["name"])
-		newgym = get_object_or_404(Gym,id=request.DATA['gym'])
-		usr.gym = [newgym]
-		usr.save()
-		serializer = GymSerializer(newgym)
-		return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
-		
+		if "gym" in request.DATA:
+			newgym = get_object_or_404(Gym,id=request.DATA['gym'])
+			usr.gym = [newgym]
+
+			usr.save()
+			serializer = GymSerializer(newgym)
+			return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+		else:
+			usr.gym = []
+			usr.save()
+			return Response({"msg":"empty gym"}, status=status.HTTP_202_ACCEPTED)
+
 
 class InCome(APIView):
 	def cal_course_income(self,query):
@@ -242,7 +246,7 @@ class InCome(APIView):
 		return Response({"sold_xu":sold_xu, "sold_price": sold, "completed_course":courses.count()
 			or 0, "completed_course_price":self.cal_course_income(courses)})
 
-		
+
 class FeedbackList(generics.ListCreateAPIView):
 	queryset = FeedBack.objects.all()
 	serializer_class = FeedBackSerializer 

@@ -40,6 +40,11 @@ class GymSync(APIView):
 			CoachSalarySetting.objects.get_or_create(
 					coach =  coach.id,
 					gymfee = gymfee)
+		allcoaches = gymitem.coaches.values_list("id", flat=True)
+		print allcoaches
+		for c in gymfee.coach_salary_setting.all():
+			if not c.coach in allcoaches:
+				c.delete()
 		return Response({"result":"created"})
 
 class CoachSalaryView(APIView):

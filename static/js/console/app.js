@@ -54,6 +54,7 @@ var app = angular.module('JobApp', [
     'jkuri.slimscroll',
     "ngTable",
     'ui.bootstrap',
+    'oitozero.ngSweetAlert',
 ])
 app.directive('backButton', function() {
     return {
@@ -122,21 +123,21 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
 app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams",
     function($scope, Restangular, NgTableParams, $stateParams) {
         var that = this
-		that.statusmap = {
-			"inprogress":"进行中",
-			"unpaid":"待支付",
-			"paid":"待预约",
-			"done":"已完成"
-		}
+        that.statusmap = {
+            "inprogress": "进行中",
+            "unpaid": "待支付",
+            "paid": "待预约",
+            "done": "已完成"
+        }
         Restangular.one('api/', $stateParams.customername)
             .one("o/")
             .get()
             .then(function(data) {
-				_.map(data.results, function(item){
-					if(eval(item.complete_status) == 1){
-						item.status = "done"
-					}
-				})
+                _.map(data.results, function(item) {
+                    if (eval(item.complete_status) == 1) {
+                        item.status = "done"
+                    }
+                })
                 that.tableParams = new NgTableParams({
                     sorting: {}
                 }, {
@@ -145,8 +146,8 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
             })
     }
 ])
-app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal",
-    function($scope, Restangular, $uibModal) {
+app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAlert",
+    function($scope, Restangular, $uibModal, SweetAlert) {
         var that = this
         var gymid = $.cookie("gym")
 
@@ -158,6 +159,34 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal",
                     that.coaches = data.coaches_set
                     that.rows = _.range(0, that.rowcount)
                 })
+        }
+        that.remove = function(c) {
+            SweetAlert.swal({
+                    //title: "确定移除该教练吗?",
+                    title: "",
+                    text: "确定移除该教练吗?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "移除",
+                    cancelButtonText: "取消",
+                    closeOnConfirm: false
+                },
+                function(yes) {
+					if(!yes){
+						return
+					}
+                    Restangular.one("api/", c.name)
+                        .post("gym", {})
+                        .then(function(data) {
+                            Restangular.one("api/g/", $.cookie("gym"))
+                                 .one("sync")
+                                .get()
+                            //$state.transitionTo('coaches')
+                            that.loadcoaches()
+                            SweetAlert.swal("","移除完成","success");
+                        })
+                });
         }
 
         that.loadcoaches()
@@ -196,10 +225,10 @@ app.controller('NewCoachCtrl', function($scope, Restangular, $uibModalInstance, 
             })
             .then(function(data) {
                 $uibModalInstance.close("");
-				Restangular.one("api/g/",$.cookie("gym"))
-						   .one("sync")
-						   .get()
-                //$state.transitionTo('coaches')
+                Restangular.one("api/g/", $.cookie("gym"))
+                    .one("sync")
+                    .get()
+                    //$state.transitionTo('coaches')
                 reload()
             })
     }
@@ -682,13 +711,13 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
                     $scope.coaches = gym.coaches_set
                     $.each($scope.coaches, function(i, item) {
                         Restangular.one("api/", item.name).one("b/", date).get().then(function(data) {
-							var g = Math.floor(i/3)
-							if($scope.calendarRowGroup[g] == undefined){
-								$scope.calendarRowGroup[g] = []
-							}
+                            var g = Math.floor(i / 3)
+                            if ($scope.calendarRowGroup[g] == undefined) {
+                                $scope.calendarRowGroup[g] = []
+                            }
                             $scope.coaches[i].books = data
                             $scope.coursecount += data.length
-                            $scope.calendarRowGroup[g][i%3] = $scope.coaches[i]
+                            $scope.calendarRowGroup[g][i % 3] = $scope.coaches[i]
                         })
 
                         //render the today income
