@@ -352,7 +352,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
                     title: "确认",
-                    text: "这节课已上完了吗?",
+                    text: "这节课已经上完了吗?",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#1fb5ad",
