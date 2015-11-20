@@ -1,5 +1,6 @@
 body {
 	font-size: 14px;
+	background-color: #eee
 }
 .event-calendar {
 	min-height: 320px;
