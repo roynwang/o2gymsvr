@@ -19,3 +19,19 @@ table {
 ul.sidebar-menu li a{
 	font-size: 14px;
 }
+.brand {
+	height: 60px;
+}
+a.logo {
+	margin-top: 10px;
+}
+.sidebar-toggle-box {
+	margin-top: 13px;
+}
+.top-nav {
+	margin-top: 13px;
+}
+ul.sidebar-menu {
+	padding-top: 60px;
+}
+
