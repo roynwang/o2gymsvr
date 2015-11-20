@@ -16,3 +16,6 @@ tr {
 table {
 	color: #333
 }
+ul.sidebar-menu li a{
+	font-size: 14px;
+}
