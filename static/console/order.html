@@ -34,10 +34,9 @@
 								{{row.done?'label-primary':'label-success'}}">{{row.done?"已完成":"待上课"}}</span>
                         </td>
                         <td data-title="'操作'">
-                            <button 
-							class="btn btn-danger btn-xs"
-							 ng-hide="row.done"
-							ng-click="ctrl.cancelbook(row.date, row.hour)">取消</button>
+                            <button class="btn btn-danger btn-xs" ng-hide="row.done" ng-click="ctrl.cancelbook(row.date, row.hour)">取消</button>
+                            <button class="btn btn-primary btn-xs" ng-hide="row.done"
+								ng-click="ctrl.bookComplete(row.date, row.hour)">完成</button>
                         </td>
                     </tr>
                 </table>
@@ -46,8 +45,7 @@
                 <p class="input-group">
                     <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
                     uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.day" is-open="ctrl.dayopened"
-                    show-button-bar="false"
-					ng-change="ctrl.refreshtimetable(false)">
+                    show-button-bar="false" ng-change="ctrl.refreshtimetable(false)">
                     <span class="input-group-btn">
                 <button type="button" class="btn btn-primary" 
 					ng-click="ctrl.open()">
@@ -57,17 +55,17 @@
 
                 <table class="table table-bordered" ng-model="ctrl.day">
                     <tr ng-repeat="row in ctrl.timemapgroup">
-                        <td ng-repeat-start="i in [0,1,2,3,4]" ng-repeat-end
-						 class="{{row[i]['status']?'bg-danger':''}}" ng-click="ctrl.book(row[i]['id'])">
+                        <td ng-repeat-start="i in [0,1,2,3,4]" ng-repeat-end class="{{row[i]['status']?'bg-danger':''}}"
+                        ng-click="ctrl.book(row[i]['id'])">
                             {{timemap[row[i]["id"]]}}
                         </td>
                     </tr>
                 </table>
             </div>
-			<div class="row">
-	            <p class="text-center"><a class="btn btn-primary btn-lg text-center"
-					style="margin-top:20px" ng-click="ctrl.submitBook()">提交预约</a>
-			</div>
+            <div class="row">
+                <p class="text-center"><a class="btn btn-primary btn-lg text-center" style="margin-top:20px"
+                    ladda="that.submitting" data-style="expand-left" ng-click="ctrl.submitBook()">提交预约</a>
+            </div>
             </p>
         </div>
 </div>

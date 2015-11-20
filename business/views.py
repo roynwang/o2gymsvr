@@ -53,6 +53,7 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 		return get_object_or_404(Schedule,coach=coach,date=date_str, hour=hour)
 
 	def partial_update(self, request, *args, **kwargs):
+		print request.DATA
 		ret = super(ScheduleItem, self).partial_update(request, args,kwargs)
 		if 'rate' in request.DATA:
 			print "rating ... ..."
@@ -67,6 +68,8 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 			print coach.course_count
 			coach.save()
 			print "xxxxxxxxxxxxxxx"
+		if "order" in request.DATA:
+			order = Order.objects.get(id=request.DATA["order"])
 			ordered_count = Schedule.objects.filter(order=request.DATA["order"],deleted=False,done=True).count()
 			order_count = order.product.amount
 			if ordered_count == order_count:

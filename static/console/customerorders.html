@@ -15,7 +15,7 @@
 				<td data-title="'金额'">{{row.amount}}</td>
 				<td data-title="'状态'">{{demo.statusmap[row.status]}}</td>
 				<td data-title="'完成度'">{{row.complete_status}}</td>
-				<td><a class="btn btn-primary"
+				<td><a class="btn {{row.status=='done'?'btn-success':'btn-primary'}}"
 						href="#order/{{row.coachdetail.name}}/{{row.id}}">{{row.status ==
 						"done"?"查看":"预约"}}</a></td>
 			</tr>

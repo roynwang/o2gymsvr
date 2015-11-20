@@ -55,6 +55,7 @@ var app = angular.module('JobApp', [
     "ngTable",
     'ui.bootstrap',
     'oitozero.ngSweetAlert',
+    'angular-ladda'
 ])
 app.directive('backButton', function() {
     return {
@@ -70,11 +71,12 @@ app.directive('backButton', function() {
     }
 });
 
-app.config(function($stateProvider, $urlRouterProvider, RestangularProvider) {
+app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider) {
     // For any unmatched url, send to /route1
     RestangularProvider.setDefaultHeaders({
         Authorization: "JWT " + $.cookie("token")
     });
+    $httpProvider.defaults.headers.common.Authorization = "JWT " + $.cookie("token")
     RestangularProvider.setRequestSuffix('/')
     $urlRouterProvider.otherwise("/");
     $stateProvider
@@ -173,18 +175,18 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAl
                     closeOnConfirm: false
                 },
                 function(yes) {
-					if(!yes){
-						return
-					}
+                    if (!yes) {
+                        return
+                    }
                     Restangular.one("api/", c.name)
                         .post("gym", {})
                         .then(function(data) {
                             Restangular.one("api/g/", $.cookie("gym"))
-                                 .one("sync")
+                                .one("sync")
                                 .get()
-                            //$state.transitionTo('coaches')
+                                //$state.transitionTo('coaches')
                             that.loadcoaches()
-                            SweetAlert.swal("","移除完成","success");
+                            SweetAlert.swal("", "移除完成", "success");
                         })
                 });
         }
@@ -265,8 +267,8 @@ app.controller("FeedbackControl", ['$scope', "Restangular",
     }
 ])
 
-app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state',
-    function($scope, Restangular, NgTableParams, $stateParams, $state) {
+app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http",
+    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http) {
         console.log($stateParams)
         var that = this
         var coachname = $stateParams.coachname
@@ -290,6 +292,23 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.gohome = function() {
             $state.transitionTo('index')
         }
+        that.pendingaction = 0
+
+        that.completeditem = function() {
+            that.pendingaction--
+                if (that.pendingaction == 0) {
+                    that.submitting = false
+                    swal({
+                        type: "success",
+                        title: "提交成功",
+                        text: "",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    that.reload()
+                }
+
+        }
 
         that.submitBook = function() {
             var removelist = _.where(that.tableParams.data, {
@@ -298,6 +317,13 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             var addlist = _.where(that.tableParams.data, {
                 pendingaction: "add"
             })
+            that.pendingaction = removelist.length + addlist.length
+            if (that.pendingaction == 0) {
+                return
+            } else {
+                that.submitting = true
+            }
+
             _.each(removelist, function(item, i) {
                 var datestr = item.date.replace(/-/g, "")
                 Restangular.one("api/", coachname)
@@ -305,9 +331,9 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     .remove()
                     .then(function(data) {
                         console.log("remove success")
+                        that.completeditem()
                     })
             })
-
             _.each(addlist, function(item, i) {
                 var datestr = item.date.replace(/-/g, "")
                 item.coach = that.order.coachdetail.id
@@ -316,10 +342,45 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 Restangular.one("api/", coachname)
                     .post("b/" + datestr, item)
                     .then(function(data) {
+                        that.completeditem()
                         console.log(data)
                     })
             })
 
+        }
+        that.bookComplete = function(date, hour) {
+            SweetAlert.swal({
+                    //title: "确定移除该教练吗?",
+                    title: "确认",
+                    text: "这节课已上完了吗?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "完成",
+                    cancelButtonText: "取消",
+                    closeOnConfirm: false
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+                    var url = "/api/" + coachname + "/b/" + date.replace(/-/g, "") + "/" + hour;
+                    $http.patch(url, {
+                            order: orderid,
+                            done: true
+                        })
+                        .then(function(data) {
+                            swal({
+                                type: "success",
+                                title: "课程已完成",
+                                text: "",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            that.reload()
+                        })
+
+                });
         }
         that.cancelbook = function(date, hour) {
             var tar = {
@@ -424,39 +485,41 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         }
 
 
-        Restangular.one("api/", coachname)
-            .one("o/", orderid)
-            .get()
-            .then(function(data) {
-                that.coach = data.coachdetail
-                    //get product
-                that.order = data
-                Restangular.one("api/p", data.product)
-                    .get()
-                    .then(function(product) {
-                        that.product = product
-                        that.sum = product.amount
-                            //get booked
-                        console.log(data.booked)
-                        that.booked = _.where(data.booked, {
-                            done: false
+        that.reload = function() {
+            Restangular.one("api/", coachname)
+                .one("o/", orderid)
+                .get()
+                .then(function(data) {
+                    that.coach = data.coachdetail
+                        //get product
+                    that.order = data
+                    Restangular.one("api/p", data.product)
+                        .get()
+                        .then(function(product) {
+                            that.product = product
+                            that.sum = product.amount
+                                //get booked
+                            console.log(data.booked)
+                            that.booked = _.where(data.booked, {
+                                done: false
+                            })
+                            that.done = _.where(data.booked, {
+                                done: true
+                            })
+                            that.tableParams = new NgTableParams({
+                                sorting: {
+                                    name: "asc"
+                                },
+                                count: data.booked.length
+                            }, {
+                                dataset: data.booked,
+                                counts: []
+                            });
+                            that.refreshtimetable()
                         })
-                        that.done = _.where(data.booked, {
-                            done: true
-                        })
-                        that.tableParams = new NgTableParams({
-                            sorting: {
-                                name: "asc"
-                            },
-                            count: data.booked.length
-                        }, {
-                            dataset: data.booked,
-                            counts: []
-                        });
-                        that.refreshtimetable()
-                    })
-            })
-
+                })
+        }
+        that.reload()
     }
 ])
 

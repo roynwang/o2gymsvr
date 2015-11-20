@@ -1,12 +1,18 @@
 body {
-    font-size: 14px;
+	font-size: 14px;
 }
 .event-calendar {
-    min-height: 320px;
+	min-height: 320px;
 }
 tr {
-    text-align: center;
+	text-align: left;
 }
 .mini-stat-info {
-    font-size: 16px;
+	font-size: 16px;
+}
+.ng-table th {
+	text-align: left;
+}
+table {
+	color: #333
 }
