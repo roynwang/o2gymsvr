@@ -1,6 +1,12 @@
 body {
-    font-size:14px;
+    font-size: 14px;
 }
-.event-calendar{
-	min-height: 320px;
+.event-calendar {
+    min-height: 320px;
+}
+tr {
+    text-align: center;
+}
+.mini-stat-info {
+    font-size: 16px;
 }
