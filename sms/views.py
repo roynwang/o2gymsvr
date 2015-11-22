@@ -11,6 +11,7 @@ from sms.models import *
 from usr.models import *
 from .serializers import *
 from django.contrib.auth import get_user_model
+from business.models import *
 
 import base64
 import datetime
@@ -112,6 +113,41 @@ class SMSVerify(APIView):
 		else:
 			ret = Response({"result":"failed"}, status=status.HTTP_403_FORBIDDEN)
 		return ret
+
+@permission_classes((AllowAny, ))
+class GymReg(APIView):
+	def post(self,request):
+		print "1111111111111"
+		print request.DATA
+		number = request.POST["phone"]
+		print "xxxxxxxxxxxxxxxxxxxxx"
+		sms = get_object_or_404(Sms,number=number)
+		if str(sms.vcode) == request.POST["vcode"]:
+			get_or_create_user_return_token(number, request.POST["password"])
+			#create gym here
+			print "222222222222"
+			gym = Gym.objects.create(
+					name=request.POST["gymname"],
+					introduction="",
+					address=request.POST["gymaddr"],
+					phone=request.POST["gymphone"],
+					mapid=0,
+					imgs="[]",
+					)
+			print "3333333333333"
+			#change gym here
+			usr = get_object_or_404(User,name=number)
+			usr.displayname = request.POST["displayname"]
+			usr.gym = [gym]
+			usr.iscoach = True
+			usr.save()
+			print "44444"
+			sms.vcode = randint(100000,999999)
+			sms.save()
+			return Response({"result":"success"})
+		else:
+			return Response({"result":"failed"}, status=status.HTTP_403_FORBIDDEN)
+		
 
 
 def getSig(accountSid,accountToken,timestamp):

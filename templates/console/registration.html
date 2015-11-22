@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="ThemeBucket">
+    <link rel="shortcut icon" href="/static/images/favicon.png">
+
+    <title>健身房注册</title>
+
+    <!--Core CSS -->
+    <link href="/static/bs3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/consolecss/bootstrap-reset.css" rel="stylesheet">
+    <link href="/static/font-awesome/css/font-awesome.css" rel="stylesheet" />
+
+    <!-- Custom styles for this template -->
+    <link href="/static/consolecss/style.css" rel="stylesheet">
+    <link href="/static/consolecss/style-responsive.css" rel="stylesheet" />
+    <link href="/static/consolecss/o2custom.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]>
+    <script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body class="login-body">
+
+    <div class="container">
+
+        <div class="form-signin">
+            <h2 class="form-signin-heading">现在注册</h2>
+            <div class="login-wrap">
+
+                <h5 class="row text-center">用户信息</h5>
+                <input type="text" class="form-control" placeholder="请输入电话号码" id="phone" autofocus>
+                <input type="text" class="form-control" placeholder="请输入真实姓名" id="displayname" autofocus>
+                <div class="form-group has-success">
+                    <div class="col-lg-7" style="margin-left:-15px">
+                        <input type="text" class="form-control" id="vcode" placeholder="6位验证码" autofocus>
+                    </div>
+                    <div class="col-lg-5">
+                        <button class="pull-right btn btn-primary" id="btn-vcode">发送验证码</button>
+                    </div>
+                </div>
+                <input type="password" class="form-control" id="pwd" placeholder="请输入8位密码">
+                <input type="password" class="form-control" id="pwdconfirm" placeholder="再次输入密码">
+                <h5 class="row text-center">健身房信息</h5>
+                <input type="text" class="form-control" id="gymname" placeholder="健身房名称" autofocus>
+                <input type="text" class="form-control" id="gymphone" placeholder="联系电话" autofocus>
+                <input type="text" class="form-control" id="gymaddr" placeholder="具体地址" autofocus>
+                <i class="text-danger" id="errmsg">error</i>
+                <button class="btn btn-lg btn-login btn-block" id="submit-all">提交</button>
+
+                <div class="registration">
+                    已经注册过了？
+                    <a class="" href="/console/login">
+                    登录
+                </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Placed js at the end of the document so the pages load faster -->
+
+    <!--Core js-->
+    <script src="/static/js/jquery.js"></script>
+    <script src="/static/bs3/js/bootstrap.min.js"></script>
+    <script src="//cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js"></script>
+    <script>
+        $(function()
+        {
+            function validate()
+            {
+                $("input").each(function(_, item)
+                {
+                    if (item.value.length == 0)
+                    {
+                        $("#errmsg").html("请填完所有选项")
+                        return false
+                    }
+                });
+                if ($("#pwd").val() != $("#pwdconfirm").val())
+                {
+                    $("#errmsg").html("两次输入的密码不同")
+                    return false
+                }
+                return true
+            }
+            $("#btn-vcode").click(function()
+            {
+                if ($("#phone").val().length != 11)
+                {
+                    swal("", "请输入正确的手机号", "warning")
+                }
+                else
+                {
+                    $.post("/api/sms/",
+                        {
+                            number: $("#phone").val()
+                        }, function()
+                        {
+                            $("#btn-vcode").html("30秒后重发")
+                            setTimeout(function()
+                            {
+                                $("#btn-vcode").html(
+                                    "发送验证码")
+                            }, 3000)
+                        })
+                        .error(function()
+                        {
+                            swal("", "发送失败,稍后重试",
+                                "warning")
+                        })
+                }
+
+            })
+
+            function submitall()
+            {
+                var data = {}
+                data["phone"] = $("#phone").val()
+                data["displayname"] = $("#displayname").val()
+                data["vcode"] = $("#vcode").val()
+                data["password"] = $("#pwd").val()
+                data["gymname"] = $("#gymname").val()
+                data["gymphone"] = $("#gymphone").val()
+                data["gymaddr"] = $("#gymaddr").val()
+                $.post("/api/gr/", data, function(data)
+                {
+                    if (data.result == "success")
+                    {
+                        swal(
+                        {
+                            title: "注册成功",
+                            text: "您的账号已注册成功,登陆后开始体验吧",
+							type: "success",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        setTimeout(function()
+                        {
+                            window.location =
+                                "/console/login/";
+                        }, 1700)
+                    }
+					else {
+                        swal("", "注册失败,请检查后重试","warning")
+					}
+                })
+				.error(function(data){
+					if(data.status == 403){
+                        swal("", "验证码错误,请检查后重试","warning")
+					} else {
+                        swal("", "注册失败,请检查后重试","warning")
+					}
+				})
+            }
+            $("#submit-all").click(function()
+            {
+                var v = validate()
+                console.log(v)
+				submitall()
+            })
+        })
+    </script>
+</body>
+</html>
