@@ -9,7 +9,7 @@
     <meta name="author" content="ThemeBucket">
 	<link rel="shortcut icon" type="image/png" href="/static/images/favicon.ico">
 
-    <title>健身房注册</title>
+    <title>找回密码</title>
 
     <!--Core CSS -->
     <link href="/static/bs3/css/bootstrap.min.css" rel="stylesheet">
@@ -38,12 +38,9 @@
     <div class="container">
 
         <div class="form-signin">
-            <h2 class="form-signin-heading">现在注册</h2>
+            <h2 class="form-signin-heading">找回密码</h2>
             <div class="login-wrap">
-
-                <h5 class="row text-center">用户信息</h5>
                 <input type="text" class="form-control" placeholder="请输入电话号码" id="phone" autofocus>
-                <input type="text" class="form-control" placeholder="请输入真实姓名" id="displayname" autofocus>
                 <div class="form-group has-success">
                     <div class="col-lg-7" style="margin-left:-15px">
                         <input type="text" class="form-control" id="vcode" placeholder="6位验证码" autofocus>
@@ -54,24 +51,10 @@
                 </div>
                 <input type="password" class="form-control" id="pwd" placeholder="请输入8位密码">
                 <input type="password" class="form-control" id="pwdconfirm" placeholder="再次输入密码">
-                <h5 class="row text-center">健身房信息</h5>
-                <input type="text" class="form-control" id="gymname" placeholder="健身房名称" autofocus>
-                <input type="text" class="form-control" id="gymphone" placeholder="联系电话" autofocus>
-                <input type="text" class="form-control" id="gymaddr" placeholder="具体地址" autofocus>
                 <i class="text-danger" id="errmsg"></i>
                 <button class="btn btn-lg btn-login btn-block" id="submit-all">提交</button>
-
-                <div class="registration">
-                    已经注册过了？
-                    <a class="" href="/console/login">
-                    登录
-                </a>
-                </div>
-
             </div>
-
         </div>
-
     </div>
 
 
@@ -134,49 +117,52 @@
             {
                 var data = {}
                 data["phone"] = $("#phone").val()
-                data["displayname"] = $("#displayname").val()
                 data["vcode"] = $("#vcode").val()
                 data["password"] = $("#pwd").val()
-                data["gymname"] = $("#gymname").val()
-                data["gymphone"] = $("#gymphone").val()
-                data["gymaddr"] = $("#gymaddr").val()
-                $.post("/api/gr/", data, function(data)
-                {
-                    if (data.result == "success")
+                $.post("/api/sms/" + data["phone"] + "/", data, function(data)
                     {
-                        swal(
+                        if (data.token != undefined)
                         {
-                            title: "注册成功",
-                            text: "您的账号已注册成功,登陆后开始体验吧",
-							type: "success",
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-                        setTimeout(function()
+                            swal(
+                            {
+                                title: "修改成功",
+                                text: "密码已经修改，请用新密码登录",
+                                type: "success",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            setTimeout(function()
+                            {
+                                window.location =
+                                    "/console/login/";
+                            }, 1700)
+                        }
+                        else
                         {
-                            window.location =
-                                "/console/login/";
-                        }, 1700)
-                    }
-					else {
-                        swal("", "注册失败,请检查后重试","warning")
-					}
-                })
-				.error(function(data){
-					if(data.status == 403){
-                        swal("", "验证码错误,请检查后重试","warning")
-					} else {
-                        swal("", "注册失败,请检查后重试","warning")
-					}
-				})
+                            swal("", "密码修改失败,请检查后重试", "warning")
+                        }
+                    })
+                    .error(function(data)
+                    {
+                        if (data.status == 403)
+                        {
+                            swal("", "验证码错误,请检查后重试",
+                                "warning")
+                        }
+                        else
+                        {
+                            swal("", "密码修改失败,请检查后重试", "warning")
+                        }
+                    })
             }
             $("#submit-all").click(function()
             {
                 var v = validate()
                 console.log(v)
-				submitall()
+                submitall()
             })
         })
     </script>
 </body>
+
 </html>
