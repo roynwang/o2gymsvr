@@ -77,8 +77,8 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 				order.status = "done" 
 				order.save()
 			#update course count and order_count
-			coach.course_count = Schedule.objects.filter(deleted=False,done=True).count()
-			coach.order_count = Order.objects.get(coach=coach).count()
+			coach.course_count = Schedule.objects.filter(coach=coach, deleted=False,done=True).count()
+			coach.order_count = Order.objects.filter(coach=coach,status = "done").count()
 			coach.save()
 		return ret
 
