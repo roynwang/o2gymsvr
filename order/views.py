@@ -110,7 +110,7 @@ def create_order(customer, coach, product):
 	productobj = get_object_or_404(Product,id=product)
 	isfirst = isFirstOrder(coachobj,customobj)
 	return Order.objects.create(billid=str(billid), custom=customobj, coach=coachobj, product=productobj,
-			amount=productobj.price, status="unpaid",isfirst=isfirst)
+			amount=productobj.price, status="unpaid",isfirst=isfirst, gym=coachobj.gym.all()[0])
 def update_order(billid, status):
 	order = Order.objects.get(billid=billid)
 	order.status = status
@@ -178,6 +178,7 @@ class ManualOrder(APIView):
 		isfirst = isFirstOrder(coach,customer)
 		print "is first"
 		print isfirst
+		print coach.gym.all()[0]
 		order = Order.objects.create(
 				custom = customer,
 				coach = coach,
@@ -186,6 +187,7 @@ class ManualOrder(APIView):
 				status = "paid",
 				product = product,
 				amount = price,
+				gym = coach.gym.all()[0],
 				channel = "offline",
 				isfirst = isfirst)
 		serializer = OrderSerializer(order)
@@ -194,8 +196,8 @@ class ManualOrder(APIView):
 class GymSoldRange(APIView):
 	def get(self,request,gymid):
 		end = datetime.date.today()
-		start = end - datetime.timedelta(days=60)
-		orders = Order.objects.filter(coach__gym=gymid,paidtime__range=[start,end]) \
+		start = end - datetime.timedelta(days=30)
+		orders = Order.objects.filter(gym=get_object_or_404(Gym,id=gymid),paidtime__range=[start,end]) \
 				.extra({'paidday': "date_format(date(CONVERT_TZ(`paidtime`,'+00:00','+08:00')),'%%Y%%m%%d')"}) \
 				.values('paidday') \
 				.annotate(sold_pirce=Sum('amount')) \
@@ -212,7 +214,7 @@ class GymSoldDay(APIView):
 		end = start + datetime.timedelta(days=1)
 		print start
 		print end
-		orders = Order.objects.filter(coach__gym=gymid,paidtime__range=[start,end])
+		orders = Order.objects.filter(gym=get_object_or_404(Gym,id=gymid),paidtime__range=[start,end])
 		sold_price = orders.aggregate(Sum("amount"))["amount__sum"]
 		sold_count = orders.count()  
 		return Response({"sold_price": sold_price, "sold_count":sold_count})
@@ -225,7 +227,7 @@ class GymCustomers(generics.ListAPIView):
 		gym = get_object_or_404(Gym, id=self.kwargs["gymid"])
 		print "xxxxxxxxxxxx"
 		coaches = gym.coaches.values_list("name",flat=True)
-		orders = Order.objects.filter(coach__in=coaches)
+		orders = Order.objects.filter(gym=gym)
 		print "xxxxxxxxxxxx"
 		customers = orders.values_list("custom",flat=True).distinct()
 		print customers
