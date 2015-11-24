@@ -349,6 +349,18 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
 
         }
         that.bookComplete = function(date, hour) {
+            var time_obj = Date.parse(date + " " + TimeMap[hour] + ":00")  + 60*60*8
+            var now = Date.now()
+            if (time_obj > now){
+                swal({
+                    type: "warning",
+                    title: "",
+                    text: "未到课程开始时间，无法完成课程",
+                });
+				return
+
+            }
+
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
                     title: "确认",
