@@ -18,6 +18,7 @@ import requests
 import calendar
 from django.conf import settings
 import json
+from utils import smsutils
 
 
 # Create your views here.
@@ -106,15 +107,26 @@ class ScheduleList(generics.ListCreateAPIView):
 		return queryset
 	def create(self, request, *args, **kwargs):
 		print json.dumps(request.data)
-		ret = super(ScheduleList, self).create(request, args,kwargs)
-		print request.data["order"]
+		#ret = super(ScheduleList, self).create(request, args,kwargs)
+		customer = User.objects.get(id=request.data["custom"])
+		coach = User.objects.get(id=request.data["coach"])
 		order = Order.objects.get(id=request.data["order"])
+		book = Schedule.objects.create(coach=coach,
+				custom=customer,
+				date= datetime.datetime.strptime(request.data["date"],"%Y-%m-%d").date(),
+				hour=request.data["hour"],
+				order=order)
+		sl = ScheduleSerializer(instance=book)
+		print sl.data
+		print request.data["order"]
 		ordered_count = Schedule.objects.filter(order=request.data["order"],deleted=False).count()
 		order_count = order.product.amount
 		if order.status == "paid" and ordered_count == order_count:
 			order.status = "inprogress" 
 			order.save()
-		return ret
+		#send sms
+		print smsutils.sendBookNotification(book)
+		return Response(sl.data)
 
 class ScheduleForReadPagination(pagination.CursorPagination):
 	ordering = 'date'

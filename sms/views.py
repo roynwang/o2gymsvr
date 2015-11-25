@@ -20,6 +20,8 @@ import md5
 from django.conf import settings
 from rest_framework_jwt.settings import api_settings
 from django.contrib.auth import authenticate, login	
+from utils import smsutils
+
 def get_or_create_user_return_token(number,pwd):
 	print "----------"
 	jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -86,7 +88,7 @@ class SMSGet(generics.CreateAPIView):
 		num, _ =  Sms.objects.get_or_create(number=request.DATA["number"])
 		num.vcode = vcode
 		num.save()
-		resp = templateSMS(settings.UCPAASSID,
+		resp = smsutils.templateSMS(settings.UCPAASSID,
 				settings.UCPAASTOKEN,
 				settings.UCPAASAPPID,
 				num.number,
@@ -148,58 +150,3 @@ class GymReg(APIView):
 		else:
 			return Response({"result":"failed"}, status=status.HTTP_403_FORBIDDEN)
 		
-
-
-def getSig(accountSid,accountToken,timestamp):
-	sig = accountSid + accountToken + timestamp
-	return md5.new(sig).hexdigest().upper()
-
-def getAuth(accountSid,timestamp):
-	src = accountSid + ":" + timestamp
-	return base64.encodestring(src).strip()
-
-def urlOpen(req,data=None):
-	try:
-		res = urllib2.urlopen(req,data)
-		data = res.read()
-		res.close()
-	except urllib2.HTTPError, error:
-		data = error.read()
-		error.close()
-	return data
-
-def createHttpReq(req,url,accountSid,timestamp,responseMode,body):
-	req.add_header("Authorization", getAuth(accountSid,timestamp))
-	print "Auth:"
-	print getAuth(accountSid, timestamp)
-	if responseMode:
-		req.add_header("Accept","application/"+responseMode)
-		req.add_header("Content-Type","application/"+responseMode+";charset=utf-8")
-	if body:
-		req.add_header("Content-Length",len(body))
-		req.add_data(body)
-	print req
-	return req
-
-def templateSMS(accountSid,accountToken,appId,toNumbers,templateId,param,isUseJson=True):
-	now = datetime.datetime.now()
-	timestamp = now.strftime("%Y%m%d%H%M%S")
-	signature = getSig(accountSid,accountToken,timestamp)
-	url = settings.UCPAASHOST + ":" + settings.UCPAASPORT + "/" + settings.UCPAASSOFTVER + "/Accounts/" + accountSid + "/Messages/templateSMS?sig=" + signature
-	print url
-	if isUseJson == True:
-		body = '{"templateSMS":{ "appId":"%s","to":"%s","templateId":"%s","param":"%s"}}'%(appId,toNumbers,templateId,param)
-		print body
-		responseMode = "json"
-	else:
-		body = "<?xml version='1.0' encoding='utf-8'?>\
-				<templateSMS>\
-				<appId>%s</appId>\
-				<to>%s</to>\
-				<templateId>%s</templateId>\
-				<param>%s</param>\
-				</templateSMS>\
-				"%(appId,toNumbers,templateId,param)
-		responseMode = "xml"
-	req = urllib2.Request(url)
-	return urlOpen(createHttpReq(req,url,accountSid,timestamp,responseMode,body))
