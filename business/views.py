@@ -18,7 +18,6 @@ import requests
 import calendar
 from django.conf import settings
 import json
-from utils import smsutils
 
 
 # Create your views here.
@@ -125,7 +124,7 @@ class ScheduleList(generics.ListCreateAPIView):
 			order.status = "inprogress" 
 			order.save()
 		#send sms
-		print smsutils.sendBookNotification(book)
+		print book.sendSms()
 		return Response(sl.data)
 
 class ScheduleForReadPagination(pagination.CursorPagination):

@@ -1,4 +1,5 @@
 from django.db import models
+from utils import smsutils
 
 # Create your models here.
 
@@ -54,6 +55,8 @@ class Schedule(models.Model):
 
 	def __unicode__(self):
 		return str(self.date) + str(self.hour)
+	def sendSms(self):
+		return smsutils.sendBookNotification(self)
 
 class BodyEval(models.Model):
 	id = models.AutoField(primary_key=True)
