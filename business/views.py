@@ -76,6 +76,14 @@ class ScheduleList(generics.ListCreateAPIView):
 	def get_queryset(self):
 		coach = get_object_or_404(User, name=self.kwargs.get("name"))
 		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+		queryset = coach.sealed_time.filter(
+				date=date
+				).order_by("hour")
+		return queryset
+	'''
+	def get_queryset(self):
+		coach = get_object_or_404(User, name=self.kwargs.get("name"))
+		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
 		#filter 
 		workingday = get_object_or_404(WorkingDays, name=self.kwargs.get("name"))
 		working = map(lambda x: datetime.datetime.strptime(x,"%Y/%m/%d"),
@@ -90,6 +98,7 @@ class ScheduleList(generics.ListCreateAPIView):
 				date__in=working
 				).exclude(date__in=rest).order_by("hour")
 		return queryset
+	'''
 	def create(self, request, *args, **kwargs):
 		print json.dumps(request.data)
 		#ret = super(ScheduleList, self).create(request, args,kwargs)
@@ -131,9 +140,9 @@ class ScheduleForRead(generics.ListAPIView):
 		while(True):
 			daterange = [startdate, enddate]
 			if usr.iscoach:
-				queryset = Schedule.objects.filter(coach=usr.id, date__range=daterange).order_by("date","hour")
+				queryset = usr.sealed_time.filter(date__range=daterange).order_by("date","hour")
 			else:
-				queryset = Schedule.objects.filter(custom=usr.id, date__range=daterange).order_by("date","hour")
+				queryset = usr.booked_time.filter(date__range=daterange).order_by("date","hour")
 			#startdate = startdate - datetime.timedelta(days=duration)
 			enddate = enddate + datetime.timedelta(days=duration)
 			if queryset.count() > 5 or enddate>maxdate:
