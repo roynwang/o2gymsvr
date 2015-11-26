@@ -251,3 +251,4 @@ class FeedbackList(generics.ListCreateAPIView):
 	queryset = FeedBack.objects.all()
 	serializer_class = FeedBackSerializer 
 
+

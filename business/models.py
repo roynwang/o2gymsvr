@@ -57,6 +57,13 @@ class Schedule(models.Model):
 		return str(self.date) + str(self.hour)
 	def sendSms(self):
 		return smsutils.sendBookNotification(self)
+	def doneBook(self):
+		self.done = True
+		self.coach.course_count += 1
+		self.save()
+		self.coach.save()
+		self.order.done()
+		
 
 class BodyEval(models.Model):
 	id = models.AutoField(primary_key=True)

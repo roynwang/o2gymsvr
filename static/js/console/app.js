@@ -349,15 +349,15 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
 
         }
         that.bookComplete = function(date, hour) {
-            var time_obj = Date.parse(date + " " + TimeMap[hour] + ":00")  + 60*60*8
+            var time_obj = Date.parse(date + " " + TimeMap[hour] + ":00") + 60 * 60 * 8
             var now = Date.now()
-            if (time_obj > now){
+            if (time_obj > now) {
                 swal({
                     type: "warning",
                     title: "",
                     text: "未到课程开始时间，无法完成课程",
                 });
-				return
+                return
 
             }
 
@@ -376,7 +376,25 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     if (!yes) {
                         return
                     }
-                    var url = "/api/" + coachname + "/b/" + date.replace(/-/g, "") + "/" + hour;
+                    var url = "/api/" + coachname + "/b/" + date.replace(/-/g, "") + "/" + hour + "/";
+                    var bookdone = Restangular.one("api", coachname)
+                        .one("b", date.replace(/-/g, ""))
+                        .all(hour)
+                    bookdone.patch({
+                            order: orderid,
+                            done: true
+                        })
+                        .then(function(data) {
+                            swal({
+                                type: "success",
+                                title: "课程已完成",
+                                text: "",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            that.reload()
+                        })
+                        /*
                     $http.patch(url, {
                             order: orderid,
                             done: true
@@ -391,6 +409,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                             });
                             that.reload()
                         })
+						*/
 
                 });
         }

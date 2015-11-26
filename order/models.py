@@ -27,6 +27,12 @@ class Order(models.Model):
 	#this is mean price
 	amount = models.IntegerField()
 
+
+	def done(self):
+		if self.schedule_set.count() == self.product.amount:
+			self.status = "done"
+			self.save()
+
 class Product(models.Model):
 	id = models.AutoField(primary_key=True)
 	coach = models.ForeignKey("usr.User", to_field="name", related_name="products", null=True)

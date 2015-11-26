@@ -33,6 +33,8 @@ class User(models.Model):
 	
 	sex = models.BooleanField(default=True)
 	signature = models.CharField(max_length=64, blank=True)
+	
+	openid = models.CharField(max_length=32,unique=True,db_index=True, blank=True, default="")
 
 	def __unicode__(self):
 		return self.name
