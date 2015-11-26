@@ -76,9 +76,8 @@ class ScheduleList(generics.ListCreateAPIView):
 	def get_queryset(self):
 		coach = get_object_or_404(User, name=self.kwargs.get("name"))
 		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
-		queryset = coach.sealed_time.filter(
-				date=date
-				).order_by("hour")
+		queryset = Schedule.objects.filter(coach=coach.id, 
+				date=date).order_by("hour")
 		return queryset
 	'''
 	def get_queryset(self):
