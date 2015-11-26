@@ -214,7 +214,10 @@ class GymSoldDay(APIView):
 		end = start + datetime.timedelta(days=1)
 		print start
 		print end
-		orders = Order.objects.filter(gym=get_object_or_404(Gym,id=gymid),paidtime__range=[start,end])
+		orders = Order.objects.filter(gym=get_object_or_404(Gym,id=gymid),\
+				paidtime__year=start.year,\
+				paidtime__month=start.month,\
+				paidtime__day=start.day)
 		sold_price = orders.aggregate(Sum("amount"))["amount__sum"]
 		sold_count = orders.count()  
 		return Response({"sold_price": sold_price, "sold_count":sold_count})
