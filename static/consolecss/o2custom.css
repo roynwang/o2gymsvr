@@ -35,4 +35,10 @@ a.logo {
 ul.sidebar-menu {
 	padding-top: 60px;
 }
+.coach-selected {
+	-webkit-border-radius: 5px;
+	border-raidus: 5px;
+	background-color: #1fb5ad;
+	color: #fff;
+}
 

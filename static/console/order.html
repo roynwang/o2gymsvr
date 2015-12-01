@@ -8,9 +8,19 @@
         </header>
         <div class="form-group panel-body">
             <div class="row" style="margin-bottom:20px">
-                <h3 class="text-center"><img ng-src="{{ctrl.coach.avatar}}" style="-webkit-border-radius: 50%;
-    height: 60px;"> {{ctrl.coach.displayname}}</h3>
+				<h3 class="text-center">
+					<img ng-src="{{ctrl.coach.avatar}}" style="-webkit-border-radius: 50%;
+					height: 60px;"> {{ctrl.coach.displayname}} 
+					<a style="font-size:12px;color:#1fb5ad;"
+						ng-click="ctrl.showncoaches=!ctrl.showncoaches"><i class="fa
+							fa-exchange"></i>{{ctrl.showncoaches?"收起":"更换教练"}}</a></h3>
             </div>
+			<div ng-show="ctrl.showncoaches" class="row" style="margin-bottom:20px;padding-left:20px;padding-right:20px" >
+				<div  style="padding-top:10px" class="col-sm-1 {{c.name==ctrl.coach.name?'coach-selected':''}}" ng-repeat="c in ctrl.gym.coaches_set" ng-click="ctrl.changecoach(c)">
+					<img ng-src="{{c.avatar}}" style="-webkit-border-radius: 50%;height: 50px;">
+					<p>{{c.displayname}}</p>
+				</div>
+			</div>
             <div class="row">
                 <div class="col-md-12" ng-model="ctrl.booked">
                     <p>课程状态(已上:{{ctrl.done.length}}/待上:{{ctrl.booked.length}}/待约{{ctrl.sum
@@ -29,6 +39,7 @@
                 <div class="col-sm-7">
                     <table class="table table-hover" ng-table="ctrl.tableParams">
                         <tr ng-repeat="row in $data | filter:ctrl.bookvisiable">
+                            <td data-title="'教练'">{{row.coachprofile.displayname||row.coachname}}</td>
                             <td data-title="'日期'">{{row.date}}</td>
                             <td data-title="'时间'">{{timemap[row.hour]}}</td>
                             <td data-title="'状态'"><span class="label label-mini

@@ -70,10 +70,12 @@ class OrderItemById(generics.RetrieveUpdateAPIView):
 	def get_object(self):
 		role = "customer"
 		usr = get_object_or_404(User, name=self.kwargs["name"])
+		'''
 		if usr.iscoach:
 			return get_object_or_404(Order, coach=usr, id=int(self.kwargs["orderid"]))
 		else:
-			return get_object_or_404(Order, custom=usr, id=int(self.kwargs["orderid"]))
+		'''
+		return get_object_or_404(Order, id=int(self.kwargs["orderid"]))
 
 
 class OrderItemByBillid(generics.RetrieveAPIView):

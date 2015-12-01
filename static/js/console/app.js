@@ -273,6 +273,27 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         var that = this
         var coachname = $stateParams.coachname
         var orderid = $stateParams.orderid
+		
+		that.showncoaches = false
+		that.changecoach = function(c){
+			that.coach = c
+			coachname = c.name
+			that.refreshtimetable()
+		}
+		Restangular.all("api")
+				   .one("g",$.cookie("gym"))
+				   .get()
+				   .then(function(data){
+					   that.gym = data
+				   },
+				   function(data){
+				   })
+		Restangular.one("api",coachname)
+					.get()
+					.then(function(data){
+						that.coach = data
+					})
+
 
         $scope.timemap = TimeMap
 
@@ -326,7 +347,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
 
             _.each(removelist, function(item, i) {
                 var datestr = item.date.replace(/-/g, "")
-                Restangular.one("api/", coachname)
+                Restangular.one("api/", item.coachprofile.name)
                     .one("b/" + datestr, item.hour)
                     .remove()
                     .then(function(data) {
@@ -336,10 +357,10 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             })
             _.each(addlist, function(item, i) {
                 var datestr = item.date.replace(/-/g, "")
-                item.coach = that.order.coachdetail.id
+                item.coach = item.coachprofile.id
                 item.custom = that.order.customerdetail.id
                 item.order = that.order.id
-                Restangular.one("api/", coachname)
+                Restangular.one("api/", item.coachprofile.name)
                     .post("b/" + datestr, item)
                     .then(function(data) {
                         that.completeditem()
@@ -358,7 +379,6 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     text: "未到课程开始时间，无法完成课程",
                 });
                 return
-
             }
 
             SweetAlert.swal({
@@ -445,6 +465,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             that.tableParams.data.push({
                 date: that.day.Format("yyyy-MM-dd"),
                 hour: i,
+				coachprofile: that.coach,
                 pendingaction: "add"
             })
             that.tableParams.total(that.tableParams.data)
@@ -459,12 +480,14 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 return false
             }
 
-            for (var i in that.tableParams.data) {
+            for (var i = 0 ; i< that.tableParams.data.length; i++) {
                 var item = that.tableParams.data[i]
                 if (that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction == "remove" && (item.hour == h || item.hour + 1 == h)) {
                     return true
                 }
-                if (that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction != "remove" && (item.hour == h || item.hour + 1 == h)) {
+                if (
+						item.coachprofile.name == that.coach.name &&
+						that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction != "remove" && (item.hour == h || item.hour + 1 == h)) {
                     return false
                 }
             }
@@ -478,8 +501,6 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
 
         }
         that.refreshtimetable = function(norefresh) {
-
-
             function t(ava) {
                 that.timemapgroup = []
                 for (var i = 0; i < TimeMap.length; i++) {
@@ -521,7 +542,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 .one("o/", orderid)
                 .get()
                 .then(function(data) {
-                    that.coach = data.coachdetail
+                    //that.coach = data.coachdetail
                         //get product
                     that.order = data
                     Restangular.one("api/p", data.product)
