@@ -22,6 +22,12 @@ Date.prototype.Format = function(fmt) { //author: meizz
             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
 }
+Date.prototype.addDays = function(days) {
+    var dat = new Date(this.valueOf());
+    dat.setDate(dat.getDate() + days);
+    return dat;
+}
+
 Date.isLeapYear = function(year) {
     return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
 };
@@ -120,6 +126,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
         .state('coaches', {
             url: "/coaches",
             templateUrl: "/static/console/coaches.html",
+        })
+        .state('coachecalendar', {
+            url: "/coach/:coachid/calendar",
+            templateUrl: "/static/console/coachcalendar.html",
         })
 })
 app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams",
@@ -273,26 +283,25 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         var that = this
         var coachname = $stateParams.coachname
         var orderid = $stateParams.orderid
-		
-		that.showncoaches = false
-		that.changecoach = function(c){
-			that.coach = c
-			coachname = c.name
-			that.refreshtimetable()
-		}
-		Restangular.all("api")
-				   .one("g",$.cookie("gym"))
-				   .get()
-				   .then(function(data){
-					   that.gym = data
-				   },
-				   function(data){
-				   })
-		Restangular.one("api",coachname)
-					.get()
-					.then(function(data){
-						that.coach = data
-					})
+
+        that.showncoaches = false
+        that.changecoach = function(c) {
+            that.coach = c
+            coachname = c.name
+            that.refreshtimetable()
+        }
+        Restangular.all("api")
+            .one("g", $.cookie("gym"))
+            .get()
+            .then(function(data) {
+                    that.gym = data
+                },
+                function(data) {})
+        Restangular.one("api", coachname)
+            .get()
+            .then(function(data) {
+                that.coach = data
+            })
 
 
         $scope.timemap = TimeMap
@@ -465,7 +474,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             that.tableParams.data.push({
                 date: that.day.Format("yyyy-MM-dd"),
                 hour: i,
-				coachprofile: that.coach,
+                coachprofile: that.coach,
                 pendingaction: "add"
             })
             that.tableParams.total(that.tableParams.data)
@@ -480,14 +489,14 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 return false
             }
 
-            for (var i = 0 ; i< that.tableParams.data.length; i++) {
+            for (var i = 0; i < that.tableParams.data.length; i++) {
                 var item = that.tableParams.data[i]
                 if (that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction == "remove" && (item.hour == h || item.hour + 1 == h)) {
                     return true
                 }
                 if (
-						item.coachprofile.name == that.coach.name &&
-						that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction != "remove" && (item.hour == h || item.hour + 1 == h)) {
+                    item.coachprofile.name == that.coach.name &&
+                    that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction != "remove" && (item.hour == h || item.hour + 1 == h)) {
                     return false
                 }
             }
@@ -543,7 +552,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 .get()
                 .then(function(data) {
                     //that.coach = data.coachdetail
-                        //get product
+                    //get product
                     that.order = data
                     Restangular.one("api/p", data.product)
                         .get()
@@ -572,6 +581,41 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 })
         }
         that.reload()
+    }
+])
+
+app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', '$http',
+    function($scope, Restangular, NgTableParams, $stateParams, $state, $http) {
+        var that = this
+
+        $scope.timemap = TimeMap
+        var date = new Date()
+        var coachid = $stateParams.coachid
+        that.load = function() {
+
+            that.title = date.Format("yyyy-MM-dd")
+            Restangular.one("api", coachid)
+                .one("w", date.Format("yyyyMMdd"))
+                .get()
+                .then(function(data) {
+                    that.tableParams = new NgTableParams({
+                        sorting: {
+                            name: "asc"
+                        }
+                    }, {
+                        dataset: data.results
+                    });
+                }, function(data) {})
+        }
+        that.loadprev = function() {
+            date = date.addDays(-7)
+			that.load()
+        }
+        that.loadnext = function() {
+            date = date.addDays(7)
+			that.load()
+        }
+		that.load()
     }
 ])
 
@@ -793,7 +837,7 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
                     cs.gongjijin = row.gongjijin
                     cs.xiaoshou = row.xiaoshou
                     cs.xuke = row.xuke
-					cs.shangke = row.shangke
+                    cs.shangke = row.shangke
                     cs.patch()
                 })
 

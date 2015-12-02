@@ -1,0 +1,27 @@
+<div class="col-md-12" ng-controller="CoachCalendarCtrl as demo">
+    <!--<h3>客户信息</h3>-->
+    <section class="panel">
+        <header class="panel-heading">
+            <h4 class="text-center">
+<i back-button class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
+<a style="color:#1fb5ad;margin-right:10px;font-size:15px;" ng-click="demo.loadprev()"><i  class="fa fa-angle-left"
+		>上周</i> </a>
+{{demo.title}}
+<a style="color:#1fb5ad;margin-left:10px;font-size:15px;" ng-click="demo.loadnext()">下周<i  class="fa fa-angle-right"
+		></i> </a>
+        </header>
+        <div class="panel-body">
+
+            <table ng-table="demo.tableParams" class="table table-condensed table-striped">
+                <tr ng-repeat="row in $data" style="color:#333">
+                    <td data-title="'姓名'" sortable="'customerprofile.displayname'">{{row.customerprofile.displayname}}</td>
+                    <td data-title="'电话'" sortable="'customerprofile.name'">{{row.customerprofile.name}}</td>
+                    <td data-title="'日期'" sortable="'date'">{{row.date}}</td>
+                    <td data-title="'时间'">{{timemap[row.hour]}}</td>
+                    <td><a style="color:#1fb5ad" href="#customer/{{row.customerprofile.name}}/orders">查看/预约</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </section>
+</div>
