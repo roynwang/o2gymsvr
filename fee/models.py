@@ -22,4 +22,5 @@ class CoachSalarySetting(models.Model):
 	gongjijin = models.FloatField(default=0)
 	xiaoshou = models.FloatField(default=0)
 	xuke = models.FloatField(default=0)
+	shangke = models.FloatField(default=0)
 

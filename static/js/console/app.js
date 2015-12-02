@@ -615,7 +615,7 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams",
 
         function calSum(data) {
             console.log(data)
-            return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100
+            return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke + data.sale.course * data.shangke) / 100
 
         }
 
@@ -793,6 +793,7 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
                     cs.gongjijin = row.gongjijin
                     cs.xiaoshou = row.xiaoshou
                     cs.xuke = row.xuke
+					cs.shangke = row.shangke
                     cs.patch()
                 })
 

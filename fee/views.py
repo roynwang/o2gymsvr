@@ -48,13 +48,25 @@ class GymSync(APIView):
 		return Response({"result":"created"})
 
 class CoachSalaryView(APIView):
+	def cal_course_income(self,query):
+		price = 0
+		for course in query:
+			product = course.order.product
+			#tmpprice = float(course.order.amount)/float(product.amount)
+			tmpprice = course.order.amount/product.amount
+			price += tmpprice
+			print str(course.order.amount) + ":" + str(product.amount) + ": " + str(tmpprice)
+		return price
+
 	def getsale(self,coach,start, end):
 		orders = coach.income_orders.filter(paidtime__range=[start,end])
 		for order in orders.all():
 			print order.paidtime
 		sold = orders.aggregate(Sum('amount'))["amount__sum"] or 0
 		sold_xu = orders.filter(isfirst=False).aggregate(Sum('amount'))["amount__sum"] or 0
-		return {"sold":sold, "sold_xu":sold}
+		courses_query = coach.sealed_time.filter(date__range=[start,end],done=True)
+		courses = self.cal_course_income(courses_query) 
+		return {"sold":sold, "sold_xu":sold, "course": courses}
 
 	def get(self, request, gymid):
 		gymfee = get_object_or_404(GymFee, gym = self.kwargs["gymid"])

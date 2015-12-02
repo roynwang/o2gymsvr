@@ -53,6 +53,8 @@
                         <td data-title="'公积金'">-{{row.base_salary * row.gongjijin/100}}({{row.gongjijin}}%)</td>
                         <td data-title="'销售提成'">{{row.sale.sold}}*{{row.xiaoshou}}%={{row.sale.sold*row.xiaoshou/100}}</td>
                         <td data-title="'续课奖励'">{{row.sale.sold_xu}}*{{row.xuke}}%={{row.sale.sold_xu*row.xuke/100}}</td>
+                        <td
+							data-title="'上课提成'">{{row.sale.course}}*{{row.shangke}}%={{row.sale.course*row.shangke/100}}</td>
                         <td data-title="'合计'">{{row.sum}}</td>
                     </tr>
                 </table>

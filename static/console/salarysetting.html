@@ -11,13 +11,14 @@
 			demo-tracked-table="demo.tableTracker">
 			<colgroup>
 				<col width="10%" />
-				<col width="11%" />
-				<col width="11%" />
-				<col width="11%" />
-				<col width="11%" />
-				<col width="11%" />
-				<col width="11%" />
-				<col width="14%" />
+				<col width="10%" />
+				<col width="10%" />
+				<col width="10%" />
+				<col width="10%" />
+				<col width="10%" />
+				<col width="10%" />
+				<col width="10%" />
+				<col width="10%" />
 				<col width="10%" />
 			</colgroup>
 			<tr ng-repeat="row in $data"  ng-form="rowForm" demo-tracked-table-row="row">
@@ -64,6 +65,13 @@
 						<input type="text" name="xuke" ng-model="row.xuke" class="editable-input form-control input-sm" required />
 					</div>
 				</td>
+				<td data-title="'上课提成(%)'" ng-switch="row.isEditing" ng-class="shangke.$dirty ? 'bg-warning' : ''" ng-form="shangke" demo-tracked-table-cell>
+					<span ng-switch-default class="editable-text">{{row.shangke}}</span>
+					<div class="controls" ng-class="shangke.$invalid && shangke.$dirty ? 'has-error' : ''" ng-switch-when="true">
+						<input type="text" name="shangke" ng-model="row.shangke" class="editable-input form-control input-sm" required />
+					</div>
+				</td>
+
 				<td>
 					<button class="btn btn-primary btn-sm" ng-click="demo.save(row, rowForm)" ng-if="row.isEditing" ng-disabled="rowForm.$pristine || rowForm.$invalid"><span class="glyphicon glyphicon-ok"></span></button>
 					<button class="btn btn-default btn-sm" ng-click="demo.cancel(row, rowForm)" ng-if="row.isEditing"><span class="glyphicon glyphicon-remove"></span></button>
