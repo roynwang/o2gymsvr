@@ -341,40 +341,54 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         }
 
         that.submitBook = function() {
-            var removelist = _.where(that.tableParams.data, {
-                pendingaction: "remove"
-            })
-            var addlist = _.where(that.tableParams.data, {
-                pendingaction: "add"
-            })
-            that.pendingaction = removelist.length + addlist.length
-            if (that.pendingaction == 0) {
-                return
-            } else {
-                that.submitting = true
-            }
+            swal({
+                title: "提交",
+                text: "确认提交预约请求吗?",
+                type: "warning",
+                showCancelButton: true,
+				cancelButtonText: "取消",
+				confirmButtonText: "确认",
+                confirmButtonColor: "#1fb5ad",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function() {
 
-            _.each(removelist, function(item, i) {
-                var datestr = item.date.replace(/-/g, "")
-                Restangular.one("api/", item.coachprofile.name)
-                    .one("b/" + datestr, item.hour)
-                    .remove()
-                    .then(function(data) {
-                        console.log("remove success")
-                        that.completeditem()
-                    })
-            })
-            _.each(addlist, function(item, i) {
-                var datestr = item.date.replace(/-/g, "")
-                item.coach = item.coachprofile.id
-                item.custom = that.order.customerdetail.id
-                item.order = that.order.id
-                Restangular.one("api/", item.coachprofile.name)
-                    .post("b/" + datestr, item)
-                    .then(function(data) {
-                        that.completeditem()
-                        console.log(data)
-                    })
+
+                var removelist = _.where(that.tableParams.data, {
+                    pendingaction: "remove"
+                })
+                var addlist = _.where(that.tableParams.data, {
+                    pendingaction: "add"
+                })
+                that.pendingaction = removelist.length + addlist.length
+                if (that.pendingaction == 0) {
+                    return
+                } else {
+                    that.submitting = true
+                }
+
+                _.each(removelist, function(item, i) {
+                    var datestr = item.date.replace(/-/g, "")
+                    Restangular.one("api/", item.coachprofile.name)
+                        .one("b/" + datestr, item.hour)
+                        .remove()
+                        .then(function(data) {
+                            console.log("remove success")
+                            that.completeditem()
+                        })
+                })
+                _.each(addlist, function(item, i) {
+                    var datestr = item.date.replace(/-/g, "")
+                    item.coach = item.coachprofile.id
+                    item.custom = that.order.customerdetail.id
+                    item.order = that.order.id
+                    Restangular.one("api/", item.coachprofile.name)
+                        .post("b/" + datestr, item)
+                        .then(function(data) {
+                            that.completeditem()
+                            console.log(data)
+                        })
+                })
             })
 
         }
@@ -609,13 +623,13 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
         }
         that.loadprev = function() {
             date = date.addDays(-7)
-			that.load()
+            that.load()
         }
         that.loadnext = function() {
             date = date.addDays(7)
-			that.load()
+            that.load()
         }
-		that.load()
+        that.load()
     }
 ])
 
