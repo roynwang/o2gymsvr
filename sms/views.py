@@ -119,28 +119,30 @@ class SMSVerify(APIView):
 @permission_classes((AllowAny, ))
 class GymReg(APIView):
 	def post(self,request):
-		print "1111111111111"
-		print request.DATA
-		number = request.POST["phone"]
-		print "xxxxxxxxxxxxxxxxxxxxx"
+		number = request.data["phone"]
 		sms = get_object_or_404(Sms,number=number)
-		if str(sms.vcode) == request.POST["vcode"]:
-			get_or_create_user_return_token(number, request.POST["password"])
+		if str(sms.vcode) == request.data["vcode"]:
+			if "password" in request.data:
+				get_or_create_user_return_token(number, request.data["password"])
 			#create gym here
-			print "222222222222"
 			gym = Gym.objects.create(
-					name=request.POST["gymname"],
+					name=request.data["gymname"],
 					introduction="",
-					address=request.POST["gymaddr"],
-					phone=request.POST["gymphone"],
+					address=request.data["gymaddr"],
+					phone=request.data["gymphone"],
 					mapid=0,
 					imgs="[]",
 					)
-			print "3333333333333"
 			#change gym here
 			usr = get_object_or_404(User,name=number)
-			usr.displayname = request.POST["displayname"]
-			usr.gym = [gym]
+			if "displayname" in request.data:
+				usr.displayname = request.data["displayname"]
+				usr.gym = [gym]
+			usr.role = "admin"
+			corps = json.loads(usr.corps)
+			corps.append(gym.id)
+			usr.corps = json.dumps(corps)
+
 			usr.iscoach = True
 			usr.save()
 			print "44444"

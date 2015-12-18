@@ -57,7 +57,6 @@
 <header class="header fixed-top clearfix">
 <!--logo start-->
 <div class="brand">
-
     <a href="index.html" class="logo">
         <img src="/static/images/logo.png" alt="" style="width:40px;display:inline-block">
     </a>
@@ -67,13 +66,32 @@
 </div>
 <!--logo end-->
 <div class="nav notify-row" id="top_menu">
+    
 </div>
 <div class="top-nav clearfix">
+	<ul class="nav pull-left top-menu">
+        <!-- user login dropdown start-->
+        <li class="dropdown">
+            <a data-toggle="dropdown" class="dropdown-toggle"
+				style="line-height:33px;padding-left:5px;background-color: #1FB5AD !important;" href="#">
+                <span class="username" id="gym-name" style="color:#fff; margin-left:10px"></span>
+				<b class="caret" style="border-bottom-color: white;border-top-color: white;"></b>
+            </a>
+            <ul class="dropdown-menu extended logout" id="profile-menu">
+           <!--     <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>
+                <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
+				-->
+                <li><a id="logout"><i class="fa fa-key"></i>注销</a></li>
+                <li><a href="#/newgym"><i class="fa fa-key"></i>添加健身房</a></li>
+            </ul>
+        </li>
+        <!-- user login dropdown end -->
+    </ul>
     <!--search & user info start-->
     <ul class="nav pull-right top-menu">
-        <li>
+<!--        <li>
             <input type="text" class="form-control search" placeholder=" Search">
-        </li>
+        </li> -->
         <!-- user login dropdown start-->
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -82,17 +100,8 @@
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu extended logout">
-           <!--     <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>
-                <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
-				-->
                 <li><a id="logout"><i class="fa fa-key"></i>注销</a></li>
             </ul>
-        </li>
-        <!-- user login dropdown end -->
-        <li>
-            <div class="toggle-right-box">
-                <div class="fa fa-bars"></div>
-            </div>
         </li>
     </ul>
     <!--search & user info end-->
@@ -123,13 +132,13 @@
                         <span>客户信息</span>
                     </a>
                 </li>
-	            <li>
-                    <a href="#sale">
+	            <li class="admin-show">
+                    <a href="#sale" >
                         <i class="fa fa-bar-chart-o"></i>
                         <span>销售统计</span>
                     </a>
                 </li>
-	            <li class="sub-menu">
+	            <li class="sub-menu admin-show">
                     <a href="javascript:;">
                         <i class="fa  fa-credit-card"></i>
                         <span>工资结算</span>
@@ -139,7 +148,7 @@
                         <li><a href="#salarysetting">工资设置</a></li>
 					</ul>
                 </li>
-    
+   <!-- 
                 <li class="sub-menu">
                     <a href="javascript:;">
                         <i class="fa fa-laptop"></i>
@@ -151,6 +160,7 @@
                         <li><a href="#feedback">意见和建议</a></li>
                     </ul>
                 </li>
+	-->
             </ul>            </div>
         <!-- sidebar menu end-->
     </div>
@@ -217,6 +227,8 @@
 <script>
 	//load user info by token
 	var USER = null
+	var $gymlist = []
+	$(".admin-show").hide()
 	function getusrauth(){
 		console.log($.cookie())
 		if($.cookie("token")){
@@ -226,16 +238,45 @@
 			window.location = "/console/login/"
 		}
 	}
-	function refreshuser(authinfo){
+	function refreshuser(authinfo,gymid){
 		$.get("/api/" + authinfo.username + "/", function(data){
 			USER = data
 			$.cookie("user", USER.name, {path:"/"})
-			$.cookie("gym", USER.gym_id[0], {path:"/"})
+			if(gymid == undefined){
+				$.cookie("gym", USER.gym_id[0], {path:"/"})
+			}else {
+				$.cookie("gym", gymid, {path:"/"})
+			}
 			$("#username").html(data.displayname)
 			$("#useravatar").attr("src", data.avatar)
+			if(data.role == "admin"){
+				$(".admin-show").show()
+			}
+			$gymlist = data.corps_list
+			refreshcorner()
 		}).fail(function(resp){
 			
 		})
+	}
+	function refreshcorner(needrefresh){
+		var update = function(){
+			var ori = ""
+			$.each($gymlist,function(i,item){
+				if(item.k ==  $.cookie("gym")){
+					$("#gym-name").html(item.v)
+					ori += '<li><a style="color:#1fb5ac" href="#/gym/'+ item.k + '"><i class="fa"></i>' + item.v + '</a></li>'
+				} else{
+					ori += '<li><a href="#/gym/'+ item.k + '"><i class="fa"></i>' + item.v + '</a></li>'
+				}
+			})
+			ori += '<li><a href="#/newgym"><i class="fa fa-dot-circle-o"></i>添加分店</a></li>'
+			$("#profile-menu").html(ori)
+		}
+		if(needrefresh){
+			refreshuser(getusrauth())
+		} else {
+			update()
+		}
 	}
 	
 	$(function(){
@@ -245,6 +286,7 @@
 			$.removeCookie("gym")
 			window.location = "/console/login/"
 		})
+
 	})
 
 </script>

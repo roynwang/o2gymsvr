@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from order.serializers import *
 from order.payprocess import *
 from usr.models import *
+from business.models import *
 from django.http import HttpResponseNotFound
 from rest_framework import status
 import time
@@ -208,6 +209,24 @@ class GymSoldRange(APIView):
 				
 
 class GymSoldDay(APIView):
+	def cal_course_income(self,query):
+		price = 0
+		for course in query:
+			product = course.order.product
+			#tmpprice = float(course.order.amount)/float(product.amount)
+			tmpprice = course.order.amount/product.amount
+			price += tmpprice
+			print str(course.order.amount) + ":" + str(product.amount) + ": " + str(tmpprice)
+		return price
+
+	def sum_price_course(self,gymid,day):
+		day_obj = datetime.datetime.strptime(day,"%Y%m%d")
+		coaches = Gym.objects.get(id=gymid).coaches.values_list("id", flat=True)
+		books = Schedule.objects.filter(date = day_obj,coach__in = coaches)
+		#print books.query
+		return (books.count(),self.cal_course_income(books))
+		
+
 	def get(self,request,gymid, day):
 		utc = pytz.utc
 		tz = pytz.timezone('Asia/Chongqing')
@@ -225,7 +244,8 @@ class GymSoldDay(APIView):
 		'''
 		sold_price = orders.aggregate(Sum("amount"))["amount__sum"]
 		sold_count = orders.count()  
-		return Response({"sold_price": sold_price, "sold_count":sold_count})
+		course_count, course_price = self.sum_price_course(gymid, day)
+		return Response({"sold_price": sold_price, "sold_count":sold_count,"course_price":course_price, "course_count": course_count})
 
 
 class GymCustomers(generics.ListAPIView):

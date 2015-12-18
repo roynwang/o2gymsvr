@@ -91,6 +91,11 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             templateUrl: "/static/console/mainpage.html",
             controller: "MainPageCtrl"
         })
+        .state('gym', {
+			url: "/gym/:gymid",
+            controller: "GymCtrl"
+			//templateUrl: "/static/console/customers.html",
+		})
         .state('customers', {
             url: "/customers",
             templateUrl: "/static/console/customers.html",
@@ -131,7 +136,20 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/coach/:coachid/calendar",
             templateUrl: "/static/console/coachcalendar.html",
         })
+        .state('newgym', {
+            url: "/newgym",
+            templateUrl: "/static/console/newgym.html",
+        })
 })
+
+app.controller("GymCtrl", ["$stateParams","$state",
+    function($stateParams,$state) {
+		$.cookie("gym", $stateParams.gymid, {path:"/"})
+		refreshcorner()
+		$state.transitionTo("index")
+		//window.location = "/console/dashboard/"
+	}
+])
 app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams",
     function($scope, Restangular, NgTableParams, $stateParams) {
         var that = this
@@ -346,14 +364,12 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 text: "确认提交预约请求吗?",
                 type: "warning",
                 showCancelButton: true,
-				cancelButtonText: "取消",
-				confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                confirmButtonText: "确认",
                 confirmButtonColor: "#1fb5ad",
                 closeOnConfirm: false,
                 showLoaderOnConfirm: true
             }, function() {
-
-
                 var removelist = _.where(that.tableParams.data, {
                     pendingaction: "remove"
                 })
@@ -890,7 +906,7 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
                                 $scope.calendarRowGroup[g] = []
                             }
                             $scope.coaches[i].books = data
-                            $scope.coursecount += data.length
+                            //$scope.coursecount += data.length
                             $scope.calendarRowGroup[g][i % 3] = $scope.coaches[i]
                         })
 
@@ -911,3 +927,83 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
             recur()
         }
     ]) // end controller
+
+app.controller("NewGymCtrl", ['$scope', "Restangular","SweetAlert",
+    function($scope, Restangular, SweetAlert) {
+        var that = this
+        that.vcodetext = "发送验证码"
+        that.data = {}
+        that.data["phone"] = $.cookie("user")
+        that.data["vcode"] = undefined
+        //that.data["password"] = undefined
+        that.data["gymname"] = undefined
+        that.data["gymphone"] = undefined
+        that.data["gymaddr"] = undefined
+        that.errmsg = undefined
+        function validate() {
+            for (var k in data) {
+                if (data[k] == undefined || data.length == 0) {
+                    that.errmsg = "请填完所有选项"
+                    return false
+                }
+            }
+            return true
+        }
+        that.sendvcode = function() {
+            if (that.vcodetext != "发送验证码")
+                return
+            Restangular.one("api")
+                .post("sms", {
+                    number: data["phone"]
+                })
+                .then(function() {
+                    that.vcodetext = "30秒后重发"
+                    setTimeout(function() {
+                        that.vcodetext = "发送验证码"
+                    }, 30000)
+                }, function() {
+                    swal("", "发送失败,稍后重试",
+                        "warning")
+                })
+
+        }
+
+        that.submit = function() {
+            SweetAlert.swal({
+                    //title: "确定移除该教练吗?",
+                    title: "",
+                    text: "确定移除该教练吗?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "移除",
+                    cancelButtonText: "取消",
+                    closeOnConfirm: false
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+                    Restangular.one("api")
+                        .post("gr", that.data)
+                        .then(function(data) {
+                                swal({
+                                    title: "成功",
+                                    text: "分店已经添加成功",
+                                    type: "success",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+								refreshcorner(true)
+                            },
+                            function(data) {
+                                if (data.status == 403) {
+                                    swal("", "验证码错误,请检查后重试", "warning")
+                                } else {
+                                    swal("", "添加失败,请检查后重试", "warning")
+                                }
+                            })
+                })
+        }
+    }
+])

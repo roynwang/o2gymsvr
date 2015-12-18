@@ -1,0 +1,18 @@
+<div class="form-signin" ng-controller="NewGymCtrl as ctrl">
+    <h2 class="form-signin-heading">新增工作室</h2>
+    <div class="login-wrap">
+        <div class="form-group has-success">
+            <div class="col-lg-7" style="margin-left:-15px">
+                <input type="text" class="form-control" id="vcode" ng-model="ctrl.data.vcode" placeholder="6位验证码" autofocus>
+            </div>
+            <div class="col-lg-5">
+				<button class="pull-right btn btn-primary" id="btn-vcode" ng-click="ctrl.sendvcode()">{{ctrl.vcodetext}}</button>
+            </div>
+        </div>
+        <input type="text" class="form-control" ng-model="ctrl.data.gymname" placeholder="健身房名称" autofocus>
+        <input type="text" class="form-control" ng-model="ctrl.data.gymphone" placeholder="联系电话" autofocus>
+        <input type="text" class="form-control" ng-model="ctrl.data.gymaddr" placeholder="具体地址" autofocus>
+		<i class="text-danger">{{ctrl.errmsg}}</i>
+        <button class="btn btn-lg btn-login btn-block" ng-click="ctrl.submit()">提交</button>
+    </div>
+</div>

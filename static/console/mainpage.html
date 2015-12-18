@@ -1,5 +1,5 @@
  <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="mini-stat clearfix">
             <span class="mini-stat-icon orange"><i class="fa fa-tag"></i></span>
             <div class="mini-stat-info">
@@ -8,7 +8,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="mini-stat clearfix">
             <span class="mini-stat-icon pink"><i class="fa fa-cny"></i></span>
             <div class="mini-stat-info">
@@ -17,15 +17,25 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="mini-stat clearfix">
             <span class="mini-stat-icon green"><i class="fa  fa-calendar"></i></span>
             <div class="mini-stat-info">
-                <span>{{coursecount}}</span>
+                <span>{{sale.course_count||0 }}</span>
 				今日课程数
             </div>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="mini-stat clearfix">
+            <span class="mini-stat-icon" style="background: #FCB322"><i class="fa  fa-money"></i></span>
+            <div class="mini-stat-info">
+                <span>{{sale.course_price||0}}</span>
+				今日课程总价
+            </div>
+        </div>
+    </div>
+
 </div>
 <div class="row" ng-repeat="cg in calendarRowGroup" style="margin-bottom:20px">
 	<div ng-if="cg != undefined" class="col-md-4" ng-repeat="coach in cg ">

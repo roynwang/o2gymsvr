@@ -3,6 +3,8 @@ from usr.models import *
 from business.models import *
 from weibo.models import *
 from django.contrib.auth import get_user_model
+import json
+
 
 class FakeWeiboSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -56,9 +58,16 @@ class UserSerializer(serializers.ModelSerializer):
 	gym = serializers.StringRelatedField(many=True,read_only=True)
 	gym_id = serializers.PrimaryKeyRelatedField(source="gym",many=True,read_only=True)
 	upped_person = serializers.StringRelatedField(many=True, read_only=True)
+	corps_list = serializers.SerializerMethodField()
 	class Meta:
 		model = User
 		#exclude = ("upped","fwded","commented")
+	def get_corps_list(self, obj):
+		corps = json.loads(obj.corps)
+		ret = []
+		for corp in corps:
+			ret.append({"k":corp, "v":unicode(Gym.objects.get(id=corp))})
+		return ret
 
 
 class FeedSerializer(serializers.ModelSerializer):

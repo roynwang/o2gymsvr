@@ -36,6 +36,9 @@ class User(models.Model):
 	
 	openid = models.CharField(max_length=32,unique=True,db_index=True, blank=True, default="")
 
+	role = models.CharField(max_length=32, default="customer")
+	corps = models.CharField(max_length=512, default="[]")
+
 	def __unicode__(self):
 		return self.name
 
