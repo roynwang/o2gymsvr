@@ -18,10 +18,10 @@ class Order(models.Model):
 	coach = models.ForeignKey("usr.User", to_field="name", related_name="income_orders", null=True)
 	billid = models.CharField(max_length=20, blank=True, db_index=True)
 	paidtime = models.DateTimeField(blank=True, null=True)
-	status = models.CharField(max_length=32)
+	status = models.CharField(max_length=32, blank=True)
 	parentorder = models.ForeignKey("self", related_name="sub_orders", null=True)
 	product = models.ForeignKey("Product", related_name="sold", null=True)
-	channel = models.CharField(max_length=10)
+	channel = models.CharField(max_length=10,blank=True)
 	
 	isfirst =  models.BooleanField(default=False)
 	#this is mean price

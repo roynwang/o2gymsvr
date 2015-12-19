@@ -12,13 +12,19 @@
 		<table ng-table="demo.tableParams" class="table table-condensed table-striped">
 			<tr ng-repeat="row in $data">
 				<td data-title="'订单号'">{{row.billid}}</td>
-				<td data-title="'金额'">{{row.amount}}</td>
+				<td data-title="'金额'">{{row.amount}} <a
+						style="font-size:12px;color:#1fb5ad;text-decoration: underline;"
+						ng-click="demo.modifyprice(row)">修改</a></td>
 				<td data-title="'状态'">{{demo.statusmap[row.status]}}</td>
 				<td data-title="'完成度'">{{row.complete_status}}</td>
-				<td ng-if="row.status!='unpaid'"><a class="btn {{row.status=='done'?'btn-success':'btn-primary'}}"
+				<td ><a ng-if="row.status!='unpaid'" class="btn {{row.status=='done'?'btn-success':'btn-primary'}}"
 						href="#order/{{row.coachdetail.name}}/{{row.id}}">{{row.status ==
-						"done"?"查看":"预约"}}</a></td>
-				<td ng-if="row.status == 'unpaid'"></td>
+						"done"?"查看":"预约"}}</a>
+					<a ng-if="row.status != 'done' && row.removable" class="btn btn-danger"
+						ng-click="demo.remove(row.id)">移除</a>
+					<!--<a ng-if="row.status != 'done'" class="btn btn-info"
+						style="margin-left:3px">修改</a>-->
+				</td>
 			</tr>
 		</table>
 	</div>

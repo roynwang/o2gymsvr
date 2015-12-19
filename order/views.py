@@ -66,7 +66,7 @@ class OrderList(generics.ListCreateAPIView):
 		return Response(OrderSerializer(instance=obj).data, status=status.HTTP_201_CREATED) 
 		
 
-class OrderItemById(generics.RetrieveUpdateAPIView):
+class OrderItemById(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = OrderDetailSerializer
 	def get_object(self):
 		role = "customer"
@@ -77,6 +77,12 @@ class OrderItemById(generics.RetrieveUpdateAPIView):
 		else:
 		'''
 		return get_object_or_404(Order, id=int(self.kwargs["orderid"]))
+	def update(self, request, *args, **kwargs):
+		ret = super(OrderItemById,self).update(request,args, kwargs)
+		order = self.get_object()
+		order.product.price = request.data["amount"]
+		order.product.save()
+		return ret
 
 
 class OrderItemByBillid(generics.RetrieveAPIView):

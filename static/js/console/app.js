@@ -77,11 +77,14 @@ app.directive('backButton', function() {
     }
 });
 app.factory("$login", function(Restangular) {
-	function login(username,pwd, onsuccess, onfail){
-		Restangular.one("api")
-				   .post("lg",{username:username, password:pwd})
-				   .then(onsuccess,onfail)
-	}
+    function login(username, pwd, onsuccess, onfail) {
+        Restangular.one("api")
+            .post("lg", {
+                username: username,
+                password: pwd
+            })
+            .then(onsuccess, onfail)
+    }
     return {
         login: login
     }
@@ -104,10 +107,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             controller: "MainPageCtrl"
         })
         .state('gym', {
-			url: "/gym/:gymid",
+            url: "/gym/:gymid",
             controller: "GymCtrl"
-			//templateUrl: "/static/console/customers.html",
-		})
+                //templateUrl: "/static/console/customers.html",
+        })
         .state('customers', {
             url: "/customers",
             templateUrl: "/static/console/customers.html",
@@ -154,16 +157,18 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
         })
 })
 
-app.controller("GymCtrl", ["$stateParams","$state",
-    function($stateParams,$state) {
-		$.cookie("gym", $stateParams.gymid, {path:"/"})
-		refreshcorner()
-		$state.transitionTo("index")
-		//window.location = "/console/dashboard/"
-	}
+app.controller("GymCtrl", ["$stateParams", "$state",
+    function($stateParams, $state) {
+        $.cookie("gym", $stateParams.gymid, {
+            path: "/"
+        })
+        refreshcorner()
+        $state.transitionTo("index")
+            //window.location = "/console/dashboard/"
+    }
 ])
-app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams",
-    function($scope, Restangular, NgTableParams, $stateParams) {
+app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert",
+    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert) {
         var that = this
         that.statusmap = {
             "inprogress": "进行中",
@@ -171,21 +176,103 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
             "paid": "待预约",
             "done": "已完成"
         }
-        Restangular.one('api/', $stateParams.customername)
-            .one("o/")
-            .get()
-            .then(function(data) {
-                _.map(data.results, function(item) {
-                    if (eval(item.complete_status) == 1) {
-                        item.status = "done"
-                    }
+        that.refresh = function() {
+            Restangular.one('api/', $stateParams.customername)
+                .one("o/")
+                .get()
+                .then(function(data) {
+                    _.map(data.results, function(item) {
+                        if (eval(item.complete_status) == 1) {
+                            item.status = "done"
+                        }
+                        item["removable"] = false
+						if (eval(item.complete_status) == 0){
+                            item["removable"] = true
+                        }
+                    })
+                    that.tableParams = new NgTableParams({
+                        sorting: {}
+                    }, {
+                        dataset: data.results
+                    });
                 })
-                that.tableParams = new NgTableParams({
-                    sorting: {}
-                }, {
-                    dataset: data.results
-                });
-            })
+        }
+		that.modifyprice = function(c){
+			swal({title: "修改订单",
+				text: "请输入订单的价格",
+				type: "input",
+                showLoaderOnConfirm: true,
+				showCancelButton: true, 
+                confirmButtonText: "保存",
+                cancelButtonText: "取消",
+				closeOnConfirm: false,  
+				inputPlaceholder: c.amount
+				},
+				function(inputValue){  
+
+					if (inputValue === false) return false;     
+					inputValue = parseInt(inputValue)
+					if (inputValue == undefined && inputValue.isNaN()) {
+						swal.showInputError("请输入合法的数字");  
+						return false  
+					}
+			         Restangular.one("api", $stateParams.customername)
+                        .one("o", c.id)
+                        .patch({amount:inputValue})
+                        .then(function(data) {
+                                swal({
+                                    title: "成功",
+                                    text: "修改已保存",
+                                    type: "success",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+								that.refresh()
+                            },
+                            function(data) {
+                                swal("", "保存失败了",
+                                    "warning")
+                            })
+                })
+		}
+   
+        that.remove = function(orderid) {
+            SweetAlert.swal({
+                    //title: "确定移除该教练吗?",
+                    title: "",
+                    text: "确定移除该订单吗?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    showLoaderOnConfirm: true,
+                    closeOnConfirm: false
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+                    Restangular.one("api", $stateParams.customername)
+                        .one("o", orderid)
+                        .remove()
+                        .then(function(data) {
+                                swal({
+                                    title: "成功",
+                                    text: "订单已经移除",
+                                    type: "success",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+								that.refresh()
+                            },
+                            function(data) {
+                                swal("", "删除失败了",
+                                    "warning")
+                            })
+                })
+        }
+		that.refresh()
     }
 ])
 app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAlert",
@@ -202,12 +289,13 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAl
                     that.rows = _.range(0, that.rowcount)
                 })
         }
-        that.remove = function(c) {
+	     that.remove = function(c) {
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
                     title: "",
                     text: "确定移除该教练吗?",
                     type: "warning",
+                    showLoaderOnConfirm: true,
                     showCancelButton: true,
                     confirmButtonColor: "#1fb5ad",
                     confirmButtonText: "移除",
@@ -441,6 +529,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     confirmButtonColor: "#1fb5ad",
                     confirmButtonText: "完成",
                     cancelButtonText: "取消",
+                    showLoaderOnConfirm: true,
                     closeOnConfirm: false
                 },
                 function(yes) {
@@ -692,32 +781,34 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
     }
 ])
 
-app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams","$login",
-    function($scope, Restangular, NgTableParams,$login) {
+app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "$login",
+    function($scope, Restangular, NgTableParams, $login) {
         var gymid = $.cookie("gym")
         var that = this
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
 
-		that.is_admin = false
-		that.errmsg = ""
-		that.pwd = ""
+        that.is_admin = false
+        that.errmsg = ""
+        that.pwd = ""
 
-		that.submit = function(){
-			if(that.pwd == undefined || that.pwd.length == 0){
-				that.errmsg("请输入密码")
-				return 
-			}
-			$login.login($.cookie("user"), that.pwd,
-				function(data){
-					$.cookie("token",data.token,{ path: '/' })
-					that.is_admin = true
-				},
-				function(data){
-					that.is_admin = false
-					that.errmsg = "密码验证失败"
-				})
-		}
+        that.submit = function() {
+            if (that.pwd == undefined || that.pwd.length == 0) {
+                that.errmsg("请输入密码")
+                return
+            }
+            $login.login($.cookie("user"), that.pwd,
+                function(data) {
+                    $.cookie("token", data.token, {
+                        path: '/'
+                    })
+                    that.is_admin = true
+                },
+                function(data) {
+                    that.is_admin = false
+                    that.errmsg = "密码验证失败"
+                })
+        }
 
 
         function calSum(data) {
@@ -763,32 +854,34 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams","$
 
 ])
 
-app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams","$login",
-    function($scope, Restangular, NgTableParams,$login) {
+app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$login",
+    function($scope, Restangular, NgTableParams, $login) {
         var gymid = $.cookie("gym")
         var that = this
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
 
-		that.is_admin = false
-		that.errmsg = ""
-		that.pwd = ""
+        that.is_admin = false
+        that.errmsg = ""
+        that.pwd = ""
 
-		that.submit = function(){
-			if(that.pwd == undefined || that.pwd.length == 0){
-				that.errmsg("请输入密码")
-				return 
-			}
-			$login.login($.cookie("user"), that.pwd,
-				function(data){
-					$.cookie("token",data.token,{ path: '/' })
-					that.is_admin = true
-				},
-				function(data){
-					that.is_admin = false
-					that.errmsg = "密码验证失败"
-				})
-		}
+        that.submit = function() {
+            if (that.pwd == undefined || that.pwd.length == 0) {
+                that.errmsg("请输入密码")
+                return
+            }
+            $login.login($.cookie("user"), that.pwd,
+                function(data) {
+                    $.cookie("token", data.token, {
+                        path: '/'
+                    })
+                    that.is_admin = true
+                },
+                function(data) {
+                    that.is_admin = false
+                    that.errmsg = "密码验证失败"
+                })
+        }
 
         function calSum(data) {
             console.log(data)
@@ -801,7 +894,10 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams","$logi
                 $scope.coaches = gym.coaches_set
                 $.each($scope.coaches, function(i, item) {
                     //render income
-                    Restangular.one("api/", item.name).one("income/").get({start:that.startday.Format("yyyyMMdd"), end:that.endday.Format("yyyyMMdd")}).then(function(data) {
+                    Restangular.one("api/", item.name).one("income/").get({
+                        start: that.startday.Format("yyyyMMdd"),
+                        end: that.endday.Format("yyyyMMdd")
+                    }).then(function(data) {
                         $scope.coaches[i].income = data
                     })
                 })
@@ -841,32 +937,34 @@ app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams",
             })
     }
 ])
-app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams","$login",
-    function($scope, Restangular, NgTableParams,$login) {
+app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "$login",
+    function($scope, Restangular, NgTableParams, $login) {
         var gymid = $.cookie("gym")
         var self = this
         var originalData = []
-		var that = this
+        var that = this
 
-		that.is_admin = false
-		that.errmsg = ""
-		that.pwd = ""
+        that.is_admin = false
+        that.errmsg = ""
+        that.pwd = ""
 
-		that.submit = function(){
-			if(that.pwd == undefined || that.pwd.length == 0){
-				that.errmsg("请输入密码")
-				return 
-			}
-			$login.login($.cookie("user"), that.pwd,
-				function(data){
-					$.cookie("token",data.token,{ path: '/' })
-					that.is_admin = true
-				},
-				function(data){
-					that.is_admin = false
-					that.errmsg = "密码验证失败"
-				})
-		}
+        that.submit = function() {
+            if (that.pwd == undefined || that.pwd.length == 0) {
+                that.errmsg("请输入密码")
+                return
+            }
+            $login.login($.cookie("user"), that.pwd,
+                function(data) {
+                    $.cookie("token", data.token, {
+                        path: '/'
+                    })
+                    that.is_admin = true
+                },
+                function(data) {
+                    that.is_admin = false
+                    that.errmsg = "密码验证失败"
+                })
+        }
 
         Restangular.one('api/g/', gymid)
             .one("salarysetting/")
@@ -978,7 +1076,7 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
                                 $scope.calendarRowGroup[g] = []
                             }
                             $scope.coaches[i].books = data
-                            //$scope.coursecount += data.length
+                                //$scope.coursecount += data.length
                             $scope.calendarRowGroup[g][i % 3] = $scope.coaches[i]
                         })
 
@@ -1000,20 +1098,21 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
         }
     ]) // end controller
 
-app.controller("NewGymCtrl", ['$scope', "Restangular","SweetAlert",
+app.controller("NewGymCtrl", ['$scope', "Restangular", "SweetAlert",
     function($scope, Restangular, SweetAlert) {
         var that = this
         that.vcodetext = "发送验证码"
         that.data = {}
         that.data["phone"] = $.cookie("user")
         that.data["vcode"] = undefined
-        //that.data["password"] = undefined
+            //that.data["password"] = undefined
         that.data["gymname"] = undefined
         that.data["gymphone"] = undefined
         that.data["gymaddr"] = undefined
         that.errmsg = undefined
+
         function validate() {
-			var data = that.data
+            var data = that.data
             for (var k in data) {
                 if (data[k] == undefined || data.length == 0) {
                     that.errmsg = "请填完所有选项"
@@ -1042,9 +1141,9 @@ app.controller("NewGymCtrl", ['$scope', "Restangular","SweetAlert",
         }
 
         that.submit = function() {
-			if(validate() == false){
-				return
-			}
+            if (validate() == false) {
+                return
+            }
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
                     title: "",
@@ -1054,6 +1153,7 @@ app.controller("NewGymCtrl", ['$scope', "Restangular","SweetAlert",
                     confirmButtonColor: "#1fb5ad",
                     confirmButtonText: "确定",
                     cancelButtonText: "取消",
+                    showLoaderOnConfirm: true,
                     closeOnConfirm: false
                 },
                 function(yes) {
@@ -1070,7 +1170,7 @@ app.controller("NewGymCtrl", ['$scope', "Restangular","SweetAlert",
                                     timer: 1500,
                                     showConfirmButton: false
                                 });
-								refreshcorner(true)
+                                refreshcorner(true)
                             },
                             function(data) {
                                 if (data.status == 403) {
