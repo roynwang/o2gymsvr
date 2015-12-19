@@ -817,7 +817,9 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
                                 coachname: coachname,
                                 orderid: data.id
                             })
-                        })
+                        },function(data){
+							swal("", "订单保存失败，请检查输入后重试","warning")
+						})
                 })
         }
     }
