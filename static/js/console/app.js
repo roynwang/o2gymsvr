@@ -941,6 +941,7 @@ app.controller("NewGymCtrl", ['$scope', "Restangular","SweetAlert",
         that.data["gymaddr"] = undefined
         that.errmsg = undefined
         function validate() {
+			var data = that.data
             for (var k in data) {
                 if (data[k] == undefined || data.length == 0) {
                     that.errmsg = "请填完所有选项"
@@ -969,14 +970,17 @@ app.controller("NewGymCtrl", ['$scope', "Restangular","SweetAlert",
         }
 
         that.submit = function() {
+			if(validate() == false){
+				return
+			}
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
                     title: "",
-                    text: "确定移除该教练吗?",
+                    text: "确定提交吗?",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#1fb5ad",
-                    confirmButtonText: "移除",
+                    confirmButtonText: "确定",
                     cancelButtonText: "取消",
                     closeOnConfirm: false
                 },

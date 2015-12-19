@@ -71,13 +71,14 @@
 <div class="top-nav clearfix">
 	<ul class="nav pull-left top-menu admin-show">
         <!-- user login dropdown start-->
-        <li class="dropdown">
+        <li class="dropdown" style="margin-top: -1px;">
             <a data-toggle="dropdown" class="dropdown-toggle"
-				style="line-height:33px;padding-left:5px;background-color: #1FB5AD !important;" href="#">
-                <span class="username" id="gym-name" style="color:#fff; margin-left:10px"></span>
+				style="line-height: 33px; padding-left: 8px; background-color: #1FB5AD !important; padding-right: 14px !important;" href="#">
+                <span class="username" id="gym-name" style="color:#fff;
+					margin-left:10px;font-size:15px"></span>
 				<b class="caret" style="border-bottom-color: white;border-top-color: white;"></b>
             </a>
-            <ul class="dropdown-menu extended logout" id="profile-menu">
+            <ul class="dropdown-menu extended logout" id="profile-menu" style="right: auto; width: 200px !important">
            <!--     <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>
                 <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
 				-->
@@ -264,12 +265,12 @@
 			$.each($gymlist,function(i,item){
 				if(item.k ==  $.cookie("gym")){
 					$("#gym-name").html(item.v)
-					ori += '<li><a style="color:#1fb5ac" href="#/gym/'+ item.k + '"><i class="fa"></i>' + item.v + '</a></li>'
+					ori += '<li><a style="color:#1fb5ac;font-size:14px" href="#/gym/'+ item.k + '"><i class="fa fa-check-circle-o"></i><strong>' + item.v + '</strong></a></li>'
 				} else{
-					ori += '<li><a href="#/gym/'+ item.k + '"><i class="fa"></i>' + item.v + '</a></li>'
+					ori += '<li><a href="#/gym/'+ item.k + '"><i class="fa fa-circle-o"></i>' + item.v + '</a></li>'
 				}
 			})
-			ori += '<li><a href="#/newgym"><i class="fa fa-dot-circle-o"></i>添加分店</a></li>'
+			ori += '<li><a href="#/newgym"><i class="fa fa-plus-circle"></i>添加分店</a></li>'
 			$("#profile-menu").html(ori)
 		}
 		if(needrefresh){
