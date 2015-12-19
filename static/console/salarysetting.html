@@ -1,84 +1,123 @@
-<div class="col-md-12" ng-controller="SalarySettingCtrl as demo">
-	<!--<h3>客户信息</h3>-->
+<div ng-controller="SalarySettingCtrl as demo">
+    <div class="col-sm-12" ng-hide="demo.is_admin">
+        <div class="form-signin">
+            <h2 class="form-signin-heading">密码验证</h2>
+            <div class="login-wrap">
+                <input type="password" class="form-control" ng-model="demo.pwd" placeholder="请输入密码"
+                autofocus>
+                <i class="text-danger">{{demo.errmsg}}</i>
+                <button class="btn btn-lg btn-login btn-block" ng-click="demo.submit()">提交</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12" ng-show="ctrl.is_admin">
+        <!--<h3>客户信息</h3>-->
+        <section class="panel">
+            <header class="panel-heading">
+                工资设定
+            </header>
+            <div class="panel-body">
+                <table ng-table="demo.tableParams" class="table table-hover editable-table demoTable"
+                ng-form="demo.tableForm" disable-filter="demo.isAdding" demo-tracked-table="demo.tableTracker">
+                    <colgroup>
+                        <col width="10%" />
+                        <col width="10%" />
+                        <col width="10%" />
+                        <col width="10%" />
+                        <col width="10%" />
+                        <col width="10%" />
+                        <col width="10%" />
+                        <col width="10%" />
+                        <col width="10%" />
+                        <col width="10%" />
+                    </colgroup>
+                    <tr ng-repeat="row in $data" ng-form="rowForm" demo-tracked-table-row="row">
+                        <td data-title="'姓名'">{{row.coachname}}</td>
+                        <td data-title="'基本工资(元)'" ng-switch="row.isEditing" ng-class="base_salary.$dirty ? 'bg-warning' : ''"
+                        ng-form="base_salary" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.base_salary}}</span>
+                            <div class="controls" ng-class="base_salary.$invalid && base_salary.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="text" name="base_salary" ng-model="row.base_salary" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
+                        <td data-title="'养老保险(%)'" ng-switch="row.isEditing" ng-class="yanglao.$dirty ? 'bg-warning' : ''"
+                        ng-form="yanglao" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.yanglao}}</span>
+                            <div class="controls" ng-class="yanglao.$invalid && yanglao.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="text" name="yanglao" ng-model="row.yanglao" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
+                        <td data-title="'医疗保险(%)'" ng-switch="row.isEditing" ng-class="yiliao.$dirty ? 'bg-warning' : ''"
+                        ng-form="yiliao" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.yanglao}}</span>
+                            <div class="controls" ng-class="yiliao.$invalid && yiliao.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="text" name="yiliao" ng-model="row.yiliao" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
+                        <td data-title="'失业保险(%)'" ng-switch="row.isEditing" ng-class="shiye.$dirty ? 'bg-warning' : ''"
+                        ng-form="shiye" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.shiye}}</span>
+                            <div class="controls" ng-class="shiye.$invalid && shiye.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="text" name="shiye" ng-model="row.shiye" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
+                        <td data-title="'公积金(%)'" ng-switch="row.isEditing" ng-class="gongjijin.$dirty ? 'bg-warning' : ''"
+                        ng-form="gongjijin" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.gongjijin}}</span>
+                            <div class="controls" ng-class="gongjijin.$invalid && gongjijin.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="text" name="gongjijin" ng-model="row.gongjijin" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
+                        <td data-title="'销售提成(%)'" ng-switch="row.isEditing" ng-class="xiaoshou.$dirty ? 'bg-warning' : ''"
+                        ng-form="xiaoshou" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.xiaoshou}}</span>
+                            <div class="controls" ng-class="xiaoshou.$invalid && xiaoshou.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="text" name="xiaoshou" ng-model="row.xiaoshou" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
+                        <td data-title="'续课额外提成(%)'" ng-switch="row.isEditing" ng-class="xuke.$dirty ? 'bg-warning' : ''"
+                        ng-form="xuke" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.xuke}}</span>
+                            <div class="controls" ng-class="xuke.$invalid && xuke.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="text" name="xuke" ng-model="row.xuke" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
+                        <td data-title="'上课提成(%)'" ng-switch="row.isEditing" ng-class="shangke.$dirty ? 'bg-warning' : ''"
+                        ng-form="shangke" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.shangke}}</span>
+                            <div class="controls" ng-class="shangke.$invalid && shangke.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="text" name="shangke" ng-model="row.shangke" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
 
-	<section class="panel">
-	<header class="panel-heading">
-	工资设定
-	</header>
-	<div class="panel-body">
-		<table ng-table="demo.tableParams"class="table table-hover editable-table demoTable"
-			ng-form="demo.tableForm" disable-filter="demo.isAdding"
-			demo-tracked-table="demo.tableTracker">
-			<colgroup>
-				<col width="10%" />
-				<col width="10%" />
-				<col width="10%" />
-				<col width="10%" />
-				<col width="10%" />
-				<col width="10%" />
-				<col width="10%" />
-				<col width="10%" />
-				<col width="10%" />
-				<col width="10%" />
-			</colgroup>
-			<tr ng-repeat="row in $data"  ng-form="rowForm" demo-tracked-table-row="row">
-				<td data-title="'姓名'">{{row.coachname}}</td>
-				<td data-title="'基本工资(元)'" ng-switch="row.isEditing" ng-class="base_salary.$dirty ? 'bg-warning' : ''" ng-form="base_salary" demo-tracked-table-cell>
-					<span ng-switch-default class="editable-text">{{row.base_salary}}</span>
-					<div class="controls" ng-class="base_salary.$invalid && base_salary.$dirty ? 'has-error' : ''" ng-switch-when="true">
-						<input type="text" name="base_salary" ng-model="row.base_salary" class="editable-input form-control input-sm" required />
-					</div>
-				</td>
-				<td data-title="'养老保险(%)'" ng-switch="row.isEditing" ng-class="yanglao.$dirty ? 'bg-warning' : ''" ng-form="yanglao" demo-tracked-table-cell>
-					<span ng-switch-default class="editable-text">{{row.yanglao}}</span>
-					<div class="controls" ng-class="yanglao.$invalid && yanglao.$dirty ? 'has-error' : ''" ng-switch-when="true">
-						<input type="text" name="yanglao" ng-model="row.yanglao" class="editable-input form-control input-sm" required />
-					</div>
-				</td>
-				<td data-title="'医疗保险(%)'" ng-switch="row.isEditing" ng-class="yiliao.$dirty ? 'bg-warning' : ''" ng-form="yiliao" demo-tracked-table-cell>
-					<span ng-switch-default class="editable-text">{{row.yanglao}}</span>
-					<div class="controls" ng-class="yiliao.$invalid && yiliao.$dirty ? 'has-error' : ''" ng-switch-when="true">
-						<input type="text" name="yiliao" ng-model="row.yiliao" class="editable-input form-control input-sm" required />
-					</div>
-				</td>
-				<td data-title="'失业保险(%)'" ng-switch="row.isEditing" ng-class="shiye.$dirty ? 'bg-warning' : ''" ng-form="shiye" demo-tracked-table-cell>
-					<span ng-switch-default class="editable-text">{{row.shiye}}</span>
-					<div class="controls" ng-class="shiye.$invalid && shiye.$dirty ? 'has-error' : ''" ng-switch-when="true">
-						<input type="text" name="shiye" ng-model="row.shiye" class="editable-input form-control input-sm" required />
-					</div>
-				</td>
-				<td data-title="'公积金(%)'" ng-switch="row.isEditing" ng-class="gongjijin.$dirty ? 'bg-warning' : ''" ng-form="gongjijin" demo-tracked-table-cell>
-					<span ng-switch-default class="editable-text">{{row.gongjijin}}</span>
-					<div class="controls" ng-class="gongjijin.$invalid && gongjijin.$dirty ? 'has-error' : ''" ng-switch-when="true">
-						<input type="text" name="gongjijin" ng-model="row.gongjijin" class="editable-input form-control input-sm" required />
-					</div>
-				</td>
-				<td data-title="'销售提成(%)'" ng-switch="row.isEditing" ng-class="xiaoshou.$dirty ? 'bg-warning' : ''" ng-form="xiaoshou" demo-tracked-table-cell>
-					<span ng-switch-default class="editable-text">{{row.xiaoshou}}</span>
-					<div class="controls" ng-class="xiaoshou.$invalid && xiaoshou.$dirty ? 'has-error' : ''" ng-switch-when="true">
-						<input type="text" name="xiaoshou" ng-model="row.xiaoshou" class="editable-input form-control input-sm" required />
-					</div>
-				</td>
-				<td data-title="'续课额外提成(%)'" ng-switch="row.isEditing" ng-class="xuke.$dirty ? 'bg-warning' : ''" ng-form="xuke" demo-tracked-table-cell>
-					<span ng-switch-default class="editable-text">{{row.xuke}}</span>
-					<div class="controls" ng-class="xuke.$invalid && xuke.$dirty ? 'has-error' : ''" ng-switch-when="true">
-						<input type="text" name="xuke" ng-model="row.xuke" class="editable-input form-control input-sm" required />
-					</div>
-				</td>
-				<td data-title="'上课提成(%)'" ng-switch="row.isEditing" ng-class="shangke.$dirty ? 'bg-warning' : ''" ng-form="shangke" demo-tracked-table-cell>
-					<span ng-switch-default class="editable-text">{{row.shangke}}</span>
-					<div class="controls" ng-class="shangke.$invalid && shangke.$dirty ? 'has-error' : ''" ng-switch-when="true">
-						<input type="text" name="shangke" ng-model="row.shangke" class="editable-input form-control input-sm" required />
-					</div>
-				</td>
-
-				<td>
-					<button class="btn btn-primary btn-sm" ng-click="demo.save(row, rowForm)" ng-if="row.isEditing" ng-disabled="rowForm.$pristine || rowForm.$invalid"><span class="glyphicon glyphicon-ok"></span></button>
-					<button class="btn btn-default btn-sm" ng-click="demo.cancel(row, rowForm)" ng-if="row.isEditing"><span class="glyphicon glyphicon-remove"></span></button>
-					<button class="btn btn-default btn-sm" ng-click="row.isEditing = true" ng-if="!row.isEditing"><span class="glyphicon glyphicon-pencil"></span></button>
-				</td>
-			</tr>
-		</table>
-	</div>
-	</section>
+                        <td>
+                            <button class="btn btn-primary btn-sm" ng-click="demo.save(row, rowForm)" ng-if="row.isEditing"
+                            ng-disabled="rowForm.$pristine || rowForm.$invalid"><span class="glyphicon glyphicon-ok"></span>
+                            </button>
+                            <button class="btn btn-default btn-sm" ng-click="demo.cancel(row, rowForm)" ng-if="row.isEditing"><span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                            <button class="btn btn-default btn-sm" ng-click="row.isEditing = true" ng-if="!row.isEditing"><span class="glyphicon glyphicon-pencil"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+    </div>
 </div>

@@ -61,9 +61,9 @@ class PwdLogin(APIView):
 	def login_with_pwd(self,request):
 		jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 		jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-		print request.POST
-		username = request.POST['username']
-		password = request.POST['password']
+		print request.data
+		username = request.data['username']
+		password = request.data['password']
 		user = authenticate(username=username, password=password)
 		print "1111111111"
 		if user is not None:

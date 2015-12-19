@@ -76,6 +76,18 @@ app.directive('backButton', function() {
         }
     }
 });
+app.factory("$login", function(Restangular) {
+	function login(username,pwd, onsuccess, onfail){
+		Restangular.one("api")
+				   .post("lg",{username:username, password:pwd})
+				   .then(onsuccess,onfail)
+	}
+    return {
+        login: login
+    }
+})
+
+
 
 app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider) {
     // For any unmatched url, send to /route1
@@ -680,12 +692,33 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
     }
 ])
 
-app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams",
-    function($scope, Restangular, NgTableParams) {
+app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams","$login",
+    function($scope, Restangular, NgTableParams,$login) {
         var gymid = $.cookie("gym")
         var that = this
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
+
+		that.is_admin = false
+		that.errmsg = ""
+		that.pwd = ""
+
+		that.submit = function(){
+			if(that.pwd == undefined || that.pwd.length == 0){
+				that.errmsg("请输入密码")
+				return 
+			}
+			$login.login($.cookie("user"), that.pwd,
+				function(data){
+					$.cookie("token",data.token,{ path: '/' })
+					that.is_admin = true
+				},
+				function(data){
+					that.is_admin = false
+					that.errmsg = "密码验证失败"
+				})
+		}
+
 
         function calSum(data) {
             console.log(data)
@@ -730,12 +763,32 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams",
 
 ])
 
-app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams",
-    function($scope, Restangular, NgTableParams, ngTableSimpleList) {
+app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams","$login",
+    function($scope, Restangular, NgTableParams,$login) {
         var gymid = $.cookie("gym")
         var that = this
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
+
+		that.is_admin = false
+		that.errmsg = ""
+		that.pwd = ""
+
+		that.submit = function(){
+			if(that.pwd == undefined || that.pwd.length == 0){
+				that.errmsg("请输入密码")
+				return 
+			}
+			$login.login($.cookie("user"), that.pwd,
+				function(data){
+					$.cookie("token",data.token,{ path: '/' })
+					that.is_admin = true
+				},
+				function(data){
+					that.is_admin = false
+					that.errmsg = "密码验证失败"
+				})
+		}
 
         function calSum(data) {
             console.log(data)
@@ -791,11 +844,33 @@ app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams",
             })
     }
 ])
-app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams",
-    function($scope, Restangular, NgTableParams) {
+app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams","$login",
+    function($scope, Restangular, NgTableParams,$login) {
         var gymid = $.cookie("gym")
         var self = this
         var originalData = []
+		var that = this
+
+		that.is_admin = false
+		that.errmsg = ""
+		that.pwd = ""
+
+		that.submit = function(){
+			if(that.pwd == undefined || that.pwd.length == 0){
+				that.errmsg("请输入密码")
+				return 
+			}
+			$login.login($.cookie("user"), that.pwd,
+				function(data){
+					$.cookie("token",data.token,{ path: '/' })
+					that.is_admin = true
+				},
+				function(data){
+					that.is_admin = false
+					that.errmsg = "密码验证失败"
+				})
+		}
+
         Restangular.one('api/g/', gymid)
             .one("salarysetting/")
             .get()

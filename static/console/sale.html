@@ -1,5 +1,16 @@
 <div class="row" ng-controller="CoachSaleCtrl as ctrl">
-    <div class="col-sm-12">
+    <div class="col-sm-12" ng-hide="ctrl.is_admin">
+        <div class="form-signin">
+            <h2 class="form-signin-heading">密码验证</h2>
+            <div class="login-wrap">
+                <input type="password" class="form-control" ng-model="ctrl.pwd" placeholder="请输入密码" autofocus>
+                <i class="text-danger">{{ctrl.errmsg}}</i>
+                <button class="btn btn-lg btn-login btn-block" ng-click="ctrl.submit()">提交</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-12" ng-show="ctrl.is_admin">
         <section class="panel">
             <header class="panel-heading">
                 <div class="row">
@@ -13,8 +24,7 @@
 		</span>
 		-->
                     <div class="col-md-1 pull-right">
-                        <button ng-click="ctrl.refresh()" type="button" class="btn btn-info "
-							style="position: relative;right: 10px;"><i class="fa fa-refresh"></i> 刷新</button>
+                        <button ng-click="ctrl.refresh()" type="button" class="btn btn-info " style="position: relative;right: 10px;"><i class="fa fa-refresh"></i> 刷新</button>
                     </div>
                     <div class="col-md-3 pull-right">
                         <p class="input-group">
