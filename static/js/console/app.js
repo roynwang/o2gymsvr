@@ -186,7 +186,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                             item.status = "done"
                         }
                         item["removable"] = false
-						if (eval(item.complete_status) == 0){
+                        if (eval(item.complete_status) == 0) {
                             item["removable"] = true
                         }
                     })
@@ -197,28 +197,45 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                     });
                 })
         }
-		that.modifyprice = function(c){
-			swal({title: "修改订单",
-				text: "请输入订单的价格",
-				type: "input",
-                showLoaderOnConfirm: true,
-				showCancelButton: true, 
-                confirmButtonText: "保存",
-                cancelButtonText: "取消",
-				closeOnConfirm: false,  
-				inputPlaceholder: c.amount
-				},
-				function(inputValue){  
-
-					if (inputValue === false) return false;     
-					inputValue = parseInt(inputValue)
-					if (inputValue == undefined && inputValue.isNaN()) {
-						swal.showInputError("请输入合法的数字");  
-						return false  
+        that.modify = function(c, type) {
+			var tx = ""
+			var v = ""
+			if(type == "duration"){
+				tx = "有效时间(月)"
+				v = c.duration
+			} else {
+				tx = "价格(元)"
+				v = c.amount
+			}
+            swal({
+                    title: "修改订单",
+                    text: "请输入订单新" + tx,
+                    type: "input",
+                    showLoaderOnConfirm: true,
+                    showCancelButton: true,
+                    confirmButtonText: "保存",
+                    cancelButtonText: "取消",
+                    closeOnConfirm: false,
+                    inputPlaceholder: v
+                },
+                function(inputValue) {
+                    if (inputValue === false) return false;
+                    inputValue = parseInt(inputValue)
+                    if (inputValue == undefined && inputValue.isNaN()) {
+                        swal.showInputError("请输入合法的数字");
+                        return false
+                    }
+					var pdata = {}
+					if(type == "duration"){
+                        pdata["duration"] = inputValue
 					}
-			         Restangular.one("api", $stateParams.customername)
+					if(type == "price"){
+                        pdata["amount"] = inputValue
+					}
+
+                    Restangular.one("api", $stateParams.customername)
                         .one("o", c.id)
-                        .patch({amount:inputValue})
+                        .patch(pdata)
                         .then(function(data) {
                                 swal({
                                     title: "成功",
@@ -227,15 +244,15 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                                     timer: 1500,
                                     showConfirmButton: false
                                 });
-								that.refresh()
+                                that.refresh()
                             },
                             function(data) {
                                 swal("", "保存失败了",
                                     "warning")
                             })
                 })
-		}
-   
+        }
+
         that.remove = function(orderid) {
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
@@ -264,7 +281,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                                     timer: 1500,
                                     showConfirmButton: false
                                 });
-								that.refresh()
+                                that.refresh()
                             },
                             function(data) {
                                 swal("", "删除失败了",
@@ -272,7 +289,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                             })
                 })
         }
-		that.refresh()
+        that.refresh()
     }
 ])
 app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAlert",
@@ -289,7 +306,7 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAl
                     that.rows = _.range(0, that.rowcount)
                 })
         }
-	     that.remove = function(c) {
+        that.remove = function(c) {
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
                     title: "",
@@ -750,8 +767,8 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
     }
 ])
 
-app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state',
-    function($scope, Restangular, NgTableParams, $stateParams, $state) {
+app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', "SweetAlert",
+    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert) {
         console.log($stateParams)
         var that = this
         var coachname = $stateParams.coachname
@@ -762,20 +779,45 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         that.mo.product_price = ""
         that.mo.product_promotion = 0
         that.mo.product_amount = ""
+        that.mo.product_duration = ""
         Restangular.one("api/", coachname)
             .get()
             .then(function(data) {
                 that.coach = data
             })
         that.submitorder = function() {
-            Restangular.one("api/", coachname)
-                .post("manualorder", that.mo)
-                .then(function(data) {
-                    console.log(data)
-                    $state.transitionTo('orderdetail', {
-                        coachname: coachname,
-                        orderid: data.id
-                    })
+            SweetAlert.swal({
+                    //title: "确定移除该教练吗?",
+                    title: "提交",
+                    text: "确认提交订单吗？",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "确认",
+                    cancelButtonText: "取消",
+                    showLoaderOnConfirm: true,
+                    closeOnConfirm: false
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+                    Restangular.one("api/", coachname)
+                        .post("manualorder", that.mo)
+                        .then(function(data) {
+                            console.log(data)
+                            swal({
+                                title: "成功",
+                                text: "订单提交成功",
+                                type: "success",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            $state.transitionTo('orderdetail', {
+                                coachname: coachname,
+                                orderid: data.id
+                            })
+                        })
                 })
         }
     }

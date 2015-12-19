@@ -80,8 +80,9 @@ class OrderItemById(generics.RetrieveUpdateDestroyAPIView):
 	def update(self, request, *args, **kwargs):
 		ret = super(OrderItemById,self).update(request,args, kwargs)
 		order = self.get_object()
-		order.product.price = request.data["amount"]
-		order.product.save()
+		if "amount" in request.data:
+			order.product.price = request.data["amount"]
+			order.product.save()
 		return ret
 
 
@@ -199,6 +200,9 @@ class ManualOrder(APIView):
 				gym = coach.gym.all()[0],
 				channel = "offline",
 				isfirst = isfirst)
+		if "product_duration" in request.data:
+			order.duration = request.data["product_duration"]
+			order.save()
 		serializer = OrderSerializer(order)
 		return Response(serializer.data, status=status.HTTP_201_CREATED)
 

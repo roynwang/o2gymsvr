@@ -1,4 +1,5 @@
 from django.db import models
+import datetime, calendar
 
 # Create your models here.
 
@@ -9,6 +10,13 @@ STATUS_TYPE = (("unpaid","Initialized"),
 		("done","Done"),
 		("canceled","Cancelled"),
 		("deleted","Deleted"))
+def add_months(sourcedate,months):
+	month = sourcedate.month - 1 + months
+	year = int(sourcedate.year + month / 12 )
+	month = month % 12 + 1
+	day = min(sourcedate.day,calendar.monthrange(year,month)[1])
+	return datetime.date(year,month,day)
+
 
 class Order(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -25,13 +33,20 @@ class Order(models.Model):
 	
 	isfirst =  models.BooleanField(default=False)
 	#this is mean price
-	amount = models.IntegerField()
+	amount = models.IntegerField(default=0)
+	duration = models.IntegerField(default=0)
 
 
 	def done(self):
 		if self.schedule_set.count() == self.product.amount:
 			self.status = "done"
 			self.save()
+	def cal_endtime(self):
+		if self.duration == None or self.duration == 0:
+			return "N/A"
+		endtime = add_months(self.created, self.duration)
+		date_str = datetime.datetime.strftime(endtime,"%Y-%m-%d")
+		return date_str
 
 class Product(models.Model):
 	id = models.AutoField(primary_key=True)

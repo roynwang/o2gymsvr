@@ -8,11 +8,11 @@
 </h4>
         </header>
         <div class="form-group panel-body">
-			
-			<div class="row" style="margin-bottom:20px">
-			<h3 class="text-center"><img ng-src="{{ctrl.coach.avatar}}" style="-webkit-border-radius: 50%;
+
+            <div class="row" style="margin-bottom:20px">
+                <h3 class="text-center"><img ng-src="{{ctrl.coach.avatar}}" style="-webkit-border-radius: 50%;
     height: 60px;"> {{ctrl.coach.displayname}}</h3>
-			</div>
+            </div>
             <div class="row">
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
@@ -31,16 +31,27 @@
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
                         <span class="input-group-addon btn-primary"><i class="fa  fa-calendar-o"></i></span>
-                        <input type="text" class="form-control" placeholder="课程数量" ng-model="ctrl.mo.product_amount">
+                        <input type="number" class="form-control" placeholder="课程数量(节)" ng-model="ctrl.mo.product_amount">
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
                         <span class="input-group-addon btn-primary"><i class="fa fa-cny"></i></span>
-                        <input type="text" class="form-control" placeholder="课程总价" ng-model="ctrl.mo.product_price">
+                        <input type="number" class="form-control" placeholder="课程总价(元)" ng-model="ctrl.mo.product_price">
                     </div>
                 </div>
             </div>
-			<p class="text-center"><a class="btn btn-primary btn-lg text-center" style="margin-top:20px" ng-click="ctrl.submitorder()">提交订单</a></p>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="input-group input-group-lg m-bot15">
+                        <span class="input-group-addon btn-primary"><i class="fa fa-clock-o"></i></span>
+                        <input type="text" class="form-control" placeholder="有效期(月)"
+						ng-model="ctrl.mo.product_duration">
+                    </div>
+                </div>
+            </div>
+            <p class="text-center"><a class="btn btn-primary btn-lg text-center" style="margin-top:20px"
+                ng-click="ctrl.submitorder()">提交订单</a>
+            </p>
         </div>
 </div>

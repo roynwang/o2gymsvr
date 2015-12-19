@@ -23,6 +23,7 @@
 			</div>
             <div class="row">
                 <div class="col-md-12" ng-model="ctrl.booked">
+					<p>过期时间:{{ctrl.order.endtime}}</p>
                     <p>课程状态(已上:{{ctrl.done.length}}/待上:{{ctrl.booked.length}}/待约{{ctrl.sum
                         - ctrl.booked.length - ctrl.done.length}})</p>
                     <div class="progress progress-sm">

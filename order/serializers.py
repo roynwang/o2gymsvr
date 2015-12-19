@@ -14,6 +14,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 	coachdetail = SimpleUserSerilaizer(source="coach",read_only = True)
 	customerdetail = SimpleUserSerilaizer(source="custom",read_only = True)
 	booked = serializers.SerializerMethodField()
+	endtime = serializers.SerializerMethodField()
 
 	class Meta:
 		model =	Order 
@@ -22,12 +23,15 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 		bookedlist = Schedule.objects.filter(order=obj,deleted = False)
 		sr = ScheduleSerializer(bookedlist, many=True)
 		return sr.data
+	def get_endtime(self, obj):
+		return obj.cal_endtime()
 
 class OrderSerializer(serializers.ModelSerializer):
 	coachdetail = SimpleUserSerilaizer(source="coach", read_only = True)
 	customerdetail = SimpleUserSerilaizer(source="custom", read_only = True)
 	#booked = serializers.SerializerMethodField()
 	complete_status = serializers.SerializerMethodField()
+	endtime = serializers.SerializerMethodField()
 
 	class Meta:
 		model =	Order 
@@ -36,6 +40,9 @@ class OrderSerializer(serializers.ModelSerializer):
 		completed = Schedule.objects.filter(order=obj,deleted = False, done = True).count()
 		sum_amount = obj.product.amount
 		return str(completed) + "/" + str(sum_amount)
+
+	def get_endtime(self, obj):
+		return obj.cal_endtime()
 		
 		
 
