@@ -801,7 +801,7 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams","$logi
                 $scope.coaches = gym.coaches_set
                 $.each($scope.coaches, function(i, item) {
                     //render income
-                    Restangular.one("api/", item.name).one("income/").get().then(function(data) {
+                    Restangular.one("api/", item.name).one("income/").get({start:that.startday.Format("yyyyMMdd"), end:that.endday.Format("yyyyMMdd")}).then(function(data) {
                         $scope.coaches[i].income = data
                     })
                 })
@@ -820,9 +820,6 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams","$logi
         };
         that.startopend = false
         that.endopend = false
-
-
-
 
     }
 ])
