@@ -955,7 +955,7 @@ app.controller("NewGymCtrl", ['$scope', "Restangular","SweetAlert",
                 return
             Restangular.one("api")
                 .post("sms", {
-                    number: data["phone"]
+                    number: that.data["phone"]
                 })
                 .then(function() {
                     that.vcodetext = "30秒后重发"
