@@ -775,9 +775,9 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         that.mo = {}
         that.mo.customer_displayname = ""
         that.mo.customer_phone = ""
-        that.mo.product_introduction = ""
+        that.mo.product_introduction = "dummy"
         that.mo.product_price = ""
-        that.mo.product_promotion = 0
+        that.mo.product_promotion = -1
         that.mo.product_amount = ""
         that.mo.product_duration = ""
         Restangular.one("api/", coachname)
@@ -785,7 +785,21 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
             .then(function(data) {
                 that.coach = data
             })
+        function validate() {
+            var data = that.mo
+            for (var k in data) {
+                if (data[k] == undefined || data[k].length == 0) {
+					swal("", "请填完所有选项","warning")
+                    return false
+                }
+            }
+            return true
+        }
+
         that.submitorder = function() {
+			if(!validate()){
+				return
+			}
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
                     title: "提交",
@@ -1158,7 +1172,7 @@ app.controller("NewGymCtrl", ['$scope', "Restangular", "SweetAlert",
         function validate() {
             var data = that.data
             for (var k in data) {
-                if (data[k] == undefined || data.length == 0) {
+                if (data[k] == undefined || data[k].length == 0) {
                     that.errmsg = "请填完所有选项"
                     return false
                 }
