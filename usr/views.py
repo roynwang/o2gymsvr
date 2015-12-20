@@ -195,8 +195,7 @@ class CustomerList(generics.ListAPIView):
 		usr = get_object_or_404(User, name=self.kwargs["name"])
 		customers =  usr.income_orders.values_list("custom",flat=True)
 		#customers =  Order.objects.filter(coach = usr).values_list("custom",flat=True)
-		print customers
-		return User.objects.filter(name__in = customers)
+		return User.objects.filter(name__in = customers) | User.objects.filter(name = usr.name)
 
 class ModifyGym(APIView):
 	def post(self, request, name):
