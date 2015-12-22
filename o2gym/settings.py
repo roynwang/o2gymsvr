@@ -67,6 +67,8 @@ MIDDLEWARE_CLASSES = (
 		'django.middleware.security.SecurityMiddleware',
 		)
 
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ('snippetscream.ProfileMiddleware',)
+
 ROOT_URLCONF = 'o2gym.urls'
 
 TEMPLATES = [
@@ -151,9 +153,9 @@ REST_FRAMEWORK = {
 		#'MAX_PAGINATE_BY': 100 ,
 
 		'DEFAULT_PERMISSION_CLASSES': (
-			#'rest_framework.permissions.AllowAny',
+			'rest_framework.permissions.AllowAny',
 			#'rest_framework.permissions.IsAuthenticated',
-			'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+			#'rest_framework.permissions.IsAuthenticatedOrReadOnly',
 			),
 		'DEFAULT_AUTHENTICATION_CLASSES': (
 			'rest_framework.authentication.SessionAuthentication',

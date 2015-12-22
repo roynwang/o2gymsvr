@@ -3,14 +3,14 @@
         <div class="form-signin">
             <h2 class="form-signin-heading">密码验证</h2>
             <div class="login-wrap">
-                <input type="password" class="form-control" ng-model="demo.pwd" placeholder="请输入密码"
+                <input type="password" class="form-control" autocomplete="off" ng-model="demo.pwd" placeholder="请输入密码"
                 autofocus>
                 <i class="text-danger">{{demo.errmsg}}</i>
                 <button class="btn btn-lg btn-login btn-block" ng-click="demo.submit()">提交</button>
             </div>
         </div>
     </div>
-    <div class="col-sm-12" ng-show="ctrl.is_admin">
+    <div class="col-sm-12" ng-show="demo.is_admin">
         <!--<h3>客户信息</h3>-->
         <section class="panel">
             <header class="panel-heading">
