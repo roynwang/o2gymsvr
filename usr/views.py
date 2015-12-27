@@ -53,8 +53,8 @@ class UserList(generics.CreateAPIView):
 		tl = TimeLine.objects.create(name=get_object_or_404(User, name=request.data["name"]))
 		tl.followedby.add(tl)
 		wh = WorkingDays.objects.create(name=request.data["name"])
-
-		return Response({"result": 0})
+		#return Response({"result": 0})
+		
 
 class UserItem(generics.RetrieveUpdateDestroyAPIView):
 	lookup_field = "name"

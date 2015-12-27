@@ -8,6 +8,8 @@
     <link rel="stylesheet" type="text/css" href="/static/mobilecss/normalize.css">
     <link rel="stylesheet" type="text/css" href="/static/mobilecss/framework.css">
     <link rel="stylesheet" type="text/css" href="/static/mobilecss/washington.css">
+    <link rel="stylesheet" type="text/css" href="/static/mobilecss/custom.css">
+	<link href="//cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" rel="stylesheet">
     <script src="/static/js/webfont.js"></script>
     <script>
         WebFont.load(
@@ -25,19 +27,156 @@
 
     <link href="/static/mobilecss/ionicons.min.css" rel="stylesheet" type="text/css"
     />
-	<script src="//cdn.bootcss.com/underscore.js/1.5.2/underscore-min.js"></script>
+    <script src="//cdn.bootcss.com/underscore.js/1.5.2/underscore-min.js"></script>
     <script src="//cdn.bootcss.com/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
-	<script src="//cdn.bootcss.com/restangular/1.5.1/restangular.min.js"></script>
-   
+    <script src="//cdn.bootcss.com/restangular/1.5.1/restangular.min.js"></script>
+
 </head>
 
 <body>
-    <section class="w-section mobile-wrapper" ng-app="o2m">
-	 <div ui-view style="width:100%"> 载入中... ...</div>
+
+    <section class="w-section mobile-wrapper">
+
+        <div class="page-content" id="main-stack">
+            <div class="w-nav navbar" data-collapse="all" data-animation="over-left" data-duration="400"
+            data-contain="1" data-easing="ease-out-quint" data-no-scroll="1">
+                <div class="w-container">
+                    <nav class="w-nav-menu nav-menu" role="navigation">
+                        <div class="nav-menu-header">
+                            <div class="logo">Washington</div>
+                            <div class="slogan">All you need is here.</div>
+                        </div>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="index.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-home-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">Splash Screen</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="login.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-download-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">Login</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="signup.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-cloud-upload-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">Sign Up</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="forgot.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-unlocked-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">Remember Password</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="todo-list.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-list-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">To Do List</div>
+                            <div class="nav-menu-text-right">8</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="addnew.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-checkmark-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">New To Do</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="messages.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-albums-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">Messages</div>
+                            <div class="nav-menu-text-right">8</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="chat.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-chatboxes-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">Chat</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="groups.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-keypad-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">News Groups</div>
+                            <div class="nav-menu-text-right">12</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="news.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-paper-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">News List</div>
+                            <div class="nav-menu-text-right">14</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="newitem.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-compose-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">News Post</div>
+                            <div class="nav-menu-text-right">14</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="about-us.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-person-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">About the App</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="maps.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-location-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">Maps</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="elements.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-box-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">Elements</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link" href="settings.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-gear-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">Settings</div>
+                        </a>
+                        <a class="w-clearfix w-inline-block nav-menu-link last" href="terms.html" data-load="1">
+                            <div class="icon-list-menu">
+                                <div class="icon ion-ios-bookmarks-outline"></div>
+                            </div>
+                            <div class="nav-menu-titles">Terms and Conditions</div>
+                        </a>
+                        <div class="separator-bottom"></div>
+                        <div class="separator-bottom"></div>
+                        <div class="separator-bottom"></div>
+                    </nav>
+                    <div class="wrapper-mask" data-ix="menu-mask"></div>
+                    <div class="navbar-title">我的主页</div>
+                    <div class="w-nav-button navbar-button left" id="menu-button" data-ix="hide-navbar-icons">
+                        <div class="navbar-button-icon home-icon">
+                            <div class="bar-home-icon"></div>
+                            <div class="bar-home-icon"></div>
+                            <div class="bar-home-icon"></div>
+                        </div>
+                    </div>
+					<!--
+                    <a class="w-inline-block navbar-button right" href="addnew.html" data-loader="1">
+                        <div class="navbar-button-icon icon ion-ios-plus-empty"></div>
+                    </a>
+					-->
+                </div>
+            </div>
+            <div ui-view class="body" ng-app="o2m">
+            </div>
+        </div>
     </section>
- <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-	<script src="/static/js/jquery.cookie.js" ></script>
-    <!--  <script type="text/javascript" src="/static/js/framework.js"></script>-->
+    <script src="/static/js/jwt-decode.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/static/js/framework.js"></script>
+	<script src="//cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js"></script>
+	<script src="/static/js/SweetAlert.min.js" ></script>
     <script src="/static/js/mobile/app.js"></script>
     <!--[if lte IE 9]><script src="js/placeholders.min.js"></script><![endif]-->
 </body>

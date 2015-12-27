@@ -1,0 +1,31 @@
+.tab-pane {
+	padding:0
+}
+.course-time {
+	margin-right: 20px;
+    float: right;
+	color: grey;
+}
+.course-time > .icon {
+	font-size: 26px;
+}
+
+.course-time > .category-link {
+    margin-top: 20px;
+    font-size: 12px;
+}
+.toolbar-top-button {
+	font-size: 16px;
+}
+.title-list.highlighted {
+	color: black;
+}
+.navbar-title {
+	font-size: 20px;
+}
+.label-form {
+	font-size: 12px;
+	line-height: 14px;
+}
+
+

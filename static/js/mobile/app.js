@@ -56,32 +56,74 @@ var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "1
 
 var app = angular.module('o2m', [
     'ui.router',
-    'restangular'
+    'restangular',
+    'oitozero.ngSweetAlert'
 ])
 app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider) {
     // For any unmatched url, send to /route1
-    /*
     RestangularProvider.setDefaultHeaders({
         Authorization: "JWT " + $.cookie("token")
     });
-	*/
     $httpProvider.defaults.headers.common.Authorization = "JWT " + $.cookie("token")
     RestangularProvider.setRequestSuffix('/')
     $urlRouterProvider.otherwise("/");
     $stateProvider
+        .state('login', {
+            url: "/login",
+            templateUrl: "/static/mobile/login.html",
+        })
         .state('index', {
             url: "/",
-            templateUrl: "/static/mobile/login.html",
+            templateUrl: "/static/mobile/coachtabs.html",
         })
         .state('coachhome', {
-            url: "/",
-            templateUrl: "/static/mobile/login.html",
-        })
-        .state('userhome', {
-            url: "/",
-            templateUrl: "/static/mobile/login.html",
+            url: "/coach",
+            templateUrl: "/static/mobile/coach.html",
         })
 })
+app.factory("$date", function() {
+    var date = undefined
+    return {
+        seleteddate: function(pdate) {
+            if (pdate != undefined) {
+                date = pdate
+            }
+            if (date == undefined) {
+                date = new Date().Format("yyyyMMdd")
+            }
+            return date
+        }
+
+    }
+})
+app.factory("$booksvc", function(Restangular) {
+    function complete(book, onsuccess, onfail) {
+        var bookdone = Restangular.one("api", book.coachprofile.name)
+            .one("b", book.date.replace(/-/g, ""))
+            .all(book.hour)
+        bookdone.patch({
+                order: book.order,
+                done: true
+            })
+            .then(function(data) {
+                swal({
+                    title: "成功",
+                    text: "课程已经完成",
+                    type: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                onsuccess ? onsuccess() : true
+            }, function(data) {
+                swal("", "课程完成失败", "warning")
+                onfail ? onfail() : true
+            })
+    }
+    return {
+        complete: complete
+    }
+})
+
 app.factory("$usersvc", function(Restangular) {
     var userlist = {}
     var usr = false
@@ -108,6 +150,8 @@ app.factory("$usersvc", function(Restangular) {
     }
 
     function login(username, pwd, onsuccess, onfail) {
+
+        /*
         Restangular.one("api")
             .post("lg",{
                 username: username,
@@ -116,15 +160,14 @@ app.factory("$usersvc", function(Restangular) {
             .then(
                 onsuccess,
                 onfail)
+		*/
 
-        /*
         $.post("/api/lg/", {
                     username: username,
                     password: pwd
                 },
                 onsuccess)
             .fail(onfail)
-		*/
     }
     return {
         login: login,
@@ -160,6 +203,9 @@ app.controller("LoginCtrl", ["$state", "$usersvc",
                     $.cookie("token", data.token, {
                         path: '/'
                     })
+                    $.cookie("user", that.user.name, {
+                        path: '/'
+                    })
                     $usersvc.getuser(that.user.name, false, trans)
                 },
                 function(data) {
@@ -168,5 +214,48 @@ app.controller("LoginCtrl", ["$state", "$usersvc",
                 })
 
         }
+    }
+])
+app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc",
+    function($state, $usersvc, $date, Restangular, $booksvc) {
+        var user = $.cookie("user")
+        var that = this
+        that.timemap = TimeMap
+        that.courselist = []
+        that.tabs = [true, false]
+        that.refresh = function() {
+            Restangular.one("api", user)
+                //.one("b", $date.seleteddate())
+                .one("b", "20151201")
+                .getList()
+                .then(function(data) {
+                        that.courselist = data
+                    },
+                    function(data) {
+                        console.log(data.data)
+                    })
+        }
+        that.toggle = function(i) {
+            that.tabs = [false, false]
+            that.tabs[i] = true
+        }
+        that.complete = function(book) {
+            swal({
+                title: "完成",
+                text: "确认完成课程吗？",
+                type: "info",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                confirmButtonText: "确认",
+                cancelButtonText: "取消",
+                showLoaderOnConfirm: true,
+            }, function(yes){
+                if (!yes) {
+                    return
+                }
+                $booksvc.complete(book, that.refresh)
+            });
+        }
+		that.refresh()
     }
 ])
