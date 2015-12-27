@@ -226,7 +226,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.refresh = function() {
             Restangular.one("api", user)
                 //.one("b", $date.seleteddate())
-                .one("b", new Date().Format("yyyyMMdd")
+                .one("b", new Date().Format("yyyyMMdd"))
                 .getList()
                 .then(function(data) {
                         that.courselist = data
