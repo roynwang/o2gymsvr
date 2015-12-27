@@ -226,7 +226,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.refresh = function() {
             Restangular.one("api", user)
                 //.one("b", $date.seleteddate())
-                .one("b", "20151201")
+                .one("b", new Date().Format("yyyyMMdd")
                 .getList()
                 .then(function(data) {
                         that.courselist = data
@@ -240,6 +240,9 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             that.tabs[i] = true
         }
         that.complete = function(book) {
+			if(book.done){
+				return
+			}
             swal({
                 title: "完成",
                 text: "确认完成课程吗？",
