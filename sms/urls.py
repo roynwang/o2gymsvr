@@ -6,4 +6,5 @@ urlpatterns = patterns('',
 		url(r'^api/gr/$',GymReg.as_view()),
         url(r'^api/sms/$', SMSGet.as_view()),
         url(r'^api/sms/(?P<number>[0-9]+)/$', SMSVerify.as_view()),
+        url(r'^api/wx/token/$', Wechat.as_view()),
 		)
