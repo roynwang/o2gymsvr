@@ -58,12 +58,12 @@ var app = angular.module('o2m', [
     'ui.router',
     'restangular',
     'oitozero.ngSweetAlert',
-	'ngMaterial'
+    'ngMaterial'
 ])
-app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider,$mdDateLocaleProvider) {
+app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider, $mdDateLocaleProvider) {
     // For any unmatched url, send to /route1
- 	$mdDateLocaleProvider.formatDate = function(date) {
-       return moment(date).format('');
+    $mdDateLocaleProvider.formatDate = function(date) {
+        return moment(date).format('');
     };
     RestangularProvider.setDefaultHeaders({
         Authorization: "JWT " + $.cookie("token")
@@ -84,7 +84,12 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/coach",
             templateUrl: "/static/mobile/coach.html",
         })
+        .state('order', {
+            url: "/:coachname/:orderid",
+            templateUrl: "/static/mobile/orderdetail.html",
+        })
 })
+
 app.factory("$date", function() {
     var date = undefined
     return {
@@ -125,6 +130,25 @@ app.factory("$booksvc", function(Restangular) {
     }
     return {
         complete: complete
+    }
+})
+app.factory("$ordersvc", function(Restangular) {
+    var orderid = undefined
+
+    function setorder(id) {
+        orderid = id
+    }
+
+    function getorder(id, onsuccess, onfail) {
+        var oid = (id ? id : orderid)
+        Restangular.one("api", $.cookie("user"))
+            .one("o", oid)
+            .get()
+            .then(onsuccess, onfail)
+    }
+    return {
+        setorder: setorder,
+        getorder: getorder
     }
 })
 
@@ -220,16 +244,16 @@ app.controller("LoginCtrl", ["$state", "$usersvc",
         }
     }
 ])
-app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc",
-    function($state, $usersvc, $date, Restangular, $booksvc) {
+app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc",
+    function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc) {
         var user = $.cookie("user")
         var that = this
         that.timemap = TimeMap
         that.courselist = []
         that.tabs = [true, false]
 
-		that.currentdate = new Date()
-		that.dates = []
+        that.currentdate = new Date()
+        that.dates = []
 
         that.refresh = function() {
             Restangular.one("api", user)
@@ -240,25 +264,25 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     },
                     function(data) {
                         //console.log(data.data)
-						if(data.status == 403){
-							window.location.href= "/mobile/login/"
-						} else {
-                			swal("", "获取信息失败，请稍后重试。", "warning")
-						}
+                        if (data.status == 403) {
+                            window.location.href = "/mobile/login/"
+                        } else {
+                            swal("", "获取信息失败，请稍后重试。", "warning")
+                        }
                     })
         }
         that.toggle = function(i) {
             that.tabs = [false, false]
             that.tabs[i] = true
         }
-		that.select = function(td){
-			that.selected = td
-			that.refresh()
-		}
+        that.select = function(td) {
+            that.selected = td
+            that.refresh()
+        }
         that.complete = function(book) {
-			if(book.done){
-				return
-			}
+            if (book.done) {
+                return
+            }
             swal({
                 title: "完成",
                 text: "确认完成课程吗？",
@@ -268,21 +292,63 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 confirmButtonText: "确认",
                 cancelButtonText: "取消",
                 showLoaderOnConfirm: true,
-            }, function(yes){
+            }, function(yes) {
                 if (!yes) {
                     return
                 }
                 $booksvc.complete(book, that.refresh)
             });
         }
-		that.refreshdates = function(){
-			that.selected = that.currentdate
-		   	that.dates[0] = that.currentdate	
-			that.dates[1] = that.currentdate.addDays(1)
-			that.dates[2] = that.currentdate.addDays(2)
-			that.dates[3] = that.currentdate.addDays(3)
-			that.refresh()
+        that.refreshdates = function() {
+            that.selected = that.currentdate
+            that.dates[0] = that.currentdate
+            that.dates[1] = that.currentdate.addDays(1)
+            that.dates[2] = that.currentdate.addDays(2)
+            that.dates[3] = that.currentdate.addDays(3)
+            that.refresh()
+        }
+        that.showorder = function(orderid) {
+            $ordersvc.setorder(orderid)
+                //var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
+            $mdDialog.show({
+                    controller: 'OrderDetailCtrl',
+                    templateUrl: '/static/mobile/orderdetail.html',
+                    parent: angular.element(document.body),
+                    //targetEvent: ev,
+                    clickOutsideToClose: true,
+                    fullscreen: true
+                })
+                .then(function(answer) {
+                     console.log('You said the information was "' + answer + '".');
+                }, function() {
+                    console.log('You cancelled the dialog.')
+                });
+
+        }
+        that.refreshdates()
+    }
+])
+app.controller("OrderDetailCtrl", ['$scope', '$mdDialog',
+    function($scope, $mdDialog) {
+        var that = this
+        that.currentdate = new Date()
+        that.dates = []
+        that.select = function(td) {
+            that.selected = td
+        }
+		that.timemap = TimeMap
+        that.refreshdates = function() {
+            that.selected = that.currentdate
+            that.dates[0] = that.currentdate
+            that.dates[1] = that.currentdate.addDays(1)
+            that.dates[2] = that.currentdate.addDays(2)
+            that.dates[3] = that.currentdate.addDays(3)
+                //that.refresh()
+        }
+		that.cancel = function(){
+			$mdDialog.cancel();	
 		}
 		that.refreshdates()
     }
+
 ])

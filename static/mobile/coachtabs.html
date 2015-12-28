@@ -31,7 +31,7 @@ ng-controller="TodayCourseCtrl as ctrl">
                 <a ng-click="ctrl.select(ctrl.dates[3])" class="w-tab-link w-inline-block toolbar-top-button
 					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[3]}">
                     <div>{{ctrl.dates[3].Format("MM/dd")}}</div>
-				<a>
+				</a>
             </div>
             <ul class="list">
                 <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
@@ -42,12 +42,12 @@ ng-controller="TodayCourseCtrl as ctrl">
                             <div class="icon ion-ios-checkmark-empty"></div>
                         </div>
                         <div ng-class="{'highlighted': c.done}" class="title-list">{{c.customerprofile.displayname}}</div>
-                        <div class="course-time icon-list highlighted">
+                        <div ng-click="ctrl.showorder(c.order)" class="course-time icon-list highlighted">
                             <div class="icon ion-calendar"></div>
                         </div>
                         <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
-                        <div class="course-time">
-                            <a class="category-link">{{c.complete_status}}</a>
+                        <div class="title-list course-time">
+                            {{c.complete_status}}
                         </div>
                     </p>
                 </li>
