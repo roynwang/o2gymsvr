@@ -34,14 +34,14 @@
 
 }
 .date-tab {
-	width: 23%;
+	width: 22%;
 	padding: 22px 0 8px 0;
 }
 .date-tab-day>div {
 	border-left: solid 1px #777
 }
 .date-tab-picker {
-	width: 8%;
+	width: 12%;
     padding-top: 8px;
 	border-bottom: none;
     padding-bottom: 3px;
@@ -49,7 +49,7 @@
 }
 .date-tab-picker .md-button.md-icon-button{
 	padding-top: 12px;
-    margin-left: -8px;
+    margin-left: 0;
 }
 .date-tab-picker .md-datepicker-input-container {
 	border-bottom: none;
@@ -64,8 +64,31 @@
 	font-size: 16px !important;
 	font-family: Montserrat, sans-serif;
 	color: #333;
+	margin-left: 40px;
 }
 
 .date-tab.selected>div{
 	color: #4fd2c2
 }
+.icon-button {
+	font-size: 16px;
+	padding-top: 2px;
+}
+.small-button {
+	font-size: 14px;
+}
+md-dialog .date-tab {
+    padding: 14px 0 12px 0;
+}
+md-dialog .date-tab-picker {
+	padding-top: 0
+}
+
+
+/* angular-material */
+md-toolbar {
+    background: rgba(0,0,0,0) !important;
+    color: #333 !important;
+}
+/* end angular-material */
+
