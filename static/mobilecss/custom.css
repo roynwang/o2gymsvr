@@ -33,5 +33,39 @@
 	text-align: center;
 
 }
+.date-tab {
+	width: 23%;
+	padding: 22px 0 8px 0;
+}
+.date-tab-day>div {
+	border-left: solid 1px #777
+}
+.date-tab-picker {
+	width: 8%;
+    padding-top: 8px;
+	border-bottom: none;
+    padding-bottom: 3px;
+	padding-left: 2px
+}
+.date-tab-picker .md-button.md-icon-button{
+	padding-top: 12px;
+    margin-left: -8px;
+}
+.date-tab-picker .md-datepicker-input-container {
+	border-bottom: none;
+	margin-left: -8px;
+    padding-bottom: 0;
+}
+.date-tab-picker md-icon {
+    color: #4fd2c2;
+}
 
+.md-datepicker-input {
+	font-size: 16px !important;
+	font-family: Montserrat, sans-serif;
+	color: #333;
+}
 
+.date-tab.selected>div{
+	color: #4fd2c2
+}

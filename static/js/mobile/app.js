@@ -57,10 +57,14 @@ var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "1
 var app = angular.module('o2m', [
     'ui.router',
     'restangular',
-    'oitozero.ngSweetAlert'
+    'oitozero.ngSweetAlert',
+	'ngMaterial'
 ])
-app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider) {
+app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider,$mdDateLocaleProvider) {
     // For any unmatched url, send to /route1
+ 	$mdDateLocaleProvider.formatDate = function(date) {
+       return moment(date).format('');
+    };
     RestangularProvider.setDefaultHeaders({
         Authorization: "JWT " + $.cookie("token")
     });
@@ -223,22 +227,34 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.timemap = TimeMap
         that.courselist = []
         that.tabs = [true, false]
+
+		that.currentdate = new Date()
+		that.dates = []
+
         that.refresh = function() {
             Restangular.one("api", user)
-                //.one("b", $date.seleteddate())
-                .one("b", new Date().Format("yyyyMMdd"))
+                .one("b", that.selected.Format("yyyyMMdd"))
                 .getList()
                 .then(function(data) {
                         that.courselist = data
                     },
                     function(data) {
-                        console.log(data.data)
+                        //console.log(data.data)
+						if(data.status == 403){
+							window.location.href= "/mobile/login/"
+						} else {
+                			swal("", "获取信息失败，请稍后重试。", "warning")
+						}
                     })
         }
         that.toggle = function(i) {
             that.tabs = [false, false]
             that.tabs[i] = true
         }
+		that.select = function(td){
+			that.selected = td
+			that.refresh()
+		}
         that.complete = function(book) {
 			if(book.done){
 				return
@@ -259,6 +275,14 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 $booksvc.complete(book, that.refresh)
             });
         }
-		that.refresh()
+		that.refreshdates = function(){
+			that.selected = that.currentdate
+		   	that.dates[0] = that.currentdate	
+			that.dates[1] = that.currentdate.addDays(1)
+			that.dates[2] = that.currentdate.addDays(2)
+			that.dates[3] = that.currentdate.addDays(3)
+			that.refresh()
+		}
+		that.refreshdates()
     }
 ])
