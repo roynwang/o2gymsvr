@@ -404,6 +404,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
         that.timetable = undefined
 
         function processtimetable(td) {
+
             _.each(that.actionlist, function(book) {
                 if (book.pendingaction == "remove") {
                     if (td.Format("yyyy-MM-dd") == book.date) {
@@ -428,6 +429,11 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
             that.selected = td
             $usersvc.gettimetable(undefined, td, function(data) {
                 that.timetable = data
+
+				if(that.timetable.na.indexOf(26) < 0){
+					that.timetable.availiable.push(26)
+				}
+				
                 processtimetable(that.selected)
             }, undefined)
         }
