@@ -37,6 +37,10 @@
 	width: 22%;
 	padding: 22px 0 8px 0;
 }
+.date-tab-hour {
+	width: 16.6%;
+	padding: 22px 0 8px 0;
+}
 .date-tab-day>div {
 	border-left: solid 1px #777
 }
@@ -78,17 +82,36 @@
 	font-size: 14px;
 }
 md-dialog .date-tab {
-    padding: 14px 0 12px 0;
+    padding: 20px 0 12px 0;
 }
-md-dialog .date-tab-picker {
-	padding-top: 0
+md-toolbar .date-tab-picker {
+	padding-top: 6px;
+	padding-bottom: 6px;
 }
-
+.time-na {
+	color:#ccc
+}
+.time-available {
+	color:#333
+}
 
 /* angular-material */
 md-toolbar {
     background: rgba(0,0,0,0) !important;
     color: #333 !important;
+	padding: 0 5px;
+}
+md-tabs.md-default-theme .md-tab.md-active, md-tabs .md-tab.md-active, md-tabs.md-default-theme .md-tab.md-active md-icon, md-tabs .md-tab.md-active md-icon, md-tabs.md-default-theme .md-tab.md-focused, md-tabs .md-tab.md-focused, md-tabs.md-default-theme .md-tab.md-focused md-icon, md-tabs .md-tab.md-focused md-icon {
+    color: #333
+}
+md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
+	color: #4fd2c2;
+	background: #4fd2c2
 }
 /* end angular-material */
 
+
+/* TODO @media */
+.time-table {
+	height: 1700px
+}

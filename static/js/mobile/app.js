@@ -156,6 +156,19 @@ app.factory("$usersvc", function(Restangular) {
     var userlist = {}
     var usr = false
 
+    function gettimetable(username, day, onsuccess, onfail) {
+        if (username == undefined) {
+            username = $.cookie("user")
+        }
+        if (username == undefined) {
+            return
+        }
+        Restangular.one("api/", username)
+                 .one("d/", day.Format("yyyyMMdd"))
+                    .get()
+                    .then(onsuccess, onfail)
+    }
+
     function getuser(username, refresh, onsuccess, onfail) {
         if (username == undefined) {
             username = $.cookie("user")
@@ -199,7 +212,8 @@ app.factory("$usersvc", function(Restangular) {
     }
     return {
         login: login,
-        getuser: getuser
+        getuser: getuser,
+		gettimetable: gettimetable
     }
 })
 app.controller("LoginCtrl", ["$state", "$usersvc",
@@ -319,7 +333,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     fullscreen: true
                 })
                 .then(function(answer) {
-                     console.log('You said the information was "' + answer + '".');
+                    console.log('You said the information was "' + answer + '".');
                 }, function() {
                     console.log('You cancelled the dialog.')
                 });
@@ -328,27 +342,63 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.refreshdates()
     }
 ])
-app.controller("OrderDetailCtrl", ['$scope', '$mdDialog',
-    function($scope, $mdDialog) {
+app.controller("OrderDetailCtrl", ['$scope', '$mdDialog', '$ordersvc','$usersvc',
+    function($scope, $mdDialog, $ordersvc, $usersvc) {
         var that = this
         that.currentdate = new Date()
         that.dates = []
+		that.timetable = undefined
         that.select = function(td) {
             that.selected = td
+			$usersvc.gettimetable(undefined, td, function(data){
+				that.timetable = data
+			},undefined)
         }
-		that.timemap = TimeMap
+		that.isAvaHour = function(hour){
+			if(that.timetable == undefined){
+				return false
+			}
+			if(that.timetable.availiable.indexOf(hour) >= 0){
+				return true
+			}
+			return false
+		}	
+        that.timemap = TimeMap
+        that.order = {}
+
+        that.completedbook = []
+        that.bookedbook = []
+
         that.refreshdates = function() {
-            that.selected = that.currentdate
             that.dates[0] = that.currentdate
             that.dates[1] = that.currentdate.addDays(1)
             that.dates[2] = that.currentdate.addDays(2)
             that.dates[3] = that.currentdate.addDays(3)
+            that.select(that.currentdate)
                 //that.refresh()
         }
-		that.cancel = function(){
-			$mdDialog.cancel();	
-		}
-		that.refreshdates()
+        that.cancel = function() {
+            $mdDialog.cancel();
+        }
+
+        that.refresh = function() {
+            $ordersvc.getorder(undefined,
+                function(data) {
+                    that.order = data
+                    that.completedbook = _.where(data.booked, {
+                        done: true
+                    })
+                    that.bookedbook = _.where(data.booked, {
+                        done: false
+                    })
+                },
+                function(data) {
+                    swal("", "获取信息失败，请稍后重试。", "warning")
+                })
+        }
+
+        that.refreshdates()
+        that.refresh()
     }
 
 ])

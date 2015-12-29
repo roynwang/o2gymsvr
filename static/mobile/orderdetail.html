@@ -28,8 +28,8 @@ ng-controller="OrderDetailCtrl as ctrl">
 -->
 <md-dialog aria-label="Mango (Fruit)" ng-cloak ng-controller="OrderDetailCtrl as ctrl">
     <form>
-       <md-toolbar>
-<!--            <div class="md-toolbar-tools">
+        <md-toolbar class="time-table">
+            <!--            <div class="md-toolbar-tools">
                 <h2>预约课程</h2>
                 <span flex></span>
                 <md-button style="padding:0" class="md-icon-button" ng-click="ctrl.cancel()">
@@ -38,65 +38,95 @@ ng-controller="OrderDetailCtrl as ctrl">
 
             </div>
 			-->
-        <div>
-            <a class="w-tab-link w-inline-block toolbar-top-button date-tab date-tab-picker">
-                <div>
-                    <md-datepicker ng-model="ctrl.currentdate" ng-change="ctrl.refreshdates()"></md-datepicker>
-                </div>
-            </a>
-            <a ng-click="ctrl.select(ctrl.dates[0])" class="w-tab-link w-inline-block toolbar-top-button
+            <div>
+                <a class="w-tab-link w-inline-block toolbar-top-button date-tab date-tab-picker">
+                    <div>
+                        <md-datepicker ng-model="ctrl.currentdate" ng-change="ctrl.refreshdates()"></md-datepicker>
+                    </div>
+                </a>
+                <a ng-click="ctrl.select(ctrl.dates[0])" class="w-tab-link w-inline-block toolbar-top-button
 					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[0]}">
-                <div>{{ctrl.dates[0].Format("MM/dd")}}</div>
-            </a>
-            <a ng-click="ctrl.select(ctrl.dates[1])" class="w-tab-link  w-inline-block toolbar-top-button
+                    <div>{{ctrl.dates[0].Format("MM/dd")}}</div>
+                </a>
+                <a ng-click="ctrl.select(ctrl.dates[1])" class="w-tab-link  w-inline-block toolbar-top-button
 					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[1]}">
-                <div>{{ctrl.dates[1].Format("MM/dd")}}</div>
-            </a>
-            <a ng-click="ctrl.select(ctrl.dates[2])" class="w-tab-link w-inline-block toolbar-top-button
+                    <div>{{ctrl.dates[1].Format("MM/dd")}}</div>
+                </a>
+                <a ng-click="ctrl.select(ctrl.dates[2])" class="w-tab-link w-inline-block toolbar-top-button
 					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[2]}">
-                <div>{{ctrl.dates[2].Format("MM/dd")}}</div>
-            </a>
-            <a ng-click="ctrl.select(ctrl.dates[3])" class="w-tab-link w-inline-block toolbar-top-button
+                    <div>{{ctrl.dates[2].Format("MM/dd")}}</div>
+                </a>
+                <a ng-click="ctrl.select(ctrl.dates[3])" class="w-tab-link w-inline-block toolbar-top-button
 					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[3]}">
-                <div>{{ctrl.dates[3].Format("MM/dd")}}</div>
-            </a>
-        </div>
-
+                    <div>{{ctrl.dates[3].Format("MM/dd")}}</div>
+                </a>
+            </div>
+            <div ng-repeat="r in [0,1,2,3,4]">
+                <a class="w-tab-link w-inline-block toolbar-top-button date-tab date-tab-hour"
+                ng-repeat="h in [0,1,2,3,4,5]">
+                    <div class="time-na" ng-class="{'time-available': ctrl.isAvaHour(6*r + h)}">{{ctrl.timemap[6*r + h]}}</div>
+                </a>
+            </div>
         </md-toolbar>
-        <md-dialog-content style="height:1180px;border-bottom: solid 1px #ccc; border-top: solid 1px #ccc;">
-            <div class="md-dialog-content" style="padding:8px 8px">
-                <md-grid-list md-cols="5" md-cols-sm="1" md-cols-md="2" md-cols-gt-md="6" md-row-height-gt-md="1:1"
-                md-row-height="7:6" md-gutter="8px" md-gutter-gt-sm="8px">
-                    <md-grid-tile class="green" ng-repeat="t in ctrl.timemap">
-                        <md-grid-tile-footer>
-                            <h3>{{t}}</h3>
-                        </md-grid-tile-footer>
-                    </md-grid-tile>
-                </md-grid-list>
-            </div>
+        <md-dialog-content style="height:1180px;padding: 0 5px; border-bottom:solid 1px #ccc;">
+            <md-tabs md-dynamic-height md-border-bottom>
+                <md-tab label="待约">
+                    <md-content class="md-padding" style="padding-top: 0;">
+                        <md-list>
+                            <md-list-item class="md-3-line" ng-repeat="item in ctrl.completedbook">
+                                <div class="md-list-item-text" layout="column">
+                                    <h3>{{ item.date }}</h3>
+                                    <h4>{{ ctrl.timemap[item.hour]}}</h4>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+                    </md-content>
+                </md-tab>
+                <md-tab label="待上">
+                    <md-content class="md-padding" style="padding-top: 0;">
+                        <h1 class="title-new" ng-hide="ctrl.bookedbook.length>0">没有待上课程</h1>
+                        <ul class="list">
+                            <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
+                            style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
+                            ng-repeat="c in ctrl.bookedbook">
+                                <p class="w-clearfix w-inline-block" href="#">
+                                    <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
+                                    <div class="course-time icon-list highlighted">
+                                        <div class="icon ion-ios-close-outline"></div>
+                                    </div>
+                                    <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
+                                </p>
+                            </li>
+                        </ul>
+                    </md-content>
+                </md-tab>
+                <md-tab label="已上">
+                    <md-content class="md-padding" style="padding-top: 0;">
+                        <h1 class="title-new" ng-hide="ctrl.completedbook.length>0">没有已上课程</h1>
+                        <ul class="list">
+                            <li class="list-item" data-ix="list-item"
+                            style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
+                            ng-repeat="c in ctrl.completedbook">
+                                <p class="w-clearfix w-inline-block" href="#">
+                                    <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
+                                    <div class="course-time icon-list highlighted">
+                                        <div class="icon ion-ios-checkmark-outline"></div>
+                                    </div>
+                                    <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
+                                </p>
+                            </li>
+                        </ul>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
         </md-dialog-content>
-        <md-dialog-content>
-            <div class="md-dialog-content">
-                <h2>Using .md-dialog-content class that sets the padding as the spec</h2>
-                <p>
-                    The mango is a juicy stone fruit belonging to the genus Mangifera, consisting of
-                    numerous tropical fruiting trees, cultivated mostly for edible
-                    fruit. The majority of these species are found in nature as
-                    wild mangoes. They all belong to the flowering plant family
-                    Anacardiaceae. The mango is native to South and Southeast Asia,
-                    from where it has been distributed worldwide to become one
-                    of the most cultivated fruits in the tropics.
-                </p>
-            </div>
-        </md-dialog-content>
-
         <md-dialog-actions layout="row">
             <span flex></span>
             <a class="w-clearfix w-inline-block small-button grey" ng-click="ctrl.cancel()">
                 <div class="icon-button bigger">
                     <div class="icon ion-ios-close-empty"></div>
                 </div>
-                <div class="text-button">取消</div>
+                <div class="text-button">返回</div>
             </a>
             <a class="w-clearfix w-inline-block small-button" href="#">
                 <div class="icon-button">
