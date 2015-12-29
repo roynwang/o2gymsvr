@@ -164,9 +164,9 @@ app.factory("$usersvc", function(Restangular) {
             return
         }
         Restangular.one("api/", username)
-                 .one("d/", day.Format("yyyyMMdd"))
-                    .get()
-                    .then(onsuccess, onfail)
+            .one("d/", day.Format("yyyyMMdd"))
+            .get()
+            .then(onsuccess, onfail)
     }
 
     function getuser(username, refresh, onsuccess, onfail) {
@@ -213,7 +213,7 @@ app.factory("$usersvc", function(Restangular) {
     return {
         login: login,
         getuser: getuser,
-		gettimetable: gettimetable
+        gettimetable: gettimetable
     }
 })
 app.controller("LoginCtrl", ["$state", "$usersvc",
@@ -342,27 +342,53 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.refreshdates()
     }
 ])
-app.controller("OrderDetailCtrl", ['$scope', '$mdDialog', '$ordersvc','$usersvc',
-    function($scope, $mdDialog, $ordersvc, $usersvc) {
+app.controller("OrderDetailCtrl", ['$scope','Restangular', '$mdDialog', '$ordersvc', '$usersvc',
+    function($scope, Restangular, $mdDialog, $ordersvc, $usersvc) {
         var that = this
         that.currentdate = new Date()
         that.dates = []
-		that.timetable = undefined
-        that.select = function(td) {
-            that.selected = td
-			$usersvc.gettimetable(undefined, td, function(data){
-				that.timetable = data
-			},undefined)
+
+        that.actionlist = []
+
+        that.timetable = undefined
+
+        function processtimetable(td) {
+            _.each(that.actionlist, function(book) {
+                if (book.pendingaction == "remove") {
+                    if (td.Format("yyyy-MM-dd") == book.date) {
+                        that.timetable.availiable.push(book.hour)
+                        that.timetable.availiable.push(book.hour + 1)
+                    }
+                }
+                if (book.pendingaction == "add") {
+                    if (td.Format("yyyy-MM-dd") == book.date) {
+                        that.timetable.availiable = _.without(that.timetable.availiable, book.hour, book.hour + 1)
+                        console.log(that.timetable.availiable)
+                    }
+                }
+            })
         }
-		that.isAvaHour = function(hour){
-			if(that.timetable == undefined){
-				return false
-			}
-			if(that.timetable.availiable.indexOf(hour) >= 0){
-				return true
-			}
-			return false
-		}	
+        that.select = function(td) {
+
+            if (that.selected == td) {
+                processtimetable()
+                return
+            }
+            that.selected = td
+            $usersvc.gettimetable(undefined, td, function(data) {
+                that.timetable = data
+                processtimetable(that.selected)
+            }, undefined)
+        }
+        that.isAvaHour = function(hour) {
+            if (that.timetable == undefined) {
+                return false
+            }
+            if (that.timetable.availiable.indexOf(hour) >= 0) {
+                return true
+            }
+            return false
+        }
         that.timemap = TimeMap
         that.order = {}
 
@@ -395,6 +421,95 @@ app.controller("OrderDetailCtrl", ['$scope', '$mdDialog', '$ordersvc','$usersvc'
                 function(data) {
                     swal("", "获取信息失败，请稍后重试。", "warning")
                 })
+        }
+
+        that.addbook = function(h) {
+            if (that.isAvaHour(h) && that.isAvaHour(h + 1)) {
+                var newbook = {
+                    date: that.selected.Format("yyyy-MM-dd"),
+                    hour: h,
+                    coach: that.order.coachdetail.id,
+                    custom: that.order.customerdetail.id,
+                    order: that.order.id,
+                    pendingaction: "add"
+                }
+                that.actionlist.push(newbook)
+                processtimetable(that.selected)
+            }
+        }
+        that.removebook = function(bookid) {
+            var tar = _.findWhere(that.bookedbook, {
+                id: bookid
+            })
+            tar["pendingaction"] = "remove"
+                //add to actionlist
+            that.actionlist.push(tar)
+                //remove from bookedbook
+            that.bookedbook = _.reject(that.bookedbook, function(item) {
+                    return item.id == bookid
+                })
+                //refresh time table
+            processtimetable(that.selected)
+        }
+        that.completeditem = function() {
+            that.pendingaction -= 1
+            if (that.pendingaction == 0) {
+                that.submitting = false
+                swal({
+                    type: "success",
+                    title: "提交成功",
+                    text: "",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            	$mdDialog.cancel();
+            }
+        }
+
+        that.submit = function() {
+            swal({
+                title: "提交",
+                text: "确认提交吗?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "取消",
+                confirmButtonText: "确认",
+                confirmButtonColor: "#1fb5ad",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function() {
+                var removelist = _.where(that.actionlist, {
+                    pendingaction: "remove"
+                })
+                var addlist = _.where(that.actionlist, {
+                    pendingaction: "add"
+                })
+                that.pendingaction = removelist.length + addlist.length
+                if (that.pendingaction == 0) {
+                    return
+                } else {
+                    that.submitting = true
+                }
+                _.each(removelist, function(item, i) {
+                    var datestr = item.date.replace(/-/g, "")
+                    Restangular.one("api/", $.cookie("user"))
+                        .one("b/" + datestr, item.hour)
+                        .remove()
+                        .then(function(data) {
+                            console.log("remove success")
+                            that.completeditem()
+                        })
+                })
+                _.each(addlist, function(item, i) {
+                    var datestr = item.date.replace(/-/g, "")
+                    Restangular.one("api/", $.cookie("user"))
+                        .post("b/" + datestr, item)
+                        .then(function(data) {
+                            that.completeditem()
+                            console.log(data)
+                        })
+                })
+            })
         }
 
         that.refreshdates()

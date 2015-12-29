@@ -64,22 +64,29 @@ ng-controller="OrderDetailCtrl as ctrl">
             <div ng-repeat="r in [0,1,2,3,4]">
                 <a class="w-tab-link w-inline-block toolbar-top-button date-tab date-tab-hour"
                 ng-repeat="h in [0,1,2,3,4,5]">
-                    <div class="time-na" ng-class="{'time-available': ctrl.isAvaHour(6*r + h)}">{{ctrl.timemap[6*r + h]}}</div>
+                    <div ng-click="ctrl.addbook(6*r+h)" class="time-na" ng-class="{'time-available': ctrl.isAvaHour(6*r + h)}">{{ctrl.timemap[6*r + h]}}</div>
                 </a>
             </div>
         </md-toolbar>
         <md-dialog-content style="height:1180px;padding: 0 5px; border-bottom:solid 1px #ccc;">
             <md-tabs md-dynamic-height md-border-bottom>
-                <md-tab label="待约">
+                <md-tab label="待提交">
                     <md-content class="md-padding" style="padding-top: 0;">
-                        <md-list>
-                            <md-list-item class="md-3-line" ng-repeat="item in ctrl.completedbook">
-                                <div class="md-list-item-text" layout="column">
-                                    <h3>{{ item.date }}</h3>
-                                    <h4>{{ ctrl.timemap[item.hour]}}</h4>
-                                </div>
-                            </md-list-item>
-                        </md-list>
+                        <h1 class="title-new" ng-hide="ctrl.actionlist.length>0">暂无待提交的预约</h1>
+                        <ul class="list">
+                            <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
+                            style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
+                            ng-repeat="c in ctrl.actionlist">
+                                <p class="w-clearfix w-inline-block" href="#">
+                                    <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
+                                    <div ng-click="ctrl.removebook(c.id)" class="course-time icon-list highlighted">
+                                        <div class="icon ion-ios-close-outline"></div>
+                                    </div>
+                                    <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
+                                    <div class="title-list course-time">{{c.pendingaction=="add"?"新增":"取消"}}</div>
+                                </p>
+                            </li>
+                        </ul>
                     </md-content>
                 </md-tab>
                 <md-tab label="待上">
@@ -91,7 +98,7 @@ ng-controller="OrderDetailCtrl as ctrl">
                             ng-repeat="c in ctrl.bookedbook">
                                 <p class="w-clearfix w-inline-block" href="#">
                                     <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
-                                    <div class="course-time icon-list highlighted">
+                                    <div ng-click="ctrl.removebook(c.id)" class="course-time icon-list highlighted">
                                         <div class="icon ion-ios-close-outline"></div>
                                     </div>
                                     <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
@@ -104,8 +111,7 @@ ng-controller="OrderDetailCtrl as ctrl">
                     <md-content class="md-padding" style="padding-top: 0;">
                         <h1 class="title-new" ng-hide="ctrl.completedbook.length>0">没有已上课程</h1>
                         <ul class="list">
-                            <li class="list-item" data-ix="list-item"
-                            style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
+                            <li class="list-item" data-ix="list-item" style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
                             ng-repeat="c in ctrl.completedbook">
                                 <p class="w-clearfix w-inline-block" href="#">
                                     <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
@@ -132,7 +138,7 @@ ng-controller="OrderDetailCtrl as ctrl">
                 <div class="icon-button">
                     <div class="icon ion-android-exit"></div>
                 </div>
-                <div class="text-button">保存</div>
+                <div class="text-button" ng-click="ctrl.submit()">保存</div>
             </a>
         </md-dialog-actions>
     </form>
