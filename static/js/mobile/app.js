@@ -1,4 +1,13 @@
+
+
+
 'use strict';
+
+function setmenu(userobj){
+	document.getElementById("avatar").setAttribute("src", userobj.avatar)
+	$("#coachname").html(userobj.displayname)
+}
+
 // 对Date的扩展，将 Date 转化为指定格式的String 
 // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符， 
 // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字) 
@@ -155,6 +164,7 @@ app.factory("$ordersvc", function(Restangular) {
 app.factory("$usersvc", function(Restangular) {
     var userlist = {}
     var usr = false
+    var customer = false
 
     function gettimetable(username, day, onsuccess, onfail) {
         if (username == undefined) {
@@ -169,6 +179,10 @@ app.factory("$usersvc", function(Restangular) {
             .then(onsuccess, onfail)
     }
 
+    function setcustomer(customername) {
+        customer = customername
+    }
+
     function getuser(username, refresh, onsuccess, onfail) {
         if (username == undefined) {
             username = $.cookie("user")
@@ -178,17 +192,23 @@ app.factory("$usersvc", function(Restangular) {
         }
         if (userlist[username] != undefined && !refresh) {
             onsuccess && onsuccess(userlist[username])
+        } else {
+            Restangular.one("api", username)
+                .get()
+                .then(function(data) {
+                    userlist[username] = data
+                    onsuccess && onsuccess(userlist[username])
+                }, function(data) {
+                    onfail && onfail()
+                })
         }
-        Restangular.one("api", username)
-            .get()
-            .then(function(data) {
-                userlist[username] = data
-                onsuccess && onsuccess(userlist[username])
-            }, function(data) {
-                onfail && onfail()
-            })
         return
     }
+
+    function getcustomer(customername, refresh, onsuccess, onfail) {
+        getuser(customername ? customername : customer, refresh, onsuccess, onfail)
+    }
+
 
     function login(username, pwd, onsuccess, onfail) {
 
@@ -213,7 +233,9 @@ app.factory("$usersvc", function(Restangular) {
     return {
         login: login,
         getuser: getuser,
-        gettimetable: gettimetable
+        gettimetable: gettimetable,
+        setcustomer: setcustomer,
+        getcustomer: getcustomer
     }
 })
 app.controller("LoginCtrl", ["$state", "$usersvc",
@@ -268,6 +290,18 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
         that.currentdate = new Date()
         that.dates = []
+        that.customerlist = []
+		$usersvc.getuser(undefined, false, function(data){
+			setmenu(data)
+		},
+		function(data){})
+        Restangular.one("api", user)
+            .all("customers")
+            .getList()
+            .then(function(data) {
+                    that.customerlist = data
+                },
+                function(data) {})
 
         that.refresh = function() {
             Restangular.one("api", user)
@@ -321,6 +355,23 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             that.dates[3] = that.currentdate.addDays(3)
             that.refresh()
         }
+        that.showcustomer = function(name) {
+            $usersvc.setcustomer(name)
+            $mdDialog.show({
+                    controller: 'CustomerDetailCtrl',
+                    templateUrl: '/static/mobile/customerdetail.html',
+                    parent: angular.element(document.body),
+                    //targetEvent: ev,
+                    clickOutsideToClose: true,
+                    fullscreen: true
+                })
+                .then(function(answer) {
+                    console.log('You said the information was "' + answer + '".');
+                }, function() {
+                    console.log('You cancelled the dialog.')
+                });
+        }
+
         that.showorder = function(orderid) {
             $ordersvc.setorder(orderid)
                 //var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
@@ -342,7 +393,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.refreshdates()
     }
 ])
-app.controller("OrderDetailCtrl", ['$scope','Restangular', '$mdDialog', '$ordersvc', '$usersvc',
+app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$ordersvc', '$usersvc',
     function($scope, Restangular, $mdDialog, $ordersvc, $usersvc) {
         var that = this
         that.currentdate = new Date()
@@ -424,16 +475,16 @@ app.controller("OrderDetailCtrl", ['$scope','Restangular', '$mdDialog', '$orders
         }
 
         that.addbook = function(h) {
-			//if reach max
-			var count = 0
-			for(var i in that.actionlist){
-				if(that.actionlist[i].pendingaction == "remove"){
-					count -= 1
-				} else {
-					count += 1
-				}
-			}
-			count += that.order.booked.length
+            //if reach max
+            var count = 0
+            for (var i in that.actionlist) {
+                if (that.actionlist[i].pendingaction == "remove") {
+                    count -= 1
+                } else {
+                    count += 1
+                }
+            }
+            count += that.order.booked.length
 
             if (count < that.order.course_count && that.isAvaHour(h) && that.isAvaHour(h + 1)) {
                 var newbook = {
@@ -473,7 +524,7 @@ app.controller("OrderDetailCtrl", ['$scope','Restangular', '$mdDialog', '$orders
                     timer: 1500,
                     showConfirmButton: false
                 });
-            	$mdDialog.cancel();
+                $mdDialog.cancel();
             }
         }
 
@@ -526,5 +577,50 @@ app.controller("OrderDetailCtrl", ['$scope','Restangular', '$mdDialog', '$orders
         that.refreshdates()
         that.refresh()
     }
+])
+app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdDialog", "$ordersvc",
+    function($state, $usersvc, Restangular, $mdDialog, $ordersvc) {
+        var that = this
+        that.customer = {}
+        that.orderlist = {}
+        $usersvc.getcustomer(undefined, false, function(data) {
+            that.customer = data
+			that.getorderlist()
+        }, function(data) {
+            console.log("getuser failed")
+        })
+        that.cancel = function() {
+            $mdDialog.cancel();
+        }
+        that.getorderlist = function() {
+            Restangular.one("api", that.customer.name)
+                .one("o")
+                .get()
+                .then(function(data) {
+                        that.orderlist = data.results
+                    },
+                    function(data) {})
+        }
+		that.call = function(){
+		}
+        that.showorder = function(orderid) {
+            $ordersvc.setorder(orderid)
+                //var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
+            $mdDialog.show({
+                    controller: 'OrderDetailCtrl',
+                    templateUrl: '/static/mobile/orderdetail.html',
+                    parent: angular.element(document.body),
+                    //targetEvent: ev,
+                    clickOutsideToClose: true,
+                    fullscreen: true
+                })
+                .then(function(answer) {
+                    console.log('You said the information was "' + answer + '".');
+                }, function() {
+                    console.log('You cancelled the dialog.')
+                });
 
+        }
+
+    }
 ])

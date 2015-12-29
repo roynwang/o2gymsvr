@@ -63,8 +63,12 @@ class UserSerializer(serializers.ModelSerializer):
 		model = User
 		#exclude = ("upped","fwded","commented")
 	def get_corps_list(self, obj):
+		if obj.corps == None or obj.corps == "":
+			return []
 		corps = json.loads(obj.corps)
 		ret = []
+		print("xxxxxxxxxxx")
+		print corps
 		for corp in corps:
 			ret.append({"k":corp, "v":unicode(Gym.objects.get(id=corp))})
 		return ret
