@@ -59,6 +59,7 @@
 	border-bottom: none;
 	margin-left: -8px;
     padding-bottom: 0;
+	display: none;
 }
 .date-tab-picker md-icon {
     color: #4fd2c2 !important;
