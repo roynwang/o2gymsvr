@@ -81,7 +81,7 @@ ng-controller="OrderDetailCtrl as ctrl">
                             ng-repeat="c in ctrl.actionlist">
                                 <p class="w-clearfix w-inline-block" href="#">
                                     <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
-                                    <div ng-click="ctrl.removebook(c.id)" class="course-time icon-list highlighted">
+                                    <div ng-click="ctrl.recover(c)" class="course-time icon-list highlighted">
                                         <div class="icon ion-ios-close-outline"></div>
                                     </div>
                                     <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
@@ -139,11 +139,11 @@ ng-controller="OrderDetailCtrl as ctrl">
                 </div>
                 <div class="text-button">返回</div>
             </a>
-            <a class="w-clearfix w-inline-block small-button" href="#">
+            <a ng-click="ctrl.submit()" class="w-clearfix w-inline-block small-button" href="#">
                 <div class="icon-button">
                     <div class="icon ion-android-exit"></div>
                 </div>
-                <div class="text-button" ng-click="ctrl.submit()">保存</div>
+                <div class="text-button" >保存</div>
             </a>
         </md-dialog-actions>
     </form>

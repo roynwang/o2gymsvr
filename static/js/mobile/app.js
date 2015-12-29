@@ -457,6 +457,13 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
         that.cancel = function() {
             $mdDialog.cancel();
         }
+		that.recover = function(task){
+			if(task.pendingaction == "remove"){
+				that.bookedbook.push(task)
+			}
+			that.actionlist = _.reject(that.actionlist, function(item){ return task==item})
+			processtimetable(that.selected)
+		}
 
         that.refresh = function() {
             $ordersvc.getorder(undefined,
@@ -583,12 +590,6 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
         var that = this
         that.customer = {}
         that.orderlist = {}
-        $usersvc.getcustomer(undefined, false, function(data) {
-            that.customer = data
-			that.getorderlist()
-        }, function(data) {
-            console.log("getuser failed")
-        })
         that.cancel = function() {
             $mdDialog.cancel();
         }
@@ -597,7 +598,7 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
                 .one("o")
                 .get()
                 .then(function(data) {
-                        that.orderlist = data.results
+                        that.orderlist = _.where(data.results,{coach:$.cookie("user")})
                     },
                     function(data) {})
         }
@@ -621,6 +622,13 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
                 });
 
         }
+        $usersvc.getcustomer(undefined, false, function(data) {
+            that.customer = data
+			that.getorderlist()
+        }, function(data) {
+            console.log("getuser failed")
+        })
+
 
     }
 ])
