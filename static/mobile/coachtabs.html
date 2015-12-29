@@ -34,6 +34,11 @@ ng-controller="TodayCourseCtrl as ctrl">
 				</a>
             </div>
             <ul class="list">
+				<h4 style="    text-align: center;
+					    padding-top: 50px;
+						    margin-bottom: 0;"
+					ng-hide="ctrl.courselist.length>0">{{ctrl.selected.Format("yyyy-MM-dd")}}
+					没有课程</h4>
                 <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
                 style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
                 ng-repeat="c in ctrl.courselist">
