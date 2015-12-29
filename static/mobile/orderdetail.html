@@ -28,16 +28,16 @@ ng-controller="OrderDetailCtrl as ctrl">
 -->
 <md-dialog aria-label="Mango (Fruit)" ng-cloak ng-controller="OrderDetailCtrl as ctrl">
     <form>
-        <!--        <md-toolbar>
-            <div class="md-toolbar-tools">
+       <md-toolbar>
+<!--            <div class="md-toolbar-tools">
                 <h2>预约课程</h2>
                 <span flex></span>
                 <md-button style="padding:0" class="md-icon-button" ng-click="ctrl.cancel()">
                     <div style="color:#ccc" class="navbar-button-icon icon ion-ios-close-empty"></div>
                 </md-button>
 
-            </div>-->
-        </md-toolbar>
+            </div>
+			-->
         <div>
             <a class="w-tab-link w-inline-block toolbar-top-button date-tab date-tab-picker">
                 <div>
@@ -61,6 +61,8 @@ ng-controller="OrderDetailCtrl as ctrl">
                 <div>{{ctrl.dates[3].Format("MM/dd")}}</div>
             </a>
         </div>
+
+        </md-toolbar>
         <md-dialog-content style="height:1180px;border-bottom: solid 1px #ccc; border-top: solid 1px #ccc;">
             <div class="md-dialog-content" style="padding:8px 8px">
                 <md-grid-list md-cols="5" md-cols-sm="1" md-cols-md="2" md-cols-gt-md="6" md-row-height-gt-md="1:1"

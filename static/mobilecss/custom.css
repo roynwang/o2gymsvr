@@ -57,7 +57,7 @@
     padding-bottom: 0;
 }
 .date-tab-picker md-icon {
-    color: #4fd2c2;
+    color: #4fd2c2 !important;
 }
 
 .md-datepicker-input {
