@@ -72,7 +72,9 @@ ng-controller="OrderDetailCtrl as ctrl">
             <md-tabs md-dynamic-height md-border-bottom>
                 <md-tab label="待提交">
                     <md-content class="md-padding" style="padding-top: 0;">
-                        <h1 class="title-new" ng-hide="ctrl.actionlist.length>0">暂无待提交的预约</h1>
+					<h1 class="title-new"
+						ng-hide="ctrl.actionlist.length>0">还有{{ctrl.order.course_count -
+						ctrl.bookedbook.length - ctrl.completedbook.length}}节课待预约</h1>
                         <ul class="list">
                             <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
                             style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
@@ -89,7 +91,7 @@ ng-controller="OrderDetailCtrl as ctrl">
                         </ul>
                     </md-content>
                 </md-tab>
-                <md-tab label="待上">
+				<md-tab label="待上({{ctrl.bookedbook.length}})">
                     <md-content class="md-padding" style="padding-top: 0;">
                         <h1 class="title-new" ng-hide="ctrl.bookedbook.length>0">没有待上课程</h1>
                         <ul class="list">
@@ -107,7 +109,7 @@ ng-controller="OrderDetailCtrl as ctrl">
                         </ul>
                     </md-content>
                 </md-tab>
-                <md-tab label="已上">
+				<md-tab label="已上({{ctrl.completedbook.length}})">
                     <md-content class="md-padding" style="padding-top: 0;">
                         <h1 class="title-new" ng-hide="ctrl.completedbook.length>0">没有已上课程</h1>
                         <ul class="list">
@@ -126,7 +128,10 @@ ng-controller="OrderDetailCtrl as ctrl">
                 </md-tab>
             </md-tabs>
         </md-dialog-content>
-        <md-dialog-actions layout="row">
+		<md-dialog-actions layout="row" style="padding-left: 8px">
+		    <md-button>
+				有效期：{{ctrl.order.endtime}}
+			</md-button>
             <span flex></span>
             <a class="w-clearfix w-inline-block small-button grey" ng-click="ctrl.cancel()">
                 <div class="icon-button bigger">

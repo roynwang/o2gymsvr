@@ -424,7 +424,18 @@ app.controller("OrderDetailCtrl", ['$scope','Restangular', '$mdDialog', '$orders
         }
 
         that.addbook = function(h) {
-            if (that.isAvaHour(h) && that.isAvaHour(h + 1)) {
+			//if reach max
+			var count = 0
+			for(var i in that.actionlist){
+				if(that.actionlist[i].pendingaction == "remove"){
+					count -= 1
+				} else {
+					count += 1
+				}
+			}
+			count += that.order.booked.length
+
+            if (count < that.order.course_count && that.isAvaHour(h) && that.isAvaHour(h + 1)) {
                 var newbook = {
                     date: that.selected.Format("yyyy-MM-dd"),
                     hour: h,

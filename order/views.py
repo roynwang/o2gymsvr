@@ -168,7 +168,7 @@ class ManualOrder(APIView):
 		if User.objects.filter(name=phone).exists():
 			customer = User.objects.get(name=phone)
 		else:
-			customer = User.objects.create(name=phone,displayname=displayname,iscoach=False)
+			customer = User.objects.create(name=phone,displayname=displayname,sex=self.request.data["sex"],iscoach=False)
 		print customer
 		#create product
 		introduction = self.request.data["product_introduction"]
