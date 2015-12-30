@@ -283,6 +283,9 @@ app.controller("LoginCtrl", ["$state", "$usersvc",
 app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc",
     function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc) {
         var user = $.cookie("user")
+		if(user == undefined){
+            window.location.href = "/mobile/login/"
+		}
         var that = this
         that.timemap = TimeMap
         that.courselist = []
@@ -315,7 +318,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                         if (data.status == 403) {
                             window.location.href = "/mobile/login/"
                         } else {
-                            swal("", "获取信息失败，请稍后重试。", "warning")
+                            swal("", data.status + "获取信息失败，请稍后重试。", "warning")
                         }
                     })
         }
