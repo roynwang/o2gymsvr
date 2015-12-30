@@ -1,11 +1,8 @@
-
-
-
 'use strict';
 
-function setmenu(userobj){
-	document.getElementById("avatar").setAttribute("src", userobj.avatar)
-	$("#coachname").html(userobj.displayname)
+function setmenu(userobj) {
+    document.getElementById("avatar").setAttribute("src", userobj.avatar)
+    $("#coachname").html(userobj.displayname)
 }
 
 // 对Date的扩展，将 Date 转化为指定格式的String 
@@ -227,7 +224,14 @@ app.factory("$usersvc", function(Restangular) {
                     username: username,
                     password: pwd
                 },
-                onsuccess)
+                function(data) {
+                    Restangular.setDefaultHeaders({
+                        Authorization: "JWT " + data.token
+                    });
+					$
+
+                    onsuccess && onsuccess(data)
+                })
             .fail(onfail)
     }
     return {
@@ -238,11 +242,14 @@ app.factory("$usersvc", function(Restangular) {
         getcustomer: getcustomer
     }
 })
-app.controller("LoginCtrl", ["$state", "$usersvc",
-    function($state, $usersvc) {
+app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
+    function($state, $usersvc, $mdDialog) {
         var that = this
         that.user = {}
         that.loading = true
+        that.cancel = function() {
+            $mdDialog.cancel();
+        }
 
         function onfail() {
             that.loading = false
@@ -250,7 +257,8 @@ app.controller("LoginCtrl", ["$state", "$usersvc",
 
         function trans(user) {
             that.loading = false
-            $state.transitionTo(user.iscoach ? "coachhome" : "userhome")
+            $mdDialog.cancel();
+            //$state.transitionTo(user.iscoach ? "coachhome" : "userhome")
         }
         if ($.cookie("token") == undefined) {
             var user = $usersvc.getuser(undefined, false, trans)
@@ -283,9 +291,6 @@ app.controller("LoginCtrl", ["$state", "$usersvc",
 app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc",
     function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc) {
         var user = $.cookie("user")
-		if(user == undefined){
-            window.location.href = "/mobile/login/"
-		}
         var that = this
         that.timemap = TimeMap
         that.courselist = []
@@ -294,17 +299,20 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.currentdate = new Date()
         that.dates = []
         that.customerlist = []
-		$usersvc.getuser(undefined, false, function(data){
-			setmenu(data)
-		},
-		function(data){})
-        Restangular.one("api", user)
-            .all("customers")
-            .getList()
-            .then(function(data) {
-                    that.customerlist = data
+        that.init = function() {
+			user = $.cookie("user")
+            $usersvc.getuser(undefined, false, function(data) {
+                    setmenu(data)
                 },
                 function(data) {})
+            Restangular.one("api", user)
+                .all("customers")
+                .getList()
+                .then(function(data) {
+                        that.customerlist = data
+                    },
+                    function(data) {})
+        }
 
         that.refresh = function() {
             Restangular.one("api", user)
@@ -393,7 +401,27 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 });
 
         }
-        that.refreshdates()
+        if (user == undefined) {
+            $mdDialog.show({
+                    controller: 'LoginCtrl',
+                    templateUrl: '/static/mobile/login.html',
+                    parent: angular.element(document.body),
+                    //targetEvent: ev,
+                    clickOutsideToClose: true,
+                    fullscreen: true
+                })
+                .then(function(answer) {
+					that.init()
+					that.refreshdates()
+
+                }, function() {
+					that.init()
+					that.refreshdates()
+                });
+        } else {
+			that.init()
+			that.refreshdates()
+        }
     }
 ])
 app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$ordersvc', '$usersvc',
@@ -433,10 +461,10 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
             $usersvc.gettimetable(undefined, td, function(data) {
                 that.timetable = data
 
-				if(that.timetable.na.indexOf(26) < 0){
-					that.timetable.availiable.push(26)
-				}
-				
+                if (that.timetable.na.indexOf(26) < 0) {
+                    that.timetable.availiable.push(26)
+                }
+
                 processtimetable(that.selected)
             }, undefined)
         }
@@ -466,13 +494,15 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
         that.cancel = function() {
             $mdDialog.cancel();
         }
-		that.recover = function(task){
-			if(task.pendingaction == "remove"){
-				that.bookedbook.push(task)
-			}
-			that.actionlist = _.reject(that.actionlist, function(item){ return task==item})
-			processtimetable(that.selected)
-		}
+        that.recover = function(task) {
+            if (task.pendingaction == "remove") {
+                that.bookedbook.push(task)
+            }
+            that.actionlist = _.reject(that.actionlist, function(item) {
+                return task == item
+            })
+            processtimetable(that.selected)
+        }
 
         that.refresh = function() {
             $ordersvc.getorder(undefined,
@@ -607,12 +637,13 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
                 .one("o")
                 .get()
                 .then(function(data) {
-                        that.orderlist = _.where(data.results,{coach:$.cookie("user")})
+                        that.orderlist = _.where(data.results, {
+                            coach: $.cookie("user")
+                        })
                     },
                     function(data) {})
         }
-		that.call = function(){
-		}
+        that.call = function() {}
         that.showorder = function(orderid) {
             $ordersvc.setorder(orderid)
                 //var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
@@ -633,7 +664,7 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
         }
         $usersvc.getcustomer(undefined, false, function(data) {
             that.customer = data
-			that.getorderlist()
+            that.getorderlist()
         }, function(data) {
             console.log("getuser failed")
         })
