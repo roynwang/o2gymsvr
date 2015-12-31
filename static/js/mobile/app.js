@@ -69,6 +69,12 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
     $mdDateLocaleProvider.formatDate = function(date) {
         return moment(date).format('');
     };
+	$mdDateLocaleProvider.months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+	$mdDateLocaleProvider.shortMonths = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+    $mdDateLocaleProvider.days = ['周日','周二','周三','周四','周五','周六']
+    $mdDateLocaleProvider.shortDays = ['日','一','二','三','四','五','六']
+	$mdDateLocaleProvider.firstDayOfWeek = 1
+
     RestangularProvider.setDefaultHeaders({
         Authorization: "JWT " + $.cookie("token")
     });
