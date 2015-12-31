@@ -65,7 +65,6 @@ def templateSMS(accountSid,accountToken,appId,toNumbers,templateId,param,isUseJs
 
 def sendBookNotification(book):
 
-	return
 	accountSid = settings.UCPAASSID
 	accountToken = settings.UCPAASTOKEN
 	appId = settings.UCPAASAPPID
