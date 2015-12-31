@@ -57,7 +57,8 @@ def get_or_create_user_return_token(number,pwd):
 		wh = WorkingDays.objects.create(name=number)
 	if not auth_usr:
 		auth_usr = get_user_model().objects.create_user(username=number)
-	auth_usr.set_password(pwd)
+	if pwd != None:
+		auth_usr.set_password(pwd)
 	auth_usr.save()
 	payload = jwt_payload_handler(auth_usr)
 	return {'token':jwt_encode_handler(payload)}
@@ -113,11 +114,15 @@ class SMSVerify(APIView):
 		sms = get_object_or_404(Sms,number=number)
 		ret = None
 		print request.DATA
+		print str(sms.vcode)
+		print request.DATA["vcode"]
 		if str(sms.vcode) == request.DATA["vcode"]:
-			ret = Response(get_or_create_user_return_token(number, request.DATA["password"]) , status=status.HTTP_200_OK)
-			#generate token
 			sms.vcode = randint(100000,999999)
 			sms.save()
+			pwd = None
+			if "password" in request.data:
+				pwd = request.data["password"]
+			ret = Response(get_or_create_user_return_token(number, pwd) , status=status.HTTP_200_OK)
 		else:
 			ret = Response({"result":"failed"}, status=status.HTTP_403_FORBIDDEN)
 		return ret

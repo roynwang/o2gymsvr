@@ -74,7 +74,6 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
     RestangularProvider.setDefaultHeaders({
         Authorization: "JWT " + $.cookie("token")
     });
-    $httpProvider.defaults.headers.common.Authorization = "JWT " + $.cookie("token")
     RestangularProvider.setRequestSuffix('/')
     $urlRouterProvider.otherwise("/");
     $stateProvider
@@ -163,6 +162,32 @@ app.factory("$usersvc", function(Restangular) {
     var usr = false
     var customer = false
 
+    function loginwithvcode(username, vcode, onsuccess, onfail) {
+        $.post("/api/sms/" + username + "/", {
+                    vcode: vcode
+                },
+                function(data) {
+                    Restangular.setDefaultHeaders({
+                        Authorization: "JWT " + data.token
+                    });
+                    onsuccess && onsuccess(data)
+                })
+            .fail(onfail)
+    }
+
+    function sendvcode(username, onsuccess, onfail) {
+        $.post("/api/sms/", {
+                    number: username
+                },
+                function(data) {
+                    Restangular.setDefaultHeaders({
+                        Authorization: "JWT " + data.token
+                    });
+                    onsuccess && onsuccess(data)
+                })
+            .fail(onfail)
+    }
+
     function gettimetable(username, day, onsuccess, onfail) {
         if (username == undefined) {
             username = $.cookie("user")
@@ -228,8 +253,6 @@ app.factory("$usersvc", function(Restangular) {
                     Restangular.setDefaultHeaders({
                         Authorization: "JWT " + data.token
                     });
-					$
-
                     onsuccess && onsuccess(data)
                 })
             .fail(onfail)
@@ -239,7 +262,9 @@ app.factory("$usersvc", function(Restangular) {
         getuser: getuser,
         gettimetable: gettimetable,
         setcustomer: setcustomer,
-        getcustomer: getcustomer
+        getcustomer: getcustomer,
+        sendvcode: sendvcode,
+        loginwithvcode: loginwithvcode
     }
 })
 app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
@@ -247,17 +272,30 @@ app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
         var that = this
         that.user = {}
         that.loading = true
+        that.vcodetext = "发送验证码"
+        that.errmsg = false
         that.cancel = function() {
             $mdDialog.cancel();
         }
+        that.startload = function() {
+            $("#new-stack").css("opacity", 0.6)
+        }
+        that.endload = function() {
+            $("#new-stack").css("opacity", 0)
+        }
+        that.endload()
 
         function onfail() {
-            that.loading = false
+            that.endload()
         }
 
         function trans(user) {
             that.loading = false
-            $mdDialog.cancel();
+            if (user.iscoach) {
+                $mdDialog.cancel();
+            } else {
+                swal("", "用户自助预约暂未开发完成，请耐心等待", "warning")
+            }
             //$state.transitionTo(user.iscoach ? "coachhome" : "userhome")
         }
         if ($.cookie("token") == undefined) {
@@ -267,11 +305,12 @@ app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
         }
         that.login = function() {
             that.loading = true
-                //$.removeCookie("user")
-                //$.removeCookie("gym")
+            that.startload()
             $usersvc.login(that.user.name, that.user.pwd,
                 function(data) {
                     that.loading = false
+
+                    that.endload()
                     $.cookie("token", data.token, {
                         path: '/'
                     })
@@ -282,9 +321,59 @@ app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
                 },
                 function(data) {
                     that.loading = false
+
+                    that.endload()
                     that.errmsg = "登录失败"
                 })
 
+        }
+        that.sendvcode = function() {
+            if (that.user.name == undefined || that.user.name.toString().length != 11) {
+                that.errmsg = "请输入正确的11位手机号"
+                return
+            } else {
+                that.errmsg = false
+                that.startload()
+                if (that.vcodetext == "发送验证码") {
+                    that.vcodetext = "已发送"
+                    $usersvc.sendvcode(that.user.name,
+                        function(data) {
+
+                            that.endload()
+                            that.vcodetext = "30秒后重发"
+                            setTimeout(function() {
+                                that.vcodetext = "发送验证码"
+                            }, 30000)
+                        },
+                        function(data) {
+                            console.log(data)
+                            that.errmsg = "发送失败,稍后重试"
+                            that.endload()
+                        })
+                }
+            }
+        }
+        that.loginwithvcode = function() {
+            that.loading = true
+            that.errmsg = false
+            that.startload()
+            $usersvc.loginwithvcode(that.user.name, that.user.vcode,
+                function(data) {
+                    that.loading = false
+                    that.endload()
+                    $.cookie("token", data.token, {
+                        path: '/'
+                    })
+                    $.cookie("user", that.user.name, {
+                        path: '/'
+                    })
+                    $usersvc.getuser(that.user.name, false, trans)
+                },
+                function(data) {
+                    that.loading = false
+                    that.endload()
+                    that.errmsg = "登录失败,请检查输入"
+                })
         }
     }
 ])
@@ -300,7 +389,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.dates = []
         that.customerlist = []
         that.init = function() {
-			user = $.cookie("user")
+            user = $.cookie("user")
             $usersvc.getuser(undefined, false, function(data) {
                     setmenu(data)
                 },
@@ -411,16 +500,16 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     fullscreen: true
                 })
                 .then(function(answer) {
-					that.init()
-					that.refreshdates()
+                    that.init()
+                    that.refreshdates()
 
                 }, function() {
-					that.init()
-					that.refreshdates()
+                    that.init()
+                    that.refreshdates()
                 });
         } else {
-			that.init()
-			that.refreshdates()
+            that.init()
+            that.refreshdates()
         }
     }
 ])

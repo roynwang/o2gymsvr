@@ -120,7 +120,7 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
     RestangularProvider.setDefaultHeaders({
         Authorization: "JWT " + $.cookie("token")
     });
-    $httpProvider.defaults.headers.common.Authorization = "JWT " + $.cookie("token")
+    //$httpProvider.defaults.headers.common.Authorization = "JWT " + $.cookie("token")
     RestangularProvider.setRequestSuffix('/')
     $urlRouterProvider.otherwise("/");
     $stateProvider
