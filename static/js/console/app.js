@@ -808,6 +808,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
             .get()
             .then(function(data) {
                 that.coach = data
+				that.coach.avatar+="?imageView2/1/w/150/h/150"
             })
 
         function validate() {
@@ -1173,7 +1174,7 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
 
             function recur() {
                 if (!$.cookie("user")) {
-                    setTimeout(recur, 1000)
+                    setTimeout(recur, 3000)
                 } else {
                     renderCoaches()
                     renderSale()
