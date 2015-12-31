@@ -5,11 +5,11 @@
                 <h2>{{ctrl.customer.displayname}}</h2>
                 <span flex></span>
                 <md-button style="padding-left: 0" class="md-icon-button">
-				<a href="tel://{{ctrl.customer.name}}" style="color:#1fb5ad;font-size: 25px;"
+				<a href="tel:{{ctrl.customer.name}}" style="color:#1fb5ad;font-size: 25px;"
 					class="navbar-button-icon icon ion-ios-telephone-outline"></a>
                 </md-button>
                 <md-button style="padding-left: 0" class="md-icon-button">
-				<a href="sms://{{ctrl.customer.name}}" style="color:#1fb5ad;font-size: 25px;"
+				<a href="sms:{{ctrl.customer.name}}" style="color:#1fb5ad;font-size: 25px;"
 					class="navbar-button-icon icon ion-ios-chatbubble-outline"></a>
                 </md-button>
                 <md-button style="padding:0" class="md-icon-button" ng-click="ctrl.cancel()">

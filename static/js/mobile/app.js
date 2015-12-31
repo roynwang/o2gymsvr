@@ -64,8 +64,9 @@ var app = angular.module('o2m', [
     'oitozero.ngSweetAlert',
     'ngMaterial'
 ])
-app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider, $mdDateLocaleProvider) {
+app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider, $mdDateLocaleProvider,$compileProvider) {
     // For any unmatched url, send to /route1
+	$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|local|data|tel|sms):/);
     $mdDateLocaleProvider.formatDate = function(date) {
         return moment(date).format('');
     };
