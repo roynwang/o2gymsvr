@@ -101,10 +101,10 @@ app.factory("$customersvc", function(Restangular) {
                 .get()
                 .then(function(data) {
 					customers = data
-					onsuccess & onsuccess(customers)
+					onsuccess && onsuccess(customers)
                 })
         } else{
-			onsuccess & onsuccess(customers)
+			onsuccess && onsuccess(customers)
 		}
     }
 	function getcustomer(key){
@@ -849,7 +849,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
                         .post("manualorder", that.mo)
                         .then(function(data) {
                             console.log(data)
-							$customersvc.getcustomers(undefined,true)
+							$customersvc.getcustomers(false,true)
                             swal({
                                 title: "成功",
                                 text: "订单提交成功",
