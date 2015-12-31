@@ -410,6 +410,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 .getList()
                 .then(function(data) {
                         that.customerlist = data
+						that.customerlist.sort(function(a,b){return a.displayname.localeCompare(b.displayname)})
                     },
                     function(data) {})
         }
