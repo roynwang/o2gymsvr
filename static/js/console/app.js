@@ -813,7 +813,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
 
         function validate() {
             var data = that.mo
-            if (that.mo.customer_phone.length != 11) {
+            if (that.mo.customer_phone.toString().length != 11) {
                 swal("", "请输入正确的11位电话号码", "warning")
                 return false
             }

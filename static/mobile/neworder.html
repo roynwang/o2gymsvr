@@ -1,0 +1,78 @@
+<md-dialog aria-label="Mango (Fruit)" ng-cloak ng-controller="NewOrderDialgCtrl as ctrl">
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>新建订单</h2>
+                <span flex></span>
+                <md-button style="padding:0" class="md-icon-button" ng-click="ctrl.cancel()">
+                    <div style="color:#ccc" class="navbar-button-icon icon ion-ios-close-empty"></div>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="w-form" style="padding: 20px;" ng-controller="NewOrderDialgCtrl as ctrl">
+                <form id="email-form" name="email-form" data-name="Email Form" action="#">
+                    <div>
+                        <label class="label-form" for="full-name-field">姓名</label>
+                        <input ng-model="ctrl.mo.customer_displayname" class="w-input input-form" id="full-name-field"
+                        type="text" name="full-name" data-name="full-name" required="required">
+                        <div class="separator-fields"></div>
+                    </div>
+                    <div>
+                        <label class="label-form" for="email-field">电话</label>
+                        <input ng-model="ctrl.mo.customer_phone" class="w-input input-form" id="email-field"
+                        type="number" name="email" data-name="number" required="required">
+                        <div class="separator-fields"></div>
+                    </div>
+                    <div>
+                        <label class="label-form" for="email-field">总价(元)</label>
+                        <input ng-model="ctrl.mo.product_price" class="w-input input-form" id="email-field"
+                        type="number" name="email" data-name="number" required="required">
+                        <div class="separator-fields"></div>
+                    </div>
+
+                    <div>
+                        <label class="label-form" for="email-field">数量(节)</label>
+                        <input ng-model="ctrl.mo.product_amount" class="w-input input-form" id="email-field"
+                        type="number" name="email" data-name="number" required="required">
+                        <div class="separator-fields"></div>
+                    </div>
+                    <div>
+                        <label class="label-form" for="email-field">有效期(月)</label>
+                        <input ng-model="ctrl.mo.product_duration" class="w-input input-form" id="email-field"
+                        type="number" name="email" data-name="number" required="required">
+                        <div class="separator-fields"></div>
+                    </div>
+                    <div>
+                        <div class="w-clearfix input-form one-line">
+                            <label class="label-form middle" for="email">性别</label>
+                            <div class="w-clearfix radios-container">
+                                <div class="w-radio w-clearfix radio-button">
+                                    <div class="radio-bullet-replacement" ng-click="ctrl.changesex('0')" ng-class="{'0':'checked'}[ctrl.mo.sex]"></div>
+                                    <input class="w-radio-input radio-bullet" ng-click="ctrl.changesex('0')" id="node"
+                                    type="radio" name="Radio1" value="1" data-name="Radio1">
+                                    <label class="w-form-label" for="node">女</label>
+                                </div>
+                                <div class="w-radio w-clearfix radio-button">
+                                    <div class="radio-bullet-replacement" ng-click="ctrl.mo.sex='1'" ng-class="{'1':'checked'}[ctrl.mo.sex]"></div>
+                                    <input ng-click="ctrl.changesex('1')" class="w-radio-input radio-bullet" id="node-2"
+                                    type="radio" name="Radio1" value="0" data-name="Radio1">
+                                    <label ng-click="ctrl.changesex('1')" class="w-form-label" for="node-2">男</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="separator-fields"></div>
+                    </div>
+                    <md-button ng-click="ctrl.submitorder()" style="font-size: 18px;color: white;background: #4fd2c2;"
+					class="w-button action-button">提交</md-button>
+                </form>
+                <div class="w-form-done">
+                    <p>Thank you! Your submission has been received!</p>
+                </div>
+                <div class="w-form-fail">
+                    <p>Oops! Something went wrong while submitting the form</p>
+                </div>
+            </div>
+        </md-dialog-content>
+    </form>
+</md-dialog>

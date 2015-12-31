@@ -42,11 +42,9 @@
 </head>
 
 <body>
-
     <section class="w-section mobile-wrapper">
-
         <div class="page-content" id="main-stack">
-            <div class="w-nav navbar" data-collapse="all" data-animation="over-left" data-duration="400"
+            <div style="padding-top: 5px;height:45px" class="w-nav navbar" data-collapse="all" data-animation="over-left" data-duration="400"
             data-contain="1" data-easing="ease-out-quint" data-no-scroll="1">
                 <div class="w-container">
                     <nav class="w-nav-menu nav-menu" role="navigation">
@@ -76,14 +74,12 @@
                             <div class="bar-home-icon"></div>
                         </div>
                     </div>
-					<!--
-                    <a class="w-inline-block navbar-button right" href="addnew.html" data-loader="1">
+                    <a class="w-inline-block navbar-button right" id="neworder" data-loader="1">
                         <div class="navbar-button-icon icon ion-ios-plus-empty"></div>
                     </a>
-					-->
                 </div>
             </div>
-            <div ui-view class="body" ng-app="o2m">
+            <div id="agcontainer" ui-view class="body" ng-app="o2m">
             </div>
         </div>
     </section>

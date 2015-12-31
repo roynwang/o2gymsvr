@@ -1,80 +1,74 @@
-<div class="w-tabs" style="position: fixed;width: 100%; height: 100%;" data-duration-in="400" data-duration-out="400" data-easing="ease-out-quint"
+<div class="w-tabs" data-duration-in="400" data-duration-out="400" data-easing="ease-out-quint"
 ng-controller="TodayCourseCtrl as ctrl">
-    <div class="w-tab-menu top-buttons">
-        <a class="w-tab-link  w-inline-block toolbar-top-button" ng-class="{'w--current':ctrl.tabs[0]}"
-        ng-click="ctrl.toggle(0)" data-w-tab="Tab 1">
-            <div>课表</div>
-        </a>
-        <a class="w-tab-link w-inline-block toolbar-top-button" ng-class="{'w--current':ctrl.tabs[1]}"
-        ng-click="ctrl.toggle(1)" data-w-tab="Tab 2">
-            <div>客户</div>
-        </a>
-    </div>
-	<div class="w-tab-content tabs-content" style="height: 100%;
-		overflow-y: scroll;padding: 0 10px;background: white;">
-        <div class="w-tab-pane w-clearfix tab-pane" ng-class="{'w--tab-active': ctrl.tabs[0]}">
-            <div class="w-tab-menu top-buttons">
-                <a class="w-tab-link w-inline-block toolbar-top-button date-tab date-tab-picker">
-                    <div>
-                        <md-datepicker ng-model="ctrl.currentdate" ng-change="ctrl.refreshdates()"></md-datepicker>
-                    </div>
-                </a>
-                <a ng-click="ctrl.select(ctrl.dates[0])" class="w-tab-link w-inline-block toolbar-top-button
+    <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always">
+        <md-tab id="tab1">
+            <md-tab-label style="font-size:16px">课表</md-tab-label>
+            <md-tab-body>
+                <div class="w-tab-menu top-buttons">
+                    <a class="w-tab-link w-inline-block toolbar-top-button date-tab date-tab-picker">
+                        <div>
+                            <md-datepicker ng-model="ctrl.currentdate" ng-change="ctrl.refreshdates()"></md-datepicker>
+                        </div>
+                    </a>
+                    <a ng-click="ctrl.select(ctrl.dates[0])" class="w-tab-link w-inline-block toolbar-top-button
 					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[0]}">
-                    <div>{{ctrl.dates[0].Format("MM/dd")}}</div>
-                </a>
-                <a ng-click="ctrl.select(ctrl.dates[1])" class="w-tab-link  w-inline-block toolbar-top-button
+                        <div>{{ctrl.dates[0].Format("MM/dd")}}</div>
+                    </a>
+                    <a ng-click="ctrl.select(ctrl.dates[1])" class="w-tab-link  w-inline-block toolbar-top-button
 					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[1]}">
-                    <div>{{ctrl.dates[1].Format("MM/dd")}}</div>
-                </a>
-                <a ng-click="ctrl.select(ctrl.dates[2])" class="w-tab-link w-inline-block toolbar-top-button
+                        <div>{{ctrl.dates[1].Format("MM/dd")}}</div>
+                    </a>
+                    <a ng-click="ctrl.select(ctrl.dates[2])" class="w-tab-link w-inline-block toolbar-top-button
 					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[2]}">
-                    <div>{{ctrl.dates[2].Format("MM/dd")}}</div>
-                </a>
-                <a ng-click="ctrl.select(ctrl.dates[3])" class="w-tab-link w-inline-block toolbar-top-button
+                        <div>{{ctrl.dates[2].Format("MM/dd")}}</div>
+                    </a>
+                    <a ng-click="ctrl.select(ctrl.dates[3])" class="w-tab-link w-inline-block toolbar-top-button
 					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[3]}">
-                    <div>{{ctrl.dates[3].Format("MM/dd")}}</div>
-                </a>
-            </div>
-            <ul class="list">
-                <h4 style="    text-align: center;
+                        <div>{{ctrl.dates[3].Format("MM/dd")}}</div>
+                    </a>
+                </div>
+                <ul class="list">
+                    <h4 style="    text-align: center;
 					    padding-top: 50px;
 						    margin-bottom: 0;" ng-hide="ctrl.courselist.length>0">{{ctrl.selected.Format("yyyy-MM-dd")}}
 					没有课程</h4>
-                <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
-                style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
-                ng-repeat="c in ctrl.courselist">
-                    <p class="w-clearfix w-inline-block" href="#">
-                        <div ng-click="ctrl.complete(c)" class="icon-list" ng-class="{'highlighted':c.done}">
-                            <div class="icon ion-ios-checkmark-empty"></div>
-                        </div>
-                        <div ng-class="{'highlighted': c.done}" class="title-list">{{c.customerprofile.displayname}}</div>
-                        <div ng-click="ctrl.showorder(c.order)" class="course-time icon-list highlighted">
-                            <div class="icon ion-calendar"></div>
-                        </div>
-                        <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
-                        <div class="title-list course-time">
-                            {{c.complete_status}}
-                        </div>
-                    </p>
-                </li>
-            </ul>
-        </div>
-		<div class="w-tab-pane  w-clearfix tab-pane" ng-class="{' w--tab-active': ctrl.tabs[1]}">
-            <ul class="list">
-                <li  class="list-item" data-ix="list-item"
-                style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity
+                    <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
+                    style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
+                    ng-repeat="c in ctrl.courselist">
+                        <p class="w-clearfix w-inline-block" href="#">
+                            <div ng-click="ctrl.complete(c)" class="icon-list" ng-class="{'highlighted':c.done}">
+                                <div class="icon ion-ios-checkmark-empty"></div>
+                            </div>
+                            <div ng-class="{'highlighted': c.done}" class="title-list">{{c.customerprofile.displayname}}</div>
+                            <div ng-click="ctrl.showorder(c.order)" class="course-time icon-list highlighted">
+                                <div class="icon ion-calendar"></div>
+                            </div>
+                            <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
+                            <div class="title-list course-time">
+                                {{c.complete_status}}
+                            </div>
+                        </p>
+                    </li>
+                </ul>
+            </md-tab-body>
+        </md-tab>
+
+        <md-tab id="tab2">
+            <md-tab-label style="font-size:16px">客户</md-tab-label>
+            <md-tab-body>
+                <ul class="list">
+                    <li class="list-item" data-ix="list-item" style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity
 				500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32,
-				1); padding-left:30px"
-                ng-repeat="c in ctrl.customerlist">
-                    <p class="w-clearfix w-inline-block" href="#">
-                        <div class="title-list">{{c.displayname}}</div>
-                        <div style="font-size: 25px;"ng-click="ctrl.showcustomer(c.name)" class="course-time icon-list highlighted">
-                            <div class="ion-ios-information-outline"></div>
-                        </div>
-                    </p>
-                </li>
-            </ul>
-        </div>
-    </div>
+				1); padding-left:30px" ng-repeat="c in ctrl.customerlist">
+                        <p class="w-clearfix w-inline-block" href="#">
+                            <div class="title-list">{{c.displayname}}</div>
+                            <div style="font-size: 25px;" ng-click="ctrl.showcustomer(c.name)" class="course-time icon-list highlighted">
+                                <div class="ion-ios-information-outline"></div>
+                            </div>
+                        </p>
+                    </li>
+                </ul>
+            </md-tab-body>
+        </md-tab>
+    </md-tabs>
 </div>
