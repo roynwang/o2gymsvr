@@ -1,5 +1,3 @@
-'use strict';
-
 function setmenu(userobj) {
     document.getElementById("avatar").setAttribute("src", userobj.avatar)
     $("#coachname").html(userobj.displayname)
@@ -89,10 +87,16 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/coach",
             templateUrl: "/static/mobile/coach.html",
         })
+        .state('neworder', {
+            url: "/neworder",
+            templateUrl: "/static/mobile/neworder.html",
+            //controller: "NewOrderCtrl"
+        })
         .state('order', {
             url: "/:coachname/:orderid",
             templateUrl: "/static/mobile/orderdetail.html",
         })
+
 })
 
 app.factory("$date", function() {
@@ -377,8 +381,8 @@ app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
         }
     }
 ])
-app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc",
-    function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc) {
+app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc","$scope",
+    function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc,$scope) {
         var user = $.cookie("user")
         var that = this
         that.timemap = TimeMap
@@ -455,6 +459,28 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             that.dates[3] = that.currentdate.addDays(3)
             that.refresh()
         }
+        $scope.showneworder = function() {
+            $mdDialog.show({
+                    controller: "NewOrderDialgCtrl",
+                    templateUrl: '/static/mobile/neworder.html',
+                    parent: angular.element(document.body),
+                    //targetEvent: ev,
+                    clickOutsideToClose: true,
+                    fullscreen: true
+                })
+                .then(function(answer) {
+                    console.log('You said the information was "' + answer + '".');
+                    $state.transitionTo("index")
+                }, function() {
+                    console.log('You cancelled the dialog.')
+                    $state.transitionTo("index")
+                });
+        }
+
+		$("#neworder").click(function() {
+			$scope.showneworder()
+		})
+
         that.showcustomer = function(name) {
             $usersvc.setcustomer(name)
             $mdDialog.show({
@@ -761,3 +787,103 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
 
     }
 ])
+
+app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog", "$ordersvc","SweetAlert","Restangular",
+    function($scope, $state, $usersvc, $mdDialog, $ordersvc,SweetAlert,Restangular) {
+        var that = this
+        that.cancel = function() {
+            $mdDialog.cancel()
+        }
+        that.mo = {}
+        that.mo.customer_displayname = ""
+        that.mo.customer_phone = ""
+        that.mo.product_introduction = "dummy"
+        that.mo.product_price = ""
+        that.mo.product_promotion = -1
+        that.mo.product_amount = ""
+        that.mo.product_duration = ""
+        that.mo.sex = '0'
+        that.changesex = function(i) {
+            that.mo.sex = i
+        }
+
+        function validate() {
+            var data = that.mo
+            if (that.mo.customer_phone.toString().length != 11) {
+                swal("", "请输入正确的11位电话号码", "warning")
+                return false
+            }
+            for (var k in data) {
+                if (data[k] == undefined || data[k].length == 0) {
+                    swal("", "请填完所有选项", "warning")
+                    return false
+                }
+            }
+            return true
+        }
+
+        that.submitorder = function() {
+            if (!validate()) {
+                return
+            }
+            SweetAlert.swal({
+                    //title: "确定移除该教练吗?",
+                    title: "提交",
+                    text: "确认提交订单吗？",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "确认",
+                    cancelButtonText: "取消",
+                    showLoaderOnConfirm: true,
+                    closeOnConfirm: false
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+					that.mo.customer_phone = that.mo.customer_phone.toString()
+                    Restangular.one("api/", $.cookie("user"))
+                        .post("manualorder", that.mo)
+                        .then(function(data) {
+                            console.log(data)
+                            swal({
+                                title: "成功",
+                                text: "订单提交成功",
+                                type: "success",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            $ordersvc.setorder(data.id)
+                            $mdDialog.show({
+                                    controller: 'OrderDetailCtrl',
+                                    templateUrl: '/static/mobile/orderdetail.html',
+                                    parent: angular.element(document.body),
+                                    clickOutsideToClose: true,
+                                    fullscreen: true
+                                })
+                                .then(function(answer) {
+                                    console.log('You said the information was "' + answer + '".');
+                                }, function() {
+                                    console.log('You cancelled the dialog.')
+                                });
+                        }, function(data) {
+                            swal("", "订单保存失败，请检查输入后重试", "warning")
+                        })
+                })
+        }
+
+    }
+])
+/*
+$(function() {
+    $("#neworder").click(function() {
+		var s = angular.element(document.getElementById("agcontainer")).scope()
+		var c = s.controller()
+        s.$apply(function() {
+            s.showneworder()
+        })
+    })
+})
+*/
