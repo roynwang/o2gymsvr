@@ -1,10 +1,10 @@
 <md-dialog aria-label="Mango (Fruit)" ng-cloak ng-controller="LoginCtrl as ctrl">
+    <div style="width: 100%;z-index:1000;opacity:0"class="page-content loading-mask" ng-show="ctrl.loading" id="new-stack">
+        <div class="loading-icon">
+            <div class="navbar-button-icon icon ion-load-d"></div>
+        </div>
+    </div>
     <form>
-        <md-toolbar>
-            <div class="md-toolbar-tools">
-                <h2></h2>
-            </div>
-        </md-toolbar>
         <md-dialog-content>
             <div class="page-content" style="width:100%" id="main-stack" data-scroll="0">
                 <div class="body padding">
@@ -17,23 +17,40 @@
                                     name="username" data-name="username" required="required">
                                     <div class="separator-fields"></div>
                                 </div>
-                                <div>
+                                <div ng-hide="ctrl.showvcode">
                                     <label class="label-form" for="password">密码</label>
                                     <div class="w-clearfix block-input-combined">
                                         <input ng-model="ctrl.user.pwd" class="w-input input-form left" id="pwd" type="password"
                                         name="password" data-name="password" required="required">
                                     </div>
-                                    <div class="separator-button-input"></div>
                                 </div>
-                                <a ng-click="ctrl.login()" style="font-size:18px" class="w-button
+							    <div ng-show="ctrl.showvcode">
+                                    <label class="label-form" for="password">验证码</label>
+                                    <div class="w-clearfix block-input-combined">
+                                        <input ng-model="ctrl.user.vcode" class="w-input input-form
+										left" id="pwd" type="number"
+                                        name="password" data-name="password" required="required">
+										<a style="color:#333" class="right-input-link" ng-click="ctrl.sendvcode()"
+											data-load="1">{{ctrl.vcodetext}}</a>
+                                    </div>
+                                </div>
+								<div class="separator-button"></div>
+                                <a ng-hide="ctrl.showvcode" ng-click="ctrl.login()" style="font-size:18px" class="w-button
+								action-button">登录</a>
+                                <a  ng-show="ctrl.showvcode" ng-click="ctrl.loginwithvcode()" style="font-size:18px" class="w-button
 								action-button">登录</a>
                                 <div class="separator-button"></div>
+								<a style="font-size: 12px;color: #666;"class="link-upper" ng-click="ctrl.showvcode = !ctrl.showvcode" data-load="1">
+									{{ctrl.showvcode?"使用密码登录":"使用验证码登录"}}</a>
                             </div>
                             <div class="w-form-done">
                                 <p>登陆成功</p>
                             </div>
-                            <div class="w-form-fail">
-                                <p>登录失败</p>
+                            <div style="display:block" ng-show="ctrl.errmsg!=false" class="w-form-fail">
+								<p style="    font-size: 12px;
+								    color: #777;
+									    text-align: center;
+										    margin-bottom: 0;">{{ctrl.errmsg}}</p>
                             </div>
                         </div>
                     </div>
@@ -41,12 +58,5 @@
             </div>
         </md-dialog-content>
     </form>
-	<!--
-    <div class="page-content loading-mask" ng-show="ctrl.loading" id="new-stack">
-        <div class="loading-icon">
-            <div class="navbar-button-icon icon ion-load-d"></div>
-        </div>
-    </div>
-	-->
     <div class="shadow-layer"></div>
 </md-dialog>
