@@ -90,7 +90,30 @@ app.factory("$login", function(Restangular) {
     }
 })
 
-
+app.factory("$customersvc", function(Restangular) {
+    var customers = []
+    function getcustomers(onsuccess, force) {
+        if (force == true || customers.length == 0) {
+            var gymid = $.cookie("gym")
+            var that = this
+            Restangular.one('api/g/', gymid)
+                .one("customers/")
+                .get()
+                .then(function(data) {
+					customers = data
+					onsuccess & onsuccess(customers)
+                })
+        } else{
+			onsuccess & onsuccess(customers)
+		}
+    }
+	function getcustomer(key){
+	}
+    return {
+        getcustomers: getcustomers,
+		getcustomer: getcustomer
+    }
+})
 
 app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider) {
     // For any unmatched url, send to /route1
@@ -198,15 +221,15 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                 })
         }
         that.modify = function(c, type) {
-			var tx = ""
-			var v = ""
-			if(type == "duration"){
-				tx = "有效时间(月)"
-				v = c.duration
-			} else {
-				tx = "价格(元)"
-				v = c.amount
-			}
+            var tx = ""
+            var v = ""
+            if (type == "duration") {
+                tx = "有效时间(月)"
+                v = c.duration
+            } else {
+                tx = "价格(元)"
+                v = c.amount
+            }
             swal({
                     title: "修改订单",
                     text: "请输入订单新" + tx,
@@ -225,13 +248,13 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                         swal.showInputError("请输入合法的数字");
                         return false
                     }
-					var pdata = {}
-					if(type == "duration"){
+                    var pdata = {}
+                    if (type == "duration") {
                         pdata["duration"] = inputValue
-					}
-					if(type == "price"){
+                    }
+                    if (type == "price") {
                         pdata["amount"] = inputValue
-					}
+                    }
 
                     Restangular.one("api", $stateParams.customername)
                         .one("o", c.id)
@@ -767,8 +790,8 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
     }
 ])
 
-app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', "SweetAlert",
-    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert) {
+app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', "SweetAlert","$customersvc",
+    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $customersvc) {
         console.log($stateParams)
         var that = this
         var coachname = $stateParams.coachname
@@ -780,20 +803,22 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         that.mo.product_promotion = -1
         that.mo.product_amount = ""
         that.mo.product_duration = ""
+        that.mo.sex = '0'
         Restangular.one("api/", coachname)
             .get()
             .then(function(data) {
                 that.coach = data
             })
+
         function validate() {
             var data = that.mo
-			if(that.mo.customer_phone.length != 11){
-				swal("", "请输入正确的11位电话号码","warning")
-				return false
-			}
+            if (that.mo.customer_phone.length != 11) {
+                swal("", "请输入正确的11位电话号码", "warning")
+                return false
+            }
             for (var k in data) {
                 if (data[k] == undefined || data[k].length == 0) {
-					swal("", "请填完所有选项","warning")
+                    swal("", "请填完所有选项", "warning")
                     return false
                 }
             }
@@ -801,9 +826,9 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         }
 
         that.submitorder = function() {
-			if(!validate()){
-				return
-			}
+            if (!validate()) {
+                return
+            }
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
                     title: "提交",
@@ -824,6 +849,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
                         .post("manualorder", that.mo)
                         .then(function(data) {
                             console.log(data)
+							$customersvc.getcustomers(undefined,true)
                             swal({
                                 title: "成功",
                                 text: "订单提交成功",
@@ -835,9 +861,9 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
                                 coachname: coachname,
                                 orderid: data.id
                             })
-                        },function(data){
-							swal("", "订单保存失败，请检查输入后重试","warning")
-						})
+                        }, function(data) {
+                            swal("", "订单保存失败，请检查输入后重试", "warning")
+                        })
                 })
         }
     }
@@ -981,14 +1007,11 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
 
     }
 ])
-app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams",
-    function($scope, Restangular, NgTableParams, ngTableSimpleList) {
+app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams","$customersvc",
+    function($scope, Restangular, NgTableParams, $customersvc) {
         var gymid = $.cookie("gym")
         var that = this
-        Restangular.one('api/g/', gymid)
-            .one("customers/")
-            .get()
-            .then(function(data) {
+		$customersvc.getcustomers(function(data) {
                 that.tableParams = new NgTableParams({
                     sorting: {
                         name: "asc"

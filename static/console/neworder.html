@@ -36,7 +36,7 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
-                        <span class="input-group-addon btn-primary"><i class="fa fa-cny"></i></span>
+						<span style="padding-left: 18px;padding-right: 18px;" class="input-group-addon btn-primary"><i class="fa fa-cny"></i></span>
                         <input type="number" class="form-control" placeholder="课程总价(元)" ng-model="ctrl.mo.product_price">
                     </div>
                 </div>
@@ -50,8 +50,12 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
-                        <span class="input-group-addon btn-primary"><i class="fa fa-clock-o"></i></span>
-                        <input type="number" class="form-control" placeholder="性别" ng-model="ctrl.mo.sex">
+                        <span class="input-group-addon btn-primary"><i class="fa"
+								ng-class="{'1':'fa-male','0':'fa-female'}[ctrl.mo.sex]"></i></span>
+						<select class="form-control input" ng-model="ctrl.mo.sex">
+							<option value=0 selected>女</option>
+	                        <option value=1>男</option>
+						</select>
                     </div>
                 </div>
             </div>
