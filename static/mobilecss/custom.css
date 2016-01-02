@@ -113,6 +113,9 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
 .icon-list-menu {
     color: #4fd2c2
 }
+.md-default-theme .md-calendar-date.md-calendar-selected-date .md-calendar-date-selection-indicator, .md-calendar-date.md-calendar-selected-date .md-calendar-date-selection-indicator, .md-default-theme .md-calendar-date.md-focus.md-calendar-selected-date .md-calendar-date-selection-indicator, .md-calendar-date.md-focus.md-calendar-selected-date .md-calendar-date-selection-indicator {
+    color: #4fd2c2
+}
 
 
 /* end angular-material */
