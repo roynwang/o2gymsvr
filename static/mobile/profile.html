@@ -1,0 +1,43 @@
+<div class="w-form" style="padding: 20px;" ng-controller="ProfileCtrl as ctrl">
+    <p class="smaller" style="text-align:center">
+        <img style="text-align: center;border-radius:6px;height: 80px;width: 80px;" id="uploadavatar"
+        ng-src="{{ctrl.user.avatar_small}}">
+    </p>
+    <div style="font-size:12px; color: black;text-align:center" ng-file-select="ctrl.onFileSelect($files)"
+    onclick="this.value = null" class="btn btn-upload">更换</div>
+    <!--<div onclick="this.value = null" ng-file-select="ctrl.onFileSelect($file)" >修改</div>-->
+    <div>
+        <label class="label-form" for="full-name-field">姓名</label>
+        <input ng-model="ctrl.user.displayname" class="w-input input-form" id="full-name-field"
+        type="text" name="full-name" data-name="full-name" required="required">
+        <div class="separator-fields"></div>
+    </div>
+    <div>
+        <div class="w-clearfix input-form one-line">
+            <label class="label-form middle" for="email">性别</label>
+            <div class="w-clearfix radios-container">
+                <div class="w-radio w-clearfix radio-button">
+                    <div class="radio-bullet-replacement" ng-click="ctrl.user.sex=false" ng-class="{false:'checked'}[ctrl.user.sex]"></div>
+                    <input class="w-radio-input radio-bullet" ng-click="ctrl.user.sex=false" id="node"
+                    type="radio" name="Radio1" value="1" data-name="Radio1">
+                    <label class="w-form-label" for="node">女</label>
+                </div>
+                <div class="w-radio w-clearfix radio-button">
+                    <div class="radio-bullet-replacement" ng-click="ctrl.user.sex=true" ng-class="{true:'checked'}[ctrl.user.sex]"></div>
+                    <input ng-click="ctrl.user.sex=true" class="w-radio-input radio-bullet" id="node-2"
+                    type="radio" name="Radio1" value="0" data-name="Radio1">
+                    <label ng-click="ctrl.user.sex=true" class="w-form-label" for="node-2">男</label>
+                </div>
+            </div>
+        </div>
+        <div class="separator-fields"></div>
+    </div>
+    <div>
+        <label class="label-form" for="full-name-field">签名</label>
+        <input ng-model="ctrl.user.signature" class="w-input input-form" id="full-name-field"
+        type="text" name="full-name" data-name="full-name" required="required">
+        <div class="separator-fields"></div>
+    </div>
+    <md-button ng-click="ctrl.save()" style="font-size: 18px;color: white;background: #4fd2c2;"
+    class="w-button action-button">保存</md-button>
+</div>

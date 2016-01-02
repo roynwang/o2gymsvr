@@ -1,6 +1,12 @@
+var bukcet = "https://dn-o2fit.qbox.me"
+
 function setmenu(userobj) {
-    document.getElementById("avatar").setAttribute("src", userobj.avatar)
+    document.getElementById("avatar").setAttribute("src", userobj.avatar_small)
     $("#coachname").html(userobj.displayname)
+}
+
+function settitle(title) {
+    $("#page-title").html(title)
 }
 
 // 对Date的扩展，将 Date 转化为指定格式的String 
@@ -55,6 +61,16 @@ Date.prototype.addMonths = function(value) {
     this.setDate(Math.min(n, this.getDaysInMonth()));
     return this;
 };
+String.prototype.fixSize = function(w, h) {
+    if (w == undefined) {
+        w = 200
+    }
+    if (h == undefined) {
+        h = w
+    }
+    var str = this + "?imageView2/1/w/" + w.toString() + "/h/" + h.toString()
+    return str
+}
 
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
 
@@ -62,19 +78,21 @@ var app = angular.module('o2m', [
     'ui.router',
     'restangular',
     'oitozero.ngSweetAlert',
-    'ngMaterial'
+    'ngMaterial',
+    'angularQFileUpload',
+    'LocalStorageModule'
 ])
-app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider, $mdDateLocaleProvider,$compileProvider) {
+app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider, $mdDateLocaleProvider, $compileProvider) {
     // For any unmatched url, send to /route1
-	$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|local|data|tel|sms):/);
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|local|data|tel|sms):/);
     $mdDateLocaleProvider.formatDate = function(date) {
         return moment(date).format('');
     };
-	$mdDateLocaleProvider.months = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
-	$mdDateLocaleProvider.shortMonths = ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
-    $mdDateLocaleProvider.days = ['周日','周二','周三','周四','周五','周六']
-    $mdDateLocaleProvider.shortDays = ['日','一','二','三','四','五','六']
-	$mdDateLocaleProvider.firstDayOfWeek = 1
+    $mdDateLocaleProvider.months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+    $mdDateLocaleProvider.shortMonths = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+    $mdDateLocaleProvider.days = ['周日', '周二', '周三', '周四', '周五', '周六']
+    $mdDateLocaleProvider.shortDays = ['日', '一', '二', '三', '四', '五', '六']
+    $mdDateLocaleProvider.firstDayOfWeek = 1
 
     RestangularProvider.setDefaultHeaders({
         Authorization: "JWT " + $.cookie("token")
@@ -90,6 +108,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/",
             templateUrl: "/static/mobile/coachtabs.html",
         })
+        .state('profile', {
+            url: "/profile",
+            templateUrl: "/static/mobile/profile.html"
+        })
         .state('coachhome', {
             url: "/coach",
             templateUrl: "/static/mobile/coach.html",
@@ -104,6 +126,41 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             templateUrl: "/static/mobile/orderdetail.html",
         })
 
+})
+
+app.factory("$uploader", function($qupload) {
+    var key = ""
+    var token = ""
+
+    function gettoken(onsuccess, onfail) {
+        $.get("/api/p/token/", function(data, status) {
+                key = data.key
+                token = data.token
+                onsuccess && onsuccess()
+            })
+            .error(onfail)
+    }
+
+    function upload(file, onsuccess, onfail) {
+        $.get("/api/p/token", function(data, status) {
+            key = data.key
+            token = data.token
+            file.upload = $qupload.upload({
+                key: key,
+                file: file,
+                token: token
+            });
+            file.upload.then(function(response) {
+				onsuccess && onsuccess(response)
+            }, function(response) {
+				onfail && onfail(response)
+            }, function(evt) {
+            });
+        })
+    }
+    return {
+        upload: upload
+    }
 })
 
 app.factory("$date", function() {
@@ -229,6 +286,7 @@ app.factory("$usersvc", function(Restangular) {
             Restangular.one("api", username)
                 .get()
                 .then(function(data) {
+                    data.avatar_small = data.avatar.fixSize()
                     userlist[username] = data
                     onsuccess && onsuccess(userlist[username])
                 }, function(data) {
@@ -388,10 +446,11 @@ app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
         }
     }
 ])
-app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc","$scope",
-    function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc,$scope) {
+app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc", "$scope",
+    function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc, $scope) {
         var user = $.cookie("user")
         var that = this
+        settitle("课表")
         that.timemap = TimeMap
         that.courselist = []
         that.tabs = [true, false]
@@ -402,6 +461,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.init = function() {
             user = $.cookie("user")
             $usersvc.getuser(undefined, false, function(data) {
+                    that.user = data
                     setmenu(data)
                 },
                 function(data) {})
@@ -410,7 +470,9 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 .getList()
                 .then(function(data) {
                         that.customerlist = data
-						that.customerlist.sort(function(a,b){return a.displayname.localeCompare(b.displayname)})
+                        that.customerlist.sort(function(a, b) {
+                            return a.displayname.localeCompare(b.displayname)
+                        })
                     },
                     function(data) {})
         }
@@ -485,9 +547,9 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 });
         }
 
-		$("#neworder").click(function() {
-			$scope.showneworder()
-		})
+        $("#neworder").click(function() {
+            $scope.showneworder()
+        })
 
         that.showcustomer = function(name) {
             $usersvc.setcustomer(name)
@@ -796,8 +858,8 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
     }
 ])
 
-app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog", "$ordersvc","SweetAlert","Restangular",
-    function($scope, $state, $usersvc, $mdDialog, $ordersvc,SweetAlert,Restangular) {
+app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog", "$ordersvc", "SweetAlert", "Restangular",
+    function($scope, $state, $usersvc, $mdDialog, $ordersvc, SweetAlert, Restangular) {
         var that = this
         that.cancel = function() {
             $mdDialog.cancel()
@@ -850,7 +912,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
                     if (!yes) {
                         return
                     }
-					that.mo.customer_phone = that.mo.customer_phone.toString()
+                    that.mo.customer_phone = that.mo.customer_phone.toString()
                     Restangular.one("api/", $.cookie("user"))
                         .post("manualorder", that.mo)
                         .then(function(data) {
@@ -884,14 +946,60 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
 
     }
 ])
-/*
-$(function() {
-    $("#neworder").click(function() {
-		var s = angular.element(document.getElementById("agcontainer")).scope()
-		var c = s.controller()
-        s.$apply(function() {
-            s.showneworder()
+
+app.controller("ProfileCtrl", ["$scope", "$usersvc", "$uploader", "$qupload","Restangular",
+        function($scope, $usersvc, $uploader, $qupload, Restangular) {
+            var that = this
+            settitle("个人资料")
+            that.user = {}
+            $scope.selectFiles = [];
+            $usersvc.getuser(undefined, false, function(usr) {
+				setmenu(usr)
+                that.user = usr
+            })
+
+            that.onFileSelect = function($files) {
+				$uploader.upload($files[0], function(data){
+					that.user.avatar = bukcet + "/" + data.key
+					console.log(that.user.avatar)
+					that.save()
+				})
+            }
+			that.save = function(){
+				Restangular.one("api",that.user.name)
+						.patch({avatar:that.user.avatar, sex:that.user.sex, displayname:that.user.displayname, signature:that.user.signature})
+						.then(function(data){
+							swal({
+                                title: "",
+                                text: "已更新",
+                                type: "success",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+							$usersvc.getuser(undefined, true, function(usr){
+								that.user = usr
+								setmenu(usr)
+							})
+						},
+						function(data){
+                            swal("", "信息保存失败", "warning",1500, false)
+						})
+			}
+
+	        that.changesex = function(i) {
+   	        	that.user.sex = i
+   		    }
+
+        }
+    ])
+    /*
+    $(function() {
+        $("#neworder").click(function() {
+    		var s = angular.element(document.getElementById("agcontainer")).scope()
+    		var c = s.controller()
+            s.$apply(function() {
+                s.showneworder()
+            })
         })
     })
-})
-*/
+    */
