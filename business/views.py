@@ -343,7 +343,19 @@ class GymMap(APIView):
 		ret = mapurl + "?markers:mid,0xFF0000,:" + loc + "&key=" + key	
 		return redirect(ret)
 		
+class GymIncompleteList(generics.ListAPIView):
+	serializer_class = ScheduleSimpleSerializer
+	pagination_class = None
+	def get_queryset(self):
+		gym = get_object_or_404(Gym, id=self.kwargs.get("pk"))
+		orders = gym.orders.exclude(status__in=["unpaid","done"]).values_list("id", flat=True)
+		print orders
+		today = datetime.datetime.today().date()
+		ret = Schedule.objects.filter(date__lt=today,done=False,order__in=orders).order_by("date","hour")
+		return ret
 		
+		
+	
 		
 
 

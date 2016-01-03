@@ -88,15 +88,37 @@
         <!-- user login dropdown end -->
     </ul>
     <!--search & user info start-->
+
     <ul class="nav pull-right top-menu">
 <!--        <li>
             <input type="text" class="form-control search" placeholder=" Search">
         </li> -->
         <!-- user login dropdown start-->
+        <li id="header_notification_bar" class="dropdown" style="margin-top: 5px;">
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+
+                <i class="fa fa-bell-o"></i>
+                <span class="badge bg-warning" id="incomplete-count">3</span>
+            </a>
+            <ul id="incomplete" class="dropdown-menu extended notification">
+                <li>
+                    <p>未完成课程</p>
+                </li>
+                <li>
+                    <div class="alert alert-success clearfix">
+                        <span class="alert-icon"><i class="fa fa-bolt"></i></span>
+                        <div class="noti-info">
+                            <a href="#"> Server #3 overloaded.</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </li>
+
         <li class="dropdown">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                 <img alt="" src="/static/images/favicon.ico" id="useravatar">
-                <span class="username" id="username">John Doe</span>
+                <span class="username" id="username">载入中</span>
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu extended logout">
@@ -229,6 +251,7 @@
 	var USER = null
 	var $gymlist = []
 	$(".admin-show").hide()
+	var incompleteid = false
 	function getusrauth(){
 		console.log($.cookie())
 		if($.cookie("token")){
@@ -254,6 +277,11 @@
 			}
 			$gymlist = data.corps_list
 			refreshcorner()
+			getincomplete()
+			if(incompleteid){
+				clearInterval(incompleteid)
+			}
+			incompleteid = setInterval(getincomplete,1800000)
 		}).fail(function(resp){
 			
 		})
@@ -278,7 +306,17 @@
 			update()
 		}
 	}
-	
+	function getincomplete(){
+        var itemtemplate = '<li><div class="alert alert-success clearfix"><span class="alert-icon"><i class="fa fa-bolt"></i></span><div class="noti-info"><a href="#">__</a></div></div></li>'
+		$("#incomplete").html("")
+		$("#incomplete").append("<li><p>未完成课程</p></li>")
+		$.get("/api/g/" + $.cookie("gym") + "/incomplete/", function(data){
+				$("#incomplete-count").html(data.length)
+				_.each(data, function(item){
+					$("#incomplete").append(itemtemplate.replace(/__/,'<a href="#/order/' + item.coachprofile.name + "/" + item.order + '">' + item.date + "&nbsp;&nbsp;&nbsp;" + item.customerprofile.displayname + "</a>"))
+				})
+		})
+	}
 	$(function(){
 		refreshuser(getusrauth())
 		$("#logout").click(function(){
@@ -286,7 +324,6 @@
 			$.removeCookie("gym")
 			window.location = "/console/login/"
 		})
-
 	})
 
 </script>

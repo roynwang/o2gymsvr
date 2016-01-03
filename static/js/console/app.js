@@ -641,6 +641,8 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                                 showConfirmButton: false
                             });
                             that.reload()
+							//refresh notification !!!!
+							getincomplete()
                         })
                         /*
                     $http.patch(url, {
