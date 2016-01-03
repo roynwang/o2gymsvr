@@ -123,6 +123,7 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
     });
     //$httpProvider.defaults.headers.common.Authorization = "JWT " + $.cookie("token")
     RestangularProvider.setRequestSuffix('/')
+	RestangularProvider.setDefaultHttpFields({timeout: 10000})
     $urlRouterProvider.otherwise("/");
     $stateProvider
         .state('index', {
@@ -791,12 +792,9 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                             })
                             that.tableParams = new NgTableParams({
                                 sorting: {
-                                    name: "asc"
                                 },
-                                count: data.booked.length
                             }, {
                                 dataset: data.booked,
-                                counts: []
                             });
                             that.refreshtimetable()
                         })

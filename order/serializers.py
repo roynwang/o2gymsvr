@@ -21,7 +21,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 		model =	Order 
 
 	def get_booked(self, obj):
-		bookedlist = Schedule.objects.filter(order=obj,deleted = False)
+		bookedlist = Schedule.objects.filter(order=obj,deleted = False).order_by("-date","hour")
 		sr = ScheduleSerializer(bookedlist, many=True)
 		return sr.data
 	def get_endtime(self, obj):
