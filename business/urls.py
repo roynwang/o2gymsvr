@@ -12,6 +12,7 @@ urlpatterns = patterns('',
 		url(r'^api/c/(?P<pk>[0-9]+)/$', CourseItem.as_view()),
 		url(r'^api/g/$', GymList.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/$', GymItem.as_view()),
+		url(r'^api/g/(?P<pk>[0-9]+)/incomplete/$', GymIncompleteList.as_view()),
 		#url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/b/$',ScheduleBulkCreate.as_view()),
 		#schedule item
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/b/(?P<date>[0-9]{8})/(?P<hour>[0-9]{1,2})/$',ScheduleItem.as_view()),

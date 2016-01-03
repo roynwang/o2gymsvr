@@ -29,11 +29,12 @@ class ScheduleSerializer(serializers.ModelSerializer):
 		completed = Schedule.objects.filter(order=obj.order,deleted = False, done = True).count()
 		sum_amount = obj.order.product.amount
 		return str(completed) + "/" + str(sum_amount)
-'''
+
 class ScheduleSimpleSerializer(serializers.ModelSerializer):
+	customerprofile = SimpleUserSerilaizer(source='custom', read_only=True)
+	coachprofile = CoachSerializer(source='coach', read_only=True)
 	class Meta:
 		model = Schedule
-'''
 
 
 class BodyEvalSerializer(serializers.ModelSerializer):
