@@ -38,7 +38,7 @@ class Gym(models.Model):
 
 class Schedule(models.Model):
 	id = models.AutoField(primary_key=True)
-	date = models.DateField()
+	date = models.DateField(db_index=True)
 	hour = models.IntegerField(max_length=2)
 	comment = models.CharField(max_length=1024,default="",blank=True)
 	feedback = models.CharField(max_length=1024,default="",blank=True)

@@ -123,7 +123,9 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
     });
     //$httpProvider.defaults.headers.common.Authorization = "JWT " + $.cookie("token")
     RestangularProvider.setRequestSuffix('/')
-	RestangularProvider.setDefaultHttpFields({timeout: 10000})
+    RestangularProvider.setDefaultHttpFields({
+        timeout: 10000
+    })
     $urlRouterProvider.otherwise("/");
     $stateProvider
         .state('index', {
@@ -188,7 +190,7 @@ app.controller("GymCtrl", ["$stateParams", "$state",
             path: "/"
         })
         refreshcorner()
-		getincomplete()
+        getincomplete()
         $state.transitionTo("index")
             //window.location = "/console/dashboard/"
     }
@@ -210,9 +212,9 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
             "done": "已完成"
         }
         that.changecoach = function(c, coach) {
-			if(c.coach == coach.name){
-				return
-			}
+            if (c.coach == coach.name) {
+                return
+            }
             swal({
                     title: "修改教练",
                     text: "确定修改订单至" + coach.displayname + "吗?",
@@ -227,9 +229,9 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                     if (!yes) {
                         return
                     }
-					var pdata = {
-						coach: coach.id
-					}
+                    var pdata = {
+                        coach: coach.id
+                    }
                     Restangular.one("api", $stateParams.customername)
                         .one("o", c.id)
                         .patch(pdata)
@@ -643,8 +645,8 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                                 showConfirmButton: false
                             });
                             that.reload()
-							//refresh notification !!!!
-							getincomplete()
+                                //refresh notification !!!!
+                            getincomplete()
                         })
                         /*
                     $http.patch(url, {
@@ -791,8 +793,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                                 done: true
                             })
                             that.tableParams = new NgTableParams({
-                                sorting: {
-                                },
+                                sorting: {},
                             }, {
                                 dataset: data.booked,
                             });
@@ -1204,18 +1205,17 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
                 var gymid = $.cookie("gym")
                 Restangular.one('api/g/', gymid).get().then(function(gym) {
                     $scope.coaches = gym.coaches_set
-                    $.each($scope.coaches, function(i, item) {
-                        Restangular.one("api/", item.name).one("b/", date).get().then(function(data) {
+                    Restangular.one('api/g/' + gymid + "/" + date + "/").get().then(function(allbooks) {
+						var grouped = _.groupBy(allbooks, function(item){return item.coachprofile.id})
+                        $.each($scope.coaches, function(i, item) {
                             var g = Math.floor(i / 4)
                             if ($scope.calendarRowGroup[g] == undefined) {
                                 $scope.calendarRowGroup[g] = []
                             }
-                            $scope.coaches[i].books = data
+                            $scope.coaches[i].books = grouped[item.id]
                                 //$scope.coursecount += data.length
                             $scope.calendarRowGroup[g][i % 4] = $scope.coaches[i]
                         })
-
-                        //render the today income
                     })
                     console.log($scope.coaches)
                 })
