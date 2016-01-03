@@ -38,7 +38,7 @@
 
 </div>
 <div class="row" ng-repeat="cg in calendarRowGroup" style="margin-bottom:20px">
-	<div ng-if="cg != undefined" class="col-md-4" ng-repeat="coach in cg ">
+	<div ng-if="cg != undefined" class="col-md-3" ng-repeat="coach in cg ">
 		<div class="event-calendar clearfix">
 			<div class="col-lg-12 event-list-block">
 				<div class="cal-day">
@@ -47,13 +47,14 @@
 					{{coach.displayname}}
                     <a href="#/coach/{{coach.name}}/calendar" uib-tooltip="查看日程" class="btn btn-primary"><i class="fa fa-calendar-o"></i> </a>
                     <a href="#/neworder/{{coach.name}}" uib-tooltip="添加订单" class="btn btn-primary pull-right"
-						style="margin-top: 7px"><i class="fa fa-plus"></i> </a>
+						style="margin-top: 3px"><i class="fa fa-plus"></i> </a>
 				</div>
 				<div class="slimScrollDiv">
 					<ul class="event-list" style="height:200px;overflow-y:scroll;overflow-x:hidden">
-						<li ng-repeat="book in coach.books | orderBy:book.hour">
-                          <img ng-src="{{book.customerprofile.avatar}}" style="border-radius:
-						  50%;-webkit-border-radius: 50%;width: 28px; margin-right:10px"/>  {{book.customerprofile.displayname}}
+						<li ng-repeat="book in coach.books | orderBy:book.hour"
+						style="padding-right:10px">
+                          <!--<img ng-src="{{book.customerprofile.avatar}}" style="border-radius:
+						  50%;-webkit-border-radius: 50%;width: 28px; margin-right:10px"/> --> {{book.customerprofile.displayname}}
 						  <span ng-show="book.done"><i class="fa
 								  fa-check-square-o"></i></span>
 						  <a href="#/order/{{book.coachprofile.name}}/{{book.order}}"

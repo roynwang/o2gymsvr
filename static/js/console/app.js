@@ -1206,13 +1206,13 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
                     $scope.coaches = gym.coaches_set
                     $.each($scope.coaches, function(i, item) {
                         Restangular.one("api/", item.name).one("b/", date).get().then(function(data) {
-                            var g = Math.floor(i / 3)
+                            var g = Math.floor(i / 4)
                             if ($scope.calendarRowGroup[g] == undefined) {
                                 $scope.calendarRowGroup[g] = []
                             }
                             $scope.coaches[i].books = data
                                 //$scope.coursecount += data.length
-                            $scope.calendarRowGroup[g][i % 3] = $scope.coaches[i]
+                            $scope.calendarRowGroup[g][i % 4] = $scope.coaches[i]
                         })
 
                         //render the today income
