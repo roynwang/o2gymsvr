@@ -92,6 +92,7 @@ app.factory("$login", function(Restangular) {
 
 app.factory("$customersvc", function(Restangular) {
     var customers = []
+
     function getcustomers(onsuccess, force) {
         if (force == true || customers.length == 0) {
             var gymid = $.cookie("gym")
@@ -100,18 +101,18 @@ app.factory("$customersvc", function(Restangular) {
                 .one("customers/")
                 .get()
                 .then(function(data) {
-					customers = data
-					onsuccess && onsuccess(customers)
+                    customers = data
+                    onsuccess && onsuccess(customers)
                 })
-        } else{
-			onsuccess && onsuccess(customers)
-		}
+        } else {
+            onsuccess && onsuccess(customers)
+        }
     }
-	function getcustomer(key){
-	}
+
+    function getcustomer(key) {}
     return {
         getcustomers: getcustomers,
-		getcustomer: getcustomer
+        getcustomer: getcustomer
     }
 })
 
@@ -193,11 +194,58 @@ app.controller("GymCtrl", ["$stateParams", "$state",
 app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert",
     function($scope, Restangular, NgTableParams, $stateParams, SweetAlert) {
         var that = this
+        that.coaches = []
+        that.coach = {}
+
+        Restangular.one('api/g/', $.cookie("gym")).get().then(function(gym) {
+            that.coaches = gym.coaches_set
+        })
+
         that.statusmap = {
             "inprogress": "进行中",
             "unpaid": "待支付",
             "paid": "待预约",
             "done": "已完成"
+        }
+        that.changecoach = function(c, coach) {
+			if(c.coach == coach.name){
+				return
+			}
+            swal({
+                    title: "修改教练",
+                    text: "确定修改订单至" + coach.displayname + "吗?",
+                    type: "warning",
+                    showLoaderOnConfirm: true,
+                    showCancelButton: true,
+                    confirmButtonText: "保存",
+                    cancelButtonText: "取消",
+                    closeOnConfirm: false,
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+					var pdata = {
+						coach: coach.id
+					}
+                    Restangular.one("api", $stateParams.customername)
+                        .one("o", c.id)
+                        .patch(pdata)
+                        .then(function(data) {
+                                swal({
+                                    title: "成功",
+                                    text: "修改已保存",
+                                    type: "success",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                                that.refresh()
+                            },
+                            function(data) {
+                                swal("", "保存失败了",
+                                    "warning")
+                            })
+                })
         }
         that.refresh = function() {
             Restangular.one('api/', $stateParams.customername)
@@ -790,7 +838,7 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
     }
 ])
 
-app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', "SweetAlert","$customersvc",
+app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', "SweetAlert", "$customersvc",
     function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $customersvc) {
         console.log($stateParams)
         var that = this
@@ -808,7 +856,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
             .get()
             .then(function(data) {
                 that.coach = data
-				that.coach.avatar+="?imageView2/1/w/150/h/150"
+                that.coach.avatar += "?imageView2/1/w/150/h/150"
             })
 
         function validate() {
@@ -850,7 +898,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
                         .post("manualorder", that.mo)
                         .then(function(data) {
                             console.log(data)
-							$customersvc.getcustomers(false,true)
+                            $customersvc.getcustomers(false, true)
                             swal({
                                 title: "成功",
                                 text: "订单提交成功",
@@ -1008,19 +1056,19 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
 
     }
 ])
-app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams","$customersvc",
+app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$customersvc",
     function($scope, Restangular, NgTableParams, $customersvc) {
         var gymid = $.cookie("gym")
         var that = this
-		$customersvc.getcustomers(function(data) {
-                that.tableParams = new NgTableParams({
-                    sorting: {
-                        name: "asc"
-                    }
-                }, {
-                    dataset: data
-                });
-            })
+        $customersvc.getcustomers(function(data) {
+            that.tableParams = new NgTableParams({
+                sorting: {
+                    name: "asc"
+                }
+            }, {
+                dataset: data
+            });
+        })
     }
 ])
 app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "$login",
