@@ -69,6 +69,15 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 			self.get_object().doneBook()
 		return ret
 
+class GymScheduleList(generics.ListAPIView):
+	pagination_class = None
+	serializer_class = ScheduleSerializer 
+	def get_queryset(self):
+		gym = get_object_or_404(Gym, id=self.kwargs.get("pk"))
+		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+		queryset = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True), date=date).order_by("hour")
+		return queryset
+
 
 
 class ScheduleList(generics.ListCreateAPIView):
