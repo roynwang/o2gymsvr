@@ -47,7 +47,7 @@
 								{{row.done?'label-primary':'label-success'}}">{{row.done?"已完成":"待上课"}}</span>
                             </td>
                             <td data-title="'操作'">
-                                <button class="btn btn-danger btn-xs" ng-hide="row.done" ng-click="ctrl.cancelbook(row.date, row.hour)">取消</button>
+                                <button class="btn btn-danger btn-xs" ng-hide="row.done" ng-click="ctrl.cancelbook(row)">取消</button>
                                 <button class="btn btn-primary btn-xs" ng-show="!row.done && (row.id !=
 									undefined)" ng-click="ctrl.bookComplete(row.date, row.hour)">完成</button>
                             </td>
