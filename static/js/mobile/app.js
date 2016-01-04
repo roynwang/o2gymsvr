@@ -121,6 +121,11 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             templateUrl: "/static/mobile/neworder.html",
             //controller: "NewOrderCtrl"
         })
+        .state('changepwd', {
+            url: "/changepwd",
+            templateUrl: "/static/mobile/changepwd.html",
+            //controller: "NewOrderCtrl"
+        })
         .state('order', {
             url: "/:coachname/:orderid",
             templateUrl: "/static/mobile/orderdetail.html",
@@ -151,11 +156,10 @@ app.factory("$uploader", function($qupload) {
                 token: token
             });
             file.upload.then(function(response) {
-				onsuccess && onsuccess(response)
+                onsuccess && onsuccess(response)
             }, function(response) {
-				onfail && onfail(response)
-            }, function(evt) {
-            });
+                onfail && onfail(response)
+            }, function(evt) {});
         })
     }
     return {
@@ -230,6 +234,19 @@ app.factory("$usersvc", function(Restangular) {
     var usr = false
     var customer = false
 
+    function changepwd(username, vcode, pwd, onsuccess, onfail) {
+        $.post("/api/sms/" + username + "/", {
+                    vcode: vcode,
+					password: pwd
+                },
+                function(data) {
+                    Restangular.setDefaultHeaders({
+                        Authorization: "JWT " + data.token
+                    });
+                    onsuccess && onsuccess(data)
+                })
+            .fail(onfail)
+    }
     function loginwithvcode(username, vcode, onsuccess, onfail) {
         $.post("/api/sms/" + username + "/", {
                     vcode: vcode
@@ -333,7 +350,8 @@ app.factory("$usersvc", function(Restangular) {
         setcustomer: setcustomer,
         getcustomer: getcustomer,
         sendvcode: sendvcode,
-        loginwithvcode: loginwithvcode
+        loginwithvcode: loginwithvcode,
+        changepwd: changepwd 
     }
 })
 app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
@@ -946,49 +964,134 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
 
     }
 ])
+app.controller("ChangePwdCtrl", ["$state", "$usersvc", "$mdDialog",
+    function($state, $usersvc, $mdDialog) {
+        var that = this
+        settitle("重置密码")
+        that.user = {}
+        that.loading = true
+        that.vcodetext = "发送验证码"
+        that.errmsg = false
+		that.pwdset = {}
 
-app.controller("ProfileCtrl", ["$scope", "$usersvc", "$uploader", "$qupload","Restangular",
+        that.startload = function() {
+            $("#new-stack").css("opacity", 0.6)
+        }
+        that.endload = function() {
+            $("#new-stack").css("opacity", 0)
+        }
+		$usersvc.getuser(undefined, false, function(usr){
+			that.user = usr
+			that.pwdset["phone"]  = usr.name
+		})
+		that.validate = function(){
+			if(that.pwdset.vcode == undefined || that.pwdset.vcode.toString().length != 6 ){
+				that.errmsg = "请输入6位验证码"
+				return false
+			}
+			if(that.pwdset.pwd == undefined || that.pwdset.pwd.length == 0){
+				that.errmsg = "请输入密码"
+				return false
+			}
+			if(that.pwdset.pwd != that.pwdset.pwdconfirm ){
+				that.errmsg = "两次输入的密码不同"
+				return false
+			}
+			return true
+			
+		}
+		that.submit = function(){
+			if (that.validate() == false){
+				return
+			}
+			$usersvc.changepwd(that.pwdset.phone, that.pwdset.vcode, that.pwdset.pwd, function(){
+	             swal({
+					 title: "",
+					 text: "密码已更新",
+					 type: "success",
+					 timer: 1500,
+					 showConfirmButton: false
+				 });
+			},
+			function(data){
+				if(data.status == 403){
+                    swal("", "验证码错误，请检查后重新输入", "warning")
+				} else {
+                    swal("", "密码修改失败，请检查后重新输入", "warning")
+				}
+			})
+		}
+        that.sendvcode = function() {
+            that.errmsg = false
+            that.startload()
+            if (that.vcodetext == "发送验证码") {
+                that.vcodetext = "已发送"
+                $usersvc.sendvcode(that.user.name,
+                    function(data) {
+                        that.endload()
+                        that.vcodetext = "30秒后重发"
+                        setTimeout(function() {
+                            that.vcodetext = "发送验证码"
+                        }, 30000)
+                    },
+                    function(data) {
+                        console.log(data)
+                        that.errmsg = "发送失败,稍后重试"
+                        that.endload()
+                    })
+            }
+        }
+    }
+])
+
+
+app.controller("ProfileCtrl", ["$scope", "$usersvc", "$uploader", "$qupload", "Restangular",
         function($scope, $usersvc, $uploader, $qupload, Restangular) {
             var that = this
             settitle("个人资料")
             that.user = {}
             $scope.selectFiles = [];
             $usersvc.getuser(undefined, false, function(usr) {
-				setmenu(usr)
+                setmenu(usr)
                 that.user = usr
             })
 
             that.onFileSelect = function($files) {
-				$uploader.upload($files[0], function(data){
-					that.user.avatar = bukcet + "/" + data.key
-					console.log(that.user.avatar)
-					that.save()
-				})
+                $uploader.upload($files[0], function(data) {
+                    that.user.avatar = bukcet + "/" + data.key
+                    console.log(that.user.avatar)
+                    that.save()
+                })
             }
-			that.save = function(){
-				Restangular.one("api",that.user.name)
-						.patch({avatar:that.user.avatar, sex:that.user.sex, displayname:that.user.displayname, signature:that.user.signature})
-						.then(function(data){
-							swal({
+            that.save = function() {
+                Restangular.one("api", that.user.name)
+                    .patch({
+                        avatar: that.user.avatar,
+                        sex: that.user.sex,
+                        displayname: that.user.displayname,
+                        signature: that.user.signature
+                    })
+                    .then(function(data) {
+                            swal({
                                 title: "",
                                 text: "已更新",
                                 type: "success",
                                 timer: 1500,
                                 showConfirmButton: false
                             });
-							$usersvc.getuser(undefined, true, function(usr){
-								that.user = usr
-								setmenu(usr)
-							})
-						},
-						function(data){
-                            swal("", "信息保存失败", "warning",1500, false)
-						})
-			}
+                            $usersvc.getuser(undefined, true, function(usr) {
+                                that.user = usr
+                                setmenu(usr)
+                            })
+                        },
+                        function(data) {
+                            swal("", "信息保存失败", "warning", 1500, false)
+                        })
+            }
 
-	        that.changesex = function(i) {
-   	        	that.user.sex = i
-   		    }
+            that.changesex = function(i) {
+                that.user.sex = i
+            }
 
         }
     ])
