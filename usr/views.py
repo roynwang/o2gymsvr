@@ -193,10 +193,11 @@ class CustomerList(generics.ListAPIView):
 	pagination_class = None
 	def get_queryset(self):
 		usr = get_object_or_404(User, name=self.kwargs["name"])
-		customers =  usr.sealed_time.values_list("custom",flat=True)
+		#customers =  usr.sealed_time.values_list("custom",flat=True)
+		#print customers
+		customers =  Order.objects.filter(coach = usr).values_list("custom",flat=True)
 		print customers
-		#customers =  Order.objects.filter(coach = usr).values_list("custom",flat=True)
-		ret = User.objects.filter(id__in = customers)
+		ret = User.objects.filter(name__in = customers)
 		if ret.count() == 0:
 			ret = User.objects.filter(name = usr.name)
 		return ret

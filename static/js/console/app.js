@@ -667,6 +667,61 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
 
                 });
         }
+        that.cancelbook = function(book) {
+                SweetAlert.swal({
+                        //title: "确定移除该教练吗?",
+                        title: "确认",
+                        text: "确认取消吗?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#1fb5ad",
+                        confirmButtonText: "确认",
+                        cancelButtonText: "取消",
+                        showLoaderOnConfirm: true,
+                        closeOnConfirm: false
+                    },
+                    function(yes) {
+                        if (!yes) {
+                            return
+                        }
+                        if (book.pendingaction == "add") {
+                            var b = _.findWhere(that.tableParams.data, book)
+                                //set to 'remove' for existed item
+                            var i = that.tableParams.data.indexOf(b)
+                            that.tableParams.data.splice(i, 1)
+                            that.refreshtimetable(true)
+                            that.tableParams.total(that.tableParams.data)
+                            swal({
+                                type: "success",
+                                title: "预约已取消",
+                                text: "",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            return
+                        }
+                        var url = "/api/" + book.coachprofile.name + "/b/" + book.date.replace(/-/g, "") + "/" + book.hour + "/";
+                        var bookdone = Restangular.one("api", coachname)
+                            .one("b", book.date.replace(/-/g, ""))
+                            .all(book.hour)
+                        bookdone.remove()
+                            .then(function(data) {
+                                swal({
+                                    type: "success",
+                                    title: "预约已取消",
+                                    text: "",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                                that.reload()
+                                getincomplete()
+                            }, function(data) {
+                                swal("", "取消失败,请稍后再试",
+                                    "warning")
+                            })
+                    })
+            }
+            /*
         that.cancelbook = function(date, hour) {
             var tar = {
                 date: date,
@@ -685,6 +740,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 //that.tableParams.reload()
             console.log(that.tableParams.data)
         }
+		*/
         that.book = function(i) {
             if (!isAva(i, that.availiable) || !isAva(i + 1, that.availiable)) {
                 return
@@ -1206,7 +1262,9 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
                 Restangular.one('api/g/', gymid).get().then(function(gym) {
                     $scope.coaches = gym.coaches_set
                     Restangular.one('api/g/' + gymid + "/" + date + "/").get().then(function(allbooks) {
-						var grouped = _.groupBy(allbooks, function(item){return item.coachprofile.id})
+                        var grouped = _.groupBy(allbooks, function(item) {
+                            return item.coachprofile.id
+                        })
                         $.each($scope.coaches, function(i, item) {
                             var g = Math.floor(i / 4)
                             if ($scope.calendarRowGroup[g] == undefined) {
