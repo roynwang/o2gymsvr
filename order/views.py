@@ -175,6 +175,9 @@ class ManualOrder(APIView):
 			if request.data["sex"] == '1':
 				sex = True
 			customer = User.objects.create(name=phone,displayname=displayname,sex=sex,iscoach=False)
+		if "age" in self.request.data:
+			customer.age = self.request.data["age"]
+			customer.save()
 		print customer
 		#create product
 		introduction = self.request.data["product_introduction"]

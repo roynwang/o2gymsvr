@@ -237,7 +237,7 @@ app.factory("$usersvc", function(Restangular) {
     function changepwd(username, vcode, pwd, onsuccess, onfail) {
         $.post("/api/sms/" + username + "/", {
                     vcode: vcode,
-					password: pwd
+                    password: pwd
                 },
                 function(data) {
                     Restangular.setDefaultHeaders({
@@ -247,6 +247,7 @@ app.factory("$usersvc", function(Restangular) {
                 })
             .fail(onfail)
     }
+
     function loginwithvcode(username, vcode, onsuccess, onfail) {
         $.post("/api/sms/" + username + "/", {
                     vcode: vcode
@@ -351,7 +352,7 @@ app.factory("$usersvc", function(Restangular) {
         getcustomer: getcustomer,
         sendvcode: sendvcode,
         loginwithvcode: loginwithvcode,
-        changepwd: changepwd 
+        changepwd: changepwd
     }
 })
 app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
@@ -646,7 +647,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                         that.timetable.availiable.push(book.hour + 1)
                     }
                 }
-                if (book.pendingaction == "add") {
+				else if (book.pendingaction == "add") {
                     if (td.Format("yyyy-MM-dd") == book.date) {
                         that.timetable.availiable = _.without(that.timetable.availiable, book.hour, book.hour + 1)
                         console.log(that.timetable.availiable)
@@ -704,6 +705,9 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
             that.actionlist = _.reject(that.actionlist, function(item) {
                 return task == item
             })
+			if(that.selected.Format("yyyy-MM-dd") == task.date){
+	            that.timetable.availiable.push(task.hour, task.hour + 1)
+			}
             processtimetable(that.selected)
         }
 
@@ -733,7 +737,8 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                     count += 1
                 }
             }
-            count += that.order.booked.length
+            count += that.bookedbook.length
+			count += that.completedbook.length
 
             if (count < that.order.course_count && that.isAvaHour(h) && that.isAvaHour(h + 1)) {
                 var newbook = {
@@ -749,18 +754,53 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
             }
         }
         that.removebook = function(bookid) {
-            var tar = _.findWhere(that.bookedbook, {
-                id: bookid
-            })
-            tar["pendingaction"] = "remove"
-                //add to actionlist
-            that.actionlist.push(tar)
-                //remove from bookedbook
-            that.bookedbook = _.reject(that.bookedbook, function(item) {
-                    return item.id == bookid
+            swal({
+                title: "取消",
+                text: "确认取消吗?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "放弃",
+                confirmButtonText: "确认",
+                confirmButtonColor: "#1fb5ad",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function() {
+                var item = _.findWhere(that.bookedbook, {
+                            id: bookid
                 })
-                //refresh time table
-            processtimetable(that.selected)
+
+                var datestr = item.date.replace(/-/g, "")
+                Restangular.one("api/", $.cookie("user"))
+                    .one("b/" + datestr, item.hour)
+                    .remove()
+                    .then(function(data) {
+                        swal({
+                            type: "success",
+                            title: "提交成功",
+                            text: "",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+
+                        console.log("remove success")
+                        var tar = _.findWhere(that.bookedbook, {
+                            id: bookid
+                        })
+                        //tar["pendingaction"] = "remove"
+                            //add to actionlist
+                            //that.actionlist.push(tar)
+                            //remove from bookedbook
+                        that.bookedbook = _.reject(that.bookedbook, function(item) {
+                                return item.id == bookid
+                            })
+                            //refresh time table
+                        //processtimetable(that.selected)
+						if(that.selected.Format("yyyy-MM-dd") == item.date){
+				            that.timetable.availiable.push(item.hour, item.hour + 1)
+						}
+                    })
+
+            })
         }
         that.completeditem = function() {
             that.pendingaction -= 1
@@ -891,6 +931,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
         that.mo.product_amount = ""
         that.mo.product_duration = ""
         that.mo.sex = '0'
+        that.mo.age = undefined
         that.changesex = function(i) {
             that.mo.sex = i
         }
@@ -972,7 +1013,7 @@ app.controller("ChangePwdCtrl", ["$state", "$usersvc", "$mdDialog",
         that.loading = true
         that.vcodetext = "发送验证码"
         that.errmsg = false
-		that.pwdset = {}
+        that.pwdset = {}
 
         that.startload = function() {
             $("#new-stack").css("opacity", 0.6)
@@ -980,47 +1021,47 @@ app.controller("ChangePwdCtrl", ["$state", "$usersvc", "$mdDialog",
         that.endload = function() {
             $("#new-stack").css("opacity", 0)
         }
-		$usersvc.getuser(undefined, false, function(usr){
-			that.user = usr
-			that.pwdset["phone"]  = usr.name
-		})
-		that.validate = function(){
-			if(that.pwdset.vcode == undefined || that.pwdset.vcode.toString().length != 6 ){
-				that.errmsg = "请输入6位验证码"
-				return false
-			}
-			if(that.pwdset.pwd == undefined || that.pwdset.pwd.length == 0){
-				that.errmsg = "请输入密码"
-				return false
-			}
-			if(that.pwdset.pwd != that.pwdset.pwdconfirm ){
-				that.errmsg = "两次输入的密码不同"
-				return false
-			}
-			return true
-			
-		}
-		that.submit = function(){
-			if (that.validate() == false){
-				return
-			}
-			$usersvc.changepwd(that.pwdset.phone, that.pwdset.vcode, that.pwdset.pwd, function(){
-	             swal({
-					 title: "",
-					 text: "密码已更新",
-					 type: "success",
-					 timer: 1500,
-					 showConfirmButton: false
-				 });
-			},
-			function(data){
-				if(data.status == 403){
-                    swal("", "验证码错误，请检查后重新输入", "warning")
-				} else {
-                    swal("", "密码修改失败，请检查后重新输入", "warning")
-				}
-			})
-		}
+        $usersvc.getuser(undefined, false, function(usr) {
+            that.user = usr
+            that.pwdset["phone"] = usr.name
+        })
+        that.validate = function() {
+            if (that.pwdset.vcode == undefined || that.pwdset.vcode.toString().length != 6) {
+                that.errmsg = "请输入6位验证码"
+                return false
+            }
+            if (that.pwdset.pwd == undefined || that.pwdset.pwd.length == 0) {
+                that.errmsg = "请输入密码"
+                return false
+            }
+            if (that.pwdset.pwd != that.pwdset.pwdconfirm) {
+                that.errmsg = "两次输入的密码不同"
+                return false
+            }
+            return true
+
+        }
+        that.submit = function() {
+            if (that.validate() == false) {
+                return
+            }
+            $usersvc.changepwd(that.pwdset.phone, that.pwdset.vcode, that.pwdset.pwd, function() {
+                    swal({
+                        title: "",
+                        text: "密码已更新",
+                        type: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                },
+                function(data) {
+                    if (data.status == 403) {
+                        swal("", "验证码错误，请检查后重新输入", "warning")
+                    } else {
+                        swal("", "密码修改失败，请检查后重新输入", "warning")
+                    }
+                })
+        }
         that.sendvcode = function() {
             that.errmsg = false
             that.startload()

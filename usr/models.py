@@ -39,6 +39,8 @@ class User(models.Model):
 	role = models.CharField(max_length=32, default="customer")
 	corps = models.CharField(max_length=512, default="[]")
 
+	age = models.IntegerField(blank=True, null=True)
+
 	def __unicode__(self):
 		return self.name
 

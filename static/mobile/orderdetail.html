@@ -70,7 +70,7 @@ ng-controller="OrderDetailCtrl as ctrl">
         </md-toolbar>
         <md-dialog-content style="height:1180px;padding: 0 5px; border-bottom:solid 1px #ccc;">
             <md-tabs md-dynamic-height md-border-bottom>
-                <md-tab label="待提交">
+			<md-tab label="待约({{ctrl.order.course_count-ctrl.bookedbook.length-ctrl.completedbook.length}})">
                     <md-content class="md-padding" style="padding-top: 0;">
 					<h1 class="title-new"
 						ng-hide="ctrl.actionlist.length>0">还有{{ctrl.order.course_count -
