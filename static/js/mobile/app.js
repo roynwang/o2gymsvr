@@ -825,6 +825,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
             })
             that.pendingaction = removelist.length + addlist.length
             if (that.pendingaction == 0) {
+                $mdDialog.cancel();
                 return
             } else {
                 that.submitting = true
