@@ -21,14 +21,8 @@
                         ng-click="demo.modify(row,'duration')">修改</a>
                     </td>
                     <td data-title="'截至日期'">{{row.endtime}}</td>
-
                     <td data-title="'完成度'">{{row.complete_status}}</td>
-                    <td><a ng-if="row.status!='unpaid'" class="btn {{row.status=='done'?'btn-success':'btn-primary'}}"
-                        href="#order/{{row.coachdetail.name}}/{{row.id}}">{{row.status ==
-						"done"?"查看":"预约"}}</a>
-                        <a ng-if="row.status != 'done' && row.removable" class="btn btn-danger" ng-click="demo.remove(row.id)">移除</a>
-                        <!--<a ng-if="row.status != 'done'" class="btn btn-info"
-						style="margin-left:3px">修改</a>-->
+					<td data-title="'教练'">
                         <div class="btn-group" uib-dropdown>
                             <button id="split-button" type="button" class="btn btn-warning">{{row.coachdetail.displayname}}</button>
                             <button type="button" class="btn btn-warning" uib-dropdown-toggle>
@@ -40,6 +34,13 @@
                                 </li>
                             </ul>
                         </div>
+					</td>
+                    <td><a ng-if="row.status!='unpaid'" class="btn {{row.status=='done'?'btn-success':'btn-primary'}}"
+                        href="#order/{{row.coachdetail.name}}/{{row.id}}">{{row.status ==
+						"done"?"查看":"预约"}}</a>
+                        <a ng-if="row.status != 'done' && row.removable" class="btn btn-danger" ng-click="demo.remove(row.id)">移除</a>
+                        <!--<a ng-if="row.status != 'done'" class="btn btn-info"
+						style="margin-left:3px">修改</a>-->
                     </td>
                 </tr>
             </table>
