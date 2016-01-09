@@ -646,8 +646,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                         that.timetable.availiable.push(book.hour)
                         that.timetable.availiable.push(book.hour + 1)
                     }
-                }
-				else if (book.pendingaction == "add") {
+                } else if (book.pendingaction == "add") {
                     if (td.Format("yyyy-MM-dd") == book.date) {
                         that.timetable.availiable = _.without(that.timetable.availiable, book.hour, book.hour + 1)
                         console.log(that.timetable.availiable)
@@ -705,9 +704,9 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
             that.actionlist = _.reject(that.actionlist, function(item) {
                 return task == item
             })
-			if(that.selected.Format("yyyy-MM-dd") == task.date){
-	            that.timetable.availiable.push(task.hour, task.hour + 1)
-			}
+            if (that.selected.Format("yyyy-MM-dd") == task.date) {
+                that.timetable.availiable.push(task.hour, task.hour + 1)
+            }
             processtimetable(that.selected)
         }
 
@@ -738,7 +737,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                 }
             }
             count += that.bookedbook.length
-			count += that.completedbook.length
+            count += that.completedbook.length
 
             if (count < that.order.course_count && that.isAvaHour(h) && that.isAvaHour(h + 1)) {
                 var newbook = {
@@ -766,7 +765,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                 showLoaderOnConfirm: true
             }, function() {
                 var item = _.findWhere(that.bookedbook, {
-                            id: bookid
+                    id: bookid
                 })
 
                 var datestr = item.date.replace(/-/g, "")
@@ -784,9 +783,9 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
 
                         console.log("remove success")
                         var tar = _.findWhere(that.bookedbook, {
-                            id: bookid
-                        })
-                        //tar["pendingaction"] = "remove"
+                                id: bookid
+                            })
+                            //tar["pendingaction"] = "remove"
                             //add to actionlist
                             //that.actionlist.push(tar)
                             //remove from bookedbook
@@ -794,10 +793,10 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                                 return item.id == bookid
                             })
                             //refresh time table
-                        //processtimetable(that.selected)
-						if(that.selected.Format("yyyy-MM-dd") == item.date){
-				            that.timetable.availiable.push(item.hour, item.hour + 1)
-						}
+                            //processtimetable(that.selected)
+                        if (that.selected.Format("yyyy-MM-dd") == item.date) {
+                            that.timetable.availiable.push(item.hour, item.hour + 1)
+                        }
                     })
 
             })
@@ -818,6 +817,19 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
         }
 
         that.submit = function() {
+            var removelist = _.where(that.actionlist, {
+                pendingaction: "remove"
+            })
+            var addlist = _.where(that.actionlist, {
+                pendingaction: "add"
+            })
+            that.pendingaction = removelist.length + addlist.length
+            if (that.pendingaction == 0) {
+                return
+            } else {
+                that.submitting = true
+            }
+
             swal({
                 title: "提交",
                 text: "确认提交吗?",
@@ -829,18 +841,6 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                 closeOnConfirm: false,
                 showLoaderOnConfirm: true
             }, function() {
-                var removelist = _.where(that.actionlist, {
-                    pendingaction: "remove"
-                })
-                var addlist = _.where(that.actionlist, {
-                    pendingaction: "add"
-                })
-                that.pendingaction = removelist.length + addlist.length
-                if (that.pendingaction == 0) {
-                    return
-                } else {
-                    that.submitting = true
-                }
                 _.each(removelist, function(item, i) {
                     var datestr = item.date.replace(/-/g, "")
                     Restangular.one("api/", $.cookie("user"))
