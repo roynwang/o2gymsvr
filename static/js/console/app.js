@@ -910,6 +910,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         that.mo.product_amount = ""
         that.mo.product_duration = ""
         that.mo.sex = '0'
+		that.mo.age = undefined
         Restangular.one("api/", coachname)
             .get()
             .then(function(data) {
