@@ -1,5 +1,5 @@
 <md-dialog aria-label="Mango (Fruit)" ng-cloak ng-controller="TrainDetailCtrl as ctrl">
-    <form>
+    <form >
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <h4 style="font-weight: normal;">{{ctrl.title}}</h4>
@@ -12,7 +12,7 @@
                 </md-button>
             </div>
         </md-toolbar>
-        <md-dialog-content style="padding:10px">
+        <md-dialog-content style="padding:10px;min-height:500px" ng-click="ctrl.editing=false">
             <div ng-show="ctrl.images.length==0" layout="row" layout-align="center center" style="min-height:300px">
                 <div>
                     <div layout="row" layout-align="center center">
