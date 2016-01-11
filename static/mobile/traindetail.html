@@ -2,58 +2,46 @@
     <form>
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>训练详情</h2>
+                <h4 style="font-weight: normal;">{{ctrl.title}}</h4>
                 <span flex></span>
-                <md-button style="padding-left: 0" class="md-icon-button">
-				<a href="tel:{{ctrl.customer.name}}" style="color:#1fb5ad;font-size: 25px;"
-					class="navbar-button-icon icon ion-ios-telephone-outline"></a>
-                </md-button>
-                <md-button style="padding-left: 0" class="md-icon-button">
-				<a href="sms:{{ctrl.customer.name}}" style="color:#1fb5ad;font-size: 25px;"
-					class="navbar-button-icon icon ion-ios-chatbubble-outline"></a>
+                <md-button style="padding:0" class="md-icon-button" ng-click="ctrl.editing = !ctrl.editing">
+                    <div style="font-size: 26px; margin-top: 7px; color:#aaa" class="navbar-button-icon icon ion-ios-compose-outline"></div>
                 </md-button>
                 <md-button style="padding:0" class="md-icon-button" ng-click="ctrl.cancel()">
                     <div style="color:#ccc" class="navbar-button-icon icon ion-ios-close-empty"></div>
                 </md-button>
             </div>
         </md-toolbar>
-            <div class="grey-header" style="padding-bottom:16px">
-                <h2 class="grey-heading-title">订单列表</h2>
+        <md-dialog-content style="padding:10px">
+            <div ng-show="ctrl.images.length==0" layout="row" layout-align="center center" style="min-height:300px">
+                <div>
+                    <div layout="row" layout-align="center center">
+                        <p style="font-size:20px">拍几张训练照片吧</p>
+                    </div>
+
+                    <div layout="row" style="margin-top:20px" layout-align="center center">
+                    	<md-progress-circular ng-show="ctrl.uploading" class="md-accent" md-mode="indeterminate"></md-progress-circular>
+                        <div style="color: #4fd2c2;font-size:50px" ng-hide="ctrl.uploading" class="navbar-button-icon icon ion-ios-camera-outline"
+                        ng-file-select="ctrl.addphoto($files)"></div>
+                    </div>
+                </div>
             </div>
-        <md-dialog-content>
-            <ul class="list">
-                <li ng-repeat="c in ctrl.orderlist" class="list-item" data-ix="list-item" style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity
-				500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32,
-				1); padding-left:30px">
-                    <p class="w-clearfix w-inline-block" href="#">
-                        <div class="title-list">{{c.coachdetail.displayname}}</div>
-                        <div ng-click="ctrl.showorder(c.id)" class="course-time icon-list highlighted">
-                            <div class="icon ion-calendar"></div>
-                        </div>
-                        <div class="title-list course-time">
-                            {{c.complete_status}}
-                        </div>
-                        <div class="title-list course-time">
-                            {{c.endtime}}
-                        </div>
-                    </p>
-                </li>
-            </ul>
+            <md-grid-list ng-show="ctrl.images.length > 0" md-cols="6" md-cols-sm="1" md-cols-md="2" md-cols-gt-md="6" md-row-height-gt-md="1:1"
+            md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="8px">
+                <md-grid-tile class="gray" md-rowspan="2" md-colspan="2" md-colspan-sm="1" ng-repeat="img in ctrl.images">
+                    <img style="border-radius:6px" ng-src="{{img.fixSize()}}">
+                    <div ng-show="ctrl.editing" class="navbar-button-icon icon ion-ios-close" style="    position: absolute;
+    right: -20px;
+    bottom: -15px;
+    color: #4fd2c2;
+    font-size: 24px;" ng-click="ctrl.removephoto(img)"></div>
+                </md-grid-tile>
+                <md-grid-tile  class="gray" md-rowspan="2" md-colspan="2" md-colspan-sm="1" ng-hide="ctrl.editing">
+                    <md-progress-circular ng-show="ctrl.uploading" class="md-accent" md-mode="indeterminate"></md-progress-circular>
+                    <div style="color: #4fd2c2" ng-hide="ctrl.uploading" class="navbar-button-icon icon ion-ios-camera-outline"
+                    ng-file-select="ctrl.addphoto($files)"></div>
+                </md-grid-tile>
+            </md-grid-list>
         </md-dialog-content>
-		<md-dialog-actions layout="row" style="padding-left: 8px">
-            <span flex></span>
-            <a class="w-clearfix w-inline-block small-button grey" ng-click="ctrl.cancel()">
-                <div class="icon-button bigger">
-                    <div class="icon ion-ios-close-empty"></div>
-                </div>
-                <div class="text-button">返回</div>
-            </a>
-            <a ng-click="ctrl.submit()" class="w-clearfix w-inline-block small-button" href="#">
-                <div class="icon-button">
-                    <div class="icon ion-android-exit"></div>
-                </div>
-                <div class="text-button" >保存</div>
-            </a>
-        </md-dialog-actions>
     </form>
 </md-dialog>
