@@ -205,7 +205,7 @@ app.factory("$uploader", function($qupload) {
             reader.onload = function(event) {
                 var imgori = new Image();
                 imgori.onload = function() {
-                    var compressed = compress(imgori, 50)
+                    var compressed = compress(imgori, 30)
                     var newf = b64toBlob(compressed, "image/jpeg")
                         /*
                 var newf = new Blob([b64toBlob( compressed.src], {
