@@ -1,17 +1,45 @@
 var bukcet = "https://dn-o2fit.qbox.me"
 
+function b64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
+
+    var byteCharacters = atob(b64Data.split(',')[1]);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+    }
+
+    var blob = new Blob(byteArrays, {
+        type: contentType
+    });
+    return blob;
+}
+
 function setmenu(userobj) {
     document.getElementById("avatar").setAttribute("src", userobj.avatar_small)
     $("#coachname").html(userobj.displayname)
 }
 
 function settitle(title) {
-    $("#page-title").html(title)
-}
-document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
-	    WeixinJSBridge.call('hideToolbar');
-		    WeixinJSBridge.call('hideOptionMenu');
-})
+        $("#page-title").html(title)
+    }
+    /*
+    document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+    	    WeixinJSBridge.call('hideToolbar');
+    		    WeixinJSBridge.call('hideOptionMenu');
+    })
+    */
 
 // 对Date的扩展，将 Date 转化为指定格式的String 
 // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符， 
@@ -136,6 +164,12 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
         })
 
 })
+app.factory("$paramssvc", function() {
+    var params = {}
+    return {
+        params: params
+    }
+})
 
 app.factory("$uploader", function($qupload) {
     var key = ""
@@ -151,19 +185,47 @@ app.factory("$uploader", function($qupload) {
     }
 
     function upload(file, onsuccess, onfail) {
+
+        function compress(source_img_obj, quality) {
+            var mime_type = "image/jpeg";
+            var cvs = document.createElement('canvas');
+            cvs.width = source_img_obj.naturalWidth;
+            cvs.height = source_img_obj.naturalHeight;
+            var ctx = cvs.getContext("2d").drawImage(source_img_obj, 0, 0);
+            var newImageData = cvs.toDataURL(mime_type, quality / 100);
+            return newImageData
+        }
+
         $.get("/api/p/token", function(data, status) {
             key = data.key
             token = data.token
-            file.upload = $qupload.upload({
-                key: key,
-                file: file,
-                token: token
-            });
-            file.upload.then(function(response) {
-                onsuccess && onsuccess(response)
-            }, function(response) {
-                onfail && onfail(response)
-            }, function(evt) {});
+
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                var imgori = new Image();
+                imgori.onload = function() {
+                    var compressed = compress(imgori, 50)
+                    var newf = b64toBlob(compressed, "image/jpeg")
+                        /*
+                var newf = new Blob([b64toBlob( compressed.src], {
+                    type: "image/jpeg"
+                });
+				*/
+                    newf.upload = $qupload.upload({
+                        key: key,
+                        file: newf,
+                        token: token
+                    });
+
+                    newf.upload.then(function(response) {
+                        onsuccess && onsuccess(response)
+                    }, function(response) {
+                        onfail && onfail(response)
+                    }, function(evt) {});
+                }
+                imgori.src = reader.result
+            }
         })
     }
     return {
@@ -209,8 +271,20 @@ app.factory("$booksvc", function(Restangular) {
                 onfail ? onfail() : true
             })
     }
+
+    function savedetail(book, onsuccess, onfail) {
+        var bookdone = Restangular.one("api", book.coachprofile.name)
+            .one("b", book.date.replace(/-/g, ""))
+            .all(book.hour)
+        bookdone.patch({
+                order: book.order,
+                detail: book.detail
+            })
+            .then(onsuccess, onfail)
+    }
     return {
-        complete: complete
+        complete: complete,
+        savedetail: savedetail
     }
 })
 app.factory("$ordersvc", function(Restangular) {
@@ -469,8 +543,8 @@ app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
         }
     }
 ])
-app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc", "$scope",
-    function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc, $scope) {
+app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc", "$scope", "$paramssvc",
+    function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc, $scope, $paramssvc) {
         var user = $.cookie("user")
         var that = this
         settitle("课表")
@@ -498,6 +572,24 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                         })
                     },
                     function(data) {})
+        }
+        that.logtrain = function(book) {
+            $paramssvc.params["traindetail"] = book
+            $mdDialog.show({
+                    controller: "TrainDetailCtrl",
+                    templateUrl: '/static/mobile/TrainDetail.html',
+                    parent: angular.element(document.body),
+                    //targetEvent: ev,
+                    clickOutsideToClose: true,
+                    fullscreen: true
+                })
+                .then(function(answer) {
+                    console.log('You said the information was "' + answer + '".');
+                    $state.transitionTo("index")
+                }, function() {
+                    console.log('You cancelled the dialog.')
+                    $state.transitionTo("index")
+                });
         }
 
         that.refresh = function() {
@@ -1090,7 +1182,67 @@ app.controller("ChangePwdCtrl", ["$state", "$usersvc", "$mdDialog",
     }
 ])
 
+app.controller("TrainDetailCtrl", ["Restangular", "$paramssvc", "$mdDialog", "$uploader", "$booksvc",
+    function(Restangular, $paramssvc, $mdDialog, $uploader, $booksvc) {
+        var that = this
+        that.editing = false
+        that.book = $paramssvc.params["traindetail"]
+        that.images = []
+        that.title = that.book.customerprofile.displayname + " " + that.book.date + " " + TimeMap[that.book.hour]
+        that.cancel = function() {
+            $mdDialog.cancel();
+        }
+        that.uploading = false
+        that.addphoto = function($files) {
+            that.uploading = true
+            $uploader.upload($files[0], function(data) {
+                console.log(data.key)
+                that.uploading = false
+                var imgurl = bukcet + "/" + data.key
+                if (that.images.indexOf(imgurl)) {
+                    that.images.push(bukcet + "/" + data.key)
+                    that.save()
+                }
+            }, function() {
+                that.uploading = false
+            })
+        }
+        that.removephoto = function(img) {
+            that.images = _.reject(that.images, function(item) {
+                return item == img
+            })
+            that.save()
+        }
 
+        function loadimgs() {
+            if (that.book.detail && that.book.detail.length > 2) {
+                var details = JSON.parse(that.book.detail)
+                that.images = _.map(_.where(details, {
+                    contenttype: "image"
+                }), function(item) {
+                    return item.content
+                })
+                console.log(that.images)
+            }
+        }
+
+        function buildpatchdata() {
+            var details = []
+            for (var img in that.images) {
+                details.push({
+                    contenttype: "image",
+                    content: that.images[img]
+                })
+            }
+            return JSON.stringify(details)
+        }
+        that.save = function() {
+            that.book.detail = buildpatchdata()
+            $booksvc.savedetail(that.book)
+        }
+        loadimgs()
+    }
+])
 app.controller("ProfileCtrl", ["$scope", "$usersvc", "$uploader", "$qupload", "Restangular",
         function($scope, $usersvc, $uploader, $qupload, Restangular) {
             var that = this

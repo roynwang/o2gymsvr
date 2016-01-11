@@ -119,7 +119,15 @@ md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
 .right-input-link {
 	width: 20%
 }
-
+md-progress-circular.md-default-theme.md-accent .md-inner .md-right .md-half-circle, md-progress-circular.md-accent .md-inner .md-right .md-half-circle {
+    border-right-color: #4fd2c2
+}
+md-progress-circular.md-default-theme.md-accent .md-inner .md-left .md-half-circle, md-progress-circular.md-accent .md-inner .md-left .md-half-circle, md-progress-circular.md-default-theme.md-accent .md-inner .md-right .md-half-circle, md-progress-circular.md-accent .md-inner .md-right .md-half-circle {
+    border-top-color: #4fd2c2;
+}
+md-progress-circular.md-default-theme.md-accent .md-inner .md-left .md-half-circle, md-progress-circular.md-accent .md-inner .md-left .md-half-circle {
+    border-left-color: #4fd2c2;
+}
 
 /* end angular-material */
 

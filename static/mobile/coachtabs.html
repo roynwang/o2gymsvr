@@ -40,8 +40,11 @@ ng-controller="TodayCourseCtrl as ctrl">
                                 <div class="icon ion-ios-checkmark-empty"></div>
                             </div>
                             <div ng-class="{'highlighted': c.done}" class="title-list">{{c.customerprofile.displayname}}</div>
-                            <div ng-click="ctrl.showorder(c.order)" class="course-time icon-list highlighted">
+                            <div ng-click="ctrl.showorder(c.order)" style="margin-right:3px"  class="course-time icon-list highlighted">
                                 <div class="icon ion-calendar"></div>
+                            </div>
+                            <div ng-click="ctrl.logtrain(c)" style="margin-right:-5px" class="course-time icon-list highlighted">
+                                <div class="icon ion-images"></div>
                             </div>
                             <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
                             <div class="title-list course-time">

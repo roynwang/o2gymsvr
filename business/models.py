@@ -52,6 +52,8 @@ class Schedule(models.Model):
 
 	rate = models.IntegerField(blank=True)
 
+	detail =  models.TextField(blank=True, default="[]")
+
 
 	def __unicode__(self):
 		return str(self.date) + str(self.hour)
