@@ -577,7 +577,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             $paramssvc.params["traindetail"] = book
             $mdDialog.show({
                     controller: "TrainDetailCtrl",
-                    templateUrl: '/static/mobile/TrainDetail.html',
+                    templateUrl: '/static/mobile/traindetail.html',
                     parent: angular.element(document.body),
                     //targetEvent: ev,
                     clickOutsideToClose: true,
