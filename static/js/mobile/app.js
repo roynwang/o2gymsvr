@@ -1182,8 +1182,8 @@ app.controller("ChangePwdCtrl", ["$state", "$usersvc", "$mdDialog",
     }
 ])
 
-app.controller("TrainDetailCtrl", ["Restangular", "$paramssvc", "$mdDialog", "$uploader", "$booksvc",
-    function(Restangular, $paramssvc, $mdDialog, $uploader, $booksvc) {
+app.controller("TrainDetailCtrl", ["Restangular", "$paramssvc", "$mdDialog", "$uploader", "$booksvc", "$mdToast",
+    function(Restangular, $paramssvc, $mdDialog, $uploader, $booksvc, $mdToast) {
         var that = this
         that.editing = false
         that.book = $paramssvc.params["traindetail"]
@@ -1212,6 +1212,19 @@ app.controller("TrainDetailCtrl", ["Restangular", "$paramssvc", "$mdDialog", "$u
                 return item == img
             })
             that.save()
+        }
+        that.showphoto = function(img) {
+            $mdToast.show({
+                controller: function($scope){
+								$scope.img = img; 
+								$scope.hide = $mdToast.hide 
+							},
+			template: '<md-toast style="position: absolute;top: 0;height: inherit;background: rgb(66,66,66);"  ng-click="hide()"><img  style="margin-top:150px;border-radius:2px" ng-src="{{img}}"></md-toast>',
+				hideDelay: 0,
+				position: top,
+				autoWrap: false,
+                parent: angular.element(document.body),
+            });
         }
 
         function loadimgs() {
