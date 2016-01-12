@@ -31,8 +31,18 @@ function setmenu(userobj) {
     $("#coachname").html(userobj.displayname)
 }
 
-function settitle(title) {
+function settitle(title, hidemenu) {
         $("#page-title").html(title)
+		if(hidemenu){
+			$("#menu-button").hide()
+			$("#neworder").hide()
+			$("#back-button").show()
+		}
+		else {
+			$("#menu-button").show()
+			$("#neworder").show()
+			$("#back-button").hide()
+		}
     }
     /*
     document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -40,6 +50,12 @@ function settitle(title) {
     		    WeixinJSBridge.call('hideOptionMenu');
     })
     */
+
+$(function(){
+	$("#back-button").click(function(){
+		history.back()
+	})
+})
 
 // 对Date的扩展，将 Date 转化为指定格式的String 
 // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符， 
@@ -143,6 +159,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
         .state('profile', {
             url: "/profile",
             templateUrl: "/static/mobile/profile.html"
+        })
+	    .state('customerdetail', {
+			url: "/customer/:name",
+            templateUrl: "/static/mobile/customerdetail.html"
         })
         .state('coachhome', {
             url: "/coach",
@@ -964,8 +984,8 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
         that.refresh()
     }
 ])
-app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdDialog", "$ordersvc",
-    function($state, $usersvc, Restangular, $mdDialog, $ordersvc) {
+app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdDialog", "$ordersvc","$stateParams",
+    function($state, $usersvc, Restangular, $mdDialog, $ordersvc, $stateParams) {
         var that = this
         that.customer = {}
         that.orderlist = {}
@@ -1000,16 +1020,15 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
                 }, function() {
                     console.log('You cancelled the dialog.')
                 });
-
         }
-        $usersvc.getcustomer(undefined, false, function(data) {
+		var customername = $stateParams.name
+        $usersvc.getcustomer(customername, false, function(data) {
             that.customer = data
+			settitle(that.customer.displayname, true)
             that.getorderlist()
         }, function(data) {
             console.log("getuser failed")
         })
-
-
     }
 ])
 

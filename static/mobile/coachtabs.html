@@ -65,9 +65,9 @@ ng-controller="TodayCourseCtrl as ctrl">
 				1); padding-left:30px" ng-repeat="c in ctrl.customerlist">
                         <p class="w-clearfix w-inline-block" href="#">
                             <div class="title-list">{{c.displayname}}</div>
-                            <div style="font-size: 25px;" ng-click="ctrl.showcustomer(c.name)" class="course-time icon-list highlighted">
+							<a style="font-size: 25px;" href="#/customer/{{c.name}}" class="course-time icon-list highlighted">
                                 <div class="ion-ios-information-outline"></div>
-                            </div>
+                            </a>
                         </p>
                     </li>
                 </ul>

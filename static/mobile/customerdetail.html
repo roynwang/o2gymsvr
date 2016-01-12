@@ -1,44 +1,37 @@
-<md-dialog aria-label="Mango (Fruit)" ng-cloak ng-controller="CustomerDetailCtrl as ctrl">
+<div class="w-form" style="padding: 5px;" ng-controller="CustomerDetailCtrl as ctrl">
     <form>
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>{{ctrl.customer.displayname}}</h2>
+                <h2>{{ctrl.customer.name }}</h2>
                 <span flex></span>
                 <md-button style="padding-left: 0" class="md-icon-button">
-				<a href="tel:{{ctrl.customer.name}}" style="color:#1fb5ad;font-size: 25px;"
-					class="navbar-button-icon icon ion-ios-telephone-outline"></a>
+                    <a href="tel:{{ctrl.customer.name}}" style="color:#1fb5ad;font-size: 25px;" class="navbar-button-icon icon ion-ios-telephone-outline"></a>
                 </md-button>
                 <md-button style="padding-left: 0" class="md-icon-button">
-				<a href="sms:{{ctrl.customer.name}}" style="color:#1fb5ad;font-size: 25px;"
-					class="navbar-button-icon icon ion-ios-chatbubble-outline"></a>
-                </md-button>
-                <md-button style="padding:0" class="md-icon-button" ng-click="ctrl.cancel()">
-                    <div style="color:#ccc" class="navbar-button-icon icon ion-ios-close-empty"></div>
+                    <a href="sms:{{ctrl.customer.name}}" style="color:#1fb5ad;font-size: 25px;" class="navbar-button-icon icon ion-ios-chatbubble-outline"></a>
                 </md-button>
             </div>
         </md-toolbar>
-            <div class="grey-header" style="padding-bottom:16px">
-                <h2 class="grey-heading-title">订单列表</h2>
-            </div>
-        <md-dialog-content>
-            <ul class="list">
-                <li ng-repeat="c in ctrl.orderlist" class="list-item" data-ix="list-item" style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity
+        <div class="grey-header" style="padding-bottom:16px">
+            <h2 class="grey-heading-title">订单列表</h2>
+        </div>
+        <ul class="list">
+            <li ng-repeat="c in ctrl.orderlist" class="list-item" data-ix="list-item" style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity
 				500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32,
-				1); padding-left:30px">
-                    <p class="w-clearfix w-inline-block" href="#">
-                        <div class="title-list">{{c.coachdetail.displayname}}</div>
-                        <div ng-click="ctrl.showorder(c.id)" class="course-time icon-list highlighted">
-                            <div class="icon ion-calendar"></div>
-                        </div>
-                        <div class="title-list course-time">
-                            {{c.complete_status}}
-                        </div>
-                        <div class="title-list course-time">
-                            {{c.endtime}}
-                        </div>
-                    </p>
-                </li>
-            </ul>
-        </md-dialog-content>
+				1); padding-left:18px">
+                <p class="w-clearfix w-inline-block" href="#">
+                    <div class="title-list">{{c.coachdetail.displayname}}</div>
+                    <div ng-click="ctrl.showorder(c.id)" class="course-time icon-list highlighted">
+                        <div class="icon ion-calendar"></div>
+                    </div>
+                    <div class="title-list course-time">
+                        {{c.complete_status}}
+                    </div>
+                    <div class="title-list course-time">
+                        {{c.endtime}}
+                    </div>
+                </p>
+            </li>
+        </ul>
     </form>
-</md-dialog>
+</div>
