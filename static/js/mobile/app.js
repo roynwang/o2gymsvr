@@ -1219,7 +1219,7 @@ app.controller("TrainDetailCtrl", ["Restangular", "$paramssvc", "$mdDialog", "$u
 								$scope.img = img; 
 								$scope.hide = $mdToast.hide 
 							},
-			template: '<md-toast style="position: absolute;top: 0;height: inherit;background: rgb(66,66,66);"  ng-click="hide()"><img  style="margin-top:150px;border-radius:2px" ng-src="{{img}}"></md-toast>',
+			template: '<md-toast style="position: absolute;top: 0;height: inherit;background: rgb(66,66,66);"  ng-click="hide()"><img  style="margin-top:50px;border-radius:2px" ng-src="{{img}}"></md-toast>',
 				hideDelay: 0,
 				position: top,
 				autoWrap: false,
