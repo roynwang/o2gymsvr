@@ -47,9 +47,7 @@ ng-controller="TodayCourseCtrl as ctrl">
                                 <div class="icon ion-images"></div>
                             </div>
                             <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
-                            <div class="title-list course-time">
-                                {{c.complete_status}}
-                            </div>
+							<!--<div class="title-list course-time">{{c.complete_status}}</div>-->
                         </p>
                     </li>
                 </ul>
@@ -60,10 +58,10 @@ ng-controller="TodayCourseCtrl as ctrl">
             <md-tab-label style="font-size:16px">客户</md-tab-label>
             <md-tab-body>
                 <ul class="list">
-                    <li class="list-item" data-ix="list-item" style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity
+                    <li ng-click="ctrl.showcustomer(c)" class="list-item" data-ix="list-item" style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity
 				500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32,
 				1); padding-left:30px" ng-repeat="c in ctrl.customerlist">
-                        <p class="w-clearfix w-inline-block" href="#">
+                        <p class="w-clearfix w-inline-block" >
                             <div class="title-list">{{c.displayname}}</div>
 							<a style="font-size: 25px;" href="#/customer/{{c.name}}" class="course-time icon-list highlighted">
                                 <div class="ion-ios-information-outline"></div>
