@@ -1,5 +1,5 @@
 <md-dialog aria-label="Mango (Fruit)" ng-cloak ng-controller="TrainDetailCtrl as ctrl">
-    <form>
+    <form >
         <md-toolbar>
             <div class="md-toolbar-tools">
                 <h4 style="font-weight: normal;">{{ctrl.title}}</h4>
@@ -12,12 +12,12 @@
                 </md-button>
             </div>
         </md-toolbar>
-        <md-dialog-content style="padding:10px">
+        <md-dialog-content style="padding:10px;min-height:500px" ng-click="ctrl.editing=false">
             <div ng-show="ctrl.images.length==0" layout="row" layout-align="center center" style="min-height:300px">
                 <div>
                     <div layout="row" layout-align="center center">
                         <p style="font-size:20px">拍几张训练照片吧</p>
-                    </div>
+					</div>
 
                     <div layout="row" style="margin-top:20px" layout-align="center center">
                     	<md-progress-circular ng-show="ctrl.uploading" class="md-accent" md-mode="indeterminate"></md-progress-circular>
@@ -29,7 +29,7 @@
             <md-grid-list ng-show="ctrl.images.length > 0" md-cols="6" md-cols-sm="1" md-cols-md="2" md-cols-gt-md="6" md-row-height-gt-md="1:1"
             md-row-height="2:2" md-gutter="12px" md-gutter-gt-sm="8px">
                 <md-grid-tile class="gray" md-rowspan="2" md-colspan="2" md-colspan-sm="1" ng-repeat="img in ctrl.images">
-                    <img style="border-radius:6px" ng-src="{{img.fixSize()}}">
+                    <img ng-click="ctrl.showphoto(img)" style="border-radius:6px" ng-src="{{img.fixSize()}}">
                     <div ng-show="ctrl.editing" class="navbar-button-icon icon ion-ios-close" style="    position: absolute;
     right: -20px;
     bottom: -15px;
