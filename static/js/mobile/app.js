@@ -686,21 +686,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             $scope.showneworder()
         })
 
-        that.showcustomer = function(name) {
-            $usersvc.setcustomer(name)
-            $mdDialog.show({
-                    controller: 'CustomerDetailCtrl',
-                    templateUrl: '/static/mobile/customerdetail.html',
-                    parent: angular.element(document.body),
-                    //targetEvent: ev,
-                    clickOutsideToClose: true,
-                    fullscreen: true
-                })
-                .then(function(answer) {
-                    console.log('You said the information was "' + answer + '".');
-                }, function() {
-                    console.log('You cancelled the dialog.')
-                });
+        that.showcustomer = function(customer) {
+			$state.transitionTo("customerdetail",{
+				name: customer.name
+			})
         }
 
         that.showorder = function(orderid) {
@@ -1036,7 +1025,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
     function($scope, $state, $usersvc, $mdDialog, $ordersvc, SweetAlert, Restangular) {
         var that = this
         that.cancel = function() {
-            $mdDialog.cancel()
+            $mdDialog.hide()
         }
         that.mo = {}
         that.mo.customer_displayname = ""
