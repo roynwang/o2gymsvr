@@ -911,14 +911,24 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         that.mo.product_duration = ""
         that.mo.sex = '0'
 		that.mo.age = undefined
+		that.mo.subsidy = undefined
+
+		that.ordertype = "normal"
+
+		that.order_display = {"groupon":"团购订单", "normal":"普通订单"}
+
         Restangular.one("api/", coachname)
             .get()
             .then(function(data) {
                 that.coach = data
                 that.coach.avatar += "?imageView2/1/w/150/h/150"
             })
+	
 
         function validate() {
+			if(that.mo.subsidy == undefined){
+				that.mo.subsidy = 0
+			}
             var data = that.mo
             if (that.mo.customer_phone.toString().length != 11) {
                 swal("", "请输入正确的11位电话号码", "warning")
@@ -1009,8 +1019,7 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
 
         function calSum(data) {
             console.log(data)
-            return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke + data.sale.course * data.shangke) / 100
-
+            return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100 + data.sale.course_salary
         }
 
         function refresh() {
