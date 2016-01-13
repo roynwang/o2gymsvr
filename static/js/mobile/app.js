@@ -588,8 +588,9 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 .then(function(data) {
                         that.customerlist = data
                         that.customerlist.sort(function(a, b) {
-                            return a.displayname.localeCompare(b.displayname)
+                            return a.pinyin.localeCompare(b.pinyin)
                         })
+						console.log(that.customerlist)
                     },
                     function(data) {})
         }
