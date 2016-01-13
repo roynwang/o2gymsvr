@@ -1037,6 +1037,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
         that.mo.product_amount = ""
         that.mo.product_duration = ""
         that.mo.sex = '0'
+		that.mo.subsidy = 0
         that.mo.age = undefined
         that.changesex = function(i) {
             that.mo.sex = i
