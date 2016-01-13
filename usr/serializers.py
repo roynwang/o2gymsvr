@@ -4,6 +4,7 @@ from business.models import *
 from weibo.models import *
 from django.contrib.auth import get_user_model
 import json
+import pinyin
 
 
 class FakeWeiboSerializer(serializers.ModelSerializer):
@@ -21,9 +22,12 @@ class UserRegisterationSerializer(serializers.ModelSerializer):
 		exclude = ("user_permissions","groups")
 
 class SimpleUserSerilaizer(serializers.ModelSerializer):
+	pinyin = serializers.SerializerMethodField()
 	class Meta:
 		model = User
 		exclude = ("upped","fwded","commented","upped_person","created")
+	def get_pinyin(self, obj):
+		return pinyin.get_initial(obj.displayname)
 
 class CoachSimpleSerializer(serializers.ModelSerializer):
 	#gym_detail = GymSimpleSerializer(source="gym",many=True,read_only=True)
