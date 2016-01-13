@@ -184,6 +184,7 @@ class ManualOrder(APIView):
 		price = self.request.data["product_price"]
 		amount = self.request.data["product_amount"]
 		promotion = self.request.data["product_promotion"]
+		subsidy = self.request.data["subsidy"]
 		product = Product.objects.create(coach=coach,
 				introduction=introduction,
 				price = price,
@@ -208,7 +209,8 @@ class ManualOrder(APIView):
 				amount = price,
 				gym = coach.gym.all()[0],
 				channel = "offline",
-				isfirst = isfirst)
+				isfirst = isfirst,
+				subsidy = subsidy)
 		if "product_duration" in request.data:
 			order.duration = request.data["product_duration"]
 			order.save()

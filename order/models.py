@@ -35,7 +35,7 @@ class Order(models.Model):
 	#this is mean price
 	amount = models.IntegerField(default=0)
 	duration = models.IntegerField(default=0)
-
+	subsidy = models.IntegerField(default=0)
 
 	def done(self):
 		if self.schedule_set.count() == self.product.amount:

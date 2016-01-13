@@ -57,6 +57,12 @@ class CoachSalaryView(APIView):
 			price += tmpprice
 			print str(course.order.amount) + ":" + str(product.amount) + ": " + str(tmpprice)
 		return price
+	def cal_coach_income(self, query):
+		price = 0
+		for course in query:
+			price += course.getprice()
+		return price
+
 
 	def getsale(self,coach,start, end):
 		orders = coach.income_orders.filter(paidtime__range=[start,end])
@@ -66,7 +72,8 @@ class CoachSalaryView(APIView):
 		sold_xu = orders.filter(isfirst=False).aggregate(Sum('amount'))["amount__sum"] or 0
 		courses_query = coach.sealed_time.filter(date__range=[start,end],done=True)
 		courses = self.cal_course_income(courses_query) 
-		return {"sold":sold, "sold_xu":sold, "course": courses}
+		salary = self.cal_coach_income(courses_query)
+		return {"sold":sold, "sold_xu":sold, "course": courses, "course_salary": salary}
 
 	def get(self, request, gymid):
 		gymfee = get_object_or_404(GymFee, gym = self.kwargs["gymid"])

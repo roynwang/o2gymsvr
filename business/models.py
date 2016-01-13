@@ -65,6 +65,14 @@ class Schedule(models.Model):
 		self.save()
 		self.coach.save()
 		self.order.done()
+	def getprice(self):
+		o = self.order
+		if o.subsidy != 0:
+			return o.subsidy
+		p = self.order.product
+		price  = p.price/p.amount
+		return price
+		
 		
 
 class BodyEval(models.Model):
