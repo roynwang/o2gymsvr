@@ -50,7 +50,8 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 		date_str = datetime.datetime.strftime(date,"%Y-%m-%d")
 		hour  = self.kwargs.get("hour")
 		print date_str
-		return Schedule.objects.filter(coach=coach,date=date_str, hour=hour).first()
+		ret = Schedule.objects.filter(coach=coach,date=date_str, hour=hour).first()
+		return ret
 		#return get_object_or_404(Schedule,coach=coach,date=date_str, hour=hour)
 
 	def partial_update(self, request, *args, **kwargs):

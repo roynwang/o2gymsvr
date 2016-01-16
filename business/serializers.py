@@ -26,7 +26,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Schedule
 	def get_complete_status(self, obj):
-		completed = Schedule.objects.filter(order=obj.order,deleted = False, done = True).count()
+		completed = obj.order.schedule_set.filter(deleted = False, done = True).count()
 		sum_amount = obj.order.product.amount
 		return str(completed) + "/" + str(sum_amount)
 

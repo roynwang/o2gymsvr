@@ -14,6 +14,11 @@
     margin-top: 20px;
     font-size: 12px;
 }
+
+.event.action .highlighted{
+	color: #4fd2c2
+}
+
 .toolbar-top-button {
 	font-size: 16px;
 }
@@ -33,16 +38,103 @@
 	text-align: center;
 
 }
-.date-tab {
-	width: 22%;
-	padding: 22px 0 8px 0;
+
+
+.event{
+	background: rgb(254,211,224);
+    border-left: solid 3px rgb(189,0,78);
+    font-size: 14px;
+	color:  rgb(189, 0, 78);
 }
-.date-tab-hour {
-	width: 16.6%;
-	padding: 22px 0 8px 0;
+.event .course-time {
+	color:  rgb(189, 0, 78);
 }
-.date-tab-day>div {
-	border-left: solid 1px #777
+
+.event.done {
+	background: rgb(224,247,217);
+    border-left: solid 3px rgb(54,98,44);
+    font-size: 16px;
+    color: rgb(54,98,44);
+    font-weight: bold;
+}
+.event.done .course-time{
+	 color: rgb(54,98,44);
+}
+.event-action-btn {
+	margin: 0;
+    width: 45px;
+    min-width: 45px;
+    max-width: 45px !important;
+}
+
+.event-container {
+	height: inherit
+}
+.event-container.editing {
+}
+.event.action{
+	font-size: 28px;
+}
+.list-item {
+	height:50px;
+	border-bottom: solid 1px #e7e7e9
+}
+.list-item.first {
+	height:54px;
+	border-top: solid 1px #e7e7e9
+}
+.list-item.editing {
+	background: rgb(253,243,205);
+	border-left: solid 3px rgb(218,197,51);
+}
+
+.list-item.border-dot {
+	border-bottom-style: dotted;
+}
+.list-item.hide-border {
+	border-bottom: none;
+	height: 51px
+}
+.title-list.half {
+
+}
+
+
+.o-active-btn {
+	color: #4fd2c2
+}
+
+.md-input-has-value>label, .md-input-focused>label {
+	display: none
+}
+
+md-input-container.md-default-theme:not(.md-input-invalid).md-input-focused .md-input, md-input-container:not(.md-input-invalid).md-input-focused .md-input {
+    border-color: #666
+}
+.date-day {
+	/*border-left: solid 1px #777;*/
+	font-size: 16px;
+	text-align: center;
+	color: #777 !important;
+}
+.weekday {
+	font-size: 12px;
+	color: #777;
+}
+
+.md-toolbar-tools .date-day .date-day-item {
+    padding: 9px;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: normal;
+	width: 38px;
+	height: 38px;
+}
+
+.md-toolbar-tools .date-day.selected .date-day-item {
+	background: #4fd2c2;
+    color: white;
+    font-weight: normal;
 }
 .date-tab-picker {
 	width: 12%;
@@ -55,14 +147,19 @@
 	padding-top: 12px;
     margin-left: 0;
 }
-.date-tab-picker .md-datepicker-input-container {
+.md-datepicker-input-container {
 	border-bottom: none;
 	margin-left: -8px;
     padding-bottom: 0;
 	display: none;
 }
-.date-tab-picker md-icon {
-    color: #4fd2c2 !important;
+md-datepicker md-icon {
+    /*color: #4fd2c2 !important;*/
+    color: rgba(0,0,0,0) !important;
+}
+
+.md-default-theme .md-datepicker-open .md-datepicker-calendar-icon, .md-datepicker-open .md-datepicker-calendar-icon {
+    fill: rgba(0,0,0,0) !important;
 }
 
 .md-datepicker-input {
@@ -70,17 +167,21 @@
 	font-family: Montserrat, sans-serif;
 	color: #333;
 	margin-left: 40px;
+	display: none;
+}
+.md-datepicker-triangle-button.md-button.md-icon-button {
+	display:none
 }
 
-.date-tab.selected>div{
-	color: #4fd2c2
-}
+
 .icon-button {
 	font-size: 16px;
 	padding-top: 2px;
 }
 .small-button {
+	background: #4fd2c2;
 	font-size: 14px;
+	color: white;
 }
 md-dialog .date-tab {
     padding: 20px 0 12px 0;
@@ -89,16 +190,30 @@ md-toolbar .date-tab-picker {
 	padding-top: 6px;
 	padding-bottom: 6px;
 }
+.date-tab-hour {
+	font-size:15px
+}
 .time-na {
+	text-align:center;
 	color:#ccc
 }
 .time-available {
-	color:#333
+	text-align:center;
+	color:#666
+}
+/*
+md-toast.md-default-theme .md-toast-content, md-toast .md-toast-content {
+    background-color: #eee;
+    color: #666;
+}
+*/
+md-input-container {
+	margin-top: 8px;
 }
 
 /* angular-material */
 md-toolbar {
-    background: rgba(0,0,0,0) !important;
+    background: rgba(255,255,255,1) !important;
     color: #333 !important;
 	padding: 0 5px;
 }
@@ -108,6 +223,9 @@ md-tabs.md-default-theme .md-tab.md-active, md-tabs .md-tab.md-active, md-tabs.m
 md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
 	color: #4fd2c2;
 	background: #4fd2c2
+}
+.icon-list {
+	line-height: 50px
 }
 
 .icon-list-menu {
@@ -138,6 +256,11 @@ md-progress-circular.md-default-theme.md-accent .md-inner .md-left .md-half-circ
 }
 .body{
 	padding-top:45px
+}
+md-sidenav{
+	width:calc(100% - 100px);
+	min-width:calc(100% - 100px);
+	min-width:calc(100% - 100px);
 }
 
 @media screen and (max-width:420px){

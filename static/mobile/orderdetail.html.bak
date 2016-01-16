@@ -1,0 +1,150 @@
+<!--
+<div class="w-tabs" data-duration-in="400" data-duration-out="400" data-easing="ease-out-quint"
+ng-controller="OrderDetailCtrl as ctrl">
+    <div class="w-tab-menu top-buttons">
+        <a class="w-tab-link w-inline-block toolbar-top-button date-tab date-tab-picker">
+            <div>
+                <md-datepicker ng-model="ctrl.currentdate" ng-change="ctrl.refreshdates()"></md-datepicker>
+            </div>
+        </a>
+        <a ng-click="ctrl.select(ctrl.dates[0])" class="w-tab-link w-inline-block toolbar-top-button
+					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[0]}">
+            <div>{{ctrl.dates[0].Format("MM/dd")}}</div>
+        </a>
+        <a ng-click="ctrl.select(ctrl.dates[1])" class="w-tab-link  w-inline-block toolbar-top-button
+					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[1]}">
+            <div>{{ctrl.dates[1].Format("MM/dd")}}</div>
+        </a>
+        <a ng-click="ctrl.select(ctrl.dates[2])" class="w-tab-link w-inline-block toolbar-top-button
+					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[2]}">
+            <div>{{ctrl.dates[2].Format("MM/dd")}}</div>
+        </a>
+        <a ng-click="ctrl.select(ctrl.dates[3])" class="w-tab-link w-inline-block toolbar-top-button
+					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[3]}">
+            <div>{{ctrl.dates[3].Format("MM/dd")}}</div>
+            <a>
+    </div>
+</div>
+-->
+<md-dialog aria-label="Mango (Fruit)" ng-cloak ng-controller="OrderDetailCtrl as ctrl">
+    <form>
+        <md-toolbar class="time-table">
+            <!--            <div class="md-toolbar-tools">
+                <h2>预约课程</h2>
+                <span flex></span>
+                <md-button style="padding:0" class="md-icon-button" ng-click="ctrl.cancel()">
+                    <div style="color:#ccc" class="navbar-button-icon icon ion-ios-close-empty"></div>
+                </md-button>
+
+            </div>
+			-->
+            <div>
+                <a class="w-tab-link w-inline-block toolbar-top-button date-tab date-tab-picker">
+                    <div>
+                        <md-datepicker ng-model="ctrl.currentdate" ng-change="ctrl.refreshdates()"></md-datepicker>
+                    </div>
+                </a>
+                <a ng-click="ctrl.select(ctrl.dates[0])" class="w-tab-link w-inline-block toolbar-top-button
+					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[0]}">
+                    <div>{{ctrl.dates[0].Format("MM/dd")}}</div>
+                </a>
+                <a ng-click="ctrl.select(ctrl.dates[1])" class="w-tab-link  w-inline-block toolbar-top-button
+					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[1]}">
+                    <div>{{ctrl.dates[1].Format("MM/dd")}}</div>
+                </a>
+                <a ng-click="ctrl.select(ctrl.dates[2])" class="w-tab-link w-inline-block toolbar-top-button
+					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[2]}">
+                    <div>{{ctrl.dates[2].Format("MM/dd")}}</div>
+                </a>
+                <a ng-click="ctrl.select(ctrl.dates[3])" class="w-tab-link w-inline-block toolbar-top-button
+					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[3]}">
+                    <div>{{ctrl.dates[3].Format("MM/dd")}}</div>
+                </a>
+            </div>
+            <div ng-repeat="r in [0,1,2,3,4]">
+                <a class="w-tab-link w-inline-block toolbar-top-button date-tab date-tab-hour"
+                ng-repeat="h in [0,1,2,3,4,5]">
+                    <div ng-click="ctrl.addbook(6*r+h)" class="time-na" ng-class="{'time-available': ctrl.isAvaHour(6*r + h)}">{{ctrl.timemap[6*r + h]}}</div>
+                </a>
+            </div>
+        </md-toolbar>
+        <md-dialog-content style="height:1180px;padding: 0 5px; border-bottom:solid 1px #ccc;">
+            <md-tabs md-dynamic-height md-border-bottom>
+			<md-tab label="待约({{ctrl.order.course_count-ctrl.bookedbook.length-ctrl.completedbook.length}})">
+                    <md-content class="md-padding" style="padding-top: 0;">
+					<h1 class="title-new"
+						ng-hide="ctrl.actionlist.length>0">还有{{ctrl.order.course_count -
+						ctrl.bookedbook.length - ctrl.completedbook.length}}节课待预约</h1>
+                        <ul class="list">
+                            <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
+                            style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
+                            ng-repeat="c in ctrl.actionlist">
+                                <p class="w-clearfix w-inline-block" href="#">
+                                    <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
+                                    <div ng-click="ctrl.recover(c)" class="course-time icon-list highlighted">
+                                        <div class="icon ion-ios-close-outline"></div>
+                                    </div>
+                                    <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
+                                    <div class="title-list course-time">{{c.pendingaction=="add"?"新增":"取消"}}</div>
+                                </p>
+                            </li>
+                        </ul>
+                    </md-content>
+                </md-tab>
+				<md-tab label="待上({{ctrl.bookedbook.length}})">
+                    <md-content class="md-padding" style="padding-top: 0;">
+                        <h1 class="title-new" ng-hide="ctrl.bookedbook.length>0">没有待上课程</h1>
+                        <ul class="list">
+                            <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
+                            style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
+                            ng-repeat="c in ctrl.bookedbook">
+                                <p class="w-clearfix w-inline-block" href="#">
+                                    <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
+                                    <div ng-click="ctrl.removebook(c.id)" class="course-time icon-list highlighted">
+                                        <div class="icon ion-ios-close-outline"></div>
+                                    </div>
+                                    <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
+                                </p>
+                            </li>
+                        </ul>
+                    </md-content>
+                </md-tab>
+				<md-tab label="已上({{ctrl.completedbook.length}})">
+                    <md-content class="md-padding" style="padding-top: 0;">
+                        <h1 class="title-new" ng-hide="ctrl.completedbook.length>0">没有已上课程</h1>
+                        <ul class="list">
+                            <li class="list-item" data-ix="list-item" style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
+                            ng-repeat="c in ctrl.completedbook">
+                                <p class="w-clearfix w-inline-block" href="#">
+                                    <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
+                                    <div class="course-time icon-list highlighted">
+                                        <div class="icon ion-ios-checkmark-outline"></div>
+                                    </div>
+                                    <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
+                                </p>
+                            </li>
+                        </ul>
+                    </md-content>
+                </md-tab>
+            </md-tabs>
+        </md-dialog-content>
+		<md-dialog-actions layout="row" style="padding-left: 8px">
+		    <md-button>
+				有效期：{{ctrl.order.endtime}}
+			</md-button>
+            <span flex></span>
+            <a class="w-clearfix w-inline-block small-button grey" ng-click="ctrl.cancel()">
+                <div class="icon-button bigger">
+                    <div class="icon ion-ios-close-empty"></div>
+                </div>
+                <div class="text-button">返回</div>
+            </a>
+            <a ng-click="ctrl.submit()" class="w-clearfix w-inline-block small-button" href="#">
+                <div class="icon-button">
+                    <div class="icon ion-android-exit"></div>
+                </div>
+                <div class="text-button" >保存</div>
+            </a>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

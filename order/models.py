@@ -40,7 +40,9 @@ class Order(models.Model):
 	def done(self):
 		if self.schedule_set.count() == self.product.amount:
 			self.status = "done"
+			self.coach.order_count += 1
 			self.save()
+			self.coach.save()
 	def cal_endtime(self):
 		if self.duration == None or self.duration == 0:
 			return "N/A"
