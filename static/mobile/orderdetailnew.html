@@ -1,6 +1,5 @@
-<div ng-controller="OrderDetailCtrlNew as ctrl">
-    <md-content style="width:175%" scroll="scrolled">
-
+<div ng-controller="OrderDetailCtrlNew as ctrl" style="width:175%" scroll="scrolled">
+    <md-content>
         <div layout="column">
             <md-toolbar class="md-tall" ng-style="ctrl.daystyle">
                 <div class="md-toolbar-tools" style="padding:0" layout="row">
@@ -22,15 +21,15 @@
                     </div>
                 </div>
         </div>
-        <div layout="row" style="margin-top:10px;margin-bottom:80px;">
+        <div layout="row" style="margin-top:10px;margin-bottom:80px;width:100%">
             <ul class="list" ng-style="ctrl.hourstyle">
                 <li ng-repeat="t in ctrl.bookmap" layout="row" class="list-item" style="border:none">
                     <div flex ng-class="{'half': t.index%2==1}" class="title-list" style="text-align:center;">{{ t.time}}</div>
                     <li>
             </ul>
-            <ul class="list" flex style="margin-left: 66px;margin-top: 55px;width:175%">
+            <ul class="list" style="margin-left: 66px;margin-top: 55px;width:100%">
                 <li layout="row" ng-hide="c.index==26" ng-class="{ 'first' : c.index==0, 'border-dot': c.index%2 == 0}"
-                class="list-item" style="opacity: 1;" ng-repeat="c in ctrl.bookmap">
+                class="list-item" style="opacity: 1;width:inherit;" ng-repeat="c in ctrl.bookmap">
                     <div flex class="event-container" layout="row">
                         <div class="hour" layout="row" layout-align="center center" flex ng-repeat="d in [0,1,2,3,4,5,6]"
                         ng-class="{'na': !c.na[d], 'booked': c.booked[d], 'completed': c.completed[d], 'editing':c.editing[d]}"
