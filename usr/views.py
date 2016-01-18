@@ -209,6 +209,11 @@ class ModifyGym(APIView):
 			newgym = get_object_or_404(Gym,id=request.DATA['gym'])
 			usr.gym = [newgym]
 
+			#BUG: where creating new coach, the field iscoach is false
+			#set to coach when set gym    
+			#now when creating new coach there is 2 step: 1.create a new user 2.change the gym
+			usr.iscoach = True
+
 			usr.save()
 			serializer = GymSerializer(newgym)
 			return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

@@ -167,15 +167,18 @@ class ScheduleForRead(generics.ListAPIView):
 		return Response({"next":nextstart,"previous":prevstart, "results":serializer.data})
 
 class DayAvaiableTime(APIView):
-	def get(self,request,name,date):
-		coach = get_object_or_404(User, name=self.kwargs.get("name"))
-		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
 
-		workingday = get_object_or_404(WorkingDays, name=self.kwargs.get("name"))
+	def getDayAva(self, coachname, date):
+		#date = datetime.datetime.strptime(datestr,"%Y%m%d")
+
+		coach = get_object_or_404(User, name=coachname)
+		workingday = get_object_or_404(WorkingDays, name=coachname)
 		working = map(lambda x: datetime.datetime.strptime(x,"%Y/%m/%d"),
 				filter(bool, workingday.excep_work.split("|")))
 		rest = map(lambda x: datetime.datetime.strptime(x,"%Y/%m/%d"),
 				filter(bool, workingday.excep_rest.split("|")))
+
+		print "1"
 		weekrest = []
 		outhours = []
 		noonhours = []
@@ -186,20 +189,13 @@ class DayAvaiableTime(APIView):
 		if len(workingday.noon_hours) != 0:
 			noonhours = map(lambda x: int(x), workingday.noon_hours.split("|"))
 
-		#print "weekdays: " + str(date.weekday())
-		#print "weekdays: " + str((date.weekday() + 1)%7)
-		print working
-
 		out = map(lambda x: int(x), outhours)
 		ava = [h for h in range(0,26) if not h in out]
-		#print date
-		#print datetime.datetime.today()
 	
 		if ((str((date.weekday() + 1)%7) in weekrest) and (not date in working)) or (date in rest):
 			ret = {"out":out,"na": ava,"availiable":[], "noon":noonhours}
-			return Response(ret, status=status.HTTP_200_OK)
+			return ret
 
-		#get all booked hour
 		booked = Schedule.objects.filter(coach=coach.id, date=date)
 		na = []
 		for b in booked:
@@ -208,6 +204,21 @@ class DayAvaiableTime(APIView):
 		na = na + noonhours
 		ava = [h for h in ava if h not in na]
 		ret = {"out":out,"na": na,"availiable":ava, "noon":noonhours}
+		return ret
+
+	def get(self,request,name,date):
+		print request.query_params
+		curdate = datetime.datetime.strptime(date,"%Y%m%d")
+		if "days" in request.query_params:
+			ret = []
+			#build the week
+			for i in range(0,int(request.query_params["days"])):
+				tmpday = curdate + datetime.timedelta(days=i)
+				tmp = self.getDayAva(name, tmpday)
+				tmp["date"] = datetime.datetime.strftime(tmpday, "%Y%m%d")
+				ret.append(tmp)
+		else :
+			ret = self.getDayAva(name,curdate)
 		return Response(ret, status=status.HTTP_200_OK)
 
 @permission_classes((AllowAny, ))
