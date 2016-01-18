@@ -909,12 +909,12 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
         that.nextweek = function() {
             console.log("next")
-            that.currentdate = that.dates[6].addDays(1)
+            that.currentdate = that.dates[6].addDays(7)
             that.refreshdates()
         }
         that.prevweek = function() {
             console.log("prev")
-            that.currentdate = that.dates[0].addDays(7)
+            that.currentdate = that.dates[0].addDays(-7)
             that.refreshdates()
         }
         that.refreshdates = function() {
