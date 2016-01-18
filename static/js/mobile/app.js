@@ -1001,7 +1001,7 @@ app.controller("OrderDetailCtrlNew", ['$scope', 'Restangular', '$ordersvc', '$us
                 height: "60px",
                 "min-height": "60px",
                 padding: 0,
-                width: "100%",
+                width: "175%",
             }
             //read user
         $usersvc.getuser(undefined, false, function(data) {
