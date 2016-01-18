@@ -10,18 +10,22 @@
                         <div class="bar-home-icon" style="background-color:#777"></div>
                     </div>
                 </div>
-                <div flex=10 class="icon-list">
-                    <div style="font-size:34px; color:#777;" class="icon ion-ios-people-outline" ng-click="ctrl.toggleMenu('right')"></div>
+                <div flex layout="row">
+					<h4 flex style="text-align:center;position: relative;top: -4px; right:-25px">{{ctrl.month}}
+						<div style="min-width: 50px;display: inline-block;position: relative;bottom:
+							-4px;left:-20px;">
+                        <md-datepicker id="datepicker" ng-model="ctrl.currentdate" style="color:#777;position: relative; background: rgba(0,0,0,0);"
+                        ng-change="ctrl.refreshdates()"></md-datepicker>
+                        <div style="font-size:26px; color:#777;margin-left: 20px; margin-top: -42px;" class="icon ion-ios-calendar-outline"></div>
+                    </div>
+				</h4>
                 </div>
-                <div flex>
-                    <h4 style="text-align:center">{{ctrl.month}}</h4>
+                <div flex=10 class="icon-list" style="z-index: 1000;">
+                    <div style="font-size:34px; color:#777; margin-top:-2px" class="icon ion-ios-people-outline"
+                    ng-click="ctrl.toggleMenu('right')"></div>
+
                 </div>
-                <span flex=10></span>
-                <div flex=10 style="min-width: 50px">
-                    <md-datepicker id="datepicker" ng-model="ctrl.currentdate" style="color:#777;position: relative; background: rgba(0,0,0,0);"
-                    ng-change="ctrl.refreshdates()"></md-datepicker>
-                    <div style="font-size:26px; color:#777;margin-left: 20px; margin-top: -42px;" class="icon ion-ios-calendar-outline"></div>
-                </div>
+
             </div>
             <div class="md-toolbar-tools" style="padding:0" layout="row" layout-align="center center">
                 <div flex class="weekday" layout="row"><a flex style="text-align:center">日</a>
@@ -192,8 +196,9 @@
             </div>
         </md-toolbar>
         <md-content layout-padding>
-            <div style="width:100%" ng-click="ctrl.showcustomer(c)" class="w-clearfix w-inline-block" ng-repeat="c in ctrl.customerlist">
-				<!--
+		<div style="width:85%; border-bottom: solid 1px #eee;padding: 0px; margin-left:20px;" ng-click="ctrl.showcustomer(c)" class="w-clearfix w-inline-block"
+            ng-repeat="c in ctrl.customerlist">
+                <!--
                 <a style="font-size: 25px;" href="sms:{{c.name}}" class="course-time icon-list highlighted">
                     <div class="ion-ios-chatbubble-outline"></div>
                 </a>
@@ -201,13 +206,14 @@
                     <div class="ion-ios-telephone-outline"></div>
                 </a>
 				-->
-				<div class="nav-menu-titles">{{c.displayname}}</div>
+                <div class="nav-menu-titles">{{c.displayname}}</div>
 
-                <span class="icon-list-menu" style="float:right;color: #4fd2c2">
-					<a class="ion-ios-chatbubble-outline" href="tel:{{c.name}}"></a>
+				<span class="icon-list-menu" style="float: right;width: 30px;padding-left: 10px;">
+					<a style="color: #4fd2c2"class="ion-ios-chatbubble-outline" href="tel:{{c.name}}"></a>
                 </span>
-                <span class="icon-list-menu" style="float:right;color: #4fd2c2">
-					<a class="ion-ios-telephone-outline" href="tel:{{c.name}}"></a>
+				<span class="icon-list-menu" style="float: right;width: 30px;padding-left:
+					10px;margin-right: 10px;">
+					<a style="color:#4fd2c2" class="ion-ios-telephone-outline" href="tel:{{c.name}}"></a>
                 </span>
             </div>
 
