@@ -128,10 +128,32 @@ var app = angular.module('o2m', [
     'ngMaterial',
     'angularQFileUpload',
     'LocalStorageModule',
-	'ngTouch'
     //'ngAnimate', 
     //'anim-in-out'
 ])
+app.directive("scroll", function($window) {
+    return function(scope, element, attrs) {
+        angular.element($window).bind("scroll", function() {
+            scope.$apply(scope.scrolled(this.pageXOffset, this.pageYOffset))
+        });
+    };
+});
+/*
+app.directive('infiniteScroll', [ "$window", function ($window) {
+        return {
+            link:function (scope, element, attrs) {
+                var offset = parseInt(attrs.threshold) || 0;
+                var e = element[0];
+
+                element.bind('scroll', function () {
+                    if (scope.$eval(attrs.canLoad) && e.scrollTop + e.offsetHeight >= e.scrollHeight - offset) {
+                        scope.$apply(attrs.infiniteScroll);
+                    }
+                });
+            }
+        };
+    }]);
+*/
 app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider, $mdDateLocaleProvider, $compileProvider) {
     // For any unmatched url, send to /route1
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|local|data|tel|sms):/);
@@ -180,18 +202,20 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             templateUrl: "/static/mobile/changepwd.html",
             //controller: "NewOrderCtrl"
         })
-        .state('order', {
-            url: "/:coachname/:orderid",
-            templateUrl: "/static/mobile/orderdetail.html",
+        .state('orderdetail', {
+            url: "/orderdetail/:orderid",
+            templateUrl: "/static/mobile/orderdetailnew.html",
         })
         .state('customerlist', {
             url: "/customers",
             templateUrl: "/static/mobile/customerlist.html",
         })
-        .state('orderdetail', {
-            url: "/orderdetail/:orderid",
-            templateUrl: "/static/mobile/orderdetail.html",
-        })
+        /*
+                .state('orderdetail', {
+                    url: "/orderdetail/:orderid",
+                    templateUrl: "/static/mobile/orderdetail.html",
+                })
+        */
 })
 
 
@@ -280,6 +304,14 @@ app.factory("$date", function() {
     }
 })
 app.factory("$booksvc", function(Restangular) {
+    function create(coachname, book, onsuccess, onfail) {
+        var datestr = book.date.replace(/-/g, "")
+        Restangular.one("api/", coachname)
+            .post("b/" + datestr, book)
+            .then(onsuccess, onfail)
+
+    }
+
     function complete(book, onsuccess, onfail) {
         var bookdone = Restangular.one("api", book.coachprofile.name)
             .one("b", book.date.replace(/-/g, ""))
@@ -303,6 +335,14 @@ app.factory("$booksvc", function(Restangular) {
             })
     }
 
+    function bookremove(book, onsuccess, onfail) {
+        var datestr = book.date.replace(/-/g, "")
+        Restangular.one("api/", book.coachprofile.name)
+            .one("b/" + datestr, book.hour)
+            .remove()
+            .then(onsuccess, onfail)
+    }
+
     function savedetail(book, onsuccess, onfail) {
         var bookdone = Restangular.one("api", book.coachprofile.name)
             .one("b", book.date.replace(/-/g, ""))
@@ -315,7 +355,10 @@ app.factory("$booksvc", function(Restangular) {
     }
     return {
         complete: complete,
-        savedetail: savedetail
+        create: create,
+        remove: bookremove,
+        savedetail: savedetail,
+
     }
 })
 app.factory("$ordersvc", function(Restangular) {
@@ -604,11 +647,10 @@ app.controller("CustomerListCtrl", ["Restangular",
     }
 ])
 
-app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc", "$scope", "$paramssvc", "$mdToast", "$mdSidenav", "$document","$mdSidenav",
+app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc", "$scope", "$paramssvc", "$mdToast", "$mdSidenav", "$document", "$mdSidenav",
     function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc, $scope, $paramssvc, $mdToast, $mdSidenav, $document, $mdSidenav) {
         var user = $.cookie("user")
         var that = this
-        settitle("课表")
         that.timemap = TimeMap
         that.courselist = []
         that.tabs = [true, false]
@@ -622,12 +664,11 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.toggleMenu = function(direction) {
             $mdSidenav(direction)
                 .toggle()
-                .then(function() {
-                });
+                .then(function() {});
         }
-		that.triggercalendar = function(){
-			$("#datepicker button").trigger("click")
-		}
+        that.triggercalendar = function() {
+            $("#datepicker button").trigger("click")
+        }
         that.init = function() {
             user = $.cookie("user")
             $usersvc.getuser(undefined, false, function(data) {
@@ -857,40 +898,31 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                             timer: 1500,
                             showConfirmButton: false
                         });
-                        that.bookmap[book.hour][book] = undefined 
-						that.bookmap[book.hour+1][book] = undefined
-						that.bookmap[book.hour+1][extend] = false
+                        that.bookmap[book.hour][book] = undefined
+                        that.bookmap[book.hour + 1][book] = undefined
+                        that.bookmap[book.hour + 1][extend] = false
                     }, function(data) {
                         swal("", "删除失败", "warning")
                     })
 
             })
         }
-		that.nextweek = function(){
-			console.log("next")
-			that.currentdate =  that.dates[6].addDays(1)
-			that.refreshdates()
-		}
-		that.prevweek = function(){
-			console.log("prev")
-			that.currentdate =  that.dates[0].addDays(7)
-			that.refreshdates()
-		}
+        that.nextweek = function() {
+            console.log("next")
+            that.currentdate = that.dates[6].addDays(1)
+            that.refreshdates()
+        }
+        that.prevweek = function() {
+            console.log("prev")
+            that.currentdate = that.dates[0].addDays(7)
+            that.refreshdates()
+        }
         that.refreshdates = function() {
-			var curweekday = that.currentdate.getDay()
-			for(var i = 0; i<7;i++){
-				that.dates[i] = that.currentdate.addDays(i-curweekday)
-			}
-			/*
-            that.dates[0] = that.currentdate
-            that.dates[1] = that.currentdate.addDays(1)
-            that.dates[2] = that.currentdate.addDays(2)
-            that.dates[3] = that.currentdate.addDays(3)
-            that.dates[4] = that.currentdate.addDays(4)
-            that.dates[5] = that.currentdate.addDays(5)
-            that.dates[6] = that.currentdate.addDays(6)
-			*/
-			that.month = moment(that.currentdate).format('MMMM')
+            var curweekday = that.currentdate.getDay()
+            for (var i = 0; i < 7; i++) {
+                that.dates[i] = that.currentdate.addDays(i - curweekday)
+            }
+            that.month = moment(that.currentdate).format('MMMM')
             that.selected = that.dates[curweekday]
             that.refresh()
         }
@@ -924,26 +956,8 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
         that.showorder = function(orderid) {
             $state.transitionTo("orderdetail", {
-                    orderid: orderid
-                })
-                /*
-            $ordersvc.setorder(orderid)
-                //var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
-            $mdDialog.show({
-                    controller: 'OrderDetailCtrl',
-                    templateUrl: '/static/mobile/orderdetail.html',
-                    parent: angular.element(document.body),
-                    //targetEvent: ev,
-                    clickOutsideToClose: true,
-                    fullscreen: true
-                })
-                .then(function(answer) {
-                    console.log('You said the information was "' + answer + '".');
-                }, function() {
-                    console.log('You cancelled the dialog.')
-                });
-			*/
-
+                orderid: orderid
+            })
         }
         if (user == undefined) {
             $mdDialog.show({
@@ -968,6 +982,332 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
     }
 ])
+app.controller("OrderDetailCtrlNew", ['$scope', 'Restangular', '$ordersvc', '$usersvc', "$stateParams", "$mdToast", "$booksvc", "$timeout", "$document", "$mdBottomSheet",
+    function($scope, Restangular, $ordersvc, $usersvc, $stateParams, $mdToast, $booksvc, $timeout, $document, $mdBottomSheet) {
+        var that = this
+        that.currentdate = new Date()
+        that.dates = []
+        that.actionlist = []
+        that.user = {}
+        that.timemap = TimeMap
+        that.orderid = {}
+        that.hourstyle = {
+            position: "fixed",
+            "min-width": "60px",
+            "margin-top": "30px"
+        }
+        that.daystyle = {
+                position: "fixed",
+                height: "60px",
+                "min-height": "60px",
+                padding: 0,
+                width: "175%",
+                "margin-left": "0px"
+            }
+            //read user
+        $usersvc.getuser(undefined, false, function(data) {
+            that.user = data
+        })
+
+        that.getweekday = function(date) {
+            return moment(date).format('dd')
+        }
+
+
+        $scope.scrolled = function(offsetx, offsety) {
+            /*"position:fixed;min-width:44px;margin-top: 70px;"	*/
+            that.hourstyle["margin-top"] = 30 - offsety + "px"
+            that.daystyle['margin-left'] = -offsetx + "px"
+        }
+        that.execution = {}
+        that.buildexecution = function(action, c, d) {
+            if (action == "remove") {
+                _.each(that.bookmap, function(item) {
+                    item.editing = [false, false, false, false, false, false, false]
+                })
+                that.execution['action'] = that.removebook
+            }
+            if (action == "add") {
+                _.each(that.bookmap, function(item) {
+                    item.stats = [false, false, false, false, false, false, false]
+                })
+                that.execution['action'] = that.addbook
+            }
+            that.execution['c'] = c
+            that.execution['day'] = d
+            that.execution.c.stats[that.execution.day] = "pending"
+
+            $timeout(function() {
+                if (c.stats[d] != "inprogress") {
+                    c.stats[d] = false
+                } else {
+                    console.log("ignore")
+                }
+            }, 5000)
+        }
+        that.executionstatus = function(stat) {
+            that.execution.c.stats[that.execution.day] = stat
+        }
+        that.execute = function() {
+            var tar = that.execution.c.booked[that.execution.day] || that.execution.c.completed[that.execution.day] || that.execution.c.editing[that.execution.day]
+            that.execution["action"](tar)
+        }
+        that.removebook = function(book) {
+            that.executionstatus("inprogress")
+            $booksvc.remove(book, function(data) {
+                that.executionstatus(false)
+                $mdToast.show(
+                    $mdToast.simple()
+                    .parent($document[0].querySelector('.bottom-action-bar'))
+                    .textContent('预约已取消')
+                    .hideDelay(3000)
+                );
+
+                //update booked infomation
+                that.execution.c.booked[that.execution.day] = false
+                that.execution.c.extend[that.execution.day] = false
+
+                var prev = that.bookmap[that.execution.c.index - 1]
+                prev.booked[that.execution.day] = false
+                prev.extend[that.execution.day] = false
+                    //update na
+                that.execution.c.na[that.execution.day] = true
+                prev.na[that.execution.day] = true
+                    //update status
+                that.executionstatus("false")
+
+                that.execution = {}
+                that.refreshorder()
+
+            }, function(data) {
+                that.executionstatus(false)
+                $mdToast.show(
+                    $mdToast.simple()
+                    .textContent('取消预约失败')
+                    .hideDelay(3000)
+                );
+            })
+        }
+        that.addbook = function(book) {
+            that.executionstatus("inprogress")
+            $booksvc.create(that.user.name, book, function(data) {
+                that.executionstatus(false)
+                $mdToast.show(
+                    $mdToast.simple()
+                    .parent($document[0].querySelector('.bottom-action-bar'))
+                    .textContent('预约已提交')
+                    .hideDelay(3000)
+                );
+
+                /*
+                //update booked infomation
+                that.execution.c.editing[that.execution.day] = false
+                that.execution.c.extend[that.execution.day] = false
+
+                var prev = that.bookmap[that.execution.c.index - 1]
+                prev.editing[that.execution.day] = false
+                prev.extend[that.execution.day] = false
+                //update na
+                that.execution.c.na[that.execution.day] = true
+                prev.na[that.execution.day] = true
+                //update status
+                that.executionstatus("false")
+				*/
+
+                that.execution = {}
+                that.refreshorder(that.buildweekmap)
+
+            }, function(data) {
+                that.executionstatus(false)
+                $mdToast.show(
+                    $mdToast.simple()
+                    .parent($document[0].querySelector('.bottom-action-bar'))
+                    .textContent('取消提交失败')
+                    .hideDelay(3000)
+                );
+            })
+        }
+
+        that.editnew = function(c, d) {
+            if (c.stats[d]) {
+                return
+            }
+            var next = that.bookmap[parseInt(c.index) + 1]
+
+            //cancel other editing
+            _.each(that.bookmap, function(item) {
+                item.editing = [false, false, false, false, false, false, false]
+            })
+
+            //isvalid
+            if (c.booked[d] || c.completed[d] || next.booked[d] || next.booked[d]) {
+                return
+            }
+            if (that.order.booked.length == that.order.course_count) {
+                return
+            }
+
+            //create new book
+            var newbook = {
+                date: that.dates[d].Format("yyyy-MM-dd"),
+                hour: c.index,
+                coach: that.user.id,
+                custom: that.order.customerdetail.id,
+                order: that.order.id,
+            }
+            c.editing[d] = newbook
+            c.extend[d] = false
+            next.editing[d] = newbook
+            next.extend[d] = true
+
+        }
+
+        that.refreshorder = function(cb) {
+            $ordersvc.getorder($stateParams.orderid,
+                function(data) {
+                    that.order = data
+                    that.completedbook = _.where(data.booked, {
+                        done: true
+                    })
+                    that.bookedbook = _.where(data.booked, {
+                            done: false
+                        })
+                        /*
+                    for (var hour in that.bookmap) {
+                        var hourdetail = that.bookmap[hour]
+                        _.each(that.dates, function(day) {
+                            hourdetail.completed.push(false)
+                            hourdetail.booked.push(false)
+                        })
+                    }
+					*/
+                    _.each(data.booked, function(book) {
+                        var dayindex = function() {
+                            var i = undefined
+                            for (var d in that.dates) {
+                                if (that.dates[d].Format("yyyy-MM-dd") == book.date) {
+                                    i = parseInt(d)
+                                }
+                            }
+                            return i
+                        }()
+                        if (dayindex != undefined) {
+                            if (book.done) {
+                                that.bookmap[book.hour].completed[dayindex] = book
+                                that.bookmap[book.hour + 1].completed[dayindex] = book
+                                that.bookmap[book.hour + 1].extend[dayindex] = true
+                            } else {
+                                that.bookmap[book.hour].booked[dayindex] = book
+                                that.bookmap[book.hour + 1].booked[dayindex] = book
+                                that.bookmap[book.hour + 1].extend[dayindex] = true
+                            }
+                        }
+                    })
+                    console.log(that.bookmap)
+                    cb && cb()
+                },
+                function(data) {
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('获取日程失败')
+                        .hideDelay(3000)
+                    );
+                })
+        }
+        that.showorderbottom = function() {
+            $mdBottomSheet.show({
+                templateUrl: '/static/mobile/bottomsheetorder.html',
+                controller: 'BottomSheetOrderCtrl',
+                clickOutsideToClose: true,
+                locals: {
+                    order: that.order
+                }
+            })
+        }
+
+
+
+
+        //get current user information
+        $usersvc.getuser(undefined, false, function(usr) {
+            that.user = usr
+        })
+        that.refreshdates = function() {
+			var wd = that.currentdate.getDay()
+            //get start of the day
+            that.currentdate = that.currentdate.addDays(-wd)
+            curweekday = that.currentdate.getDay()
+            if (that.dates.length > 0) {
+                curweekday = that.dates[0].getDay()
+            }
+            for (var i = 0; i < 7; i++) {
+                that.dates[i] = that.currentdate.addDays(i - curweekday)
+            }
+            that.month = moment(that.currentdate).format('MMMM')
+            that.buildweekmap()
+        }
+
+        //build dateview
+        that.bookmap = []
+        that.buildweekmap = function() {
+            function builddaymap() {
+                for (var i in that.timemap) {
+                    var tmp = that.bookmap[i]
+                    if (tmp == undefined) {
+                        tmp = {}
+                        tmp["time"] = that.timemap[i]
+                        tmp["index"] = i
+                        that.bookmap.push(tmp)
+                    }
+                    tmp["na"] = []
+                    tmp["booked"] = [false, false, false, false, false, false, false]
+                    tmp["completed"] = [false, false, false, false, false, false, false]
+                    tmp["editing"] = [false, false, false, false, false, false, false]
+                    tmp["extend"] = [false, false, false, false, false, false, false]
+                    tmp["stats"] = [false, false, false, false, false, false, false]
+                }
+            }
+
+            function getweek() {
+                builddaymap()
+                var wd = that.currentdate.getDay()
+                    //get start of the day
+                that.currentdate = that.currentdate.addDays(-wd)
+                Restangular.one("api", that.user.name)
+                    .all("d/" + that.currentdate.Format("yyyyMMdd"))
+                    .getList({
+                        days: 7
+                    })
+                    .then(function(data) {
+                            for (var i = 0; i < 7; i++) {
+                                var daydetail = data[i]
+                                for (var hour in that.bookmap) {
+                                    that.bookmap[parseInt(hour)].na.push(daydetail.na.indexOf(parseInt(hour)) < 0)
+                                }
+                            }
+
+                            that.refreshorder()
+                        },
+                        function(data) {
+                            $mdToast.show(
+                                $mdToast.simple()
+                                .textContent('获取日程失败')
+                                .hideDelay(3000)
+                            );
+                        })
+            }
+            getweek()
+        }
+        that.refreshdates()
+    }
+])
+
+app.controller("BottomSheetOrderCtrl", function($scope, $mdBottomSheet, order) {
+    console.log(order)
+    $scope.timemap = TimeMap
+    $scope.items = order.booked
+})
+
 app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$ordersvc', '$usersvc', "$stateParams",
     function($scope, Restangular, $mdDialog, $ordersvc, $usersvc, $stateParams) {
         var that = this
@@ -1028,18 +1368,16 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
 
         that.completedbook = []
         that.bookedbook = []
-
         that.refreshdates = function() {
-            that.dates[0] = that.currentdate
-            that.dates[1] = that.currentdate.addDays(1)
-            that.dates[2] = that.currentdate.addDays(2)
-            that.dates[3] = that.currentdate.addDays(3)
-            that.dates[4] = that.currentdate.addDays(4)
-            that.select(that.currentdate)
-                //that.refresh()
-        }
-        that.cancel = function() {
-            $mdDialog.cancel();
+            curweekday = that.currentdate.getDay()
+            if (that.dates.length > 0) {
+                curweekday = that.dates[0].getDay()
+            }
+            for (var i = 0; i < 7; i++) {
+                that.dates[i] = that.currentdate.addDays(i - curweekday)
+            }
+            that.month = moment(that.currentdate).format('MMMM')
+            that.refresh()
         }
         that.recover = function(task) {
             if (task.pendingaction == "remove") {
