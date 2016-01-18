@@ -304,7 +304,7 @@ md-progress-circular.md-default-theme.md-accent .md-inner .md-left .md-half-circ
     border-left-color: #4fd2c2;
 }
 md-toolbar:not(.md-menu-toolbar) .md-button:not(.md-raised) {
-	     color: rgba(255,255,255,0);
+	background: rgba(255,255,255,0);
 }
 
 /* end angular-material */
