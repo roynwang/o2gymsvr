@@ -997,12 +997,11 @@ app.controller("OrderDetailCtrlNew", ['$scope', 'Restangular', '$ordersvc', '$us
             "margin-top": "30px"
         }
         that.daystyle = {
-                position: "fixed",
+                position: "absolute",
                 height: "60px",
                 "min-height": "60px",
                 padding: 0,
-                width: "175%",
-                "margin-left": "0px"
+                width: "100%",
             }
             //read user
         $usersvc.getuser(undefined, false, function(data) {
@@ -1017,7 +1016,7 @@ app.controller("OrderDetailCtrlNew", ['$scope', 'Restangular', '$ordersvc', '$us
         $scope.scrolled = function(offsetx, offsety) {
             /*"position:fixed;min-width:44px;margin-top: 70px;"	*/
             that.hourstyle["margin-top"] = 30 - offsety + "px"
-            that.daystyle['margin-left'] = -offsetx + "px"
+            that.daystyle['top'] = offsety + "px"
         }
         that.execution = {}
         that.buildexecution = function(action, c, d) {
