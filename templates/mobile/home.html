@@ -5,15 +5,12 @@
     <meta charset="utf-8">
     <title>氧气健身</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<!-- <link rel="stylesheet" type="text/css" href="/static/css/anim-in-out.css">-->
     <link rel="stylesheet" type="text/css" href="/static/mobilecss/normalize.css">
     <link rel="stylesheet" type="text/css" href="/static/mobilecss/framework.css">
     <link rel="stylesheet" type="text/css" href="/static/mobilecss/washington.css">
-    <link rel="stylesheet" type="text/css" href="/static/mobilecss/custom.css">
-	<link href="//cdn.bootcss.com/angular-material/1.0.1/angular-material.layouts.min.css"
-	rel="stylesheet">
-	<link href="//cdn.bootcss.com/angular-material/1.0.1/angular-material.min.css" rel="stylesheet">
 	<link href="//cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" rel="stylesheet">
-
+	<link href="//cdn.bootcss.com/angular-material/1.0.1/angular-material.min.css" rel="stylesheet">
     <script src="/static/js/webfont.js"></script>
     <script>
         WebFont.load(
@@ -29,11 +26,12 @@
 	<link rel="apple-touch-icon" href="images/logoStandford32.ico">
 
     <link href="/static/mobilecss/ionicons.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="/static/mobilecss/custom.css">
     
 </head>
 
-<body>
-    <section class="w-section mobile-wrapper">
+<body ng-app="o2m">
+		<!--
         <div class="page-content" id="main-stack">
             <div style="padding-top: 5px;height:45px" class="w-nav navbar" data-collapse="all" data-animation="over-left" data-duration="400"
             data-contain="1" data-easing="ease-out-quint" data-no-scroll="1">
@@ -93,26 +91,39 @@
                     </a>
                 </div>
             </div>
-            <div id="agcontainer" ui-view class="body" ng-app="o2m">
-            </div>
         </div>
-    </section>
-	<script src="//cdn.bootcss.com/jic/1.1.1/JIC.min.js"></script>
-	<script type="text/javascript" src="/static/js/modernizr.js"></script>
-    <script src="//cdn.bootcss.com/angular.js/1.4.7/angular.min.js"></script>
-	<script src="//cdn.bootcss.com/moment.js/2.10.6/moment.min.js"></script>
-    <script src="//cdn.bootcss.com/underscore.js/1.5.2/underscore-min.js"></script>
-    <script src="//cdn.bootcss.com/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
-    <script src="//cdn.bootcss.com/restangular/1.5.1/restangular.min.js"></script>
-	<script src="//cdn.bootcss.com/ionic/1.2.1/js/angular/angular-animate.min.js"></script>
-	<script src="//cdn.bootcss.com/angular-material/1.0.1/angular-material.min.js"></script>
-	<script src="//cdn.bootcss.com/angular-local-storage/0.2.2/angular-local-storage.min.js"></script>
+		-->
+    <div id="agcontainer" ui-view class="body anim-in-out" ng-app="o2m" style="padding-top:0">
+    </div>
+	<!--<script type="text/javascript" src="/static/js/modernizr.js"></script>-->
+    <script src="//cdn.bootcss.com/angular.js/1.4.8/angular.min.js"></script>
+	<script src="/static/js/angular-animate.min.js"></script>
 	<script src="/static/js/angular-aria.min.js"></script>
     <script src="/static/js/angular-messages.min.js"></script>
+	<script src="//cdn.bootcss.com/angular-material/1.0.1/angular-material.min.js"></script>
+
+<!--
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js"></script>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
+	
+-->
+
+	<script src="//cdn.bootcss.com/angular-touch/1.5.0-rc.0/angular-touch.min.js"></script>
+	<script src="//cdn.bootcss.com/moment.js/2.10.6/moment.min.js"></script>
+	<script src="//cdn.bootcss.com/moment.js/2.11.1/locale/zh-cn.js"></script>
+    <script src="//cdn.bootcss.com/underscore.js/1.5.2/underscore-min.js"></script>
+    <script src="/static/js/angular-ui-router.min.js"></script>
+    <script src="//cdn.bootcss.com/restangular/1.5.1/restangular.min.js"></script>
+	<script src="/static/js/angular-local-storage.min.js"></script>
     <script src="/static/js/jwt-decode.min.js"></script>
+	<!--<script src="/static/js/anim-in-out.js"></script>-->
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     <script src="/static/js/jquery.cookie.js"></script>
-    <script type="text/javascript" src="/static/js/framework.js"></script>
+	<!--<script type="text/javascript" src="/static/js/framework.js"></script>-->
 	<script src="//cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js"></script>
 	<script src="/static/js/SweetAlert.min.js" ></script>
 	<script src="/static/js/quupload.js" ></script>
