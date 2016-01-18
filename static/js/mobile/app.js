@@ -202,20 +202,20 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             templateUrl: "/static/mobile/changepwd.html",
             //controller: "NewOrderCtrl"
         })
+		/*
         .state('orderdetail', {
             url: "/orderdetail/:orderid",
             templateUrl: "/static/mobile/orderdetailnew.html",
         })
+		*/
         .state('customerlist', {
             url: "/customers",
             templateUrl: "/static/mobile/customerlist.html",
         })
-        /*
-                .state('orderdetail', {
-                    url: "/orderdetail/:orderid",
-                    templateUrl: "/static/mobile/orderdetail.html",
-                })
-        */
+        .state('orderdetail', {
+            url: "/orderdetail/:orderid",
+            templateUrl: "/static/mobile/orderdetail.html",
+        })
 })
 
 
@@ -1098,21 +1098,6 @@ app.controller("OrderDetailCtrlNew", ['$scope', 'Restangular', '$ordersvc', '$us
                     .hideDelay(3000)
                 );
 
-                /*
-                //update booked infomation
-                that.execution.c.editing[that.execution.day] = false
-                that.execution.c.extend[that.execution.day] = false
-
-                var prev = that.bookmap[that.execution.c.index - 1]
-                prev.editing[that.execution.day] = false
-                prev.extend[that.execution.day] = false
-                //update na
-                that.execution.c.na[that.execution.day] = true
-                prev.na[that.execution.day] = true
-                //update status
-                that.executionstatus("false")
-				*/
-
                 that.execution = {}
                 that.refreshorder(that.buildweekmap)
 
@@ -1224,16 +1209,13 @@ app.controller("OrderDetailCtrlNew", ['$scope', 'Restangular', '$ordersvc', '$us
             })
         }
 
-
-
-
         //get current user information
         $usersvc.getuser(undefined, false, function(usr) {
             that.user = usr
         })
         that.refreshdates = function() {
-			var wd = that.currentdate.getDay()
-            //get start of the day
+            var wd = that.currentdate.getDay()
+                //get start of the day
             that.currentdate = that.currentdate.addDays(-wd)
             curweekday = that.currentdate.getDay()
             if (that.dates.length > 0) {
@@ -1546,6 +1528,8 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
 
         that.refreshdates()
         that.refresh()
+		that.selected = that.dates[0]
+
     }
 ])
 app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdDialog", "$ordersvc", "$stateParams",
@@ -1569,21 +1553,9 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
         }
         that.call = function() {}
         that.showorder = function(orderid) {
-            $ordersvc.setorder(orderid)
-                //var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
-            $mdDialog.show({
-                    controller: 'OrderDetailCtrl',
-                    templateUrl: '/static/mobile/orderdetail.html',
-                    parent: angular.element(document.body),
-                    //targetEvent: ev,
-                    clickOutsideToClose: true,
-                    fullscreen: true
-                })
-                .then(function(answer) {
-                    console.log('You said the information was "' + answer + '".');
-                }, function() {
-                    console.log('You cancelled the dialog.')
-                });
+            $state.transitionTo("orderdetail", {
+                orderid: orderid
+            })
         }
         var customername = $stateParams.name
         $usersvc.getcustomer(customername, false, function(data) {

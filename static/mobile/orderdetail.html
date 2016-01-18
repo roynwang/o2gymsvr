@@ -2,24 +2,26 @@
     <md-content>
         <md-toolbar>
             <div class="md-toolbar-tools" style="padding:0" layout="row">
-                <div flex=10 style="min-width: 50px">
-                    <md-datepicker ng-model="ctrl.currentdate" ng-change="ctrl.refreshdates()"></md-datepicker>
+                <div flex=10 style="min-width: 50px" layout="column">
+                        <md-datepicker id="datepicker" ng-model="ctrl.currentdate" style="color:#777;position: relative; background: rgba(0,0,0,0);"
+                        ng-change="ctrl.refreshdates()"></md-datepicker>
+                        <div style="font-size:26px; color:#777;margin-left: 10px; margin-top: -42px;" class="icon ion-ios-calendar-outline"></div>
                 </div>
                 <div class="date-day" flex layout="row" ng-click="ctrl.select(ctrl.dates[0])" class=""
                 ng-class="{'selected': ctrl.selected == ctrl.dates[0]}">
-                    <div flex>{{ctrl.dates[0].Format("MM/dd")}}</div>
+                    <div class="day-str" flex>{{ctrl.dates[0].Format("MM/dd")}}</div>
                 </div>
                 <div class="date-day" flex ng-click="ctrl.select(ctrl.dates[1])" class="" ng-class="{'selected': ctrl.selected == ctrl.dates[1]}">
-                    <div flex>{{ctrl.dates[1].Format("MM/dd")}}</div>
+                    <div class="day-str" flex>{{ctrl.dates[1].Format("MM/dd")}}</div>
                 </div>
                 <div class="date-day" flex ng-click="ctrl.select(ctrl.dates[2])" class="" ng-class="{'selected': ctrl.selected == ctrl.dates[2]}">
-                    <div flex>{{ctrl.dates[2].Format("MM/dd")}}</div>
+                    <div class="day-str" flex>{{ctrl.dates[2].Format("MM/dd")}}</div>
                 </div>
                 <div class="date-day" flex ng-click="ctrl.select(ctrl.dates[3])" class="" ng-class="{'selected': ctrl.selected == ctrl.dates[3]}">
-                    <div flex>{{ctrl.dates[3].Format("MM/dd")}}</div>
+                    <div class="day-str" flex>{{ctrl.dates[3].Format("MM/dd")}}</div>
                 </div>
-                <div class="date-day" flex ng-click="ctrl.select(ctrl.dates[4])" class="" ng-class="{'selected': ctrl.selected == ctrl.dates[3]}">
-                    <div flex>{{ctrl.dates[4].Format("MM/dd")}}</div>
+                <div class="date-day" flex ng-click="ctrl.select(ctrl.dates[4])" class="" ng-class="{'selected': ctrl.selected == ctrl.dates[4]}">
+                    <div class="day-str" flex>{{ctrl.dates[4].Format("MM/dd")}}</div>
                 </div>
             </div>
             <div ng-repeat="r in [0,1,2,3,4]" layout="row" style="height:42px">
