@@ -726,6 +726,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             if (editingitem == undefined) {
 				that.isSelecting = true
                 c.editing = true
+				that.searchText = that.selectedItem.displayname
             } else {
                 if (editingitem != c) {
                     editingitem.editing = false
