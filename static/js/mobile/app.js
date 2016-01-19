@@ -715,8 +715,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
 
         that.bookmap = []
+		that.editingtime = undefined
         that.edit = function(c, edit) {
             that.inited = true
+			that.editingtime = that.timemap[c.index]
             if (c.book || that.bookmap[parseInt(c.index) + 1].book) {
                 return
             }
