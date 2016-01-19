@@ -805,6 +805,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
         that.querySearch = function() {
 			var key = that.searchText
+			if(key == undefined){
+				that.selecting = that.customerlist
+				return
+			}
             that.selecting = _.filter(that.customerlist, function(item) {
                 return item.displayname.indexOf(key) >= 0 || item.pinyin.replace(/ /g, "").indexOf(key) >= 0
             })

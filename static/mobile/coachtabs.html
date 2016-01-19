@@ -10,14 +10,21 @@
 								<div style="color:#ccc" class="navbar-button-icon icon ion-ios-close-empty"></div>
 						</span>
                     </div>
-                    <div flex style="margin-bottom: 0px;
+                    <div layout="row" flex style="margin-bottom: 0px;
 				    margin-top: -10px;
 					    padding-left: 10px;font-size:16px;">
-                        <md-input-container md-no-float class="md-block" style="padding-right:30px;">
+                        <md-input-container flex md-no-float class="md-block"
+						style="padding-right:15px;">
                             <input ng-model="ctrl.searchText" placeholder="请输入姓名/首字母" ng-change="ctrl.querySearch()"
                             style="border-color:#4fd2c2">
                         </md-input-container>
-                    </div>
+
+						<div flex=10 layout="row" layout-align="center center">
+	                    <div flex class="ion-android-cancel" style="color:#4fd2c2;    font-size:
+							20px;"
+							ng-click="ctrl.searchText=undefined;ctrl.querySearch()"></div>
+	                    </div>
+					</div>
                 </md-toolbar>
 				<md-content style="margin-top:10px;height: 100%;overflow-y: scroll;">
                     <ul layout="column" style="padding-left:0;height:100%">
