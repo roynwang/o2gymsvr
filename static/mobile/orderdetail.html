@@ -44,15 +44,15 @@
                 </div>
             </div>
         </md-toolbar>
-        <md-tabs md-border-bottom md-stretch-tabs id="order-detail-list">
+        <md-tabs md-border-bottom md-stretch-tabs id="order-detail-list" style="padding-bottom:60px">
             <md-tab label="待约({{ctrl.order.course_count-ctrl.bookedbook.length-ctrl.completedbook.length}})">
-
 			<md-tab-label>剩余
 			<span class="number">
 				{{ctrl.order.course_count-ctrl.bookedbook.length-ctrl.completedbook.length}}</span>
 			</md-tab-label>
                 <md-tab-body class="md-padding" style="padding-top: 0;">
-                    <h1 class="title-new" ng-hide="ctrl.actionlist.length>0">还有{{ctrl.order.course_count -
+				<h1 style="text-align:center;font-size: 16px;
+					    color: #666;" class="title-new" ng-hide="ctrl.actionlist.length>0">还有{{ctrl.order.course_count -
 						ctrl.bookedbook.length - ctrl.completedbook.length}}节课待预约</h1>
                     <ul class="list">
                         <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
@@ -75,7 +75,8 @@
 					  <span class="number">{{ctrl.bookedbook.length}}</span>
 				</md-tab-label>
                 <md-tab-body class="md-padding" style="padding-top: 0;">
-                    <h1 class="title-new" ng-hide="ctrl.bookedbook.length>0">没有待上课程</h1>
+				<h1 style="text-align:center;font-size: 16px;
+					    color: #666;" class="title-new" ng-hide="ctrl.bookedbook.length>0">没有待上课程</h1>
                     <ul class="list">
 
                         <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
@@ -98,7 +99,8 @@
 					  <span class="number">{{ctrl.completedbook.length}}</span>
 				</md-tab-label>
                 <md-tab-body class="md-padding" style="padding-top: 0;">
-                    <h1 class="title-new" ng-hide="ctrl.completedbook.length>0">没有已上课程</h1>
+				<h1 style="text-align:center;font-size: 16px;
+					    color: #666;" class="title-new" ng-hide="ctrl.completedbook.length>0">没有已上课程</h1>
                     <ul class="list">
                         <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
                         style="opacity: 1; height:60px" ng-repeat="c in ctrl.completedbook">
