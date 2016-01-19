@@ -21,7 +21,8 @@
                 </md-toolbar>
 				<md-content style="margin-top:10px;height: 100%;overflow-y: scroll;">
                     <ul layout="column" style="padding-left:0;height:100%">
-                        <li style="border-bottom: solid 1px #eee;padding: 0px; margin-left:20px;" class="w-clearfix w-inline-block"
+                        <li style="border-bottom: solid 1px #eee;padding: 0px;
+						margin-left:20px;min-height:50px;" class="w-clearfix w-inline-block"
                         ng-repeat="c in ctrl.selecting" ng-click="ctrl.selectcustomer(c)">
                             <div class="nav-menu-titles">{{c.displayname}}</div>
                             <span ng-show="ctrl.selectedItem == c" class="icon-list-menu" style="float: right;width: 30px;padding-left:
@@ -132,9 +133,7 @@
                         </div>
                         <div ng-attr-id="{{'book-' + c.index}}" flex ng-show="c.editing" layout="row">
                             <span flex="5"></span>
-                            <md-input-container md-no-float class="md-block" flex>
-                                <input ng-model="ctrl.selectedItem.displayname" read-only style="border:none">
-                            </md-input-container>
+                            <div  style="border:none">{{ctrl.selectedItem.displayname}} </div>
 
                             <div flex="15">
                                 <div layout='row' layout-align="center center" ng-show="ctrl.querystatus=='pending'"
