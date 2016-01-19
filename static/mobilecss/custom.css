@@ -71,7 +71,8 @@
 .event-container {
 	height: inherit
 }
-.event-container.editing {
+.event-container input{
+	color: rgb(70,50,0)
 }
 .event.action{
 	font-size: 28px;
@@ -134,7 +135,7 @@
 	opacity: 0
 }
 
-.action span.number {
+span.number {
     background: rgba(79,210,194,0.6);
     color: white;
     width: 22px;
@@ -168,8 +169,8 @@ md-input-container.md-default-theme:not(.md-input-invalid).md-input-focused .md-
 	color: #777;
 }
 .date-day > .day-str {
-	padding-top: 5px;
-    padding-bottom: 5px;
+	padding-top: 3px;
+    padding-bottom: 3px;
     border-radius: 5px;
 }
 

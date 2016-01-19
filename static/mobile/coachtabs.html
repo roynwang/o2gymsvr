@@ -1,8 +1,8 @@
 <div ng-controller="TodayCourseCtrl as ctrl" ng-cloak>
     <md-content>
-        <div ng-show="ctrl.inited">
+        <div ng-show="ctrl.isSelecting||ctrl.inited">
             <div ng-class="{'animated slideOutRight':  !ctrl.isSelecting, 'animated slideInRight':
-		ctrl.isSelecting}" class="md-whiteframe-z2" style="height:100%;width:80%;float:left;position:fixed;top:0;right:0;background:white;z-index:1000;overflow-y:scroll">
+		ctrl.isSelecting}" class="md-whiteframe-z2" style="height:100%;width:80%;float:left;position:fixed;top:0;right:0;background:white;z-index:1000;">
                 <md-toolbar layout="row" layout-align="center center">
                     <div flex=80 style="margin-left:20px">
                         <h3 style="color:#666;margin:0">选择客户</h3>
@@ -18,18 +18,23 @@
                 <div style="margin-bottom: 0px;
 				    margin-top: -10px;
 					    padding-left: 10px;">
-                    <md-input-container md-no-float class="md-block">
+                    <md-input-container md-no-float class="md-block" style="padding-right:30px;">
                         <input ng-model="ctrl.searchText" placeholder="请输入姓名/首字母" ng-change="ctrl.querySearch()"
                         style="border-color:#4fd2c2">
                     </md-input-container>
                 </div>
-                <div layout="column" style="margin-top:-30px">
-                    <div style="width:85%; border-bottom: solid 1px #eee;padding: 0px; margin-left:20px;"
-                    ng-click="ctrl.showcustomer(c)" class="w-clearfix w-inline-block"
-                    ng-repeat="c in ctrl.selecting" ng-click="ctrl.selectcustomer(c)">
+                <ul layout="column" style="margin-top:-30px;padding-left:0;height:100%">
+                    <li style="border-bottom: solid 1px #eee;padding: 0px; margin-left:20px;"
+                    class="w-clearfix w-inline-block" ng-repeat="c in ctrl.selecting"
+                    ng-click="ctrl.selectcustomer(c)">
                         <div class="nav-menu-titles">{{c.displayname}}</div>
-                    </div>
-                </div>
+                        <span ng-show="ctrl.selectedItem == c" class="icon-list-menu" style="float: right;width: 30px;padding-left:
+					10px;margin-right: 10px;">
+								<a style="color:#4fd2c2" class="ion-ios-checkmark-outline"></a>
+					     </span>
+
+                    </li>
+                </ul>
             </div>
         </div>
         <md-toolbar class="md-tall" style="background:white;position:fixed;height:120px;min-height:120px">
@@ -103,7 +108,7 @@
                                 <span>{{c.book.customerprofile.displayname}}</span>
                             </div>
                             <span flex></span>
-                            <div style="margin:0" ng-hide="c.book.done" flex=20 ng-click="ctrl.removebook(c.book)"
+                            <div style="margin:0" ng-hide="c.book.done" flex=20 ng-click="ctrl.removebook(c.book);$event.stopPropagation();"
                             class="course-time icon-list event-action-btn">
                                 <div class="icon ion-ios-close-empty" style="font-size:36px"></div>
                             </div>
@@ -130,18 +135,10 @@
                         </div>
                         <div ng-attr-id="{{'book-' + c.index}}" flex ng-show="c.editing" layout="row">
                             <span flex="5"></span>
-                            <!--
-                            <md-autocomplete flex required md-input-name="autocompleteField" md-input-minlength="1"
-                            md-input-maxlength="18" md-no-cache="ctrl.noCache"
-                            md-min-length="0" md-selected-item-change="ctrl.queryOrder(c)"
-                            md-selected-item="ctrl.selectedItem" md-search-text="ctrl.searchText"
-                            md-items="item in ctrl.querySearch(ctrl.searchText)"
-                            md-item-text="item.displayname" md-floating-label="请输入用户姓名/姓名首字母">
-                                <md-item-template>
-                                    <span md-highlight-text="ctrl.searchText">{{item.displayname}}</span>
-                                </md-item-template>
-                            </md-autocomplete>
-							-->
+                            <md-input-container md-no-float class="md-block" flex>
+                                <input ng-model="ctrl.selectedItem.displayname" read-only style="border:none">
+                            </md-input-container>
+
                             <div flex="15">
                                 <div layout='row' layout-align="center center" ng-show="ctrl.querystatus=='pending'"
                                 flex ng-click="ctrl.submitbook(); $event.stopPropagation();"

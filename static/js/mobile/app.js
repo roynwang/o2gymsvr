@@ -670,6 +670,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 		that.cancelselect = function(){
 			that.isSelecting = false
 			that.editing = false
+            _.each(that.bookmap, function(item) {
+				item.editing = false
+				item.editingitem = false
+            })
 		}
 
         that.init = function() {
@@ -743,7 +747,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
             $ordersvc.getorders(customer.name, function(data) {
                     var os = _.reject(data.results, function(item) {
-                        return item.all_booked == false
+                        return item.all_booked == true
                     })
 
                     if (os && os.length > 0) {
@@ -825,10 +829,18 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 that.bookmap[item.hour + 1]["extend"] = true
             })
         }
-		that.selectcustomer = function(c){
-			that.selectedItem = c
+			
+		that.selectcustomer = function(customer){
+			that.selectedItem = customer
+			that.searchText = customer.displayname
+			that.querySearch()
 			that.isSelecting = false
+            var c =  _.find(that.bookmap, function(item) {
+                return item.editing == true
+            })
+			that.queryOrder(c)
 		}
+
 
         that.refresh = function() {
             that.searchText = undefined
@@ -929,28 +941,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             that.selected = that.dates[curweekday]
             that.refresh()
         }
-        $scope.showneworder = function() {
-            $mdDialog.show({
-                    controller: "NewOrderDialgCtrl",
-                    templateUrl: '/static/mobile/neworder.html',
-                    parent: angular.element(document.body),
-                    //targetEvent: ev,
-                    clickOutsideToClose: true,
-                    fullscreen: true
-                })
-                .then(function(answer) {
-                    console.log('You said the information was "' + answer + '".');
-                    $state.transitionTo("index")
-                }, function() {
-                    console.log('You cancelled the dialog.')
-                    $state.transitionTo("index")
-                });
-        }
-
-        $("#neworder").click(function() {
-            $scope.showneworder()
-        })
-
+   
         that.showcustomer = function(customer) {
             $state.transitionTo("customerdetail", {
                 name: customer.name
