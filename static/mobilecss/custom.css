@@ -160,7 +160,7 @@ md-input-container.md-default-theme:not(.md-input-invalid).md-input-focused .md-
     border-color: #666
 }
 .date-day {
-	font-size: 16px;
+	font-size: 14px;
 	text-align: center;
 	color: #555 !important;
 }
@@ -176,7 +176,6 @@ md-input-container.md-default-theme:not(.md-input-invalid).md-input-focused .md-
 
 .date-day.selected > .day-str {
     font-weight: normal;
-    font-size: 16px;
     margin: 0;
 	border: solid 1px #4fd2c2;
 	color: #4fd2c2
@@ -334,12 +333,20 @@ md-toolbar:not(.md-menu-toolbar) .md-button:not(.md-raised) {
 md-sidenav{
 	width:calc(100% - 80px);
 	min-width:calc(100% - 80px);
-	min-width:calc(100% - 80px);
+	max-width:calc(100% - 80px);
 }
 
+@media screen and (max-height:480px){
+	.time-table {
+		height: 3200px
+	}
+}
 @media screen and (max-width:420px){
 	.time-table {
 		height: 1100px
+	}
+	#order-detail-list {
+		min-height:472px
 	}
 }
 
@@ -347,18 +354,20 @@ md-sidenav{
 	.time-table {
 		height: 1700px
 	}
+	#order-detail-list {
+		min-height:362px
+	}
 }
 
 @media screen and (max-width:321px){
 	.time-table {
 		height: 2000px
 	}
-}
-@media screen and (max-height:480px){
-	.time-table {
-		height: 3200px
+	#order-detail-list {
+		min-height:301px
 	}
 }
+
 
 .slideInRight{
   -webkit-animation: slideInRight 0.4s; /* Safari 4+ */
