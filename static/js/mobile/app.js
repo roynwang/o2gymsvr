@@ -1322,6 +1322,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
             that.user = usr
         })
 
+
         function processtimetable(td) {
             _.each(that.actionlist, function(book) {
                 if (book.pendingaction == "remove") {
@@ -1406,6 +1407,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                 function(data) {
                     swal("", "获取信息失败，请稍后重试。", "warning")
                 })
+			$("#order-detail-list").css("height", screen.height - 266 + "px")
         }
 
         that.addbook = function(h) {

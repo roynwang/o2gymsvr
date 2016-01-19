@@ -1,6 +1,6 @@
 <div ng-controller="OrderDetailCtrl as ctrl">
     <md-content>
-        <div style="width:100%;position:fixed;bottom:0" layout="row" layout-align="space-between center"
+        <div style="width:100%;position:fixed;bottom:0;z-index:1000;background:white" layout="row" layout-align="space-between center"
         style="padding-left: 8px">
             <div>
                 <md-button>
@@ -14,9 +14,7 @@
                 </md-button>
             </div>
         </div>
-
-
-        <md-toolbar>
+        <md-toolbar id="time-sheet">
             <div class="md-toolbar-tools" style="padding:0" layout="row">
                 <div flex=10 style="min-width: 50px" layout="column">
                     <md-datepicker id="datepicker" ng-model="ctrl.currentdate" style="color:#777;position: relative; background: rgba(0,0,0,0);"
