@@ -162,7 +162,7 @@ md-input-container.md-default-theme:not(.md-input-invalid).md-input-focused .md-
 .date-day {
 	font-size: 16px;
 	text-align: center;
-	color: #333 !important;
+	color: #555 !important;
 }
 .weekday {
 	font-size: 12px;

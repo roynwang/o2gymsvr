@@ -1,4 +1,7 @@
 <div ng-controller="TodayCourseCtrl as ctrl" ng-cloak>
+	<div ng-show="ctrl.showtoast"
+		style="z-index:1000;height:70px;width:100%;position:fixed;bottom:0;" id="toast-placeholder">
+	</div>
     <md-content>
         <div ng-show="ctrl.isSelecting||ctrl.inited">
             <div md-swipe-right="ctrl.isSelecting=false" ng-class="{'animated slideOutRight':  !ctrl.isSelecting, 'animated slideInRight': ctrl.isSelecting}"
@@ -20,8 +23,8 @@
                         </md-input-container>
 
 						<div flex=10 layout="row" layout-align="center center">
-	                    <div flex class="ion-android-cancel" style="color:#4fd2c2;    font-size:
-							20px;"
+	                    <div flex class="ion-backspace" style="color:#4fd2c2;    font-size:
+							20px;margin-left: -8px;"
 							ng-click="ctrl.searchText=undefined;ctrl.querySearch()"></div>
 	                    </div>
 					</div>
@@ -150,7 +153,8 @@
                                 <div layout='row' layout-align="center center" ng-show="ctrl.querystatus=='unmatch'"
                                 flex ng-click="ctrl.showcustomer(ctrl.selectedItem); $event.stopPropagation();"
                                 class="icon-list">
-                                    <div class="icon ion-ios-information-outline" style="font-size:30px;color:rgb(218,197,51)"></div>
+                                    <div class="icon ion-alert-circled"
+										style="font-size:30px;color:rgb(106,79,30)"></div>
                                 </div>
                                 <md-progress-circular ng-show="ctrl.querystatus == 'querying'" class="md-accent"
                                 md-mode="indeterminate"></md-progress-circular>
@@ -161,7 +165,7 @@
             </ul>
         </div>
     </md-content>
-    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-swipe-left="ctrl.toggleMenu('left')">
         <md-toolbar class="md-theme-light" layout="column" style="padding-top:50px; padding-bottom:20px">
             <div class="logo" style="text-align: center;">{{ctrl.user.displayname}}</div>
             <div layout="row">
@@ -208,7 +212,8 @@
 
         </md-content>
     </md-sidenav>
-    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="right">
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="right"
+	md-swipe-left="ctrl.toggleMenu('right')">
         <md-toolbar class="md-theme-light">
             <div class="md-toolbar-tools" layout="row" layout-align="center center">
                 <h4 style="text-align:center">客户列表</h4>
