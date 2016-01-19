@@ -1,5 +1,37 @@
 <div ng-controller="TodayCourseCtrl as ctrl" ng-cloak>
     <md-content>
+        <div ng-show="ctrl.inited">
+            <div ng-class="{'animated slideOutRight':  !ctrl.isSelecting, 'animated slideInRight':
+		ctrl.isSelecting}" class="md-whiteframe-z2" style="height:100%;width:80%;float:left;position:fixed;top:0;right:0;background:white;z-index:1000;overflow-y:scroll">
+                <md-toolbar layout="row" layout-align="center center">
+                    <div flex=80 style="margin-left:20px">
+                        <h3 style="color:#666;margin:0">选择客户</h3>
+                    </div>
+                    <span flex=10 ng-click="ctrl.cancelselect()">
+                    <div style="color:#ccc" class="navbar-button-icon icon ion-ios-close-empty"></div>
+				</span>
+                </md-toolbar>
+                <div layout="row" layout-align="center center" style="padding:0 17px;color:#999">
+                    <div flex class="nav-menu-titles">{{ctrl.selected.Format("MM-dd")}}</div>
+                </div>
+
+                <div style="margin-bottom: 0px;
+				    margin-top: -10px;
+					    padding-left: 10px;">
+                    <md-input-container md-no-float class="md-block">
+                        <input ng-model="ctrl.searchText" placeholder="请输入姓名/首字母" ng-change="ctrl.querySearch()"
+                        style="border-color:#4fd2c2">
+                    </md-input-container>
+                </div>
+                <div layout="column" style="margin-top:-30px">
+                    <div style="width:85%; border-bottom: solid 1px #eee;padding: 0px; margin-left:20px;"
+                    ng-click="ctrl.showcustomer(c)" class="w-clearfix w-inline-block"
+                    ng-repeat="c in ctrl.selecting" ng-click="ctrl.selectcustomer(c)">
+                        <div class="nav-menu-titles">{{c.displayname}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <md-toolbar class="md-tall" style="background:white;position:fixed;height:120px;min-height:120px">
             <div class="md-toolbar-tools" style="padding:0">
                 <div style="min-width:50px; display:block" flex=10 class="w-nav-button navbar-button left"
@@ -11,7 +43,7 @@
                     </div>
                 </div>
                 <div flex layout="row">
-					<h4 flex style="text-align:center;position: relative;top: -4px; right:-25px">{{ctrl.month}}
+                    <h4 flex style="text-align:center;position: relative;top: -4px; right:-25px">{{ctrl.month}}
 						<div style="min-width: 50px;display: inline-block;position: relative;bottom:
 							-4px;left:-20px;">
                         <md-datepicker id="datepicker" ng-model="ctrl.currentdate" style="color:#777;position: relative; background: rgba(0,0,0,0);"
@@ -98,6 +130,7 @@
                         </div>
                         <div ng-attr-id="{{'book-' + c.index}}" flex ng-show="c.editing" layout="row">
                             <span flex="5"></span>
+                            <!--
                             <md-autocomplete flex required md-input-name="autocompleteField" md-input-minlength="1"
                             md-input-maxlength="18" md-no-cache="ctrl.noCache"
                             md-min-length="0" md-selected-item-change="ctrl.queryOrder(c)"
@@ -108,6 +141,7 @@
                                     <span md-highlight-text="ctrl.searchText">{{item.displayname}}</span>
                                 </md-item-template>
                             </md-autocomplete>
+							-->
                             <div flex="15">
                                 <div layout='row' layout-align="center center" ng-show="ctrl.querystatus=='pending'"
                                 flex ng-click="ctrl.submitbook(); $event.stopPropagation();"
@@ -123,20 +157,6 @@
                                 md-mode="indeterminate"></md-progress-circular>
                             </div>
                         </div>
-                        <!--
-                        <div ng-click="ctrl.complete(c)" class="icon-list" ng-class="{'highlighted':c.done}">
-                            <div class="icon ion-ios-checkmark-empty"></div>
-                        </div>
-                        <div ng-class="{'highlighted': c.done}" class="title-list">{{c.index == 0}}</div>
-                        <div ng-click="ctrl.showorder(c.order)" style="margin-right:3px" class="course-time icon-list highlighted">
-                            <div class="icon ion-calendar"></div>
-                        </div>
-                        <div ng-click="ctrl.logtrain(c)" style="margin-right:-5px" class="course-time icon-list highlighted">
-                            <div class="icon ion-images"></div>
-                        </div>
-                        <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
-						-->
-                        <!--<div class="title-list course-time">{{c.complete_status}}</div>-->
                     </div>
                 </li>
             </ul>
@@ -196,8 +216,8 @@
             </div>
         </md-toolbar>
         <md-content layout-padding>
-		<div style="width:85%; border-bottom: solid 1px #eee;padding: 0px; margin-left:20px;" ng-click="ctrl.showcustomer(c)" class="w-clearfix w-inline-block"
-            ng-repeat="c in ctrl.customerlist">
+            <div style="width:85%; border-bottom: solid 1px #eee;padding: 0px; margin-left:20px;"
+            ng-click="ctrl.showcustomer(c)" class="w-clearfix w-inline-block" ng-repeat="c in ctrl.customerlist">
                 <!--
                 <a style="font-size: 25px;" href="sms:{{c.name}}" class="course-time icon-list highlighted">
                     <div class="ion-ios-chatbubble-outline"></div>
@@ -208,10 +228,10 @@
 				-->
                 <div class="nav-menu-titles">{{c.displayname}}</div>
 
-				<span class="icon-list-menu" style="float: right;width: 30px;padding-left: 10px;">
+                <span class="icon-list-menu" style="float: right;width: 30px;padding-left: 10px;">
 					<a style="color: #4fd2c2"class="ion-ios-chatbubble-outline" href="tel:{{c.name}}"></a>
                 </span>
-				<span class="icon-list-menu" style="float: right;width: 30px;padding-left:
+                <span class="icon-list-menu" style="float: right;width: 30px;padding-left:
 					10px;margin-right: 10px;">
 					<a style="color:#4fd2c2" class="ion-ios-telephone-outline" href="tel:{{c.name}}"></a>
                 </span>

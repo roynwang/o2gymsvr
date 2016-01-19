@@ -660,15 +660,18 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.selectedItem = undefined
         that.querystatus = "unset"
         that.pendingbook = {}
+		that.isSelecting = false
 
         that.toggleMenu = function(direction) {
             $mdSidenav(direction)
                 .toggle()
                 .then(function() {});
         }
-        that.triggercalendar = function() {
-            $("#datepicker button").trigger("click")
-        }
+		that.cancelselect = function(){
+			that.isSelecting = false
+			that.editing = false
+		}
+
         that.init = function() {
             user = $.cookie("user")
             $usersvc.getuser(undefined, false, function(data) {
@@ -684,16 +687,9 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                         that.customerlist.sort(function(a, b) {
                             return a.pinyin.localeCompare(b.pinyin)
                         })
-                        console.log(that.customerlist)
+						that.selecting = that.customerlist
                     },
                     function(data) {})
-        }
-        that.showcustomers = function() {
-            $mdSidenav("right")
-                .toggle()
-                .then(function() {
-                    //$log.debug("toggle " + navID + " is done");
-                });
         }
         that.logtrain = function(book) {
             $paramssvc.params["traindetail"] = book
@@ -716,6 +712,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
         that.bookmap = []
         that.edit = function(c, edit) {
+			that.inited = true
             if (c.book || that.bookmap[parseInt(c.index) + 1].book) {
                 return
             }
@@ -723,6 +720,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 return item.editing == true
             })
             if (editingitem == undefined) {
+				that.isSelecting = true
                 c.editing = true
             } else {
                 if (editingitem != c) {
@@ -800,11 +798,11 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     swal("", "预约失败", "warning")
                 })
         }
-        that.querySearch = function(key) {
-            var ret = _.filter(that.customerlist, function(item) {
+        that.querySearch = function() {
+			var key = that.searchText
+            that.selecting = _.filter(that.customerlist, function(item) {
                 return item.displayname.indexOf(key) >= 0 || item.pinyin.replace(/ /g, "").indexOf(key) >= 0
             })
-            return ret
         }
 
         that.bookmap = []
@@ -827,6 +825,11 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 that.bookmap[item.hour + 1]["extend"] = true
             })
         }
+		that.selectcustomer = function(c){
+			that.selectedItem = c
+			that.isSelecting = false
+		}
+
         that.refresh = function() {
             that.searchText = undefined
             Restangular.one("api", user)

@@ -107,6 +107,7 @@ DATABASES = {
 			'USER': 'root',
 			'PASSWORD': '435393055',
 			'HOST': '127.0.0.1',
+			#'HOST': 'o2-fit.com',
 			'PORT': '3306',
 			'OPTIONS': {
 				'sql_mode': 'TRADITIONAL',
