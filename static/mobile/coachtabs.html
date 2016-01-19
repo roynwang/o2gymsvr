@@ -10,7 +10,6 @@
                     <span flex=10 ng-click="ctrl.cancelselect()">
                     <div style="color:#ccc" class="navbar-button-icon icon ion-ios-close-empty"></div>
 				</span>
-                </md-toolbar>
                 <div layout="row" layout-align="center center" style="padding:0 17px;color:#999">
                     <div flex class="nav-menu-titles">{{ctrl.selected.Format("MM-dd")}}</div>
                 </div>
@@ -23,6 +22,8 @@
                         style="border-color:#4fd2c2">
                     </md-input-container>
                 </div>
+			</md-toolbar>
+			<md-content>
                 <ul layout="column" style="margin-top:-30px;padding-left:0;height:100%">
                     <li style="border-bottom: solid 1px #eee;padding: 0px; margin-left:20px;"
                     class="w-clearfix w-inline-block" ng-repeat="c in ctrl.selecting"
@@ -35,6 +36,7 @@
 
                     </li>
                 </ul>
+			</md-content>
             </div>
         </div>
         <md-toolbar class="md-tall" style="background:white;position:fixed;height:120px;min-height:120px">
