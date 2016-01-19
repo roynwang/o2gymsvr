@@ -745,7 +745,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
             $ordersvc.getorders(customer.name, function(data) {
                     var os = _.reject(data.results, function(item) {
-                        return item.all_booked == true
+                        return item.all_booked == false
                     })
 
                     if (os && os.length > 0) {
