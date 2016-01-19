@@ -360,7 +360,17 @@ md-sidenav{
 	}
 }
 
+.slideInRight{
+  -webkit-animation: slideInRight 0.4s; /* Safari 4+ */
+  -moz-animation:    slideInRight 0.4s; /* Fx 5+ */
+  -o-animation:      slideInRight 0.4s; /* Opera 12+ */
+  animation:         slideInRight 0.4s; /* IE 10+, Fx 29+ */
+}
 
-
-
+.slideOutRight {
+    -webkit-animation-name: slideOutRight;
+    animation-name: slideOutRight;
+    -webkit-animation-duration: 0.4s;
+    animation-duration: 0.4s;
+}
 
