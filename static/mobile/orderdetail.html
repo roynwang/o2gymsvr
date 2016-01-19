@@ -1,5 +1,21 @@
 <div ng-controller="OrderDetailCtrl as ctrl">
     <md-content>
+        <div style="width:100%;position:fixed;bottom:0" layout="row" layout-align="space-between center"
+        style="padding-left: 8px">
+            <div>
+                <md-button>
+                    有效期：{{ctrl.order.endtime}}
+                </md-button>
+            </div>
+            <span></span>
+            <div>
+                <md-button class="small-button" ng-click="ctrl.submit()">
+                    保存
+                </md-button>
+            </div>
+        </div>
+
+
         <md-toolbar>
             <div class="md-toolbar-tools" style="padding:0" layout="row">
                 <div flex=10 style="min-width: 50px" layout="column">
@@ -30,7 +46,7 @@
                 </div>
             </div>
         </md-toolbar>
-        <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs>
+        <md-tabs md-border-bottom md-stretch-tabs id="order-detail-list">
             <md-tab label="待约({{ctrl.order.course_count-ctrl.bookedbook.length-ctrl.completedbook.length}})">
                 <md-content class="md-padding" style="padding-top: 0;">
                     <h1 class="title-new" ng-hide="ctrl.actionlist.length>0">还有{{ctrl.order.course_count -
@@ -90,19 +106,5 @@
                 </md-content>
             </md-tab>
         </md-tabs>
-        <div style="width:100%;position:fixed;bottom:0" layout="row" layout-align="space-between center"
-        style="padding-left: 8px">
-            <div>
-                <md-button>
-                    有效期：{{ctrl.order.endtime}}
-                </md-button>
-            </div>
-            <span></span>
-            <div>
-                <md-button class="small-button" ng-click="ctrl.submit()">
-                    保存
-                </md-button>
-            </div>
-        </div>
     </md-content>
 </div>
