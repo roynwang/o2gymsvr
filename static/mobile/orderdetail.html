@@ -3,9 +3,9 @@
         <md-toolbar>
             <div class="md-toolbar-tools" style="padding:0" layout="row">
                 <div flex=10 style="min-width: 50px" layout="column">
-                        <md-datepicker id="datepicker" ng-model="ctrl.currentdate" style="color:#777;position: relative; background: rgba(0,0,0,0);"
-                        ng-change="ctrl.refreshdates()"></md-datepicker>
-                        <div style="font-size:26px; color:#777;margin-left: 10px; margin-top: -42px;" class="icon ion-ios-calendar-outline"></div>
+                    <md-datepicker id="datepicker" ng-model="ctrl.currentdate" style="color:#777;position: relative; background: rgba(0,0,0,0);"
+                    ng-change="ctrl.refreshdates()"></md-datepicker>
+                    <div style="font-size:26px; color:#777;margin-left: 10px; margin-top: -42px;" class="icon ion-ios-calendar-outline"></div>
                 </div>
                 <div class="date-day" flex layout="row" ng-click="ctrl.select(ctrl.dates[0])" class=""
                 ng-class="{'selected': ctrl.selected == ctrl.dates[0]}">
@@ -30,72 +30,66 @@
                 </div>
             </div>
         </md-toolbar>
-        <md-dialog-content style="height:1180px;padding: 0 5px; border-bottom:solid 1px #ccc;">
-            <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs>
-                <md-tab label="待约({{ctrl.order.course_count-ctrl.bookedbook.length-ctrl.completedbook.length}})">
-                    <md-content class="md-padding" style="padding-top: 0;">
-                        <h1 class="title-new" ng-hide="ctrl.actionlist.length>0">还有{{ctrl.order.course_count -
+        <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs>
+            <md-tab label="待约({{ctrl.order.course_count-ctrl.bookedbook.length-ctrl.completedbook.length}})">
+                <md-content class="md-padding" style="padding-top: 0;">
+                    <h1 class="title-new" ng-hide="ctrl.actionlist.length>0">还有{{ctrl.order.course_count -
 						ctrl.bookedbook.length - ctrl.completedbook.length}}节课待预约</h1>
-                        <ul class="list">
-                            <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
-                            style="opacity: 1; height:60px"
-                            ng-repeat="c in ctrl.actionlist">
-                                <p class="w-clearfix w-inline-block" href="#">
-                                    <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
-                                    <div ng-click="ctrl.recover(c)" class="course-time icon-list
+                    <ul class="list">
+                        <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
+                        style="opacity: 1; height:60px" ng-repeat="c in ctrl.actionlist">
+                            <p class="w-clearfix w-inline-block" href="#">
+                                <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
+                                <div ng-click="ctrl.recover(c)" class="course-time icon-list
 										highlighted" style="line-height:60px">
-                                        <div class="icon ion-ios-close-outline"></div>
-                                    </div>
-                                    <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
-                                    <div class="title-list course-time">{{c.pendingaction=="add"?"新增":"取消"}}</div>
-                                </p>
-                            </li>
-                        </ul>
-                    </md-content>
-                </md-tab>
-                <md-tab label="待上({{ctrl.bookedbook.length}})">
-                    <md-content class="md-padding" style="padding-top: 0;">
-                        <h1 class="title-new" ng-hide="ctrl.bookedbook.length>0">没有待上课程</h1>
-                        <ul class="list">
+                                    <div class="icon ion-ios-close-outline"></div>
+                                </div>
+                                <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
+                                <div class="title-list course-time">{{c.pendingaction=="add"?"新增":"取消"}}</div>
+                            </p>
+                        </li>
+                    </ul>
+                </md-content>
+            </md-tab>
+            <md-tab label="待上({{ctrl.bookedbook.length}})">
+                <md-content class="md-padding" style="padding-top: 0;">
+                    <h1 class="title-new" ng-hide="ctrl.bookedbook.length>0">没有待上课程</h1>
+                    <ul class="list">
 
-                            <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
-                            style="opacity: 1; height:60px"
-                            ng-repeat="c in ctrl.bookedbook">
-                                <p class="w-clearfix w-inline-block" href="#">
-                                    <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
-                                    <div ng-click="ctrl.removebook(c)" class="course-time
+                        <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
+                        style="opacity: 1; height:60px" ng-repeat="c in ctrl.bookedbook">
+                            <p class="w-clearfix w-inline-block" href="#">
+                                <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
+                                <div ng-click="ctrl.removebook(c)" class="course-time
 										icon-list highlighted" style="line-height:60px">
-                                        <div class="icon ion-ios-close-outline"></div>
-                                    </div>
-                                    <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
-                                    <div class="title-list course-time">{{c.coachprofile.displayname}}</div>
-                                </p>
-                            </li>
-                        </ul>
-                    </md-content>
-                </md-tab>
-                <md-tab label="已上({{ctrl.completedbook.length}})">
-                    <md-content class="md-padding" style="padding-top: 0;">
-                        <h1 class="title-new" ng-hide="ctrl.completedbook.length>0">没有已上课程</h1>
-                        <ul class="list">
-                            <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
-                            style="opacity: 1; height:60px"
-                            ng-repeat="c in ctrl.completedbook">
-                                <p class="w-clearfix w-inline-block" href="#">
-                                    <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
-                                    <div class="course-time icon-list highlighted"
-										style="line-height:60px">
-                                        <div class="icon ion-ios-checkmark-outline"></div>
-                                    </div>
-                                    <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
-                                    <div class="title-list course-time">{{c.coachprofile.displayname}}</div>
-                                </p>
-                            </li>
-                        </ul>
-                    </md-content>
-                </md-tab>
-            </md-tabs>
-        </md-dialog-content>
+                                    <div class="icon ion-ios-close-outline"></div>
+                                </div>
+                                <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
+                                <div class="title-list course-time">{{c.coachprofile.displayname}}</div>
+                            </p>
+                        </li>
+                    </ul>
+                </md-content>
+            </md-tab>
+            <md-tab label="已上({{ctrl.completedbook.length}})">
+                <md-content class="md-padding" style="padding-top: 0;">
+                    <h1 class="title-new" ng-hide="ctrl.completedbook.length>0">没有已上课程</h1>
+                    <ul class="list">
+                        <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
+                        style="opacity: 1; height:60px" ng-repeat="c in ctrl.completedbook">
+                            <p class="w-clearfix w-inline-block" href="#">
+                                <div style="margin-left: 15px;" ng-class="{'highlighted': c.done}" class="title-list">{{c.date}}</div>
+                                <div class="course-time icon-list highlighted" style="line-height:60px">
+                                    <div class="icon ion-ios-checkmark-outline"></div>
+                                </div>
+                                <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
+                                <div class="title-list course-time">{{c.coachprofile.displayname}}</div>
+                            </p>
+                        </li>
+                    </ul>
+                </md-content>
+            </md-tab>
+        </md-tabs>
         <div style="width:100%;position:fixed;bottom:0" layout="row" layout-align="space-between center"
         style="padding-left: 8px">
             <div>
