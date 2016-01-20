@@ -377,7 +377,14 @@ class GymIncompleteList(generics.ListAPIView):
 		return ret
 		
 		
-	
+class GymSumSale(APIView):	
+	def get(self,request,pk):
+		gym = get_object_or_404(Gym, id=pk)
+		sum_coursecount = 0
+		for o in gym.orders.iterator():
+			sum_coursecount += o.product.amount
+		sum_completedcount = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True), done=True).count()
+		return Response({"sum_coursecount":sum_coursecount, "sum_completedcount": sum_completedcount})
 		
 
 
