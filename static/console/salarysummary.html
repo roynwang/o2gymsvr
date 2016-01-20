@@ -27,30 +27,26 @@
 						<button style="position: relative;right: 10px;" ng-click="ctrl.refresh()" type="button" class="btn btn-info "><i class="fa fa-refresh"></i> 刷新</button>
                     </div>
                     <div class="col-md-3 pull-right">
-                        <p class="input-group">
-                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
-                            uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.endday"
-                            is-open="ctrl.endopened" show-button-bar="false">
-                            <span class="input-group-btn">
-                <button type="button" class="btn btn-primary" 
-					ng-click="ctrl.open('end')">
-					<i class="fa fa-calendar"></i></button>
-              </span>
-                        </p>
+                        <datepicker date-format="yyyy-MM-dd" selector="form-control" style="margin-bottom:10px;">
+                            <div class="col-lg-12 input-group">
+                                <input class="form-control" style="background: rgba(0,0,0,0);"
+								ng-model="ctrl.endday_str" placeholder="Choose a date"/>
+                            </div>
+                            <span style="cursor: pointer;position: absolute;top: 6px;right: 6px;" style="cursor: pointer">
+							<i class="fa fa-lg fa-calendar"></i>
+						</span>
+                        </datepicker>
                     </div>
                     <div class="col-md-3 pull-right">
-                        <p class="input-group">
-                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
-                            uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.startday"
-                            is-open="ctrl.startopened" show-button-bar="false">
-                            <span class="input-group-btn">
-                <button type="button" class="btn btn-primary" 
-					ng-click="ctrl.open('start')">
-					<i class="fa fa-calendar"></i>
-				</button>
-              </span>
-                        </p>
-                    </div>
+                        <datepicker date-format="yyyy-MM-dd" selector="form-control" style="margin-bottom:10px;">
+                            <div class="col-lg-12 input-group">
+                                <input class="form-control" style="background: rgba(0,0,0,0);"
+								ng-model="ctrl.startday_str" placeholder="Choose a date"/>
+                            </div>
+                            <span style="cursor: pointer;position: absolute;top: 6px;right: 6px;" style="cursor: pointer">
+							<i class="fa fa-lg fa-calendar"></i>
+						</span>
+                        </datepicker>
                 </div>
             </header>
             <div class="panel-body">

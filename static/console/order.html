@@ -8,22 +8,23 @@
         </header>
         <div class="form-group panel-body">
             <div class="row" style="margin-bottom:20px">
-				<h3 class="text-center">
+                <h3 class="text-center">
 					<img ng-src="{{ctrl.coach.avatar}}" style="-webkit-border-radius: 50%;
 					height: 60px;"> {{ctrl.coach.displayname}} 
 					<a style="font-size:12px;color:#1fb5ad;"
 						ng-click="ctrl.showncoaches=!ctrl.showncoaches"><i class="fa
 							fa-exchange"></i>{{ctrl.showncoaches?"收起":"更换"}}</a></h3>
             </div>
-			<div ng-show="ctrl.showncoaches" class="row" style="margin-bottom:20px;padding-left:20px;padding-right:20px" >
-				<div  style="padding-top:10px" class="col-sm-1 {{c.name==ctrl.coach.name?'coach-selected':''}}" ng-repeat="c in ctrl.gym.coaches_set" ng-click="ctrl.changecoach(c)">
-					<img ng-src="{{c.avatar}}" style="-webkit-border-radius: 50%;height: 50px;">
-					<p>{{c.displayname}}</p>
-				</div>
-			</div>
+            <div ng-show="ctrl.showncoaches" class="row" style="margin-bottom:20px;padding-left:20px;padding-right:20px">
+                <div style="padding-top:10px" class="col-sm-1 {{c.name==ctrl.coach.name?'coach-selected':''}}"
+                ng-repeat="c in ctrl.gym.coaches_set" ng-click="ctrl.changecoach(c)">
+                    <img ng-src="{{c.avatar}}" style="-webkit-border-radius: 50%;height: 50px;">
+                    <p>{{c.displayname}}</p>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12" ng-model="ctrl.booked">
-					<p>过期时间:{{ctrl.order.endtime}}</p>
+                    <p>过期时间:{{ctrl.order.endtime}}</p>
                     <p>课程状态(已上:{{ctrl.done.length}}/待上:{{ctrl.booked.length}}/待约{{ctrl.sum
                         - ctrl.booked.length - ctrl.done.length}})</p>
                     <div class="progress progress-sm">
@@ -56,17 +57,17 @@
                     </table>
                 </div>
                 <div class="col-sm-5">
-                    <p class="input-group">
-                        <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
-                        uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.day" is-open="ctrl.dayopened"
-                        show-button-bar="false" ng-change="ctrl.refreshtimetable(false)">
-                        <span class="input-group-btn">
-                <button type="button" class="btn btn-primary" 
-					ng-click="ctrl.open()">
-					<i class="fa fa-calendar"></i></button>
-              </span>
-                    </p>
-
+                    <datepicker date-format="yyyy-MM-dd" selector="form-control"
+					style="margin-bottom:10px;margin-top:10px">
+                        <div class="col-lg-12 input-group">
+							<input class="form-control" style="background: rgba(0,0,0,0);"
+							ng-model="ctrl.day_str" ng-change="ctrl.refreshtimetable(false)"
+                            placeholder="Choose a date" />
+                        </div>
+                        <span style="cursor: pointer;position: absolute;top: 6px;right: 6px;"  style="cursor: pointer">
+							<i class="fa fa-lg fa-calendar"></i>
+						</span>
+                    </datepicker>
                     <table class="table table-bordered" ng-model="ctrl.day">
                         <tr ng-repeat="row in ctrl.timemapgroup">
                             <td ng-repeat-start="i in [0,1,2,3,4]" ng-repeat-end class="{{row[i]['status']?'bg-danger':''}}"
