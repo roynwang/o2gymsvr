@@ -1077,11 +1077,6 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
             .one("salesum")
             .get()
             .then(function(data) {
-                that.gymsale = {
-                    data: [data.sum_completedcount, data.sum_coursecount - data.sum_completedcount],
-                    labels: ["耗课量:" + data.sum_completedcount, "余课量:" + (data.sum_coursecount - data.sum_completedcount)]
-                }
-
                 that.gymsale = data
             })
 
