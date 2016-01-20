@@ -41,6 +41,8 @@ class User(models.Model):
 
 	age = models.IntegerField(blank=True, null=True)
 
+	can_book = models.BooleanField(default=True)
+
 	def __unicode__(self):
 		return self.name
 
