@@ -59,10 +59,11 @@ var app = angular.module('JobApp', [
     'restangular',
     'jkuri.slimscroll',
     "ngTable",
-    'ui.bootstrap',
     'oitozero.ngSweetAlert',
     'angular-ladda',
-    'chart.js'
+	'ui.bootstrap',
+    'chart.js',
+	'720kb.datepicker'
 ])
 app.directive('backButton', function() {
     return {
@@ -530,11 +531,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.order = null
         that.day = new Date()
         that.availiable = []
-
-        that.open = function() {
-            that.dayopened = true
-        };
-        that.dayopened = false
+		that.day_str = that.day.Format("yyyy-MM-dd")
 
         that.gohome = function() {
             $state.transitionTo('index')
@@ -798,6 +795,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
 
         }
         that.refreshtimetable = function(norefresh) {
+			that.day = new Date(Date.parse(that.day_str))
             function t(ava) {
                 that.timemapgroup = []
                 for (var i = 0; i < TimeMap.length; i++) {
@@ -1004,6 +1002,9 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
 
+		that.startday_str = that.startday.Format("yyyy-MM-dd")
+		that.endday_str = that.endday.Format("yyyy-MM-dd")
+
         that.is_admin = false
         that.errmsg = ""
         that.pwd = ""
@@ -1033,6 +1034,8 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
         }
 
         function refresh() {
+			that.startday = new Date(Date.parse(that.startday_str))
+			that.endday = new Date(Date.parse(that.endday_str))
             Restangular.one('api/g/', gymid)
                 .one("salary/")
                 .get({
@@ -1075,6 +1078,8 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
         var that = this
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
+		that.startday_str = that.startday.Format("yyyy-MM-dd")
+		that.endday_str = that.endday.Format("yyyy-MM-dd")
 
         that.is_admin = false
         that.errmsg = ""
@@ -1123,6 +1128,9 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
         }
 
         function refresh() {
+
+			that.startday = new Date(Date.parse(that.startday_str))
+			that.endday = new Date(Date.parse(that.endday_str))
             that.sumstatus = {
                 salesum: 0,
                 salecount: 0,
