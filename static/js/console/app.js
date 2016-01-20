@@ -1073,14 +1073,6 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
         that.is_admin = false
         that.errmsg = ""
         that.pwd = ""
-        that.sumstatus = {
-            salesum: 0,
-            salecount: 0,
-            saleprice: 0,
-            takesum: 0,
-            takecount: 0,
-            takeprice: 0
-        }
         Restangular.one("api/g", gymid)
             .one("salesum")
             .get()
@@ -1127,8 +1119,18 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
         }
 
         function refresh() {
+            that.sumstatus = {
+                salesum: 0,
+                salecount: 0,
+                saleprice: 0,
+                takesum: 0,
+                takecount: 0,
+                takeprice: 0
+            }
+
             Restangular.one('api/g', gymid).get().then(function(gym) {
                 $scope.coaches = gym.coaches_set
+
                 $.each($scope.coaches, function(i, item) {
                     //render income
                     Restangular.one("api/", item.name).one("income/").get({
@@ -1266,7 +1268,7 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
 
             //save the row
             console.log(row)
-			var cs = {}
+            var cs = {}
             cs.base_salary = parseInt(row.base_salary)
             cs.yanglao = parseInt(row.yanglao)
             cs.yiliao = parseInt(row.yiliao)
