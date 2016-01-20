@@ -1313,6 +1313,9 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
                 var gymid = $.cookie("gym")
                 Restangular.one('api/g/', gymid).get().then(function(gym) {
                     $scope.coaches = gym.coaches_set
+					_.each($scope.coaches, function(item){
+						item.avatar += "?imageView2/1/w/150/h/150"
+					})
                     Restangular.one('api/g/' + gymid + "/" + date + "/").get().then(function(allbooks) {
                         var grouped = _.groupBy(allbooks, function(item) {
                             return item.coachprofile.id
