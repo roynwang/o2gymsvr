@@ -413,6 +413,12 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAl
         }
 
         that.loadcoaches()
+		that.modify_can_book = function(c){
+			Restangular.one("api", c.name)
+				.patch({can_book: c.can_book})
+				.then(function(data){
+				})
+		}
 
         that.newcoach = function(size) {
             var modalInstance = $uibModal.open({
@@ -1312,7 +1318,7 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
             function renderCoaches() {
                 var gymid = $.cookie("gym")
                 Restangular.one('api/g/', gymid).get().then(function(gym) {
-                    $scope.coaches = gym.coaches_set
+                    $scope.coaches = _.filter(gym.coaches_set, {can_book: true})
 					_.each($scope.coaches, function(item){
 						item.avatar += "?imageView2/1/w/150/h/150"
 					})
