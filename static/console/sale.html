@@ -77,12 +77,13 @@
                 </table>
                 <div class="row">
                     <div class="col-lg-6">
-                        <h4 class="text-center">课时总览</h4>
+                        <h4 class="text-center">耗课统计(总)</h4>
                         <canvas id="line" class="chart chart-doughnut" chart-data="ctrl.gymsale.data" chart-labels="ctrl.gymsale.labels"
                         chart-legend="true" chart-legend="true"></canvas>
                     </div>
                     <div class="col-lg-6">
                         <h4 class="text-center" style="margin-bottom:20px">经营概况</h4>
+						<p class="text-center">{{ctrl.startday.Format("yyyy-MM-dd")}} -{{ctrl.endday.Format("yyyy-MM-dd")}}</p>
                         <div class="row">
                             <div class="text-right col-md-6 col-sm-5 inv-label">销售总价</div>
                             <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.salesum}}</div>
