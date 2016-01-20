@@ -55,6 +55,25 @@
                 </div>
             </header>
             <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+                            <li class="text-center grand-total">未上课程 : {{ctrl.gymsale.sum_coursecount - ctrl.gymsale.sum_completedcount}}</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+                            <li class="text-center">已上课程 : {{ctrl.gymsale.sum_completedcount}}</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+                            <li class="text-center">课程总计 : {{ctrl.gymsale.sum_completedcount}}</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <table class="table table-invoice">
                     <thead>
                         <tr>
@@ -77,13 +96,8 @@
                 </table>
                 <div class="row">
                     <div class="col-lg-6">
-                        <h4 class="text-center">耗课统计(总)</h4>
-                        <canvas id="line" class="chart chart-doughnut" chart-data="ctrl.gymsale.data" chart-labels="ctrl.gymsale.labels"
-                        chart-legend="true" chart-legend="true"></canvas>
-                    </div>
-                    <div class="col-lg-6">
-                        <h4 class="text-center" >经营概况</h4>
-						<p class="text-center" style="margin-bottom:20px">{{ctrl.startday.Format("yyyy-MM-dd")}} -{{ctrl.endday.Format("yyyy-MM-dd")}}</p>
+                        <h4 class="text-center">经营概况</h4>
+                        <p class="text-center" style="margin-bottom:20px">{{ctrl.startday.Format("yyyy-MM-dd")}} -{{ctrl.endday.Format("yyyy-MM-dd")}}</p>
                         <div class="row">
                             <div class="text-right col-md-6 col-sm-5 inv-label">销售总价</div>
                             <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.salesum}}</div>
@@ -115,6 +129,13 @@
                             <div class="text-right col-md-6 col-sm-5 inv-label">耗课课时</div>
                             <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.takecount}}</div>
                         </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <h4 class="text-center">售课/耗课</h4>
+                        <p class="text-center" style="margin-bottom:20px">{{ctrl.startday.Format("yyyy-MM-dd")}} -{{ctrl.endday.Format("yyyy-MM-dd")}}</p>
+						<br>
+                        <canvas id="line" class="chart chart-bar" chart-data="ctrl.coachchart.data" chart-labels="ctrl.coachchart.labels"
+                        chart-series="ctrl.coachchart.series" chart-legend="true"></canvas>
                     </div>
                 </div>
             </div>
