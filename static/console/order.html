@@ -13,7 +13,7 @@
 					height: 60px;"> {{ctrl.coach.displayname}} 
 					<a style="font-size:12px;color:#1fb5ad;"
 						ng-click="ctrl.showncoaches=!ctrl.showncoaches"><i class="fa
-							fa-exchange"></i>{{ctrl.showncoaches?"收起教练":"更换教练"}}</a></h3>
+							fa-exchange"></i>{{ctrl.showncoaches?"收起":"更换"}}</a></h3>
             </div>
 			<div ng-show="ctrl.showncoaches" class="row" style="margin-bottom:20px;padding-left:20px;padding-right:20px" >
 				<div  style="padding-top:10px" class="col-sm-1 {{c.name==ctrl.coach.name?'coach-selected':''}}" ng-repeat="c in ctrl.gym.coaches_set" ng-click="ctrl.changecoach(c)">
@@ -48,6 +48,7 @@
                             </td>
                             <td data-title="'操作'">
                                 <button class="btn btn-danger btn-xs" ng-hide="row.done" ng-click="ctrl.cancelbook(row)">取消</button>
+                                <button class="btn btn-danger btn-xs" ng-show="row.done" ng-click="ctrl.cancelbook(row)">移除</button>
                                 <button class="btn btn-primary btn-xs" ng-show="!row.done && (row.id !=
 									undefined)" ng-click="ctrl.bookComplete(row.date, row.hour)">完成</button>
                             </td>
