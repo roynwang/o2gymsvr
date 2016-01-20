@@ -58,13 +58,15 @@ class CoachSalaryView(APIView):
 			print str(course.order.amount) + ":" + str(product.amount) + ": " + str(tmpprice)
 		return price
 	def cal_coach_income(self, query, shangke, fixed_shangke):
+		income = 0
 		price = 0
 		for course in query:
 			if course.order.subsidy == 0:
-				price = price + course.getprice()*shangke/100 + fixed_shangke
+				income = income + course.getprice()*shangke/100 + fixed_shangke
 			else:
-				price += course.getprice()
-		return price
+				income += course.subsidy
+			price += course.getprice()
+		return income,price
 
 
 	def getsale(self,coach,start, end, fee):
@@ -75,8 +77,8 @@ class CoachSalaryView(APIView):
 		sold_xu = orders.filter(isfirst=False).aggregate(Sum('amount'))["amount__sum"] or 0
 		courses_query = coach.sealed_time.filter(date__range=[start,end],done=True)
 		courses = self.cal_course_income(courses_query) 
-		salary = self.cal_coach_income(courses_query, fee.shangke, fee.fixed_shangke)
-		return {"sold":sold, "sold_xu":sold, "course": courses, "course_salary": salary}
+		salary, course_price = self.cal_coach_income(courses_query, fee.shangke, fee.fixed_shangke)
+		return {"sold":sold, "sold_xu":sold, "course": courses, "course_price":course_price, "course_salary": salary}
 
 	def get(self, request, gymid):
 		gymfee = get_object_or_404(GymFee, gym = self.kwargs["gymid"])
