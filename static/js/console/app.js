@@ -1081,7 +1081,10 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                     data: [data.sum_completedcount, data.sum_coursecount - data.sum_completedcount],
                     labels: ["耗课量:" + data.sum_completedcount, "余课量:" + (data.sum_coursecount - data.sum_completedcount)]
                 }
+
+                that.gymsale = data
             })
+
 
         function calsumstatus() {
             _.each($scope.coaches, function(item) {
@@ -1127,6 +1130,7 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                 takecount: 0,
                 takeprice: 0
             }
+			that.coachchart = { labels:[], series:["销售量","上课量"], data:[[],[]] }
 
             Restangular.one('api/g', gymid).get().then(function(gym) {
                 $scope.coaches = gym.coaches_set
@@ -1145,6 +1149,9 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                         that.sumstatus.takesum += data.completed_course_price
                         that.sumstatus.takecount += data.completed_course
                         that.sumstatus.takeprice = that.sumstatus.takesum / that.sumstatus.takecount
+						that.coachchart.labels.push($scope.coaches[i].displayname)
+						that.coachchart.data[0].push(data.sold_count)
+						that.coachchart.data[1].push(data.completed_course)
                     })
                 })
             })
