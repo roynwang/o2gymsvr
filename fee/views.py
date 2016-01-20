@@ -64,7 +64,7 @@ class CoachSalaryView(APIView):
 			if course.order.subsidy == 0:
 				income = income + course.getprice()*shangke/100 + fixed_shangke
 			else:
-				income += course.subsidy
+				income += course.order.subsidy
 			price += course.getprice()
 		return income,price
 
