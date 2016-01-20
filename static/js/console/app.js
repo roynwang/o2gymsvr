@@ -61,7 +61,8 @@ var app = angular.module('JobApp', [
     "ngTable",
     'ui.bootstrap',
     'oitozero.ngSweetAlert',
-    'angular-ladda'
+    'angular-ladda',
+    'chart.js'
 ])
 app.directive('backButton', function() {
     return {
@@ -910,12 +911,15 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         that.mo.product_amount = ""
         that.mo.product_duration = ""
         that.mo.sex = '0'
-		that.mo.age = undefined
-		that.mo.subsidy = undefined
+        that.mo.age = undefined
+        that.mo.subsidy = undefined
 
-		that.ordertype = "normal"
+        that.ordertype = "normal"
 
-		that.order_display = {"groupon":"团购订单", "normal":"普通订单"}
+        that.order_display = {
+            "groupon": "团购订单",
+            "normal": "普通订单"
+        }
 
         Restangular.one("api/", coachname)
             .get()
@@ -923,12 +927,12 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
                 that.coach = data
                 that.coach.avatar += "?imageView2/1/w/150/h/150"
             })
-	
+
 
         function validate() {
-			if(that.mo.subsidy == undefined){
-				that.mo.subsidy = 0
-			}
+            if (that.mo.subsidy == undefined) {
+                that.mo.subsidy = 0
+            }
             var data = that.mo
             if (that.mo.customer_phone.toString().length != 11) {
                 swal("", "请输入正确的11位电话号码", "warning")
@@ -1069,6 +1073,34 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
         that.is_admin = false
         that.errmsg = ""
         that.pwd = ""
+        that.sumstatus = {
+            salesum: 0,
+            salecount: 0,
+            saleprice: 0,
+            takesum: 0,
+            takecount: 0,
+            takeprice: 0
+        }
+        Restangular.one("api/g", gymid)
+            .one("salesum")
+            .get()
+            .then(function(data) {
+                that.gymsale = {
+                    data: [data.sum_completedcount, data.sum_coursecount - data.sum_completedcount],
+                    labels: ["耗课量:" + data.sum_completedcount, "余课量:" + (data.sum_coursecount - data.sum_completedcount)]
+                }
+            })
+
+        function calsumstatus() {
+            _.each($scope.coaches, function(item) {
+                if (item.income) {
+                    that.sumstatus.salesum += item.income.sold_price
+                    that.sumstatus.takesum += item.income.completed_course_price
+                    that.sumstatus.takecount += item.income.completed_count
+                    that.sumstatus.takeprice = that.sumstatus.takesum / that.sumstatus.takecount
+                }
+            })
+        }
 
         that.submit = function() {
             if (that.pwd == undefined || that.pwd.length == 0) {
@@ -1095,7 +1127,7 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
         }
 
         function refresh() {
-            Restangular.one('api/g/', gymid).get().then(function(gym) {
+            Restangular.one('api/g', gymid).get().then(function(gym) {
                 $scope.coaches = gym.coaches_set
                 $.each($scope.coaches, function(i, item) {
                     //render income
@@ -1104,6 +1136,13 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                         end: that.endday.Format("yyyyMMdd")
                     }).then(function(data) {
                         $scope.coaches[i].income = data
+                        that.sumstatus.salesum += data.sold_price
+                        that.sumstatus.salecount += data.sold_count
+                        that.sumstatus.saleprice = that.sumstatus.salesum / that.sumstatus.salecount
+
+                        that.sumstatus.takesum += data.completed_course_price
+                        that.sumstatus.takecount += data.completed_course
+                        that.sumstatus.takeprice = that.sumstatus.takesum / that.sumstatus.takecount
                     })
                 })
             })
@@ -1149,6 +1188,7 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
         that.is_admin = false
         that.errmsg = ""
         that.pwd = ""
+        that.salarytab = 'base'
 
         that.submit = function() {
             if (that.pwd == undefined || that.pwd.length == 0) {
@@ -1174,8 +1214,10 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
             .then(function(data) {
                 originalData = data
                 self.tableParams = new NgTableParams({
+                    count: 100,
                     sorting: {}
                 }, {
+                    counts: [],
                     dataset: angular.copy(originalData)
                 });
             })
@@ -1224,25 +1266,21 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
 
             //save the row
             console.log(row)
+			var cs = {}
+            cs.base_salary = parseInt(row.base_salary)
+            cs.yanglao = parseInt(row.yanglao)
+            cs.yiliao = parseInt(row.yiliao)
+            cs.shiye = parseInt(row.shiye)
+            cs.gongjijin = parseInt(row.gongjijin)
+            cs.xiaoshou = parseInt(row.xiaoshou)
+            cs.xuke = parseInt(row.xuke)
+            cs.shangke = parseInt(row.shangke)
+            cs.fixed_shangke = parseInt(row.fixed_shangke)
 
             Restangular.one('api/g/', gymid)
-                .all("salarysetting")
-                .getList()
-                .then(function(data) {
-                    var cs = _.find(data, function(obj) {
-                        return obj.id === row.id
-                    })
-                    cs.base_salary = row.base_salary
-                    cs.yanglao = row.yanglao
-                    cs.yiliao = row.yiliao
-                    cs.shiye = row.shiye
-                    cs.gongjijin = row.gongjijin
-                    cs.xiaoshou = row.xiaoshou
-                    cs.xuke = row.xuke
-                    cs.shangke = row.shangke
-                    cs.patch()
-                })
-
+                .one("salarysetting", row.id)
+                .patch(cs)
+                .then(function(data) {})
         }
     }
 ])

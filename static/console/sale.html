@@ -3,7 +3,8 @@
         <div class="form-signin">
             <h2 class="form-signin-heading">密码验证</h2>
             <div class="login-wrap">
-                <input type="password" class="form-control" autocomplete="off" ng-model="ctrl.pwd" placeholder="请输入密码" autofocus>
+                <input type="password" class="form-control" autocomplete="off" ng-model="ctrl.pwd"
+                placeholder="请输入密码" autofocus>
                 <i class="text-danger">{{ctrl.errmsg}}</i>
                 <button class="btn btn-lg btn-login btn-block" ng-click="ctrl.submit()">提交</button>
             </div>
@@ -54,24 +55,67 @@
                 </div>
             </header>
             <div class="panel-body">
-                <table class="table table-hover">
+                <table class="table table-invoice">
                     <thead>
                         <tr>
                             <th>教练</th>
-                            <th>总销售量(元)</th>
-                            <th>续课销售量(元)</th>
-                            <th>上课数(节)</th>
+                            <th>销售总价(元)</th>
+                            <th>销售课时(节)</th>
+                            <th>耗课总价(元)</th>
+                            <th>耗课课时(节)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="coach in coaches" style="color:#333">
                             <td>{{coach.displayname}}</td>
                             <td>{{coach.income.sold_price}}</td>
-                            <td>{{coach.income.sold_xu}}</td>
+                            <td>{{coach.income.sold_count}}</td>
+                            <td>{{coach.income.completed_course_price}}</td>
                             <td>{{coach.income.completed_course}}</td>
                         </tr>
                     </tbody>
                 </table>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h4 class="text-center">课时总览</h4>
+                        <canvas id="line" class="chart chart-doughnut" chart-data="ctrl.gymsale.data" chart-labels="ctrl.gymsale.labels"
+                        chart-legend="true" chart-legend="true"></canvas>
+                    </div>
+                    <div class="col-lg-6">
+                        <h4 class="text-center" style="margin-bottom:20px">经营概况</h4>
+                        <div class="row">
+                            <div class="text-right col-md-6 col-sm-5 inv-label">销售总价</div>
+                            <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.salesum}}</div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="text-right col-md-6 col-sm-5 inv-label">销售均价</div>
+                            <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.saleprice.toFixed(2)}}</div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="text-right col-md-6 col-sm-5 inv-label">销售课时</div>
+                            <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.salecount}}</div>
+                        </div>
+                        <br>
+
+                        <div class="row">
+                            <div class="text-right col-md-6 col-sm-5 inv-label">耗课总价</div>
+                            <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.takesum}}</div>
+                        </div>
+
+                        <br>
+                        <div class="row">
+                            <div class="text-right col-md-6 col-sm-5 inv-label">耗课均价</div>
+                            <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.takeprice.toFixed(2)}}</div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="text-right col-md-6 col-sm-5 inv-label">耗课课时</div>
+                            <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.takecount}}</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
