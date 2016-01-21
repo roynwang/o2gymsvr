@@ -111,7 +111,9 @@ app.factory("$customersvc", function(Restangular) {
         }
     }
 
-    function getcustomer(key) {}
+    function getcustomer(key) {
+		return _.find(customers, {name:key})
+	}
     return {
         getcustomers: getcustomers,
         getcustomer: getcustomer
@@ -197,8 +199,8 @@ app.controller("GymCtrl", ["$stateParams", "$state",
             //window.location = "/console/dashboard/"
     }
 ])
-app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert",
-    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert) {
+app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert","$customersvc",
+    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $customersvc) {
         var that = this
         that.coaches = []
         that.coach = {}
@@ -253,6 +255,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                             })
                 })
         }
+		that.customer_displayname = $customersvc.getcustomer($stateParams.customername).displayname
         that.refresh = function() {
             Restangular.one('api/', $stateParams.customername)
                 .one("o/")
