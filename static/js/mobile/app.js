@@ -661,6 +661,25 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.querystatus = "unset"
         that.pendingbook = {}
         that.isSelecting = false
+        that.showneworder = function() {
+            $mdDialog.show({
+                    controller: "NewOrderDialgCtrl",
+                    templateUrl: '/static/mobile/neworder.html',
+                    parent: angular.element(document.body),
+                    //targetEvent: ev,
+                    clickOutsideToClose: true,
+                    fullscreen: true
+                })
+                .then(function(answer) {
+                    console.log('You said the information was "' + answer + '".');
+                    $state.transitionTo("index")
+                }, function() {
+                    console.log('You cancelled the dialog.')
+                    $state.transitionTo("index")
+                });
+        }
+
+
 
         that.toggleMenu = function(direction) {
             $mdSidenav(direction)
