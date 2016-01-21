@@ -111,7 +111,9 @@ app.factory("$customersvc", function(Restangular) {
         }
     }
 
-    function getcustomer(key) {}
+    function getcustomer(key) {
+		return _.find(customers, {name:key})
+	}
     return {
         getcustomers: getcustomers,
         getcustomer: getcustomer
@@ -197,8 +199,8 @@ app.controller("GymCtrl", ["$stateParams", "$state",
             //window.location = "/console/dashboard/"
     }
 ])
-app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert",
-    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert) {
+app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert","$customersvc",
+    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $customersvc) {
         var that = this
         that.coaches = []
         that.coach = {}
@@ -253,6 +255,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                             })
                 })
         }
+		that.customer_displayname = $customersvc.getcustomer($stateParams.customername).displayname
         that.refresh = function() {
             Restangular.one('api/', $stateParams.customername)
                 .one("o/")
@@ -1013,6 +1016,8 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
         that.errmsg = ""
         that.pwd = ""
 
+		that.is_admin = $.cookie("admin_confirmed")
+
         that.submit = function() {
             if (that.pwd == undefined || that.pwd.length == 0) {
                 that.errmsg("请输入密码")
@@ -1023,9 +1028,18 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
                     $.cookie("token", data.token, {
                         path: '/'
                     })
+					var date = new Date();
+					date.setTime(date.getTime() + (2 * 60 * 1000));
+					$.cookie("admin_confirmed", true, {
+                        path: '/',
+						expires: date
+					})
                     that.is_admin = true
                 },
                 function(data) {
+					$.cookie("admin_confirmed", false, {
+                        path: '/',
+					})
                     that.is_admin = false
                     that.errmsg = "密码验证失败"
                 })
@@ -1106,6 +1120,7 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                 }
             })
         }
+		that.is_admin = $.cookie("admin_confirmed")
 
         that.submit = function() {
             if (that.pwd == undefined || that.pwd.length == 0) {
@@ -1117,14 +1132,23 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                     $.cookie("token", data.token, {
                         path: '/'
                     })
+					var date = new Date();
+					date.setTime(date.getTime() + (2 * 60 * 1000));
+					$.cookie("admin_confirmed", true, {
+                        path: '/',
+						expires: date
+					})
                     that.is_admin = true
                 },
                 function(data) {
+					$.cookie("admin_confirmed", false, {
+                        path: '/',
+					})
                     that.is_admin = false
                     that.errmsg = "密码验证失败"
                 })
         }
-
+   
         function calSum(data) {
             console.log(data)
             return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100
@@ -1214,10 +1238,10 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
         var originalData = []
         var that = this
 
-        that.is_admin = false
         that.errmsg = ""
         that.pwd = ""
         that.salarytab = 'base'
+		that.is_admin = $.cookie("admin_confirmed")
 
         that.submit = function() {
             if (that.pwd == undefined || that.pwd.length == 0) {
@@ -1229,9 +1253,18 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
                     $.cookie("token", data.token, {
                         path: '/'
                     })
+					var date = new Date();
+					date.setTime(date.getTime() + (2 * 60 * 1000));
+					$.cookie("admin_confirmed", true, {
+                        path: '/',
+						expires: date
+					})
                     that.is_admin = true
                 },
                 function(data) {
+					$.cookie("admin_confirmed", false, {
+                        path: '/',
+					})
                     that.is_admin = false
                     that.errmsg = "密码验证失败"
                 })
