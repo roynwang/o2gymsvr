@@ -1,0 +1,12 @@
+<md-bottom-sheet class="md-list md-has-header" ng-cloak  style="position:fixed;position: fixed; max-height: 50%; overflow-y: scroll;">
+  <md-list>
+    <md-list-item ng-repeat="item in items">
+      <div class="md-list-item-content" layout="row" flex flex-align="center center" style="color:#777">
+        <span flex style="text-align:center" class="md-inline-list-icon-label">{{ item.coachprofile.displayname }}</span>
+        <span flex style="text-align:center" class="md-inline-list-icon-label">{{ item.date }}</span>
+        <span flex style="text-align:center" class="md-inline-list-icon-label">{{ timemap[item.hour] }}</span>
+        <span flex style="text-align:center" class="md-inline-list-icon-label">{{ item.done?"已完成":"未完成" }}</span>
+      </div>
+    </md-list-item>
+  </md-list>
+</md-bottom-sheet>

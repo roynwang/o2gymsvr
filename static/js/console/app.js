@@ -59,9 +59,11 @@ var app = angular.module('JobApp', [
     'restangular',
     'jkuri.slimscroll',
     "ngTable",
-    'ui.bootstrap',
     'oitozero.ngSweetAlert',
-    'angular-ladda'
+    'angular-ladda',
+    'ui.bootstrap',
+    'chart.js',
+    '720kb.datepicker'
 ])
 app.directive('backButton', function() {
     return {
@@ -109,7 +111,9 @@ app.factory("$customersvc", function(Restangular) {
         }
     }
 
-    function getcustomer(key) {}
+    function getcustomer(key) {
+		return _.find(customers, {name:key})
+	}
     return {
         getcustomers: getcustomers,
         getcustomer: getcustomer
@@ -195,8 +199,8 @@ app.controller("GymCtrl", ["$stateParams", "$state",
             //window.location = "/console/dashboard/"
     }
 ])
-app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert",
-    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert) {
+app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert","$customersvc",
+    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $customersvc) {
         var that = this
         that.coaches = []
         that.coach = {}
@@ -251,6 +255,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                             })
                 })
         }
+		that.customer_displayname = $customersvc.getcustomer($stateParams.customername).displayname
         that.refresh = function() {
             Restangular.one('api/', $stateParams.customername)
                 .one("o/")
@@ -412,6 +417,13 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAl
         }
 
         that.loadcoaches()
+        that.modify_can_book = function(c) {
+            Restangular.one("api", c.name)
+                .patch({
+                    can_book: c.can_book
+                })
+                .then(function(data) {})
+        }
 
         that.newcoach = function(size) {
             var modalInstance = $uibModal.open({
@@ -523,11 +535,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.order = null
         that.day = new Date()
         that.availiable = []
-
-        that.open = function() {
-            that.dayopened = true
-        };
-        that.dayopened = false
+        that.day_str = that.day.Format("yyyy-MM-dd")
 
         that.gohome = function() {
             $state.transitionTo('index')
@@ -791,6 +799,8 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
 
         }
         that.refreshtimetable = function(norefresh) {
+            that.day = new Date(Date.parse(that.day_str))
+
             function t(ava) {
                 that.timemapgroup = []
                 for (var i = 0; i < TimeMap.length; i++) {
@@ -849,8 +859,10 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                                 done: true
                             })
                             that.tableParams = new NgTableParams({
+                                count: 5,
                                 sorting: {},
                             }, {
+                                counts: [],
                                 dataset: data.booked,
                             });
                             that.refreshtimetable()
@@ -910,12 +922,15 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         that.mo.product_amount = ""
         that.mo.product_duration = ""
         that.mo.sex = '0'
-		that.mo.age = undefined
-		that.mo.subsidy = undefined
+        that.mo.age = undefined
+        that.mo.subsidy = undefined
 
-		that.ordertype = "normal"
+        that.ordertype = "normal"
 
-		that.order_display = {"groupon":"团购订单", "normal":"普通订单"}
+        that.order_display = {
+            "groupon": "团购订单",
+            "normal": "普通订单"
+        }
 
         Restangular.one("api/", coachname)
             .get()
@@ -923,11 +938,17 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
                 that.coach = data
                 that.coach.avatar += "?imageView2/1/w/150/h/150"
             })
-	
+
 
         function validate() {
-			if(that.mo.subsidy == undefined){
-				that.mo.subsidy = 0
+            if (that.mo.subsidy == undefined) {
+                that.mo.subsidy = 0
+            }
+			if(that.birthday_str){
+				that.mo.birthday = that.birthday_str
+			}
+			if(that.mo.age == undefined){
+				that.mo.age = 0
 			}
             var data = that.mo
             if (that.mo.customer_phone.toString().length != 11) {
@@ -935,7 +956,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
                 return false
             }
             for (var k in data) {
-                if (data[k] == undefined || data[k].length == 0) {
+                if (data[k] == undefined ) {
                     swal("", "请填完所有选项", "warning")
                     return false
                 }
@@ -944,9 +965,10 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         }
 
         that.submitorder = function() {
-            if (!validate()) {
+         if (!validate()) {
                 return
             }
+
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
                     title: "提交",
@@ -994,9 +1016,14 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
 
+        that.startday_str = that.startday.Format("yyyy-MM-dd")
+        that.endday_str = that.endday.Format("yyyy-MM-dd")
+
         that.is_admin = false
         that.errmsg = ""
         that.pwd = ""
+
+		that.is_admin = $.cookie("admin_confirmed")
 
         that.submit = function() {
             if (that.pwd == undefined || that.pwd.length == 0) {
@@ -1008,9 +1035,18 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
                     $.cookie("token", data.token, {
                         path: '/'
                     })
+					var date = new Date();
+					date.setTime(date.getTime() + (2 * 60 * 1000));
+					$.cookie("admin_confirmed", true, {
+                        path: '/',
+						expires: date
+					})
                     that.is_admin = true
                 },
                 function(data) {
+					$.cookie("admin_confirmed", false, {
+                        path: '/',
+					})
                     that.is_admin = false
                     that.errmsg = "密码验证失败"
                 })
@@ -1023,6 +1059,8 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
         }
 
         function refresh() {
+            that.startday = new Date(Date.parse(that.startday_str))
+            that.endday = new Date(Date.parse(that.endday_str))
             Restangular.one('api/g/', gymid)
                 .one("salary/")
                 .get({
@@ -1065,10 +1103,31 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
         var that = this
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
+        that.startday_str = that.startday.Format("yyyy-MM-dd")
+        that.endday_str = that.endday.Format("yyyy-MM-dd")
 
         that.is_admin = false
         that.errmsg = ""
         that.pwd = ""
+        Restangular.one("api/g", gymid)
+            .one("salesum")
+            .get()
+            .then(function(data) {
+                that.gymsale = data
+            })
+
+
+        function calsumstatus() {
+            _.each($scope.coaches, function(item) {
+                if (item.income) {
+                    that.sumstatus.salesum += item.income.sold_price
+                    that.sumstatus.takesum += item.income.completed_course_price
+                    that.sumstatus.takecount += item.income.completed_count
+                    that.sumstatus.takeprice = that.sumstatus.takesum / that.sumstatus.takecount
+                }
+            })
+        }
+		that.is_admin = $.cookie("admin_confirmed")
 
         that.submit = function() {
             if (that.pwd == undefined || that.pwd.length == 0) {
@@ -1080,14 +1139,23 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                     $.cookie("token", data.token, {
                         path: '/'
                     })
+					var date = new Date();
+					date.setTime(date.getTime() + (2 * 60 * 1000));
+					$.cookie("admin_confirmed", true, {
+                        path: '/',
+						expires: date
+					})
                     that.is_admin = true
                 },
                 function(data) {
+					$.cookie("admin_confirmed", false, {
+                        path: '/',
+					})
                     that.is_admin = false
                     that.errmsg = "密码验证失败"
                 })
         }
-
+   
         function calSum(data) {
             console.log(data)
             return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100
@@ -1095,8 +1163,29 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
         }
 
         function refresh() {
-            Restangular.one('api/g/', gymid).get().then(function(gym) {
+
+            that.startday = new Date(Date.parse(that.startday_str))
+            that.endday = new Date(Date.parse(that.endday_str))
+            that.sumstatus = {
+                salesum: 0,
+                salecount: 0,
+                saleprice: 0,
+                takesum: 0,
+                takecount: 0,
+                takeprice: 0
+            }
+            that.coachchart = {
+                labels: [],
+                series: ["销售量", "上课量"],
+                data: [
+                    [],
+                    []
+                ]
+            }
+
+            Restangular.one('api/g', gymid).get().then(function(gym) {
                 $scope.coaches = gym.coaches_set
+
                 $.each($scope.coaches, function(i, item) {
                     //render income
                     Restangular.one("api/", item.name).one("income/").get({
@@ -1104,6 +1193,16 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                         end: that.endday.Format("yyyyMMdd")
                     }).then(function(data) {
                         $scope.coaches[i].income = data
+                        that.sumstatus.salesum += data.sold_price
+                        that.sumstatus.salecount += data.sold_count
+                        that.sumstatus.saleprice = that.sumstatus.salesum / that.sumstatus.salecount
+
+                        that.sumstatus.takesum += data.completed_course_price
+                        that.sumstatus.takecount += data.completed_course
+                        that.sumstatus.takeprice = that.sumstatus.takesum / that.sumstatus.takecount
+                        that.coachchart.labels.push($scope.coaches[i].displayname)
+                        that.coachchart.data[0].push(data.sold_count)
+                        that.coachchart.data[1].push(data.completed_course)
                     })
                 })
             })
@@ -1146,9 +1245,10 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
         var originalData = []
         var that = this
 
-        that.is_admin = false
         that.errmsg = ""
         that.pwd = ""
+        that.salarytab = 'base'
+		that.is_admin = $.cookie("admin_confirmed")
 
         that.submit = function() {
             if (that.pwd == undefined || that.pwd.length == 0) {
@@ -1160,9 +1260,18 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
                     $.cookie("token", data.token, {
                         path: '/'
                     })
+					var date = new Date();
+					date.setTime(date.getTime() + (2 * 60 * 1000));
+					$.cookie("admin_confirmed", true, {
+                        path: '/',
+						expires: date
+					})
                     that.is_admin = true
                 },
                 function(data) {
+					$.cookie("admin_confirmed", false, {
+                        path: '/',
+					})
                     that.is_admin = false
                     that.errmsg = "密码验证失败"
                 })
@@ -1174,8 +1283,10 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
             .then(function(data) {
                 originalData = data
                 self.tableParams = new NgTableParams({
+                    count: 100,
                     sorting: {}
                 }, {
+                    counts: [],
                     dataset: angular.copy(originalData)
                 });
             })
@@ -1224,31 +1335,28 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
 
             //save the row
             console.log(row)
+            var cs = {}
+            cs.base_salary = parseInt(row.base_salary)
+            cs.yanglao = parseInt(row.yanglao)
+            cs.yiliao = parseInt(row.yiliao)
+            cs.shiye = parseInt(row.shiye)
+            cs.gongjijin = parseInt(row.gongjijin)
+            cs.xiaoshou = parseInt(row.xiaoshou)
+            cs.xuke = parseInt(row.xuke)
+            cs.shangke = parseInt(row.shangke)
+            cs.fixed_shangke = parseInt(row.fixed_shangke)
 
             Restangular.one('api/g/', gymid)
-                .all("salarysetting")
-                .getList()
-                .then(function(data) {
-                    var cs = _.find(data, function(obj) {
-                        return obj.id === row.id
-                    })
-                    cs.base_salary = row.base_salary
-                    cs.yanglao = row.yanglao
-                    cs.yiliao = row.yiliao
-                    cs.shiye = row.shiye
-                    cs.gongjijin = row.gongjijin
-                    cs.xiaoshou = row.xiaoshou
-                    cs.xuke = row.xuke
-                    cs.shangke = row.shangke
-                    cs.patch()
-                })
-
+                .one("salarysetting", row.id)
+                .patch(cs)
+                .then(function(data) {})
         }
     }
 ])
 
-app.controller("MainPageCtrl", ['$scope', "Restangular",
-        function($scope, Restangular) {
+app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc","$state",
+        function($scope, Restangular, $customersvc, $state) {
+			var that = this
             var date = new Date().Format("yyyyMMdd");
             //var date = "20151029"
             $scope.calendarRowGroup = []
@@ -1256,6 +1364,39 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
             var g = 0
 
             $scope.coursecount = 0
+
+
+            $customersvc.getcustomers(function(data) {
+				that.customers = data
+                $('#customer-search').autocomplete({
+
+                    lookup: function(query, done) {
+                        // Do ajax call or lookup locally, when done,
+                        // call the callback and pass your results:
+						var filtered = _.filter(that.customers,function(p){
+							var pinyin = p.pinyin.replace(/ /g,"")
+							if(pinyin.indexOf(query) >= 0 || p.displayname.indexOf(query) >= 0 ){
+								return true
+							}
+							return false
+						})
+						var sug = _.map(filtered, function(p){
+							return {"value":p.displayname, "data":p}
+						})
+
+                        var result = {
+                            suggestions: sug
+                        };
+                        done(result);
+                    },
+                    onSelect: function(suggestion) {
+						$("#customer-search").val('')
+        				$state.transitionTo("customerorders", {
+                             customername: suggestion.data.name,
+                        })
+                    }
+                });
+            })
 
             function renderSale() {
                 var gymid = $.cookie("gym")
@@ -1270,7 +1411,12 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
             function renderCoaches() {
                 var gymid = $.cookie("gym")
                 Restangular.one('api/g/', gymid).get().then(function(gym) {
-                    $scope.coaches = gym.coaches_set
+                    $scope.coaches = _.filter(gym.coaches_set, {
+                        can_book: true
+                    })
+                    _.each($scope.coaches, function(item) {
+                        item.avatar += "?imageView2/1/w/150/h/150"
+                    })
                     Restangular.one('api/g/' + gymid + "/" + date + "/").get().then(function(allbooks) {
                         var grouped = _.groupBy(allbooks, function(item) {
                             return item.coachprofile.id

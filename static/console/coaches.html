@@ -39,12 +39,20 @@
                     </div>
 
                     <ul class="nav nav-pills nav-stacked">
+	                     <li>
+                            <a href="javascript:;"><i class="fa fa-eye"></i> 是否显示 <input
+								class="pull-right" type="checkbox" ng-model="ctrl.coaches[3*i +c].can_book" ng-change="ctrl.modify_can_book(ctrl.coaches[3*i + c])"> 
+                        </a>
+                        </li>
+						<!--
                         <li>
                             <a href="javascript:;"><i class="fa  fa-file"></i> 订单完成 <span class="badge label-success pull-right r-activity"> {{ctrl.coaches[3*i + c].order_count}}</span>
                         </a>
                         </li>
+						-->
                         <li>
-                            <a href="javascript:;"><i class="fa  fa-file-o"></i> 授课完成<span class="badge label-danger pull-right r-activity">{{ctrl.coaches[3*i + c].course_count}}</span>
+                            <a href="javascript:;"><i class="fa  fa-file-o" style="width:26px"></i>
+								授课完成<span class="badge label-primary pull-right r-activity">{{ctrl.coaches[3*i + c].course_count}}</span>
                         </a>
                         </li>
                     </ul>

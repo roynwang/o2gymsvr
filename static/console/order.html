@@ -8,29 +8,30 @@
         </header>
         <div class="form-group panel-body">
             <div class="row" style="margin-bottom:20px">
-				<h3 class="text-center">
+                <h3 class="text-center">
 					<img ng-src="{{ctrl.coach.avatar}}" style="-webkit-border-radius: 50%;
 					height: 60px;"> {{ctrl.coach.displayname}} 
-					<a style="font-size:12px;color:#1fb5ad;"
+					<a style="font-size:12px;color:#999"
 						ng-click="ctrl.showncoaches=!ctrl.showncoaches"><i class="fa
-							fa-exchange"></i>{{ctrl.showncoaches?"收起教练":"更换教练"}}</a></h3>
+							fa-exchange"></i>{{ctrl.showncoaches?"收起":"更换"}}</a></h3>
             </div>
-			<div ng-show="ctrl.showncoaches" class="row" style="margin-bottom:20px;padding-left:20px;padding-right:20px" >
-				<div  style="padding-top:10px" class="col-sm-1 {{c.name==ctrl.coach.name?'coach-selected':''}}" ng-repeat="c in ctrl.gym.coaches_set" ng-click="ctrl.changecoach(c)">
-					<img ng-src="{{c.avatar}}" style="-webkit-border-radius: 50%;height: 50px;">
-					<p>{{c.displayname}}</p>
-				</div>
-			</div>
+            <div ng-show="ctrl.showncoaches" class="row" style="margin-bottom:20px;padding-left:20px;padding-right:20px">
+                <div style="padding-top:10px" class="col-sm-1 {{c.name==ctrl.coach.name?'coach-selected':''}}"
+                ng-repeat="c in ctrl.gym.coaches_set" ng-click="ctrl.changecoach(c)">
+                    <img ng-src="{{c.avatar}}" style="-webkit-border-radius: 50%;height: 50px;">
+                    <p>{{c.displayname}}</p>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12" ng-model="ctrl.booked">
-					<p>过期时间:{{ctrl.order.endtime}}</p>
+                    <p>过期时间:{{ctrl.order.endtime}}</p>
                     <p>课程状态(已上:{{ctrl.done.length}}/待上:{{ctrl.booked.length}}/待约{{ctrl.sum
                         - ctrl.booked.length - ctrl.done.length}})</p>
                     <div class="progress progress-sm">
-                        <div class="progress-bar" style="width: {{ctrl.done.length/ctrl.sum*100}}%">
+                        <div class="progress-bar " style="width: {{ctrl.done.length/ctrl.sum*100}}%">
                             <span class="sr-only">35% Complete (success)</span>
                         </div>
-                        <div class="progress-bar progress-bar-success" style="width: {{ctrl.booked.length/ctrl.sum*100}}%">
+                        <div class="progress-bar pending" style="width: {{ctrl.booked.length/ctrl.sum*100}}%">
                             <span class="sr-only">20% Complete (warning)</span>
                         </div>
                     </div>
@@ -38,37 +39,48 @@
             </div>
             <div class="row">
                 <div class="col-sm-7">
-                    <table class="table table-hover" ng-table="ctrl.tableParams">
-                        <tr ng-repeat="row in $data | filter:ctrl.bookvisiable">
+                    <table class="table " ng-table="ctrl.tableParams">
+						<tr ng-repeat="row in $data | filter:ctrl.bookvisiable">
+							<td data-title="''">
+								<i class="fa fa-times" ng-click="ctrl.cancelbook(row)"
+									style="cursor:pointer;color:#666"></i>
+							</td>
                             <td data-title="'教练'">{{row.coachprofile.displayname||row.coachname}}</td>
                             <td data-title="'日期'">{{row.date}}</td>
                             <td data-title="'时间'">{{timemap[row.hour]}}</td>
+							<!--
                             <td data-title="'状态'"><span class="label label-mini
 								{{row.done?'label-primary':'label-success'}}">{{row.done?"已完成":"待上课"}}</span>
                             </td>
+							-->
                             <td data-title="'操作'">
-                                <button class="btn btn-danger btn-xs" ng-hide="row.done" ng-click="ctrl.cancelbook(row)">取消</button>
                                 <button class="btn btn-primary btn-xs" ng-show="!row.done && (row.id !=
-									undefined)" ng-click="ctrl.bookComplete(row.date, row.hour)">完成</button>
+									undefined)" ng-click="ctrl.bookComplete(row.date, row.hour)"><i
+										class="fa fa-check-square-o"></i>&nbsp;完成</button>
+
+                                <button class="btn btn-default btn-xs" ng-show="row.done"><i
+										class="fa fa-check-square-o"></i>&nbsp;已上</button>
                             </td>
                         </tr>
                     </table>
                 </div>
                 <div class="col-sm-5">
-                    <p class="input-group">
-                        <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
-                        uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.day" is-open="ctrl.dayopened"
-                        show-button-bar="false" ng-change="ctrl.refreshtimetable(false)">
-                        <span class="input-group-btn">
-                <button type="button" class="btn btn-primary" 
-					ng-click="ctrl.open()">
-					<i class="fa fa-calendar"></i></button>
-              </span>
-                    </p>
-
-                    <table class="table table-bordered" ng-model="ctrl.day">
+                    <newdatepicker date-format="yyyy-MM-dd" selector="form-control"
+					style="margin-bottom:10px;margin-top:10px">
+                        <div class="col-lg-12 input-group">
+							<input class="form-control" style="background: rgba(0,0,0,0);"
+							ng-model="ctrl.day_str" ng-change="ctrl.refreshtimetable(false)"
+                            placeholder="Choose a date" />
+                        </div>
+                        <span style="cursor: pointer;position: absolute;top: 6px;right: 20px;"  style="cursor: pointer">
+							<i class="fa fa-lg fa-calendar"></i>
+						</span>
+                    </newdatepicker>
+                    <table class="table table-bordered" ng-model="ctrl.day" style="margin-top:10px">
                         <tr ng-repeat="row in ctrl.timemapgroup">
-                            <td ng-repeat-start="i in [0,1,2,3,4]" ng-repeat-end class="{{row[i]['status']?'bg-danger':''}}"
+                            <td ng-repeat-start="i in [0,1,2,3,4]" ng-repeat-end
+								class="{{row[i]['status']?'bg-lightgrey':''}}"
+								style="border-color: #f1f1f1;"
                             ng-click="ctrl.book(row[i]['id'])">
                                 {{timemap[row[i]["id"]]}}
                             </td>
@@ -79,7 +91,8 @@
 
             <div class="row">
                 <p class="text-center"><a class="btn btn-primary btn-lg text-center" style="margin-top:20px"
-                    ladda="that.submitting" data-style="expand-left" ng-click="ctrl.submitBook()">提交预约</a>
+                    ladda="that.submitting" data-style="expand-left"
+					ng-click="ctrl.submitBook()">保存</a>
                 </p>
             </div>
         </div>

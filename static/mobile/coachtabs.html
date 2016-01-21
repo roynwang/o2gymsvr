@@ -1,75 +1,263 @@
-<div class="w-tabs" data-duration-in="400" data-duration-out="400" data-easing="ease-out-quint"
-ng-controller="TodayCourseCtrl as ctrl">
-    <md-tabs md-dynamic-height md-border-bottom md-stretch-tabs="always">
-        <md-tab id="tab1">
-            <md-tab-label style="font-size:16px">课表</md-tab-label>
-            <md-tab-body>
-                <div class="w-tab-menu top-buttons">
-                    <a class="w-tab-link w-inline-block toolbar-top-button date-tab date-tab-picker">
-                        <div>
-                            <md-datepicker ng-model="ctrl.currentdate" ng-change="ctrl.refreshdates()"></md-datepicker>
-                        </div>
-                    </a>
-                    <a ng-click="ctrl.select(ctrl.dates[0])" class="w-tab-link w-inline-block toolbar-top-button
-					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[0]}">
-                        <div>{{ctrl.dates[0].Format("MM/dd")}}</div>
-                    </a>
-                    <a ng-click="ctrl.select(ctrl.dates[1])" class="w-tab-link  w-inline-block toolbar-top-button
-					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[1]}">
-                        <div>{{ctrl.dates[1].Format("MM/dd")}}</div>
-                    </a>
-                    <a ng-click="ctrl.select(ctrl.dates[2])" class="w-tab-link w-inline-block toolbar-top-button
-					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[2]}">
-                        <div>{{ctrl.dates[2].Format("MM/dd")}}</div>
-                    </a>
-                    <a ng-click="ctrl.select(ctrl.dates[3])" class="w-tab-link w-inline-block toolbar-top-button
-					date-tab date-tab-day" ng-class="{'selected': ctrl.selected == ctrl.dates[3]}">
-                        <div>{{ctrl.dates[3].Format("MM/dd")}}</div>
-                    </a>
+<div ng-controller="TodayCourseCtrl as ctrl" ng-cloak>
+	<div ng-show="ctrl.showtoast"
+		style="z-index:1000;height:70px;width:100%;position:fixed;bottom:0;" id="toast-placeholder">
+	</div>
+    <md-content>
+        <div ng-show="ctrl.isSelecting||ctrl.inited">
+            <div md-swipe-right="ctrl.isSelecting=false" ng-class="{'animated slideOutRight':  !ctrl.isSelecting, 'animated slideInRight': ctrl.isSelecting}"
+            class="md-whiteframe-z2" style="-vendor-animation-duration: 0.6s;height:100%;width:75%;float:left;position:fixed;top:0;right:0;background:white;z-index:1000;">
+                <md-toolbar layout="column" style="height:100px">
+                    <div flex layout="row" layout-align="center center">
+                        <div flex class="nav-menu-titles" style="margin-left:20px">{{ctrl.month}}
+							&nbsp;{{ctrl.selected.Format("dd")}}日&nbsp;{{ctrl.editingtime}}</div>
+                        <span flex=10 ng-click="ctrl.cancelselect()">
+								<div style="color:#ccc" class="navbar-button-icon icon ion-ios-close-empty"></div>
+						</span>
+                    </div>
+                    <div layout="row" flex style="margin-bottom: 0px;
+				    margin-top: -10px;
+					    padding-left: 10px;font-size:16px;">
+                        <md-input-container flex md-no-float class="md-block"
+						style="padding-right:15px;">
+                            <input ng-model="ctrl.searchText" placeholder="请输入姓名/首字母" ng-change="ctrl.querySearch()"
+                            style="border-color:#4fd2c2">
+                        </md-input-container>
+
+						<div flex=10 layout="row" layout-align="center center">
+	                    <div flex class="ion-backspace" style="color:#4fd2c2;    font-size:
+							20px;margin-left: -8px;"
+							ng-click="ctrl.searchText=undefined;ctrl.querySearch()"></div>
+	                    </div>
+					</div>
+                </md-toolbar>
+				<md-content style="margin-top:10px;height: 100%;overflow-y: scroll;">
+                    <ul layout="column" style="padding-left:0;height:100%">
+                        <li style="border-bottom: solid 1px #eee;padding: 0px;
+						margin-left:20px;min-height:50px;" class="w-clearfix w-inline-block"
+                        ng-repeat="c in ctrl.selecting" ng-click="ctrl.selectcustomer(c)">
+                            <div class="nav-menu-titles">{{c.displayname}}</div>
+                            <span ng-show="ctrl.selectedItem == c" class="icon-list-menu" style="float: right;width: 30px;padding-left:
+					10px;margin-right: 10px;">
+								<a style="color:#4fd2c2" class="ion-ios-checkmark-outline"></a>
+					     </span>
+                        </li>
+						<li style="min-height:120px"></li>
+                    </ul>
+                </md-content>
+            </div>
+        </div>
+        <md-toolbar class="md-tall" style="background:white;position:fixed;height:120px;min-height:120px">
+            <div class="md-toolbar-tools" style="padding:0">
+                <div style="min-width:50px; display:block" flex=10 class="w-nav-button navbar-button left"
+                id="menu-button" ng-click="ctrl.toggleMenu('left')">
+                    <div class="navbar-button-icon home-icon" style="width:23px">
+                        <div class="bar-home-icon" style="background-color:#777"></div>
+                        <div class="bar-home-icon" style="background-color:#777"></div>
+                        <div class="bar-home-icon" style="background-color:#777"></div>
+                    </div>
                 </div>
-                <ul class="list" style="margin-top:-10px">
-                    <h4 style="    text-align: center;
-					    padding-top: 50px;
-						    margin-bottom: 0;margin-top:0" ng-hide="ctrl.courselist.length>0">{{ctrl.selected.Format("yyyy-MM-dd")}}
-					没有课程</h4>
-                    <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
-                    style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity 500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32, 1);"
-                    ng-repeat="c in ctrl.courselist">
-                        <p class="w-clearfix w-inline-block" href="#">
-                            <div ng-click="ctrl.complete(c)" class="icon-list" ng-class="{'highlighted':c.done}">
-                                <div class="icon ion-ios-checkmark-empty"></div>
+                <div flex layout="row">
+                    <h4 flex style="text-align:center;position: relative;top: -4px; right:-25px">{{ctrl.month}}
+						<div style="min-width: 50px;display: inline-block;position: relative;bottom:
+							-4px;left:-20px;">
+                        <md-datepicker id="datepicker" ng-model="ctrl.currentdate" style="color:#777;position: relative; background: rgba(0,0,0,0);"
+                        ng-change="ctrl.refreshdates()"></md-datepicker>
+                        <div style="font-size:26px; color:#777;margin-left: 20px; margin-top: -42px;" class="icon ion-ios-calendar-outline"></div>
+                    </div>
+				</h4>
+                </div>
+                <div flex=10 class="icon-list" style="z-index: 1000;">
+                    <div style="font-size:34px; color:#777; margin-top:-2px" class="icon ion-ios-people-outline"
+                    ng-click="ctrl.toggleMenu('right')"></div>
+
+                </div>
+
+            </div>
+            <div class="md-toolbar-tools" style="padding:0" layout="row" layout-align="center center">
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">日</a>
+                </div>
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">一</a>
+                </div>
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">二</a>
+                </div>
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">三</a>
+                </div>
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">四</a>
+                </div>
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">五</a>
+                </div>
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">六</a>
+                </div>
+            </div>
+            <div class="md-toolbar-tools" style="padding:0" layout="row" md-swipe-left="ctrl.nextweek()"
+            md-swipe-right="ctrl.prevweek()">
+                <div style="border:none" class="date-day" flex layout="column" ng-repeat="i in [0,1,2,3,4,5,6]"
+                ng-click="ctrl.select(ctrl.dates[i])" ng-class="{'selected': ctrl.selected == ctrl.dates[i]}">
+                    <div flex layout="row" layout-align="center center">
+                        <div class="date-day-item">{{ctrl.dates[i].Format("d")}}</div>
+                    </div>
+                </div>
+            </div>
+        </md-toolbar>
+        <div layout="row" style="margin-top:130px">
+            <ul class="list" flex=10 style="min-width:60px;margin-top:-30px">
+                <li ng-repeat="t in ctrl.bookmap" layout="row" class="list-item" style="border:none">
+                    <div flex ng-class="{'half': t.index%2==1}" class="title-list" style="text-align:center">{{t.time}}</div>
+                    <li>
+            </ul>
+            <ul class="list" flex>
+                <li ng-click="ctrl.edit(c)" layout="row" ng-class="{ 'first' : c.index==0,
+				'hide-border': c.editing || (c.book && !c.extend), 'editing':c.editing,
+				'border-dot': c.index%2 == 0}" class="list-item" style="opacity: 1;" ng-repeat="c in ctrl.bookmap">
+                    <div flex class="event-container" layout="row">
+                        <div ng-click="ctrl.showorder(c.book.order)" ng-class="{'done':c.book.done}" class="event"
+                        flex layout="row" ng-show="c.book && !c.extend">
+                            <span flex="5"></span>
+                            <div flex="50" layout="row" layout-align="start center">
+                                <span>{{c.book.customerprofile.displayname}}</span>
                             </div>
-                            <div ng-class="{'highlighted': c.done}" class="title-list">{{c.customerprofile.displayname}}</div>
-                            <div ng-click="ctrl.showorder(c.order)" style="margin-right:3px"  class="course-time icon-list highlighted">
-                                <div class="icon ion-calendar"></div>
+                            <span flex></span>
+                            <div style="margin:0" ng-hide="c.book.done" flex=20 ng-click="ctrl.removebook(c.book);$event.stopPropagation();"
+                            class="course-time icon-list event-action-btn">
+                                <div class="icon ion-ios-close-empty" style="font-size:36px"></div>
                             </div>
-                            <div ng-click="ctrl.logtrain(c)" style="margin-right:-5px" class="course-time icon-list highlighted">
+                        </div>
+                        <div ng-click="ctrl.showorder(c.book.order)" ng-class="{'done':c.book.done}" class="event action"
+                        flex layout="row" ng-show="c.extend">
+                            <span flex="5"></span>
+                            <div style="font-size:14px" layout="row" layout-align="end center">
+                                <span>完成度:{{c.book.complete_status}}</span>
+                            </div>
+                            <span flex></span>
+                            <!--
+                            <div style="margin:0" flex=20 ng-click="ctrl.showorder(c.book.order)" class="course-time icon-list">
+                                <div class="icon ion-calendar" style="font-size: 22px;"></div>
+                            </div>
+							-->
+                            <div flex=20 ng-click="ctrl.logtrain(c.book); $event.stopPropagation();" class="course-time icon-list event-action-btn">
                                 <div class="icon ion-images"></div>
                             </div>
-                            <div class="title-list course-time">{{ctrl.timemap[c.hour]}}</div>
-							<!--<div class="title-list course-time">{{c.complete_status}}</div>-->
-                        </p>
-                    </li>
-                </ul>
-            </md-tab-body>
-        </md-tab>
+                            <div flex=20 ng-hide="c.book.done" ng-click="ctrl.complete(c.book); $event.stopPropagation();"
+                            class="course-time icon-list event-action-btn">
+                                <div class="icon ion-ios-checkmark-empty" style="font-size:44px"></div>
+                            </div>
+                        </div>
+                        <div ng-attr-id="{{'book-' + c.index}}" flex ng-show="c.editing" layout="row">
+                            <span flex="5"></span>
+                            <div  flex="80" style="border:none;line-height:50px;color:rgb(106,79,30)">{{ctrl.selectedItem.displayname}} </div>
+                            <div flex="15">
+                                <div layout='row' layout-align="center center" ng-show="ctrl.querystatus=='pending'"
+                                flex ng-click="ctrl.submitbook(); $event.stopPropagation();"
+                                class="icon-list">
+                                    <div class="icon ion-ios-play-outline o-active-btn" style="font-size:30px"></div>
+                                </div>
+                                <div layout='row' layout-align="center center" ng-show="ctrl.querystatus=='unmatch'"
+                                flex ng-click="ctrl.showcustomer(ctrl.selectedItem); $event.stopPropagation();"
+                                class="icon-list">
+                                    <div class="icon ion-alert-circled"
+										style="font-size:30px;color:rgb(106,79,30)"></div>
+                                </div>
+                                <md-progress-circular ng-show="ctrl.querystatus == 'querying'" class="md-accent"
+                                md-mode="indeterminate"></md-progress-circular>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </md-content>
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-swipe-left="ctrl.toggleMenu('left')">
+        <md-toolbar class="md-theme-light" layout="column" style="padding-top:50px; padding-bottom:20px">
+            <div class="logo" style="text-align: center;">{{ctrl.user.displayname}}</div>
+            <div layout="row">
+                <span flex></span>
+                <div class="image-message chat" style="height: 80px;width: 80px;border-radius: 50%;">
+                    <img id="avatar" ng-src="{{ctrl.user.avatar}}">
+                </div>
+                <span flex></span>
+            </div>
+        </md-toolbar>
+        <md-content layout-padding>
+            <a class="w-clearfix w-inline-block nav-menu-link" href="#/">
+                <div class="icon-list-menu">
+                    <div class="icon ion-ios-list-outline"></div>
+                </div>
+                <div class="nav-menu-titles">课表</div>
+            </a>
+            <a class="w-clearfix w-inline-block nav-menu-link" href="#/profile">
+                <div class="icon-list-menu">
+                    <div class="icon ion-ios-body-outline"></div>
+                </div>
+                <div class="nav-menu-titles">个人资料</div>
+            </a>
+            <a class="w-clearfix w-inline-block nav-menu-link" ng-click="ctrl.showneworder()">
+                <div class="icon-list-menu">
+                    <div class="icon ion-ios-flame-outline"></div>
+                </div>
+                <div class="nav-menu-titles">新增订单</div>
+            </a>
 
-        <md-tab id="tab2">
-            <md-tab-label style="font-size:16px">客户</md-tab-label>
-            <md-tab-body>
-                <ul class="list">
-                    <li ng-click="ctrl.showcustomer(c)" class="list-item" data-ix="list-item" style="opacity: 1; transform: translateX(0px) translateY(0px); transition: opacity
-				500ms cubic-bezier(0.23, 1, 0.32, 1), transform 500ms cubic-bezier(0.23, 1, 0.32,
-				1); padding-left:30px" ng-repeat="c in ctrl.customerlist">
-                        <p class="w-clearfix w-inline-block" >
-                            <div class="title-list">{{c.displayname}}</div>
-							<a style="font-size: 25px;" href="#/customer/{{c.name}}" class="course-time icon-list highlighted">
-                                <div class="ion-ios-information-outline"></div>
-                            </a>
-                        </p>
-                    </li>
-                </ul>
-            </md-tab-body>
-        </md-tab>
-    </md-tabs>
+            <a class="w-clearfix w-inline-block nav-menu-link" href="#/changepwd">
+                <div class="icon-list-menu">
+                    <div class="icon ion-ios-locked-outline"></div>
+                </div>
+                <div class="nav-menu-titles">重置密码</div>
+            </a>
+
+            <a class="w-clearfix w-inline-block nav-menu-link" href="/mobile/login">
+                <div class="icon-list-menu">
+                    <div class="icon ion-log-out" style="font-size: 20px"></div>
+                </div>
+                <div class="nav-menu-titles">注销</div>
+            </a>
+
+        </md-content>
+    </md-sidenav>
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="right"
+	md-swipe-left="ctrl.toggleMenu('right')">
+        <md-toolbar class="md-theme-light">
+            <div class="md-toolbar-tools" layout="row" layout-align="center center">
+                <h4 style="text-align:center">客户列表</h4>
+            </div>
+        </md-toolbar>
+        <md-content layout-padding>
+            <div style="width:85%; border-bottom: solid 1px #eee;padding: 0px; margin-left:20px;"
+            ng-click="ctrl.showcustomer(c)" class="w-clearfix w-inline-block" ng-repeat="c in ctrl.customerlist">
+                <!--
+                <a style="font-size: 25px;" href="sms:{{c.name}}" class="course-time icon-list highlighted">
+                    <div class="ion-ios-chatbubble-outline"></div>
+                </a>
+                <a style="font-size: 25px; width:25px"  class="course-time icon-list highlighted">
+                    <div class="ion-ios-telephone-outline"></div>
+                </a>
+				-->
+                <div class="nav-menu-titles">{{c.displayname}}</div>
+
+                <span class="icon-list-menu" style="float: right;width: 30px;padding-left: 10px;">
+					<a style="color: #4fd2c2"class="ion-ios-chatbubble-outline" href="tel:{{c.name}}"></a>
+                </span>
+                <span class="icon-list-menu" style="float: right;width: 30px;padding-left:
+					10px;margin-right: 10px;">
+					<a style="color:#4fd2c2" class="ion-ios-telephone-outline" href="tel:{{c.name}}"></a>
+                </span>
+            </div>
+
+            <!--
+            <ul class="list">
+                <li ng-click="ctrl.showcustomer(c)" class="list-item" data-ix="list-item" style="opacity: 1;padding-left:10px" ng-repeat="c in ctrl.customerlist">
+                    <p class="w-clearfix w-inline-block" href="#/customer/{{c.name}}">
+                        <div class="title-list">{{c.displayname}}</div>
+                        <a style="font-size: 25px;" href="sms:{{c.name}}" class="course-time icon-list highlighted">
+                            <div class="ion-ios-chatbubble-outline"></div>
+                        </a>
+                        <a style="font-size: 25px; width:25px" href="tel:{{c.name}}" class="course-time icon-list highlighted">
+                            <div class="ion-ios-telephone-outline"></div>
+                        </a>
+
+                    </p>
+                </li>
+            </ul>
+-->
+        </md-content>
+    </md-sidenav>
 </div>

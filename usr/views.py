@@ -194,10 +194,10 @@ class CustomerList(generics.ListAPIView):
 	def get_queryset(self):
 		usr = get_object_or_404(User, name=self.kwargs["name"])
 		#customers =  usr.sealed_time.values_list("custom",flat=True)
+		gym =  usr.gym.first()
 		#print customers
-		customers =  Order.objects.filter(coach = usr).values_list("custom",flat=True)
-		print customers
-		ret = User.objects.filter(name__in = customers)
+		customlist = gym.orders.values_list("custom", flat=True).distinct()
+		ret = User.objects.filter(name__in = customlist)
 		if ret.count() == 0:
 			ret = User.objects.filter(name = usr.name)
 		return ret
@@ -208,6 +208,11 @@ class ModifyGym(APIView):
 		if "gym" in request.DATA:
 			newgym = get_object_or_404(Gym,id=request.DATA['gym'])
 			usr.gym = [newgym]
+
+			#BUG: where creating new coach, the field iscoach is false
+			#set to coach when set gym    
+			#now when creating new coach there is 2 step: 1.create a new user 2.change the gym
+			usr.iscoach = True
 
 			usr.save()
 			serializer = GymSerializer(newgym)
@@ -222,11 +227,7 @@ class InCome(APIView):
 	def cal_course_income(self,query):
 		price = 0
 		for course in query:
-			product = course.order.product
-			#tmpprice = float(course.order.amount)/float(product.amount)
-			tmpprice = course.order.amount/product.amount
-			price += tmpprice
-			print str(course.order.amount) + ":" + str(product.amount) + ": " + str(tmpprice)
+			price += course.getprice()
 		return price
 	def get(self, request, name):
 		usr = get_object_or_404(User, name=name)
@@ -243,11 +244,20 @@ class InCome(APIView):
 		print start
 		print end
 		orders = usr.income_orders.filter(paidtime__range=[start,end])
-		sold = orders.aggregate(Sum('amount'))["amount__sum"] or 0
-		courses = usr.sealed_time.filter(date__range=[start,end],done=True)
+
+		sold = 0
+		sold_count = 0
+		for order in orders:
+			sold += order.amount
+			sold_count += order.product.amount
+
 		sold_xu = orders.filter(isfirst=False).aggregate(Sum('amount'))["amount__sum"] or 0
+
+		courses = usr.sealed_time.filter(date__range=[start,end],done=True)
+
+
 		#courses = orders.value_list("schedule")
-		return Response({"sold_xu":sold_xu, "sold_price": sold, "completed_course":courses.count()
+		return Response({"sold_xu":sold_xu, "sold_price": sold, "sold_count": sold_count, "completed_course":courses.count()
 			or 0, "completed_course_price":self.cal_course_income(courses)})
 
 

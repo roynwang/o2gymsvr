@@ -23,4 +23,5 @@ class CoachSalarySetting(models.Model):
 	xiaoshou = models.FloatField(default=0)
 	xuke = models.FloatField(default=0)
 	shangke = models.FloatField(default=0)
+	fixed_shangke = models.FloatField(default=0)
 

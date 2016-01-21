@@ -67,8 +67,10 @@ class Schedule(models.Model):
 		self.order.done()
 	def getprice(self):
 		o = self.order
+		'''
 		if o.subsidy != 0:
 			return o.subsidy
+		'''
 		p = self.order.product
 		price  = p.price/p.amount
 		return price

@@ -1,0 +1,79 @@
+<div ng-controller="OrderDetailCtrlNew as ctrl" style="width:175%" scroll="scrolled">
+    <md-content>
+        <div layout="column">
+            <md-toolbar class="md-tall" ng-style="ctrl.daystyle">
+                <div class="md-toolbar-tools" style="padding:0" layout="row">
+                    <div flex=5 style="border:none; min-width:60px" class="date-day" flex layout="column">
+                        <md-datepicker id="datepicker" ng-model="ctrl.currentdate" style="color:#777;position: relative; background: rgba(0,0,0,0);"
+                        ng-change="ctrl.refreshdates()"></md-datepicker>
+                        <div style="font-size:26px; color:#777;margin-left: 10px; margin-top: -42px;" class="icon ion-ios-calendar-outline"></div>
+                    </div>
+                    <div style="border:none" class="date-day" flex layout="column" ng-repeat="i in [0,1,2,3,4,5,6]"
+                    ng-click="ctrl.select(ctrl.dates[i])">
+                        <div flex layout="column" layout-align="center center">
+                            <div class="date-day-item" layout="row" layout-align="center center" style="width:100%">
+                                <div>{{ctrl.dates[i].Format("M/d")}}</div>
+                            </div>
+                            <div class="weekday" layout="row" layout-align="center center">
+                                <a flex style="text-align:center">{{ctrl.getweekday(ctrl.dates[i])}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div layout="row" style="margin-top:10px;margin-bottom:80px;width:100%">
+            <ul class="list" ng-style="ctrl.hourstyle">
+                <li ng-repeat="t in ctrl.bookmap" layout="row" class="list-item" style="border:none">
+                    <div flex ng-class="{'half': t.index%2==1}" class="title-list" style="text-align:center;">{{ t.time}}</div>
+                    <li>
+            </ul>
+            <ul class="list" style="margin-left: 66px;margin-top: 55px;width:100%">
+                <li layout="row" ng-hide="c.index==26" ng-class="{ 'first' : c.index==0, 'border-dot': c.index%2 == 0}"
+                class="list-item" style="opacity: 1;width:inherit;" ng-repeat="c in ctrl.bookmap">
+                    <div flex class="event-container" layout="row">
+                        <div class="hour" layout="row" layout-align="center center" flex ng-repeat="d in [0,1,2,3,4,5,6]"
+                        ng-class="{'na': !c.na[d], 'booked': c.booked[d], 'completed': c.completed[d], 'editing':c.editing[d]}"
+							ng-click="ctrl.editnew(c, d); $event.stopPropagation();">
+
+                            <div ng-show="c.extend[d] && c.completed[d]" flex style="text-align:center;"><span style="border:none" class="hour-action">已完成</span></div>
+                            <!-- coach name -->
+                            <div ng-show="(c.booked[d] || c.completed[d] || c.editing[d]) && !c.extend[d]" flex style="text-align:center">{{c.booked[d].coachprofile.displayname || c.completed[d].coachprofile.displayname || ctrl.user.displayname}}</div>
+
+                            <!-- remove action -->
+                            <div ng-click="ctrl.buildexecution('remove',c, d); $event.stopPropagation();" ng-show=" !c.stats[d] && c.extend[d] && c.booked[d]" flex style="text-align:center"><span class="hour-action">取消</span></div>
+
+                            <!-- executing action -->
+                            <div ng-click="ctrl.execute(); $event.stopPropagation();" ng-show="c.stats[d] == 'pending'"><span class="hour-action" style="border:none;background:#4fd2c2; color:white">确认</span>
+                            </div>
+                            <div ng-show="c.stats[d] == 'inprogress'">
+                                <md-progress-circular class="md-accent" md-mode="indeterminate"></md-progress-circular>
+                            </div>
+
+							<!-- editing -->
+                            <div ng-click="ctrl.buildexecution('add',c, d); $event.stopPropagation();" ng-show=" !c.stats[d] && c.extend[d] && c.editing[d]" flex style="text-align:center"><span class="hour-action">预约</span></div>
+
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div style="width:100%;position:fixed;bottom:0;background:#f4f9f9;min-height:50px" layout="row"
+        layout-align="center center" class="bottom-action-bar" ng-click="ctrl.showorderbottom()" id="bottom-action">
+            <div flex class="action" layout="row" layout-align="center center">
+                <a style="text-align:center; font-size: 16px;color: #666;">
+					剩余 <span class="number">{{ctrl.order.course_count - ctrl.bookedbook.length - ctrl.completedbook.length}}</span>
+                </a>
+            </div>
+            <div flex class="action" layout="row" layout-align="center center">
+                <a style="text-align:center; font-size: 16px;color: #666;">
+					已约 <span class="number">{{ctrl.bookedbook.length || 0}}</span>
+                </a>
+            </div>
+            <div flex class="action" layout="row" layout-align="center center">
+                <a style="text-align:center; font-size: 16px;color: #666;">
+					已上 <span class="number">{{ctrl.completedbook.length || 0}}</span>
+				</a>
+            </div>
+        </div>
+    </md-content>
+</div>

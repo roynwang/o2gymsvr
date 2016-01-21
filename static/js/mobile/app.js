@@ -27,22 +27,21 @@ function b64toBlob(b64Data, contentType, sliceSize) {
 }
 
 function setmenu(userobj) {
-    document.getElementById("avatar").setAttribute("src", userobj.avatar_small)
-    $("#coachname").html(userobj.displayname)
+    //document.getElementById("avatar").setAttribute("src", userobj.avatar_small)
+    //$("#coachname").html(userobj.displayname)
 }
 
 function settitle(title, hidemenu) {
         $("#page-title").html(title)
-		if(hidemenu){
-			$("#menu-button").hide()
-			$("#neworder").hide()
-			$("#back-button").show()
-		}
-		else {
-			$("#menu-button").show()
-			$("#neworder").show()
-			$("#back-button").hide()
-		}
+        if (hidemenu) {
+            $("#menu-button").hide()
+            $("#neworder").hide()
+            $("#back-button").show()
+        } else {
+            $("#menu-button").show()
+            $("#neworder").show()
+            $("#back-button").hide()
+        }
     }
     /*
     document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
@@ -51,10 +50,10 @@ function settitle(title, hidemenu) {
     })
     */
 
-$(function(){
-	$("#back-button").click(function(){
-		history.back()
-	})
+$(function() {
+    $("#back-button").click(function() {
+        history.back()
+    })
 })
 
 // 对Date的扩展，将 Date 转化为指定格式的String 
@@ -128,8 +127,33 @@ var app = angular.module('o2m', [
     'oitozero.ngSweetAlert',
     'ngMaterial',
     'angularQFileUpload',
-    'LocalStorageModule'
+    'LocalStorageModule',
+    //'ngAnimate', 
+    //'anim-in-out'
 ])
+app.directive("scroll", function($window) {
+    return function(scope, element, attrs) {
+        angular.element($window).bind("scroll", function() {
+            scope.$apply(scope.scrolled(this.pageXOffset, this.pageYOffset))
+        });
+    };
+});
+/*
+app.directive('infiniteScroll', [ "$window", function ($window) {
+        return {
+            link:function (scope, element, attrs) {
+                var offset = parseInt(attrs.threshold) || 0;
+                var e = element[0];
+
+                element.bind('scroll', function () {
+                    if (scope.$eval(attrs.canLoad) && e.scrollTop + e.offsetHeight >= e.scrollHeight - offset) {
+                        scope.$apply(attrs.infiniteScroll);
+                    }
+                });
+            }
+        };
+    }]);
+*/
 app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider, $mdDateLocaleProvider, $compileProvider) {
     // For any unmatched url, send to /route1
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|local|data|tel|sms):/);
@@ -160,8 +184,8 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/profile",
             templateUrl: "/static/mobile/profile.html"
         })
-	    .state('customerdetail', {
-			url: "/customer/:name",
+        .state('customerdetail', {
+            url: "/customer/:name",
             templateUrl: "/static/mobile/customerdetail.html"
         })
         .state('coachhome', {
@@ -178,12 +202,23 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             templateUrl: "/static/mobile/changepwd.html",
             //controller: "NewOrderCtrl"
         })
-        .state('order', {
-            url: "/:coachname/:orderid",
+        /*
+        .state('orderdetail', {
+            url: "/orderdetail/:orderid",
+            templateUrl: "/static/mobile/orderdetailnew.html",
+        })
+		*/
+        .state('customerlist', {
+            url: "/customers",
+            templateUrl: "/static/mobile/customerlist.html",
+        })
+        .state('orderdetail', {
+            url: "/orderdetail/:orderid",
             templateUrl: "/static/mobile/orderdetail.html",
         })
-
 })
+
+
 app.factory("$paramssvc", function() {
     var params = {}
     return {
@@ -269,6 +304,14 @@ app.factory("$date", function() {
     }
 })
 app.factory("$booksvc", function(Restangular) {
+    function create(coachname, book, onsuccess, onfail) {
+        var datestr = book.date.replace(/-/g, "")
+        Restangular.one("api/", coachname)
+            .post("b/" + datestr, book)
+            .then(onsuccess, onfail)
+
+    }
+
     function complete(book, onsuccess, onfail) {
         var bookdone = Restangular.one("api", book.coachprofile.name)
             .one("b", book.date.replace(/-/g, ""))
@@ -292,6 +335,14 @@ app.factory("$booksvc", function(Restangular) {
             })
     }
 
+    function bookremove(book, onsuccess, onfail) {
+        var datestr = book.date.replace(/-/g, "")
+        Restangular.one("api/", book.coachprofile.name)
+            .one("b/" + datestr, book.hour)
+            .remove()
+            .then(onsuccess, onfail)
+    }
+
     function savedetail(book, onsuccess, onfail) {
         var bookdone = Restangular.one("api", book.coachprofile.name)
             .one("b", book.date.replace(/-/g, ""))
@@ -304,7 +355,10 @@ app.factory("$booksvc", function(Restangular) {
     }
     return {
         complete: complete,
-        savedetail: savedetail
+        create: create,
+        remove: bookremove,
+        savedetail: savedetail,
+
     }
 })
 app.factory("$ordersvc", function(Restangular) {
@@ -321,9 +375,17 @@ app.factory("$ordersvc", function(Restangular) {
             .get()
             .then(onsuccess, onfail)
     }
+
+    function getorders(username, onsuccess, onfail) {
+        Restangular.one("api", username)
+            .one("o")
+            .get()
+            .then(onsuccess, onfail)
+    }
     return {
         setorder: setorder,
-        getorder: getorder
+        getorder: getorder,
+        getorders: getorders
     }
 })
 
@@ -563,18 +625,76 @@ app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
         }
     }
 ])
-app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc", "$scope", "$paramssvc",
-    function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc, $scope, $paramssvc) {
+app.controller("CustomerListCtrl", ["Restangular",
+    function(Restangular) {
+        Restangular.one("api", user)
+            .all("customers")
+            .getList()
+            .then(function(data) {
+                    that.customerlist = data
+                    that.customerlist.sort(function(a, b) {
+                        return a.pinyin.localeCompare(b.pinyin)
+                    })
+                    console.log(that.customerlist)
+                },
+                function(data) {})
+
+        that.showcustomer = function(customer) {
+            $state.transitionTo("customerdetail", {
+                name: customer.name
+            })
+        }
+    }
+])
+
+app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc", "$scope", "$paramssvc", "$mdToast", "$mdSidenav", "$document", "$mdSidenav","$timeout",
+    function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc, $scope, $paramssvc, $mdToast, $mdSidenav, $document, $mdSidenav, $timeout) {
         var user = $.cookie("user")
         var that = this
-        settitle("课表")
         that.timemap = TimeMap
         that.courselist = []
         that.tabs = [true, false]
-
         that.currentdate = new Date()
         that.dates = []
         that.customerlist = []
+        that.selectedItem = undefined
+        that.querystatus = "unset"
+        that.pendingbook = {}
+        that.isSelecting = false
+        that.showneworder = function() {
+            $mdDialog.show({
+                    controller: "NewOrderDialgCtrl",
+                    templateUrl: '/static/mobile/neworder.html',
+                    parent: angular.element(document.body),
+                    //targetEvent: ev,
+                    clickOutsideToClose: true,
+                    fullscreen: true
+                })
+                .then(function(answer) {
+                    console.log('You said the information was "' + answer + '".');
+                    $state.transitionTo("index")
+                }, function() {
+                    console.log('You cancelled the dialog.')
+                    $state.transitionTo("index")
+                });
+        }
+
+
+
+        that.toggleMenu = function(direction) {
+            $mdSidenav(direction)
+                .toggle()
+                .then(function() {});
+        }
+        that.cancelselect = function() {
+            that.isSelecting = false
+            that.editing = false
+            _.each(that.bookmap, function(item) {
+                item.editing = false
+                item.editingitem = false
+            })
+        }
+
         that.init = function() {
             user = $.cookie("user")
             $usersvc.getuser(undefined, false, function(data) {
@@ -590,7 +710,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                         that.customerlist.sort(function(a, b) {
                             return a.pinyin.localeCompare(b.pinyin)
                         })
-						console.log(that.customerlist)
+                        that.selecting = that.customerlist
                     },
                     function(data) {})
         }
@@ -613,12 +733,169 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 });
         }
 
+        that.bookmap = []
+		that.editingtime = undefined
+        that.edit = function(c, edit) {
+            that.inited = true
+			that.editingtime = that.timemap[c.index]
+            if (c.book || that.bookmap[parseInt(c.index) + 1].book) {
+                return
+            }
+            var editingitem = _.find(that.bookmap, function(item) {
+                return item.editing == true
+            })
+            if (editingitem == undefined) {
+                that.isSelecting = true
+                c.editing = true
+                if (that.selectedItem) {
+                    that.searchText = that.selectedItem.displayname
+                }
+            } else {
+                if (editingitem != c) {
+                    editingitem.editing = false
+                    that.querystatus = "unset"
+                    that.searchText = undefined
+                }
+            }
+        }
+        that.queryOrder = function(c) {
+            if (that.querystatus == "querying") {
+                return
+            }
+            that.querystatus = "querying"
+            var customer = that.selectedItem
+            if (!customer) {
+                that.querystatus = "unset"
+                return
+            }
+
+            $ordersvc.getorders(customer.name, function(data) {
+                    var os = _.reject(data.results, function(item) {
+                        return item.all_booked == true
+                    })
+
+                    if (os && os.length > 0) {
+                        var o = os[0]
+                        that.pendingbook = {
+                            date: that.selected.Format("yyyy-MM-dd"),
+                            hour: c.index,
+                            coach: that.user.id,
+                            custom: o.customerdetail.id,
+                            order: o.id
+                        }
+                        that.querystatus = "pending"
+                        console.log(that.pendingbook)
+                    } else {
+						that.showtoast = true
+                        $mdToast.show(
+                            $mdToast.simple()
+                            .textContent('没有匹配的订单')
+                            .parent(angular.element(document.querySelector("#toast-placeholder")))
+                            .hideDelay(3000)
+                        ).then(function() {
+                            $timeout(function() {
+                                that.showtoast = false
+                            }, 500)
+                        });
+                        that.querystatus = "unmatch"
+                    }
+                },
+                function(data) {
+                    that.showtoast = true
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('查询订单失败')
+                        .parent(angular.element(document.querySelector("#toast-placeholder")))
+                        .hideDelay(3000)
+                    ).then(function() {
+                        $timeout(function() {
+                            that.showtoast = false
+                        }, 500)
+                    });
+                    that.querystatus = "unmatch"
+                })
+        }
+        that.submitbook = function() {
+            that.querystatus = "querying"
+            Restangular.one("api/", that.user.name)
+                .post("b/" + that.selected.Format("yyyyMMdd"), that.pendingbook)
+                .then(function(data) {
+                    that.querystatus = "unset"
+                    that.showtoast = true
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('预约已提交')
+                        .parent(angular.element(document.querySelector("#toast-placeholder")))
+                        .hideDelay(3000)
+                    ).then(function() {
+                        $timeout(function() {
+                            that.showtoast = false
+                        }, 500)
+                    });
+                    _.each(that.bookmap, function(item) {
+                        item.editing == false
+                    })
+
+                    that.courselist.push(data)
+                    that.buildbookmap()
+                }, function(data) {
+                    that.querystatus = "unset"
+                    swal("", "预约失败", "warning")
+                })
+        }
+        that.querySearch = function() {
+            var key = that.searchText
+            if (key == undefined) {
+                that.selecting = that.customerlist
+                return
+            }
+            that.selecting = _.filter(that.customerlist, function(item) {
+                return item.displayname.indexOf(key) >= 0 || item.pinyin.replace(/ /g, "").indexOf(key) >= 0
+            })
+        }
+
+        that.bookmap = []
+        that.buildbookmap = function() {
+            for (var i in that.timemap) {
+                var tmp = that.bookmap[i]
+                if (tmp == undefined) {
+                    tmp = {}
+                    tmp["time"] = that.timemap[i]
+                    that.bookmap.push(tmp)
+                }
+                tmp["editing"] = false
+                tmp["book"] = undefined
+                tmp["index"] = i
+                tmp["extend"] = false
+            }
+            _.each(that.courselist, function(item) {
+                that.bookmap[item.hour]["book"] = item
+                that.bookmap[item.hour + 1]["book"] = item
+                that.bookmap[item.hour + 1]["extend"] = true
+            })
+        }
+
+        that.selectcustomer = function(customer) {
+            that.selectedItem = customer
+            that.searchText = customer.displayname
+            that.querySearch()
+            that.isSelecting = false
+            var c = _.find(that.bookmap, function(item) {
+                return item.editing == true
+            })
+            that.queryOrder(c)
+        }
+
+
         that.refresh = function() {
+            that.searchText = undefined
             Restangular.one("api", user)
                 .one("b", that.selected.Format("yyyyMMdd"))
                 .getList()
                 .then(function(data) {
                         that.courselist = data
+                        that.buildbookmap()
+                        console.log(that.bookmap)
                     },
                     function(data) {
                         //console.log(data.data)
@@ -657,59 +934,70 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 $booksvc.complete(book, that.refresh)
             });
         }
+        that.removebook = function(book) {
+            swal({
+                title: "取消",
+                text: "确认取消吗?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "放弃",
+                confirmButtonText: "确认",
+                confirmButtonColor: "#1fb5ad",
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function() {
+                var datestr = book.date.replace(/-/g, "")
+                Restangular.one("api/", book.coachprofile.name)
+                    .one("b/" + datestr, book.hour)
+                    .remove()
+                    .then(function(data) {
+                        swal({
+                            type: "success",
+                            title: "提交成功",
+                            text: "",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        that.courselist = _.reject(that.courselist, function(item) {
+                            return item.id == book.id
+                        })
+                        that.buildbookmap()
+                    }, function(data) {
+                        swal("", "删除失败", "warning")
+                    })
+
+            })
+        }
+        that.nextweek = function() {
+            console.log("next")
+            that.currentdate = that.dates[6].addDays(7)
+            that.refreshdates()
+        }
+        that.prevweek = function() {
+            console.log("prev")
+            that.currentdate = that.dates[0].addDays(-7)
+            that.refreshdates()
+        }
         that.refreshdates = function() {
-            that.selected = that.currentdate
-            that.dates[0] = that.currentdate
-            that.dates[1] = that.currentdate.addDays(1)
-            that.dates[2] = that.currentdate.addDays(2)
-            that.dates[3] = that.currentdate.addDays(3)
+            var curweekday = that.currentdate.getDay()
+            for (var i = 0; i < 7; i++) {
+                that.dates[i] = that.currentdate.addDays(i - curweekday)
+            }
+            that.month = moment(that.currentdate).format('MMMM')
+            that.selected = that.dates[curweekday]
             that.refresh()
         }
-        $scope.showneworder = function() {
-            $mdDialog.show({
-                    controller: "NewOrderDialgCtrl",
-                    templateUrl: '/static/mobile/neworder.html',
-                    parent: angular.element(document.body),
-                    //targetEvent: ev,
-                    clickOutsideToClose: true,
-                    fullscreen: true
-                })
-                .then(function(answer) {
-                    console.log('You said the information was "' + answer + '".');
-                    $state.transitionTo("index")
-                }, function() {
-                    console.log('You cancelled the dialog.')
-                    $state.transitionTo("index")
-                });
-        }
-
-        $("#neworder").click(function() {
-            $scope.showneworder()
-        })
 
         that.showcustomer = function(customer) {
-			$state.transitionTo("customerdetail",{
-				name: customer.name
-			})
+            $state.transitionTo("customerdetail", {
+                name: customer.name
+            })
         }
 
         that.showorder = function(orderid) {
-            $ordersvc.setorder(orderid)
-                //var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
-            $mdDialog.show({
-                    controller: 'OrderDetailCtrl',
-                    templateUrl: '/static/mobile/orderdetail.html',
-                    parent: angular.element(document.body),
-                    //targetEvent: ev,
-                    clickOutsideToClose: true,
-                    fullscreen: true
-                })
-                .then(function(answer) {
-                    console.log('You said the information was "' + answer + '".');
-                }, function() {
-                    console.log('You cancelled the dialog.')
-                });
-
+            $state.transitionTo("orderdetail", {
+                orderid: orderid
+            })
         }
         if (user == undefined) {
             $mdDialog.show({
@@ -734,8 +1022,315 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
     }
 ])
-app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$ordersvc', '$usersvc',
-    function($scope, Restangular, $mdDialog, $ordersvc, $usersvc) {
+app.controller("OrderDetailCtrlNew", ['$scope', 'Restangular', '$ordersvc', '$usersvc', "$stateParams", "$mdToast", "$booksvc", "$timeout", "$document", "$mdBottomSheet",
+    function($scope, Restangular, $ordersvc, $usersvc, $stateParams, $mdToast, $booksvc, $timeout, $document, $mdBottomSheet) {
+        var that = this
+        that.currentdate = new Date()
+        that.dates = []
+        that.actionlist = []
+        that.user = {}
+        that.timemap = TimeMap
+        that.orderid = {}
+        that.hourstyle = {
+            position: "fixed",
+            "min-width": "60px",
+            "margin-top": "30px"
+        }
+        that.daystyle = {
+                position: "absolute",
+                height: "60px",
+                "min-height": "60px",
+                padding: 0,
+                width: "180%",
+            }
+            //read user
+        $usersvc.getuser(undefined, false, function(data) {
+            that.user = data
+        })
+
+        that.getweekday = function(date) {
+            return moment(date).format('dd')
+        }
+
+
+        $scope.scrolled = function(offsetx, offsety) {
+            /*"position:fixed;min-width:44px;margin-top: 70px;"	*/
+            that.hourstyle["margin-top"] = 30 - offsety + "px"
+            that.daystyle['top'] = offsety + "px"
+        }
+        that.execution = {}
+        that.buildexecution = function(action, c, d) {
+            if (action == "remove") {
+                _.each(that.bookmap, function(item) {
+                    item.editing = [false, false, false, false, false, false, false]
+                })
+                that.execution['action'] = that.removebook
+            }
+            if (action == "add") {
+                _.each(that.bookmap, function(item) {
+                    item.stats = [false, false, false, false, false, false, false]
+                })
+                that.execution['action'] = that.addbook
+            }
+            that.execution['c'] = c
+            that.execution['day'] = d
+            that.execution.c.stats[that.execution.day] = "pending"
+
+            $timeout(function() {
+                if (c.stats[d] != "inprogress") {
+                    c.stats[d] = false
+                } else {
+                    console.log("ignore")
+                }
+            }, 5000)
+        }
+        that.executionstatus = function(stat) {
+            that.execution.c.stats[that.execution.day] = stat
+        }
+        that.execute = function() {
+            var tar = that.execution.c.booked[that.execution.day] || that.execution.c.completed[that.execution.day] || that.execution.c.editing[that.execution.day]
+            that.execution["action"](tar)
+        }
+        that.removebook = function(book) {
+            that.executionstatus("inprogress")
+            $booksvc.remove(book, function(data) {
+                that.executionstatus(false)
+                $mdToast.show(
+                    $mdToast.simple()
+                    .parent($document[0].querySelector('.bottom-action-bar'))
+                    .textContent('预约已取消')
+                    .hideDelay(3000)
+                );
+
+                //update booked infomation
+                that.execution.c.booked[that.execution.day] = false
+                that.execution.c.extend[that.execution.day] = false
+
+                var prev = that.bookmap[that.execution.c.index - 1]
+                prev.booked[that.execution.day] = false
+                prev.extend[that.execution.day] = false
+                    //update na
+                that.execution.c.na[that.execution.day] = true
+                prev.na[that.execution.day] = true
+                    //update status
+                that.executionstatus("false")
+
+                that.execution = {}
+                that.refreshorder()
+
+            }, function(data) {
+                that.executionstatus(false)
+                $mdToast.show(
+                    $mdToast.simple()
+                    .textContent('取消预约失败')
+                    .hideDelay(3000)
+                );
+            })
+        }
+        that.addbook = function(book) {
+            that.executionstatus("inprogress")
+            $booksvc.create(that.user.name, book, function(data) {
+                that.executionstatus(false)
+                $mdToast.show(
+                    $mdToast.simple()
+                    .parent($document[0].querySelector('.bottom-action-bar'))
+                    .textContent('预约已提交')
+                    .hideDelay(3000)
+                );
+
+                that.execution = {}
+                that.refreshorder(that.buildweekmap)
+
+            }, function(data) {
+                that.executionstatus(false)
+                $mdToast.show(
+                    $mdToast.simple()
+                    .parent($document[0].querySelector('.bottom-action-bar'))
+                    .textContent('取消提交失败')
+                    .hideDelay(3000)
+                );
+            })
+        }
+
+        that.editnew = function(c, d) {
+            if (c.stats[d]) {
+                return
+            }
+            var next = that.bookmap[parseInt(c.index) + 1]
+
+            //cancel other editing
+            _.each(that.bookmap, function(item) {
+                item.editing = [false, false, false, false, false, false, false]
+            })
+
+            //isvalid
+            if (c.booked[d] || c.completed[d] || next.booked[d] || next.booked[d]) {
+                return
+            }
+            if (that.order.booked.length == that.order.course_count) {
+                return
+            }
+
+            //create new book
+            var newbook = {
+                date: that.dates[d].Format("yyyy-MM-dd"),
+                hour: c.index,
+                coach: that.user.id,
+                custom: that.order.customerdetail.id,
+                order: that.order.id,
+            }
+            c.editing[d] = newbook
+            c.extend[d] = false
+            next.editing[d] = newbook
+            next.extend[d] = true
+
+        }
+
+        that.refreshorder = function(cb) {
+            $ordersvc.getorder($stateParams.orderid,
+                function(data) {
+                    that.order = data
+                    that.completedbook = _.where(data.booked, {
+                        done: true
+                    })
+                    that.bookedbook = _.where(data.booked, {
+                            done: false
+                        })
+                        /*
+                    for (var hour in that.bookmap) {
+                        var hourdetail = that.bookmap[hour]
+                        _.each(that.dates, function(day) {
+                            hourdetail.completed.push(false)
+                            hourdetail.booked.push(false)
+                        })
+                    }
+					*/
+                    _.each(data.booked, function(book) {
+                        var dayindex = function() {
+                            var i = undefined
+                            for (var d in that.dates) {
+                                if (that.dates[d].Format("yyyy-MM-dd") == book.date) {
+                                    i = parseInt(d)
+                                }
+                            }
+                            return i
+                        }()
+                        if (dayindex != undefined) {
+                            if (book.done) {
+                                that.bookmap[book.hour].completed[dayindex] = book
+                                that.bookmap[book.hour + 1].completed[dayindex] = book
+                                that.bookmap[book.hour + 1].extend[dayindex] = true
+                            } else {
+                                that.bookmap[book.hour].booked[dayindex] = book
+                                that.bookmap[book.hour + 1].booked[dayindex] = book
+                                that.bookmap[book.hour + 1].extend[dayindex] = true
+                            }
+                        }
+                    })
+                    console.log(that.bookmap)
+                    cb && cb()
+                },
+                function(data) {
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .textContent('获取日程失败')
+                        .hideDelay(3000)
+                    );
+                })
+        }
+        that.showorderbottom = function() {
+            $mdBottomSheet.show({
+                templateUrl: '/static/mobile/bottomsheetorder.html',
+                controller: 'BottomSheetOrderCtrl',
+                clickOutsideToClose: true,
+                locals: {
+                    order: that.order
+                }
+            })
+        }
+
+        //get current user information
+        $usersvc.getuser(undefined, false, function(usr) {
+            that.user = usr
+        })
+        that.refreshdates = function() {
+            var wd = that.currentdate.getDay()
+                //get start of the day
+            that.currentdate = that.currentdate.addDays(-wd)
+            curweekday = that.currentdate.getDay()
+            if (that.dates.length > 0) {
+                curweekday = that.dates[0].getDay()
+            }
+            for (var i = 0; i < 7; i++) {
+                that.dates[i] = that.currentdate.addDays(i - curweekday)
+            }
+            that.month = moment(that.currentdate).format('MMMM')
+            that.buildweekmap()
+        }
+
+        //build dateview
+        that.bookmap = []
+        that.buildweekmap = function() {
+            function builddaymap() {
+                for (var i in that.timemap) {
+                    var tmp = that.bookmap[i]
+                    if (tmp == undefined) {
+                        tmp = {}
+                        tmp["time"] = that.timemap[i]
+                        tmp["index"] = i
+                        that.bookmap.push(tmp)
+                    }
+                    tmp["na"] = []
+                    tmp["booked"] = [false, false, false, false, false, false, false]
+                    tmp["completed"] = [false, false, false, false, false, false, false]
+                    tmp["editing"] = [false, false, false, false, false, false, false]
+                    tmp["extend"] = [false, false, false, false, false, false, false]
+                    tmp["stats"] = [false, false, false, false, false, false, false]
+                }
+            }
+
+            function getweek() {
+                builddaymap()
+                var wd = that.currentdate.getDay()
+                    //get start of the day
+                that.currentdate = that.currentdate.addDays(-wd)
+                Restangular.one("api", that.user.name)
+                    .all("d/" + that.currentdate.Format("yyyyMMdd"))
+                    .getList({
+                        days: 7
+                    })
+                    .then(function(data) {
+                            for (var i = 0; i < 7; i++) {
+                                var daydetail = data[i]
+                                for (var hour in that.bookmap) {
+                                    that.bookmap[parseInt(hour)].na.push(daydetail.na.indexOf(parseInt(hour)) < 0)
+                                }
+                            }
+
+                            that.refreshorder()
+                        },
+                        function(data) {
+                            $mdToast.show(
+                                $mdToast.simple()
+                                .textContent('获取日程失败')
+                                .hideDelay(3000)
+                            );
+                        })
+            }
+            getweek()
+        }
+        that.refreshdates()
+    }
+])
+
+app.controller("BottomSheetOrderCtrl", function($scope, $mdBottomSheet, order) {
+    console.log(order)
+    $scope.timemap = TimeMap
+    $scope.items = order.booked
+})
+
+app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$ordersvc', '$usersvc', "$stateParams",
+    function($scope, Restangular, $mdDialog, $ordersvc, $usersvc, $stateParams) {
         var that = this
         that.currentdate = new Date()
         that.dates = []
@@ -743,9 +1338,13 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
         that.actionlist = []
 
         that.timetable = undefined
+        that.user = {}
+        $usersvc.getuser(undefined, false, function(usr) {
+            that.user = usr
+        })
+
 
         function processtimetable(td) {
-
             _.each(that.actionlist, function(book) {
                 if (book.pendingaction == "remove") {
                     if (td.Format("yyyy-MM-dd") == book.date) {
@@ -791,17 +1390,16 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
 
         that.completedbook = []
         that.bookedbook = []
-
         that.refreshdates = function() {
-            that.dates[0] = that.currentdate
-            that.dates[1] = that.currentdate.addDays(1)
-            that.dates[2] = that.currentdate.addDays(2)
-            that.dates[3] = that.currentdate.addDays(3)
-            that.select(that.currentdate)
-                //that.refresh()
-        }
-        that.cancel = function() {
-            $mdDialog.cancel();
+            curweekday = that.currentdate.getDay()
+            if (that.dates.length > 0) {
+                curweekday = that.dates[0].getDay()
+            }
+            for (var i = 0; i < 7; i++) {
+                that.dates[i] = that.currentdate.addDays(i - curweekday)
+            }
+            that.month = moment(that.currentdate).format('MMMM')
+            that.refresh()
         }
         that.recover = function(task) {
             if (task.pendingaction == "remove") {
@@ -817,7 +1415,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
         }
 
         that.refresh = function() {
-            $ordersvc.getorder(undefined,
+            $ordersvc.getorder($stateParams.orderid,
                 function(data) {
                     that.order = data
                     that.completedbook = _.where(data.booked, {
@@ -830,6 +1428,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                 function(data) {
                     swal("", "获取信息失败，请稍后重试。", "warning")
                 })
+			$("#order-detail-list").css("height", screen.height - 266 + "px")
         }
 
         that.addbook = function(h) {
@@ -849,7 +1448,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                 var newbook = {
                     date: that.selected.Format("yyyy-MM-dd"),
                     hour: h,
-                    coach: that.order.coachdetail.id,
+                    coach: that.user.id,
                     custom: that.order.customerdetail.id,
                     order: that.order.id,
                     pendingaction: "add"
@@ -858,7 +1457,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                 processtimetable(that.selected)
             }
         }
-        that.removebook = function(bookid) {
+        that.removebook = function(book) {
             swal({
                 title: "取消",
                 text: "确认取消吗?",
@@ -870,13 +1469,10 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                 closeOnConfirm: false,
                 showLoaderOnConfirm: true
             }, function() {
-                var item = _.findWhere(that.bookedbook, {
-                    id: bookid
-                })
 
-                var datestr = item.date.replace(/-/g, "")
-                Restangular.one("api/", $.cookie("user"))
-                    .one("b/" + datestr, item.hour)
+                var datestr = book.date.replace(/-/g, "")
+                Restangular.one("api/", book.coachprofile.name)
+                    .one("b/" + datestr, book.hour)
                     .remove()
                     .then(function(data) {
                         swal({
@@ -889,20 +1485,22 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
 
                         console.log("remove success")
                         var tar = _.findWhere(that.bookedbook, {
-                                id: bookid
+                                id: book.id
                             })
                             //tar["pendingaction"] = "remove"
                             //add to actionlist
                             //that.actionlist.push(tar)
                             //remove from bookedbook
                         that.bookedbook = _.reject(that.bookedbook, function(item) {
-                                return item.id == bookid
+                                return item.id == book.id
                             })
                             //refresh time table
                             //processtimetable(that.selected)
-                        if (that.selected.Format("yyyy-MM-dd") == item.date) {
-                            that.timetable.availiable.push(item.hour, item.hour + 1)
+                        if (that.selected.Format("yyyy-MM-dd") == book.date) {
+                            that.timetable.availiable.push(book.hour, book.hour + 1)
                         }
+                    }, function(data) {
+                        swal("", "删除失败", "warning")
                     })
 
             })
@@ -918,7 +1516,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                     timer: 1500,
                     showConfirmButton: false
                 });
-                $mdDialog.cancel();
+                history.back()
             }
         }
 
@@ -931,7 +1529,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
             })
             that.pendingaction = removelist.length + addlist.length
             if (that.pendingaction == 0) {
-                $mdDialog.cancel();
+                history.back()
                 return
             } else {
                 that.submitting = true
@@ -950,7 +1548,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
             }, function() {
                 _.each(removelist, function(item, i) {
                     var datestr = item.date.replace(/-/g, "")
-                    Restangular.one("api/", $.cookie("user"))
+                    Restangular.one("api/", item.coachprofile.name)
                         .one("b/" + datestr, item.hour)
                         .remove()
                         .then(function(data) {
@@ -972,9 +1570,11 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
 
         that.refreshdates()
         that.refresh()
+        that.selected = that.dates[0]
+
     }
 ])
-app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdDialog", "$ordersvc","$stateParams",
+app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdDialog", "$ordersvc", "$stateParams",
     function($state, $usersvc, Restangular, $mdDialog, $ordersvc, $stateParams) {
         var that = this
         that.customer = {}
@@ -995,26 +1595,14 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
         }
         that.call = function() {}
         that.showorder = function(orderid) {
-            $ordersvc.setorder(orderid)
-                //var useFullScreen = ($mdMedia('sm') || $mdMedia('xs')) && $scope.customFullscreen;
-            $mdDialog.show({
-                    controller: 'OrderDetailCtrl',
-                    templateUrl: '/static/mobile/orderdetail.html',
-                    parent: angular.element(document.body),
-                    //targetEvent: ev,
-                    clickOutsideToClose: true,
-                    fullscreen: true
-                })
-                .then(function(answer) {
-                    console.log('You said the information was "' + answer + '".');
-                }, function() {
-                    console.log('You cancelled the dialog.')
-                });
+            $state.transitionTo("orderdetail", {
+                orderid: orderid
+            })
         }
-		var customername = $stateParams.name
+        var customername = $stateParams.name
         $usersvc.getcustomer(customername, false, function(data) {
             that.customer = data
-			settitle(that.customer.displayname, true)
+            settitle(that.customer.displayname, true)
             that.getorderlist()
         }, function(data) {
             console.log("getuser failed")
@@ -1037,7 +1625,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
         that.mo.product_amount = ""
         that.mo.product_duration = ""
         that.mo.sex = '0'
-		that.mo.subsidy = 0
+        that.mo.subsidy = 0
         that.mo.age = undefined
         that.changesex = function(i) {
             that.mo.sex = i
@@ -1225,14 +1813,14 @@ app.controller("TrainDetailCtrl", ["Restangular", "$paramssvc", "$mdDialog", "$u
         }
         that.showphoto = function(img) {
             $mdToast.show({
-                controller: function($scope){
-								$scope.img = img; 
-								$scope.hide = $mdToast.hide 
-							},
-			template: '<md-toast style="position: absolute;top: 0;height: inherit;background: rgb(66,66,66);"  ng-click="hide()"><img  style="margin-top:50px;border-radius:2px" ng-src="{{img}}"></md-toast>',
-				hideDelay: 0,
-				position: top,
-				autoWrap: false,
+                controller: function($scope) {
+                    $scope.img = img;
+                    $scope.hide = $mdToast.hide
+                },
+                template: '<md-toast style="position: absolute;top: 0;height: inherit;background: rgb(66,66,66);"  ng-click="hide()"><img  style="margin-top:50px;border-radius:2px" ng-src="{{img}}"></md-toast>',
+                hideDelay: 0,
+                position: top,
+                autoWrap: false,
                 parent: angular.element(document.body),
             });
         }

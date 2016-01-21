@@ -178,6 +178,10 @@ class ManualOrder(APIView):
 		if "age" in self.request.data:
 			customer.age = self.request.data["age"]
 			customer.save()
+		if "birthday" in self.request.data:
+			customer.birthday = datetime.datetime.strptime(self.request.data["birthday"],"%Y-%m-%d").date()
+			customer.save()
+		print request.data
 		print customer
 		#create product
 		introduction = self.request.data["product_introduction"]
@@ -266,21 +270,19 @@ class GymSoldDay(APIView):
 		sold_price = orders.aggregate(Sum("amount"))["amount__sum"]
 		sold_count = orders.count()  
 		course_count, course_price = self.sum_price_course(gymid, day)
-		return Response({"sold_price": sold_price, "sold_count":sold_count,"course_price":course_price, "course_count": course_count})
+		return Response({"sold_price": sold_price, "sold_count":sold_count, "course_price":course_price, "course_count": course_count})
 
 
 class GymCustomers(generics.ListAPIView):
 	pagination_class = None
 	serializer_class = SimpleUserSerilaizer
 	def get_queryset(self):
-		gym = get_object_or_404(Gym, id=self.kwargs["gymid"])
-		print "xxxxxxxxxxxx"
-		coaches = gym.coaches.values_list("name",flat=True)
-		orders = Order.objects.filter(gym=gym)
-		print "xxxxxxxxxxxx"
-		customers = orders.values_list("custom",flat=True).distinct()
-		print customers
-		return User.objects.filter(name__in = customers).distinct()
+		gym = Gym.objects.get(id=self.kwargs["gymid"])
+		orders = gym.orders
+		customlist = gym.orders.values_list("custom", flat=True).distinct()
+		ret = User.objects.filter(name__in = customlist)
+		return ret
+
 
 		
 

@@ -3,7 +3,8 @@
         <div class="form-signin">
             <h2 class="form-signin-heading">密码验证</h2>
             <div class="login-wrap">
-                <input type="password" class="form-control" autocomplete="off" ng-model="ctrl.pwd" placeholder="请输入密码" autofocus>
+                <input type="password" class="form-control" autocomplete="off" ng-model="ctrl.pwd"
+                placeholder="请输入密码" autofocus>
                 <i class="text-danger">{{ctrl.errmsg}}</i>
                 <button class="btn btn-lg btn-login btn-block" ng-click="ctrl.submit()">提交</button>
             </div>
@@ -22,56 +23,119 @@
 			<a href="javascript:;" class="fa fa-cog"></a>
 			<a href="javascript:;" class="fa fa-times"></a>
 		</span>
-		-->
                     <div class="col-md-1 pull-right">
                         <button ng-click="ctrl.refresh()" type="button" class="btn btn-info " style="position: relative;right: 10px;"><i class="fa fa-refresh"></i> 刷新</button>
                     </div>
+
+		-->
                     <div class="col-md-3 pull-right">
-                        <p class="input-group">
-                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
-                            uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.endday"
-                            is-open="ctrl.endopened" show-button-bar="false">
-                            <span class="input-group-btn">
-                <button type="button" class="btn btn-primary" 
-					ng-click="ctrl.open('end')">
-					<i class="fa fa-calendar"></i></button>
-              </span>
-                        </p>
+					    <newdatepicker date-format="yyyy-MM-dd" selector="form-control" style="margin-bottom:10px;">
+                            <div class="col-lg-12 input-group">
+                                <input class="form-control" style="background: rgba(0,0,0,0);"
+								ng-model="ctrl.endday_str" ng-change="ctrl.refresh()" placeholder="Choose a date"/>
+                            </div>
+                            <span style="cursor: pointer;position: absolute;top: 6px;right: 20px;" style="cursor: pointer">
+							<i class="fa fa-lg fa-calendar"></i>
+						</span>
+                        </newdatepicker>
                     </div>
                     <div class="col-md-3 pull-right">
-                        <p class="input-group">
-                            <input type="text" class="form-control ng-pristine ng-untouched ng-valid ng-isolate-scope ng-valid-required ng-valid-date"
-                            uib-datepicker-popup="yyyy-MM-dd" ng-model="ctrl.startday"
-                            is-open="ctrl.startopened" show-button-bar="false">
-                            <span class="input-group-btn">
-                <button type="button" class="btn btn-primary" 
-					ng-click="ctrl.open('start')">
-					<i class="fa fa-calendar"></i>
-				</button>
-              </span>
-                        </p>
+                        <newdatepicker date-format="yyyy-MM-dd" selector="form-control" style="margin-bottom:10px;">
+                            <div class="col-lg-12 input-group">
+                                <input class="form-control" style="background: rgba(0,0,0,0);"
+								ng-model="ctrl.startday_str" ng-change="ctrl.refresh()" placeholder="Choose a date"/>
+                            </div>
+                            <span style="cursor: pointer;position: absolute;top: 6px;right: 20px;" style="cursor: pointer">
+							<i class="fa fa-lg fa-calendar"></i>
+						</span>
+                        </newdatepicker>
                     </div>
                 </div>
             </header>
             <div class="panel-body">
-                <table class="table table-hover">
+                <div class="row">
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+                            <li class="text-center grand-total">结余课程 : {{ctrl.gymsale.sum_coursecount - ctrl.gymsale.sum_completedcount}}</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+                            <li class="text-center">已上课程 : {{ctrl.gymsale.sum_completedcount}}</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+                            <li class="text-center">课程总计 : {{ctrl.gymsale.sum_coursecount}}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <table class="table table-invoice">
                     <thead>
                         <tr>
                             <th>教练</th>
-                            <th>总销售量(元)</th>
-                            <th>续课销售量(元)</th>
-                            <th>上课数(节)</th>
+                            <th>销售总价(元)</th>
+                            <th>销售课时(节)</th>
+                            <th>耗课总价(元)</th>
+                            <th>耗课课时(节)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="coach in coaches" style="color:#333">
                             <td>{{coach.displayname}}</td>
                             <td>{{coach.income.sold_price}}</td>
-                            <td>{{coach.income.sold_xu}}</td>
+                            <td>{{coach.income.sold_count}}</td>
+                            <td>{{coach.income.completed_course_price}}</td>
                             <td>{{coach.income.completed_course}}</td>
                         </tr>
                     </tbody>
                 </table>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h4 class="text-center">经营概况</h4>
+                        <p class="text-center" style="margin-bottom:20px">{{ctrl.startday.Format("yyyy-MM-dd")}} -{{ctrl.endday.Format("yyyy-MM-dd")}}</p>
+                        <div class="row">
+                            <div class="text-right col-md-6 col-sm-5 inv-label">销售总价</div>
+                            <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.salesum}}</div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="text-right col-md-6 col-sm-5 inv-label">销售均价</div>
+                            <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.saleprice.toFixed(2)}}</div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="text-right col-md-6 col-sm-5 inv-label">销售课时</div>
+                            <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.salecount}}</div>
+                        </div>
+                        <br>
+
+                        <div class="row">
+                            <div class="text-right col-md-6 col-sm-5 inv-label">耗课总价</div>
+                            <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.takesum}}</div>
+                        </div>
+
+                        <br>
+                        <div class="row">
+                            <div class="text-right col-md-6 col-sm-5 inv-label">耗课均价</div>
+                            <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.takeprice.toFixed(2)}}</div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="text-right col-md-6 col-sm-5 inv-label">耗课课时</div>
+                            <div class="col-md-6 col-sm-7">{{ctrl.sumstatus.takecount}}</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <h4 class="text-center">售课/耗课</h4>
+                        <p class="text-center" style="margin-bottom:20px">{{ctrl.startday.Format("yyyy-MM-dd")}} -{{ctrl.endday.Format("yyyy-MM-dd")}}</p>
+                        <br>
+                        <canvas id="line" class="chart chart-bar" chart-data="ctrl.coachchart.data" chart-labels="ctrl.coachchart.labels"
+                        chart-series="ctrl.coachchart.series" chart-legend="true"></canvas>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
