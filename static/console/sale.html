@@ -23,15 +23,16 @@
 			<a href="javascript:;" class="fa fa-cog"></a>
 			<a href="javascript:;" class="fa fa-times"></a>
 		</span>
-		-->
                     <div class="col-md-1 pull-right">
                         <button ng-click="ctrl.refresh()" type="button" class="btn btn-info " style="position: relative;right: 10px;"><i class="fa fa-refresh"></i> 刷新</button>
                     </div>
+
+		-->
                     <div class="col-md-3 pull-right">
 					    <newdatepicker date-format="yyyy-MM-dd" selector="form-control" style="margin-bottom:10px;">
                             <div class="col-lg-12 input-group">
                                 <input class="form-control" style="background: rgba(0,0,0,0);"
-								ng-model="ctrl.endday_str" placeholder="Choose a date"/>
+								ng-model="ctrl.endday_str" ng-change="ctrl.refresh()" placeholder="Choose a date"/>
                             </div>
                             <span style="cursor: pointer;position: absolute;top: 6px;right: 20px;" style="cursor: pointer">
 							<i class="fa fa-lg fa-calendar"></i>
@@ -42,7 +43,7 @@
                         <newdatepicker date-format="yyyy-MM-dd" selector="form-control" style="margin-bottom:10px;">
                             <div class="col-lg-12 input-group">
                                 <input class="form-control" style="background: rgba(0,0,0,0);"
-								ng-model="ctrl.startday_str" placeholder="Choose a date"/>
+								ng-model="ctrl.startday_str" ng-change="ctrl.refresh()" placeholder="Choose a date"/>
                             </div>
                             <span style="cursor: pointer;position: absolute;top: 6px;right: 20px;" style="cursor: pointer">
 							<i class="fa fa-lg fa-calendar"></i>
