@@ -1350,7 +1350,7 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc","$state"
                         done(result);
                     },
                     onSelect: function(suggestion) {
-						$("#customer-search").attr("value","")
+						$("#customer-search").val('')
         				$state.transitionTo("customerorders", {
                              customername: suggestion.data.name,
                         })
