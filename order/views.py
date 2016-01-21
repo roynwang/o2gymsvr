@@ -178,6 +178,10 @@ class ManualOrder(APIView):
 		if "age" in self.request.data:
 			customer.age = self.request.data["age"]
 			customer.save()
+		if "birthday" in self.request.data:
+			customer.birthday = datetime.datetime.strptime(self.request.data["birthday"],"%Y-%m-%d").date()
+			customer.save()
+		print request.data
 		print customer
 		#create product
 		introduction = self.request.data["product_introduction"]

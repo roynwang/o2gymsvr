@@ -43,6 +43,8 @@ class User(models.Model):
 
 	can_book = models.BooleanField(default=True)
 
+	birthday = models.DateField(blank=True, null=True)
+
 	def __unicode__(self):
 		return self.name
 
