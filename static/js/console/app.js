@@ -854,8 +854,10 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                                 done: true
                             })
                             that.tableParams = new NgTableParams({
+								count: 5,
                                 sorting: {},
                             }, {
+								counts:[],
                                 dataset: data.booked,
                             });
                             that.refreshtimetable()
