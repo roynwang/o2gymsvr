@@ -61,9 +61,9 @@ var app = angular.module('JobApp', [
     "ngTable",
     'oitozero.ngSweetAlert',
     'angular-ladda',
-	'ui.bootstrap',
+    'ui.bootstrap',
     'chart.js',
-	'720kb.datepicker'
+    '720kb.datepicker'
 ])
 app.directive('backButton', function() {
     return {
@@ -414,12 +414,13 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAl
         }
 
         that.loadcoaches()
-		that.modify_can_book = function(c){
-			Restangular.one("api", c.name)
-				.patch({can_book: c.can_book})
-				.then(function(data){
-				})
-		}
+        that.modify_can_book = function(c) {
+            Restangular.one("api", c.name)
+                .patch({
+                    can_book: c.can_book
+                })
+                .then(function(data) {})
+        }
 
         that.newcoach = function(size) {
             var modalInstance = $uibModal.open({
@@ -531,7 +532,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.order = null
         that.day = new Date()
         that.availiable = []
-		that.day_str = that.day.Format("yyyy-MM-dd")
+        that.day_str = that.day.Format("yyyy-MM-dd")
 
         that.gohome = function() {
             $state.transitionTo('index')
@@ -795,7 +796,8 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
 
         }
         that.refreshtimetable = function(norefresh) {
-			that.day = new Date(Date.parse(that.day_str))
+            that.day = new Date(Date.parse(that.day_str))
+
             function t(ava) {
                 that.timemapgroup = []
                 for (var i = 0; i < TimeMap.length; i++) {
@@ -854,10 +856,10 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                                 done: true
                             })
                             that.tableParams = new NgTableParams({
-								count: 5,
+                                count: 5,
                                 sorting: {},
                             }, {
-								counts:[],
+                                counts: [],
                                 dataset: data.booked,
                             });
                             that.refreshtimetable()
@@ -1004,8 +1006,8 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
 
-		that.startday_str = that.startday.Format("yyyy-MM-dd")
-		that.endday_str = that.endday.Format("yyyy-MM-dd")
+        that.startday_str = that.startday.Format("yyyy-MM-dd")
+        that.endday_str = that.endday.Format("yyyy-MM-dd")
 
         that.is_admin = false
         that.errmsg = ""
@@ -1036,8 +1038,8 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
         }
 
         function refresh() {
-			that.startday = new Date(Date.parse(that.startday_str))
-			that.endday = new Date(Date.parse(that.endday_str))
+            that.startday = new Date(Date.parse(that.startday_str))
+            that.endday = new Date(Date.parse(that.endday_str))
             Restangular.one('api/g/', gymid)
                 .one("salary/")
                 .get({
@@ -1080,8 +1082,8 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
         var that = this
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
-		that.startday_str = that.startday.Format("yyyy-MM-dd")
-		that.endday_str = that.endday.Format("yyyy-MM-dd")
+        that.startday_str = that.startday.Format("yyyy-MM-dd")
+        that.endday_str = that.endday.Format("yyyy-MM-dd")
 
         that.is_admin = false
         that.errmsg = ""
@@ -1131,8 +1133,8 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
 
         function refresh() {
 
-			that.startday = new Date(Date.parse(that.startday_str))
-			that.endday = new Date(Date.parse(that.endday_str))
+            that.startday = new Date(Date.parse(that.startday_str))
+            that.endday = new Date(Date.parse(that.endday_str))
             that.sumstatus = {
                 salesum: 0,
                 salecount: 0,
@@ -1141,7 +1143,14 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                 takecount: 0,
                 takeprice: 0
             }
-			that.coachchart = { labels:[], series:["销售量","上课量"], data:[[],[]] }
+            that.coachchart = {
+                labels: [],
+                series: ["销售量", "上课量"],
+                data: [
+                    [],
+                    []
+                ]
+            }
 
             Restangular.one('api/g', gymid).get().then(function(gym) {
                 $scope.coaches = gym.coaches_set
@@ -1160,9 +1169,9 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                         that.sumstatus.takesum += data.completed_course_price
                         that.sumstatus.takecount += data.completed_course
                         that.sumstatus.takeprice = that.sumstatus.takesum / that.sumstatus.takecount
-						that.coachchart.labels.push($scope.coaches[i].displayname)
-						that.coachchart.data[0].push(data.sold_count)
-						that.coachchart.data[1].push(data.completed_course)
+                        that.coachchart.labels.push($scope.coaches[i].displayname)
+                        that.coachchart.data[0].push(data.sold_count)
+                        that.coachchart.data[1].push(data.completed_course)
                     })
                 })
             })
@@ -1305,8 +1314,9 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
     }
 ])
 
-app.controller("MainPageCtrl", ['$scope', "Restangular",
-        function($scope, Restangular) {
+app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc","$state",
+        function($scope, Restangular, $customersvc, $state) {
+			var that = this
             var date = new Date().Format("yyyyMMdd");
             //var date = "20151029"
             $scope.calendarRowGroup = []
@@ -1314,6 +1324,39 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
             var g = 0
 
             $scope.coursecount = 0
+
+
+            $customersvc.getcustomers(function(data) {
+				that.customers = data
+                $('#customer-search').autocomplete({
+
+                    lookup: function(query, done) {
+                        // Do ajax call or lookup locally, when done,
+                        // call the callback and pass your results:
+						var filtered = _.filter(that.customers,function(p){
+							var pinyin = p.pinyin.replace(/ /g,"")
+							if(pinyin.indexOf(query) >= 0 || p.displayname.indexOf(query) >= 0 ){
+								return true
+							}
+							return false
+						})
+						var sug = _.map(filtered, function(p){
+							return {"value":p.displayname, "data":p}
+						})
+
+                        var result = {
+                            suggestions: sug
+                        };
+                        done(result);
+                    },
+                    onSelect: function(suggestion) {
+						$("#customer-search").attr("value","")
+        				$state.transitionTo("customerorders", {
+                             customername: suggestion.data.name,
+                        })
+                    }
+                });
+            })
 
             function renderSale() {
                 var gymid = $.cookie("gym")
@@ -1328,10 +1371,12 @@ app.controller("MainPageCtrl", ['$scope', "Restangular",
             function renderCoaches() {
                 var gymid = $.cookie("gym")
                 Restangular.one('api/g/', gymid).get().then(function(gym) {
-                    $scope.coaches = _.filter(gym.coaches_set, {can_book: true})
-					_.each($scope.coaches, function(item){
-						item.avatar += "?imageView2/1/w/150/h/150"
-					})
+                    $scope.coaches = _.filter(gym.coaches_set, {
+                        can_book: true
+                    })
+                    _.each($scope.coaches, function(item) {
+                        item.avatar += "?imageView2/1/w/150/h/150"
+                    })
                     Restangular.one('api/g/' + gymid + "/" + date + "/").get().then(function(allbooks) {
                         var grouped = _.groupBy(allbooks, function(item) {
                             return item.coachprofile.id
