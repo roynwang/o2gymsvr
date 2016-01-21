@@ -60,3 +60,27 @@ ul.sidebar-menu {
 .bg-lightgrey {
 	background-color: #f1f1f1;
 }
+.autocomplete-suggestions{
+	background-color: #fafafa;
+	border-radius: 8px;
+	padding: 10px;
+	box-shadow: 1px 0 3px rgba(0,0,0,.15);
+}
+.autocomplete-suggestion { padding: 4px 8px; border-radius: 4px; white-space: nowrap; overflow: hidden; }
+.autocomplete-suggestion:hover { background: #1fb5ad; color:white }
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-group { padding: 2px 5px; }
+.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+
+.search:focus {
+     border: solid 1px #1fb5ad;
+	 background-color: #fafafa;
+	 color: #777
+}
+#incomplete.dropdown-menu:before {
+	left: 90%
+}
+#incomplete.dropdown-menu:after {
+	left: 90%
+}
