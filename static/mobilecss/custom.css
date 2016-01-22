@@ -283,9 +283,13 @@ md-input-container {
 
 /* angular-material */
 md-toolbar {
-    background: rgba(255,255,255,1) !important;
+	background: #f1f1f1 !important;
     color: #333 !important;
-	padding: 0 5px;
+    padding: 0 0 2px 0;
+    border-bottom: solid 1px #ccc;
+}
+#time-sheet {
+	background-color: white
 }
 md-tabs.md-default-theme .md-tab.md-active, md-tabs .md-tab.md-active, md-tabs.md-default-theme .md-tab.md-active md-icon, md-tabs .md-tab.md-active md-icon, md-tabs.md-default-theme .md-tab.md-focused, md-tabs .md-tab.md-focused, md-tabs.md-default-theme .md-tab.md-focused md-icon, md-tabs .md-tab.md-focused md-icon {
     color: #333
