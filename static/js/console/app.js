@@ -112,8 +112,10 @@ app.factory("$customersvc", function(Restangular) {
     }
 
     function getcustomer(key) {
-		return _.find(customers, {name:key})
-	}
+        return _.find(customers, {
+            name: key
+        })
+    }
     return {
         getcustomers: getcustomers,
         getcustomer: getcustomer
@@ -199,7 +201,7 @@ app.controller("GymCtrl", ["$stateParams", "$state",
             //window.location = "/console/dashboard/"
     }
 ])
-app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert","$customersvc",
+app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert", "$customersvc",
     function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $customersvc) {
         var that = this
         that.coaches = []
@@ -255,7 +257,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                             })
                 })
         }
-		that.customer_displayname = $customersvc.getcustomer($stateParams.customername).displayname
+        that.customer_displayname = $customersvc.getcustomer($stateParams.customername).displayname
         that.refresh = function() {
             Restangular.one('api/', $stateParams.customername)
                 .one("o/")
@@ -541,24 +543,48 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             $state.transitionTo('index')
         }
         that.pendingaction = 0
+        that.pendingerror = 0
 
-        that.completeditem = function() {
+        that.completeditem = function(fail) {
+            if (fail) {
+                that.pendingerror++
+            }
             that.pendingaction--
-                if (that.pendingaction == 0) {
+            if (that.pendingaction == 0) {
                     that.submitting = false
-                    swal({
-                        type: "success",
-                        title: "提交成功",
-                        text: "",
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
+                    if (that.pendingerror == 0) {
+                        swal({
+                            type: "success",
+                            title: "提交成功",
+                            text: "",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        swal({
+                            type: "warning",
+                            title: "",
+                            text: "有" + that.pendingerror + "个预约提交失败了，请重试",
+                            showConfirmButton: true
+                        });
+                    }
+					//reset pending error
+					that.pendingerror = 0
                     that.reload()
                 }
-
         }
 
         that.submitBook = function() {
+            var removelist = _.where(that.tableParams.data, {
+                pendingaction: "remove"
+            })
+            var addlist = _.where(that.tableParams.data, {
+                pendingaction: "add"
+            })
+            that.pendingaction = removelist.length + addlist.length
+            if (that.pendingaction == 0) {
+                return
+            } 
             swal({
                 title: "提交",
                 text: "确认提交预约请求吗?",
@@ -569,20 +595,11 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 confirmButtonColor: "#1fb5ad",
                 closeOnConfirm: false,
                 showLoaderOnConfirm: true
-            }, function() {
-                var removelist = _.where(that.tableParams.data, {
-                    pendingaction: "remove"
-                })
-                var addlist = _.where(that.tableParams.data, {
-                    pendingaction: "add"
-                })
-                that.pendingaction = removelist.length + addlist.length
-                if (that.pendingaction == 0) {
-                    return
-                } else {
-                    that.submitting = true
-                }
-
+            }, function(yes) {
+				if(!yes){
+					return
+				}
+				that.submitting = true
                 _.each(removelist, function(item, i) {
                     var datestr = item.date.replace(/-/g, "")
                     Restangular.one("api/", item.coachprofile.name)
@@ -591,6 +608,8 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                         .then(function(data) {
                             console.log("remove success")
                             that.completeditem()
+                        }, function(data) {
+                            that.completeditem("fail")
                         })
                 })
                 _.each(addlist, function(item, i) {
@@ -603,6 +622,8 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                         .then(function(data) {
                             that.completeditem()
                             console.log(data)
+                        }, function(data) {
+                            that.completeditem("fail")
                         })
                 })
             })
@@ -676,6 +697,24 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 });
         }
         that.cancelbook = function(book) {
+                if (book.pendingaction == "add") {
+                    var b = _.findWhere(that.tableParams.data, book)
+                        //set to 'remove' for existed item
+                    var i = that.tableParams.data.indexOf(b)
+                    that.tableParams.data.splice(i, 1)
+                    that.refreshtimetable(true)
+                    that.tableParams.total(that.tableParams.data)
+                        /*
+                    swal({
+                        type: "success",
+                        title: "预约已取消",
+                        text: "",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+					*/
+                    return
+                }
                 SweetAlert.swal({
                         //title: "确定移除该教练吗?",
                         title: "确认",
@@ -690,22 +729,6 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     },
                     function(yes) {
                         if (!yes) {
-                            return
-                        }
-                        if (book.pendingaction == "add") {
-                            var b = _.findWhere(that.tableParams.data, book)
-                                //set to 'remove' for existed item
-                            var i = that.tableParams.data.indexOf(b)
-                            that.tableParams.data.splice(i, 1)
-                            that.refreshtimetable(true)
-                            that.tableParams.total(that.tableParams.data)
-                            swal({
-                                type: "success",
-                                title: "预约已取消",
-                                text: "",
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
                             return
                         }
                         var url = "/api/" + book.coachprofile.name + "/b/" + book.date.replace(/-/g, "") + "/" + book.hour + "/";
@@ -944,19 +967,19 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
             if (that.mo.subsidy == undefined) {
                 that.mo.subsidy = 0
             }
-			if(that.birthday_str){
-				that.mo.birthday = that.birthday_str
-			}
-			if(that.mo.age == undefined){
-				that.mo.age = 0
-			}
+            if (that.birthday_str) {
+                that.mo.birthday = that.birthday_str
+            }
+            if (that.mo.age == undefined) {
+                that.mo.age = 0
+            }
             var data = that.mo
             if (that.mo.customer_phone.toString().length != 11) {
                 swal("", "请输入正确的11位电话号码", "warning")
                 return false
             }
             for (var k in data) {
-                if (data[k] == undefined ) {
+                if (data[k] == undefined) {
                     swal("", "请填完所有选项", "warning")
                     return false
                 }
@@ -965,7 +988,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         }
 
         that.submitorder = function() {
-         if (!validate()) {
+            if (!validate()) {
                 return
             }
 
@@ -1023,7 +1046,7 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
         that.errmsg = ""
         that.pwd = ""
 
-		that.is_admin = $.cookie("admin_confirmed")
+        that.is_admin = $.cookie("admin_confirmed")
 
         that.submit = function() {
             if (that.pwd == undefined || that.pwd.length == 0) {
@@ -1035,18 +1058,18 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
                     $.cookie("token", data.token, {
                         path: '/'
                     })
-					var date = new Date();
-					date.setTime(date.getTime() + (2 * 60 * 1000));
-					$.cookie("admin_confirmed", true, {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (2 * 60 * 1000));
+                    $.cookie("admin_confirmed", true, {
                         path: '/',
-						expires: date
-					})
+                        expires: date
+                    })
                     that.is_admin = true
                 },
                 function(data) {
-					$.cookie("admin_confirmed", false, {
+                    $.cookie("admin_confirmed", false, {
                         path: '/',
-					})
+                    })
                     that.is_admin = false
                     that.errmsg = "密码验证失败"
                 })
@@ -1127,7 +1150,7 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                 }
             })
         }
-		that.is_admin = $.cookie("admin_confirmed")
+        that.is_admin = $.cookie("admin_confirmed")
 
         that.submit = function() {
             if (that.pwd == undefined || that.pwd.length == 0) {
@@ -1139,23 +1162,23 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                     $.cookie("token", data.token, {
                         path: '/'
                     })
-					var date = new Date();
-					date.setTime(date.getTime() + (2 * 60 * 1000));
-					$.cookie("admin_confirmed", true, {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (2 * 60 * 1000));
+                    $.cookie("admin_confirmed", true, {
                         path: '/',
-						expires: date
-					})
+                        expires: date
+                    })
                     that.is_admin = true
                 },
                 function(data) {
-					$.cookie("admin_confirmed", false, {
+                    $.cookie("admin_confirmed", false, {
                         path: '/',
-					})
+                    })
                     that.is_admin = false
                     that.errmsg = "密码验证失败"
                 })
         }
-   
+
         function calSum(data) {
             console.log(data)
             return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100
@@ -1248,7 +1271,7 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
         that.errmsg = ""
         that.pwd = ""
         that.salarytab = 'base'
-		that.is_admin = $.cookie("admin_confirmed")
+        that.is_admin = $.cookie("admin_confirmed")
 
         that.submit = function() {
             if (that.pwd == undefined || that.pwd.length == 0) {
@@ -1260,18 +1283,18 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
                     $.cookie("token", data.token, {
                         path: '/'
                     })
-					var date = new Date();
-					date.setTime(date.getTime() + (2 * 60 * 1000));
-					$.cookie("admin_confirmed", true, {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (2 * 60 * 1000));
+                    $.cookie("admin_confirmed", true, {
                         path: '/',
-						expires: date
-					})
+                        expires: date
+                    })
                     that.is_admin = true
                 },
                 function(data) {
-					$.cookie("admin_confirmed", false, {
+                    $.cookie("admin_confirmed", false, {
                         path: '/',
-					})
+                    })
                     that.is_admin = false
                     that.errmsg = "密码验证失败"
                 })
@@ -1354,9 +1377,9 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
     }
 ])
 
-app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc","$state",
+app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state",
         function($scope, Restangular, $customersvc, $state) {
-			var that = this
+            var that = this
             var date = new Date().Format("yyyyMMdd");
             //var date = "20151029"
             $scope.calendarRowGroup = []
@@ -1367,22 +1390,25 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc","$state"
 
 
             $customersvc.getcustomers(function(data) {
-				that.customers = data
+                that.customers = data
                 $('#customer-search').autocomplete({
 
                     lookup: function(query, done) {
                         // Do ajax call or lookup locally, when done,
                         // call the callback and pass your results:
-						var filtered = _.filter(that.customers,function(p){
-							var pinyin = p.pinyin.replace(/ /g,"")
-							if(pinyin.indexOf(query) >= 0 || p.displayname.indexOf(query) >= 0 ){
-								return true
-							}
-							return false
-						})
-						var sug = _.map(filtered, function(p){
-							return {"value":p.displayname, "data":p}
-						})
+                        var filtered = _.filter(that.customers, function(p) {
+                            var pinyin = p.pinyin.replace(/ /g, "")
+                            if (pinyin.indexOf(query) >= 0 || p.displayname.indexOf(query) >= 0) {
+                                return true
+                            }
+                            return false
+                        })
+                        var sug = _.map(filtered, function(p) {
+                            return {
+                                "value": p.displayname,
+                                "data": p
+                            }
+                        })
 
                         var result = {
                             suggestions: sug
@@ -1390,9 +1416,9 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc","$state"
                         done(result);
                     },
                     onSelect: function(suggestion) {
-						$("#customer-search").val('')
-        				$state.transitionTo("customerorders", {
-                             customername: suggestion.data.name,
+                        $("#customer-search").val('')
+                        $state.transitionTo("customerorders", {
+                            customername: suggestion.data.name,
                         })
                     }
                 });
