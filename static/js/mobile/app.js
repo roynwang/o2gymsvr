@@ -667,6 +667,9 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.querystatus = "unset"
         that.pendingbook = {}
         that.isSelecting = false
+        that.animatingleft = false
+        that.animatingright = false
+        that.animating = false
         that.showneworder = function() {
             $mdDialog.show({
                     controller: "NewOrderDialgCtrl",
@@ -895,10 +898,12 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
         that.refresh = function() {
             that.searchText = undefined
-			that.animating = true
-            $timeout(function() {
-                that.animating = false
-            }, 700)
+            if (!that.animatingleft) {
+                that.animatingright = true
+                $timeout(function() {
+                    that.animatingright = false
+                }, 700)
+            }
             Restangular.one("api", user)
                 .one("b", that.selected.Format("yyyyMMdd"))
                 .getList()
@@ -980,7 +985,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
         that.nextweek = function() {
             console.log("next")
-			that.animatingright = true
+            that.animatingright = true
             $timeout(function() {
                 that.animatingright = false
             }, 700)
@@ -989,11 +994,11 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
         that.prevweek = function() {
             console.log("prev")
-			that.animatingleft = true
+            that.animatingleft = true
             $timeout(function() {
                 that.animatingleft = false
             }, 700)
-   
+
             that.currentdate = that.dates[0].addDays(-7)
             that.refreshdates()
         }
@@ -1349,7 +1354,7 @@ app.controller("BottomSheetOrderCtrl", function($scope, $mdBottomSheet, order) {
     $scope.items = order.booked
 })
 
-app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$ordersvc', '$usersvc', "$stateParams","$timeout",
+app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$ordersvc', '$usersvc', "$stateParams", "$timeout",
     function($scope, Restangular, $mdDialog, $ordersvc, $usersvc, $stateParams, $timeout) {
         var that = this
         that.animating = false
