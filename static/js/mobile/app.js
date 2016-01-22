@@ -176,6 +176,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/login",
             templateUrl: "/static/mobile/login.html",
         })
+        .state('our', {
+            url: "/our",
+            templateUrl: "/static/mobile/ourcourse.html",
+        })
         .state('index', {
             url: "/",
             templateUrl: "/static/mobile/coachtabs.html",
@@ -647,7 +651,7 @@ app.controller("CustomerListCtrl", ["Restangular",
     }
 ])
 
-app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc", "$scope", "$paramssvc", "$mdToast", "$mdSidenav", "$document", "$mdSidenav","$timeout",
+app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc", "$scope", "$paramssvc", "$mdToast", "$mdSidenav", "$document", "$mdSidenav", "$timeout",
     function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc, $scope, $paramssvc, $mdToast, $mdSidenav, $document, $mdSidenav, $timeout) {
         var user = $.cookie("user")
         var that = this
@@ -734,10 +738,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
 
         that.bookmap = []
-		that.editingtime = undefined
+        that.editingtime = undefined
         that.edit = function(c, edit) {
             that.inited = true
-			that.editingtime = that.timemap[c.index]
+            that.editingtime = that.timemap[c.index]
             if (c.book || that.bookmap[parseInt(c.index) + 1].book) {
                 return
             }
@@ -786,7 +790,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                         that.querystatus = "pending"
                         console.log(that.pendingbook)
                     } else {
-						that.showtoast = true
+                        that.showtoast = true
                         $mdToast.show(
                             $mdToast.simple()
                             .textContent('没有匹配的订单')
@@ -997,7 +1001,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.showorder = function(book) {
             $state.transitionTo("orderdetail", {
                 orderid: book.order,
-				date: book.date
+                date: book.date
             })
         }
         if (user == undefined) {
@@ -1335,9 +1339,9 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
         var that = this
 
         that.currentdate = new Date()
-		if($stateParams.date){
+        if ($stateParams.date) {
             that.currentdate = new Date(Date.parse($stateParams.date))
-		}
+        }
 
         that.dates = []
 
@@ -1401,7 +1405,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                 that.dates[i] = that.currentdate.addDays(i)
             }
             that.month = moment(that.currentdate).format('MMMM')
-			that.select(that.dates[0])
+            that.select(that.dates[0])
             that.refresh()
         }
         that.recover = function(task) {
@@ -1431,7 +1435,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
                 function(data) {
                     swal("", "获取信息失败，请稍后重试。", "warning")
                 })
-			$("#order-detail-list").css("height", screen.height - 266 + "px")
+            $("#order-detail-list").css("height", screen.height - 266 + "px")
         }
 
         that.addbook = function(h) {
@@ -1573,7 +1577,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
 
         that.refreshdates()
         that.refresh()
-        //that.selected = that.dates[0]
+            //that.selected = that.dates[0]
 
     }
 ])
@@ -1858,63 +1862,197 @@ app.controller("TrainDetailCtrl", ["Restangular", "$paramssvc", "$mdDialog", "$u
     }
 ])
 app.controller("ProfileCtrl", ["$scope", "$usersvc", "$uploader", "$qupload", "Restangular",
-        function($scope, $usersvc, $uploader, $qupload, Restangular) {
-            var that = this
-            settitle("个人资料")
-            that.user = {}
-            $scope.selectFiles = [];
-            $usersvc.getuser(undefined, false, function(usr) {
-                setmenu(usr)
-                that.user = usr
-            })
+    function($scope, $usersvc, $uploader, $qupload, Restangular) {
+        var that = this
+        settitle("个人资料")
+        that.user = {}
+        $scope.selectFiles = [];
+        $usersvc.getuser(undefined, false, function(usr) {
+            setmenu(usr)
+            that.user = usr
+        })
 
-            that.onFileSelect = function($files) {
-                $uploader.upload($files[0], function(data) {
-                    that.user.avatar = bukcet + "/" + data.key
-                    console.log(that.user.avatar)
-                    that.save()
+        that.onFileSelect = function($files) {
+            $uploader.upload($files[0], function(data) {
+                that.user.avatar = bukcet + "/" + data.key
+                console.log(that.user.avatar)
+                that.save()
+            })
+        }
+        that.save = function() {
+            Restangular.one("api", that.user.name)
+                .patch({
+                    avatar: that.user.avatar,
+                    sex: that.user.sex,
+                    displayname: that.user.displayname,
+                    signature: that.user.signature
+                })
+                .then(function(data) {
+                        swal({
+                            title: "",
+                            text: "已更新",
+                            type: "success",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        $usersvc.getuser(undefined, true, function(usr) {
+                            that.user = usr
+                            setmenu(usr)
+                        })
+                    },
+                    function(data) {
+                        swal("", "信息保存失败", "warning", 1500, false)
+                    })
+        }
+
+        that.changesex = function(i) {
+            that.user.sex = i
+        }
+
+    }
+])
+app.controller("OurCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc", "$scope", "$paramssvc", "$mdToast", "$mdSidenav", "$document", "$mdSidenav", "$timeout",
+        function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc, $scope, $paramssvc, $mdToast, $mdSidenav, $document, $mdSidenav, $timeout) {
+            var user = $.cookie("user")
+            var that = this
+            that.timemap = TimeMap
+            that.courselist = []
+            that.currentdate = new Date()
+            that.dates = []
+            that.customerlist = []
+            that.selectedItem = undefined
+            that.querystatus = "unset"
+            that.pendingbook = {}
+            that.isSelecting = false
+			that.gymid = undefined
+
+            that.init = function() {
+                user = $.cookie("user")
+                $usersvc.getuser(undefined, false, function(data) {
+                        that.user = data
+						that.gymid = that.user.gym_id[0]
+						that.refreshdates()
+                    },
+                    function(data) {})
+
+            }
+
+            that.bookmap = []
+			that.colors = [
+				["lavenderblush","rgb(189, 0, 78)"],
+				["rgb(224,247,217)","rgb(54,98,44)"],
+				["rgb(204,239,255)","rgb(30,147,213)"],
+				["rgb(242,224,246)","rgb(77,110,136)"],
+				["rgb(253,243,205)","rgb(126,99,130)"]
+			]
+			that.buildcoaches = function(){
+				that.coachset = []
+				that.colorset = []
+				_.each(that.courselist, function(c){
+					if(that.coachset.indexOf(c.coachprofile.name) < 0 ){
+						that.coachset.push(c.coachprofile.name)
+						that.colorset.push(that.colors[that.coachset.indexOf(c.coachprofile.name)%5])
+					}
+				})
+			}
+            that.buildbookmap = function() {
+				that.buildcoaches()
+                for (var i in that.timemap) {
+                    var tmp = that.bookmap[i]
+                    if (tmp == undefined) {
+                        tmp = {}
+                        tmp["time"] = that.timemap[i]
+                        that.bookmap.push(tmp)
+                    }
+                    tmp["index"] = i
+                    tmp["extend"] = []
+                    tmp["book"] = []
+					tmp["color"] = that.colorset
+					_.each(that.coachset, function(i){
+						tmp["extend"].push(false)
+	                    tmp["book"].push(false)
+					})
+                }
+                _.each(that.courselist, function(item) {
+                    that.bookmap[item.hour]["book"][that.coachset.indexOf(item.coachprofile.name)] = item
+                    that.bookmap[item.hour]["extend"][that.coachset.indexOf(item.coachprofile.name)] = false
+
+                    that.bookmap[item.hour + 1]["book"][that.coachset.indexOf(item.coachprofile.name)] = item
+                    that.bookmap[item.hour + 1]["extend"][that.coachset.indexOf(item.coachprofile.name)] = true
                 })
             }
-            that.save = function() {
-                Restangular.one("api", that.user.name)
-                    .patch({
-                        avatar: that.user.avatar,
-                        sex: that.user.sex,
-                        displayname: that.user.displayname,
-                        signature: that.user.signature
-                    })
+
+            that.refresh = function() {
+                that.searchText = undefined
+                Restangular.one("api/g", that.gymid)
+                    .one(that.selected.Format("yyyyMMdd"))
+                    .getList()
                     .then(function(data) {
-                            swal({
-                                title: "",
-                                text: "已更新",
-                                type: "success",
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-                            $usersvc.getuser(undefined, true, function(usr) {
-                                that.user = usr
-                                setmenu(usr)
-                            })
+                            that.courselist = data
+                            that.buildbookmap()
+                            console.log(that.bookmap)
                         },
                         function(data) {
-                            swal("", "信息保存失败", "warning", 1500, false)
+                            //console.log(data.data)
+                            if (data.status == 403) {
+                                window.location.href = "/mobile/login/"
+                            } else {
+                                swal("", data.status + "获取信息失败，请稍后重试。", "warning")
+                            }
                         })
             }
-
-            that.changesex = function(i) {
-                that.user.sex = i
+            that.select = function(td) {
+                that.selected = td
+                that.refresh()
+            }
+            that.nextweek = function() {
+                console.log("next")
+                that.currentdate = that.dates[6].addDays(7)
+                that.refreshdates()
+            }
+            that.prevweek = function() {
+                console.log("prev")
+                that.currentdate = that.dates[0].addDays(-7)
+                that.refreshdates()
+            }
+            that.refreshdates = function() {
+                var curweekday = that.currentdate.getDay()
+                for (var i = 0; i < 7; i++) {
+                    that.dates[i] = that.currentdate.addDays(i - curweekday)
+                }
+                that.month = moment(that.currentdate).format('MMMM')
+                that.selected = that.dates[curweekday]
+                that.refresh()
             }
 
+            that.showorder = function(book) {
+				if(!book){
+					return
+				}
+                $state.transitionTo("orderdetail", {
+                    orderid: book.order,
+                    date: book.date
+                })
+            }
+            if (user == undefined) {
+                $mdDialog.show({
+                        controller: 'LoginCtrl',
+                        templateUrl: '/static/mobile/login.html',
+                        parent: angular.element(document.body),
+                        //targetEvent: ev,
+                        clickOutsideToClose: true,
+                        fullscreen: true
+                    })
+                    .then(function(answer) {
+                        that.init()
+                        that.refreshdates()
+
+                    }, function() {
+                        that.init()
+                        that.refreshdates()
+                    });
+            } else {
+                that.init()
+            }
         }
     ])
-    /*
-    $(function() {
-        $("#neworder").click(function() {
-    		var s = angular.element(document.getElementById("agcontainer")).scope()
-    		var c = s.controller()
-            s.$apply(function() {
-                s.showneworder()
-            })
-        })
-    })
-    */
