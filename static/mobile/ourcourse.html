@@ -57,10 +57,10 @@
 							ng-repeat="b in c.book track by $index"
 							>
                             <span ng-show="b" style="background:{{ctrl.colorset[$index%5][0]}};
-								color:{{ctrl.colorset[$index%5][1]}}; border-left:solid 3px"flex="5"></span>
-                            <div ng-show="b" flex=95 style="background:{{ctrl.colorset[$index%5][0]}};
+								color:{{ctrl.colorset[$index%5][1]}}; border-left:solid 3px"flex="10"></span>
+                            <div ng-show="b" flex=90 style="background:{{ctrl.colorset[$index%5][0]}};
 								color:{{ctrl.colorset[$index%5][1]}};" layout="row" layout-align="start center">
-                                <span>{{c.extend[$index]?b.customerprofile.displayname:b.coachprofile.displayname}}</span>
+								<span style="padding-left:10px">{{c.extend[$index]?b.customerprofile.displayname:b.coachprofile.displayname}}</span>
                             </div>
                         </div>
                     </div>

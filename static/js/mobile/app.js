@@ -131,6 +131,7 @@ var app = angular.module('o2m', [
     //'ngAnimate', 
     //'anim-in-out'
 ])
+/*
 app.directive("scroll", function($window) {
     return function(scope, element, attrs) {
         angular.element($window).bind("scroll", function() {
@@ -138,6 +139,7 @@ app.directive("scroll", function($window) {
         });
     };
 });
+*/
 /*
 app.directive('infiniteScroll', [ "$window", function ($window) {
         return {
