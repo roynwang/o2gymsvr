@@ -521,11 +521,11 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     that.gym = data
                 },
                 function(data) {})
-        Restangular.one("api", coachname)
-            .get()
-            .then(function(data) {
-                that.coach = data
-            })
+			        Restangular.one("api", coachname)
+		            .get()
+				     .then(function(data) {
+					 that.coach = data
+	            })
 
 
         $scope.timemap = TimeMap
@@ -550,7 +550,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 that.pendingerror++
             }
             that.pendingaction--
-            if (that.pendingaction == 0) {
+                if (that.pendingaction == 0) {
                     that.submitting = false
                     if (that.pendingerror == 0) {
                         swal({
@@ -568,8 +568,8 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                             showConfirmButton: true
                         });
                     }
-					//reset pending error
-					that.pendingerror = 0
+                    //reset pending error
+                    that.pendingerror = 0
                     that.reload()
                 }
         }
@@ -584,7 +584,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             that.pendingaction = removelist.length + addlist.length
             if (that.pendingaction == 0) {
                 return
-            } 
+            }
             swal({
                 title: "提交",
                 text: "确认提交预约请求吗?",
@@ -596,10 +596,10 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 closeOnConfirm: false,
                 showLoaderOnConfirm: true
             }, function(yes) {
-				if(!yes){
-					return
-				}
-				that.submitting = true
+                if (!yes) {
+                    return
+                }
+                that.submitting = true
                 _.each(removelist, function(item, i) {
                     var datestr = item.date.replace(/-/g, "")
                     Restangular.one("api/", item.coachprofile.name)
@@ -629,8 +629,8 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             })
 
         }
-        that.bookComplete = function(date, hour) {
-            var time_obj = Date.parse(date + " " + TimeMap[hour] + ":00") + 60 * 60 * 8
+        that.bookComplete = function(row) {
+            var time_obj = Date.parse(row.date + " " + TimeMap[row.hour] + ":00") + 60 * 60 * 8
             var now = Date.now()
             if (time_obj > now) {
                 swal({
@@ -657,10 +657,10 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     if (!yes) {
                         return
                     }
-                    var url = "/api/" + coachname + "/b/" + date.replace(/-/g, "") + "/" + hour + "/";
-                    var bookdone = Restangular.one("api", coachname)
-                        .one("b", date.replace(/-/g, ""))
-                        .all(hour)
+                    var url = "/api/" + row.coachprofile.name + "/b/" + row.date.replace(/-/g, "") + "/" + row.hour + "/";
+                    var bookdone = Restangular.one("api", row.coachprofile.name)
+                        .one("b", row.date.replace(/-/g, ""))
+                        .all(row.hour)
                     bookdone.patch({
                             order: orderid,
                             done: true
@@ -676,6 +676,12 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                             that.reload()
                                 //refresh notification !!!!
                             getincomplete()
+                        }, function(data) {
+                            swal({
+                                type: "warning",
+                                title: "",
+                                text: "课程完成失败，请重试",
+                            });
                         })
                         /*
                     $http.patch(url, {
@@ -732,7 +738,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                             return
                         }
                         var url = "/api/" + book.coachprofile.name + "/b/" + book.date.replace(/-/g, "") + "/" + book.hour + "/";
-                        var bookdone = Restangular.one("api", coachname)
+                        var bookdone = Restangular.one("api", book.coachprofile.name)
                             .one("b", book.date.replace(/-/g, ""))
                             .all(book.hour)
                         bookdone.remove()
