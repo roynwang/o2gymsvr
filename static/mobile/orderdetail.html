@@ -1,7 +1,8 @@
 <div ng-controller="OrderDetailCtrl as ctrl">
     <md-content>
-        <div style="width:100%;position:fixed;bottom:0;z-index:1000;background:white" layout="row" layout-align="space-between center"
-        style="padding-left: 8px">
+        <div style="width:100%;position:fixed;bottom:0;z-index:1000;background:#f9f9f9;
+			border-top:solid 1px rgb(233,233,233)" layout="row"
+        layout-align="space-between center" style="padding-left: 8px">
             <div>
                 <md-button>
                     有效期：{{ctrl.order.endtime}}
@@ -14,9 +15,10 @@
                 </md-button>
             </div>
         </div>
-        <md-toolbar id="time-sheet">
-            <div class="md-toolbar-tools" style="padding:0" layout="row">
-                <div flex=10 style="min-width: 50px" layout="column">
+        <md-toolbar id="time-sheet" style="background:white !important; border:none;">
+            <div class="md-toolbar-tools" layout="row" style="padding:0; background:#f9f9f9; border:
+				solid 1px rgb(233,233,233)">
+                <div flex=10 style="min-width: 45px" layout="column">
                     <md-datepicker id="datepicker" ng-model="ctrl.currentdate" style="color:#777;position: relative; background: rgba(0,0,0,0);"
                     ng-change="ctrl.refreshdates()"></md-datepicker>
                     <div style="font-size:26px; color:#777;margin-left: 10px; margin-top: -42px;" class="icon ion-ios-calendar-outline"></div>
@@ -34,24 +36,29 @@
                 <div class="date-day" flex ng-click="ctrl.select(ctrl.dates[3])" class="" ng-class="{'selected': ctrl.selected == ctrl.dates[3]}">
                     <div class="day-str" flex>{{ctrl.dates[3].Format("MM/dd")}}</div>
                 </div>
+                <!--
                 <div class="date-day" flex ng-click="ctrl.select(ctrl.dates[4])" class="" ng-class="{'selected': ctrl.selected == ctrl.dates[4]}">
                     <div class="day-str" flex>{{ctrl.dates[4].Format("MM/dd")}}</div>
                 </div>
+				-->
             </div>
-            <div ng-repeat="r in [0,1,2,3,4]" layout="row" style="height:42px">
-                <div flex class="date-tab-hour" ng-repeat="h in [0,1,2,3,4,5]" layout="row" layout-align="center center">
-                    <div flex ng-click="ctrl.addbook(6*r+h)" class="time-na" ng-class="{'time-available': ctrl.isAvaHour(6*r + h)}">{{ctrl.timemap[6*r + h]}}</div>
+			<div ng-class="{'animated slideInLeft': ctrl.animating}">
+                <div ng-repeat="r in [0,1,2,3,4]" layout="row" style="height:42px">
+                    <div flex class="date-tab-hour" ng-repeat="h in [0,1,2,3,4,5]" layout="row" layout-align="center center">
+                        <div flex ng-click="ctrl.addbook(6*r+h)" class="time-na" ng-class="{'time-available': ctrl.isAvaHour(6*r + h)}">{{ctrl.timemap[6*r + h]}}</div>
+                    </div>
                 </div>
             </div>
         </md-toolbar>
-        <md-tabs md-border-bottom md-dynamic-height md-stretch-tabs style="padding-bottom:60px" id="order-detail-list">
+        <md-tabs md-border-bottom md-dynamic-height md-stretch-tabs style="padding-bottom:60px"
+        id="order-detail-list">
             <md-tab label="待约({{ctrl.order.course_count-ctrl.bookedbook.length-ctrl.completedbook.length}})">
-			<md-tab-label>剩余
-			<span class="number">
+                <md-tab-label>剩余
+                    <span class="number">
 				{{ctrl.order.course_count-ctrl.bookedbook.length-ctrl.completedbook.length}}</span>
-			</md-tab-label>
+                </md-tab-label>
                 <md-tab-body class="md-padding" style="padding-top: 0;">
-				<h1 style="text-align:center;font-size: 16px;
+                    <h1 style="text-align:center;font-size: 16px;
 					    color: #666;" class="title-new" ng-hide="ctrl.actionlist.length>0">还有{{ctrl.order.course_count -
 						ctrl.bookedbook.length - ctrl.completedbook.length}}节课待预约</h1>
                     <ul class="list">
@@ -71,11 +78,11 @@
                 </md-tab-body>
             </md-tab>
             <md-tab>
-				<md-tab-label>待上
-					  <span class="number">{{ctrl.bookedbook.length}}</span>
-				</md-tab-label>
+                <md-tab-label>待上
+                    <span class="number">{{ctrl.bookedbook.length}}</span>
+                </md-tab-label>
                 <md-tab-body class="md-padding" style="padding-top: 0;">
-				<h1 style="text-align:center;font-size: 16px;
+                    <h1 style="text-align:center;font-size: 16px;
 					    color: #666;" class="title-new" ng-hide="ctrl.bookedbook.length>0">没有待上课程</h1>
                     <ul class="list">
 
@@ -95,11 +102,11 @@
                 </md-tab-body>
             </md-tab>
             <md-tab>
-			    <md-tab-label>已上
-					  <span class="number">{{ctrl.completedbook.length}}</span>
-				</md-tab-label>
+                <md-tab-label>已上
+                    <span class="number">{{ctrl.completedbook.length}}</span>
+                </md-tab-label>
                 <md-tab-body class="md-padding" style="padding-top: 0;">
-				<h1 style="text-align:center;font-size: 16px;
+                    <h1 style="text-align:center;font-size: 16px;
 					    color: #666;" class="title-new" ng-hide="ctrl.completedbook.length>0">没有已上课程</h1>
                     <ul class="list">
                         <li ng-class="{'highlighted grey':c.done}" class="list-item" data-ix="list-item"
