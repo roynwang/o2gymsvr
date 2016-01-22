@@ -1915,6 +1915,7 @@ app.controller("ProfileCtrl", ["$scope", "$usersvc", "$uploader", "$qupload", "R
 ])
 app.controller("OurCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc", "$scope", "$paramssvc", "$mdToast", "$mdSidenav", "$document", "$mdSidenav", "$timeout",
         function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc, $scope, $paramssvc, $mdToast, $mdSidenav, $document, $mdSidenav, $timeout) {
+
             var user = $.cookie("user")
             var that = this
             that.timemap = TimeMap
@@ -1927,6 +1928,10 @@ app.controller("OurCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "
             that.pendingbook = {}
             that.isSelecting = false
 			that.gymid = undefined
+			
+			that.back = function(){
+				history.back()
+			}
 
             that.init = function() {
                 user = $.cookie("user")

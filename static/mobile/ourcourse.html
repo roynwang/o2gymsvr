@@ -4,7 +4,12 @@
     </div>
     <md-content>
         <md-toolbar class="md-tall" style="background:white;position:fixed;height:120px;min-height:120px">
-            <div class="md-toolbar-tools" style="padding:0">
+            <div class="md-toolbar-tools" style="padding:0" layout="row">
+                <md-button flex=10 class="md-icon-button" ng-click="ctrl.back()"
+				style="position:relative;top: -4px;left:14px">
+                    <a class="navbar-button-icon icon ion-ios-arrow-left"
+						style="color:#999;font-size:30px" ng-click="ctrl.back()"></a>
+                </md-button>
                 <div flex layout="row">
                     <h4 flex style="text-align:center;position: relative;top: -4px; right:-25px">{{ctrl.month}}
 						<div style="min-width: 50px;display: inline-block;position: relative;bottom:
@@ -15,6 +20,7 @@
                     </div>
 				</h4>
                 </div>
+				<span flex=10></span>
             </div>
 
             <div class="md-toolbar-tools" style="padding:0" layout="row" layout-align="center center">
