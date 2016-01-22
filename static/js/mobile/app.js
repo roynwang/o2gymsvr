@@ -996,7 +996,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
         that.showorder = function(book) {
             $state.transitionTo("orderdetail", {
-                orderid: book.orderid,
+                orderid: book.order,
 				date: book.date
             })
         }
@@ -1336,7 +1336,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
 
         that.currentdate = new Date()
 		if($stateParams.date){
-            that.startday = new Date(Date.parse($stateParams.date))
+            that.currentdate = new Date(Date.parse($stateParams.date))
 		}
 
         that.dates = []
@@ -1397,14 +1397,11 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
         that.completedbook = []
         that.bookedbook = []
         that.refreshdates = function() {
-            curweekday = that.currentdate.getDay()
-            if (that.dates.length > 0) {
-                curweekday = that.dates[0].getDay()
-            }
-            for (var i = 0; i < 7; i++) {
-                that.dates[i] = that.currentdate.addDays(i - curweekday)
+            for (var i = 0; i < 5; i++) {
+                that.dates[i] = that.currentdate.addDays(i)
             }
             that.month = moment(that.currentdate).format('MMMM')
+			that.select(that.dates[0])
             that.refresh()
         }
         that.recover = function(task) {
@@ -1576,7 +1573,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
 
         that.refreshdates()
         that.refresh()
-        that.selected = that.dates[0]
+        //that.selected = that.dates[0]
 
     }
 ])
