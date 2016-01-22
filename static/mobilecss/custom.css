@@ -172,6 +172,8 @@ md-input-container.md-default-theme:not(.md-input-invalid).md-input-focused .md-
 	padding-top: 3px;
     padding-bottom: 3px;
     border-radius: 5px;
+	color: #333;
+	font-size: 16px;
 }
 
 .date-day.selected > .day-str {
@@ -283,10 +285,10 @@ md-input-container {
 
 /* angular-material */
 md-toolbar {
-	background: #f1f1f1 !important;
+	background: #f9f9f9 !important;
     color: #333 !important;
     padding: 0 0 2px 0;
-    border-bottom: solid 1px #ccc;
+    border-bottom: solid 1px rgb(233,233,233);
 }
 #time-sheet {
 	background-color: white
