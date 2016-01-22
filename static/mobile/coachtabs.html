@@ -8,8 +8,9 @@
             class="md-whiteframe-z2" style="-vendor-animation-duration: 0.6s;height:100%;width:75%;float:left;position:fixed;top:0;right:0;background:white;z-index:1000;">
                 <md-toolbar layout="column" style="height:100px">
                     <div flex layout="row" layout-align="center center">
-                        <div flex class="nav-menu-titles" style="margin-left:20px">{{ctrl.month}}
-							&nbsp;{{ctrl.selected.Format("dd")}}日&nbsp;{{ctrl.editingtime}}</div>
+						<div flex class="nav-menu-titles"
+							style="margin-left:20px"><i>{{ctrl.month}}</i>
+							&nbsp;{{ctrl.selected.Format("dd")}}日&nbsp;<i>{{ctrl.editingtime}}</i></div>
                         <span flex=10 ng-click="ctrl.cancelselect()">
 								<div style="color:#ccc" class="navbar-button-icon icon ion-ios-close-empty"></div>
 						</span>
@@ -110,7 +111,7 @@
 				'hide-border': c.editing || (c.book && !c.extend), 'editing':c.editing,
 				'border-dot': c.index%2 == 0}" class="list-item" style="opacity: 1;" ng-repeat="c in ctrl.bookmap">
                     <div flex class="event-container" layout="row">
-                        <div ng-click="ctrl.showorder(c.book.order)" ng-class="{'done':c.book.done}" class="event"
+                        <div ng-click="ctrl.showorder(c.book)" ng-class="{'done':c.book.done}" class="event"
                         flex layout="row" ng-show="c.book && !c.extend">
                             <span flex="5"></span>
                             <div flex="50" layout="row" layout-align="start center">
@@ -122,7 +123,7 @@
                                 <div class="icon ion-ios-close-empty" style="font-size:36px"></div>
                             </div>
                         </div>
-                        <div ng-click="ctrl.showorder(c.book.order)" ng-class="{'done':c.book.done}" class="event action"
+                        <div ng-click="ctrl.showorder(c.book)" ng-class="{'done':c.book.done}" class="event action"
                         flex layout="row" ng-show="c.extend">
                             <span flex="5"></span>
                             <div style="font-size:14px" layout="row" layout-align="end center">
@@ -182,13 +183,19 @@
                 <div class="icon-list-menu">
                     <div class="icon ion-ios-list-outline"></div>
                 </div>
-                <div class="nav-menu-titles">课表</div>
+                <div class="nav-menu-titles">我的课表</div>
+            </a>
+            <a class="w-clearfix w-inline-block nav-menu-link" href="#/our">
+                <div class="icon-list-menu">
+                    <div class="icon ion-grid"></div>
+                </div>
+                <div class="nav-menu-titles">我们的课表</div>
             </a>
             <a class="w-clearfix w-inline-block nav-menu-link" href="#/profile">
                 <div class="icon-list-menu">
                     <div class="icon ion-ios-body-outline"></div>
                 </div>
-                <div class="nav-menu-titles">个人资料</div>
+                <div class="nav-menu-titles">我的资料</div>
             </a>
             <a class="w-clearfix w-inline-block nav-menu-link" ng-click="ctrl.showneworder()">
                 <div class="icon-list-menu">

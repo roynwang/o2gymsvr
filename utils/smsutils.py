@@ -73,7 +73,7 @@ def sendBookNotification(book):
 	#templateId = settings.UCPAASTEMPLATE
 	isUseJson = False
 
-	timestr = str(book.date) + " " + TimeMap[book.hour]
+	timestr = str(book.date) + " " + TimeMap[int(book.hour)]
 	param = ','.join([book.coach.displayname,timestr,book.coach.name,str(4)])
 	#param = ','.join([book.coach.displayname,timestr])
 	print param

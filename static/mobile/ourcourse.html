@@ -1,0 +1,77 @@
+<div ng-controller="OurCourseCtrl as ctrl" ng-cloak>
+    <div ng-show="ctrl.showtoast" style="z-index:1000;height:70px;width:100%;position:fixed;bottom:0;"
+    id="toast-placeholder">
+    </div>
+    <md-content>
+        <md-toolbar class="md-tall" style="background:white;position:fixed;height:120px;min-height:120px">
+            <div class="md-toolbar-tools" style="padding:0" layout="row">
+                <md-button flex=10 class="md-icon-button" ng-click="ctrl.back()"
+				style="position:relative;top: -4px;left:14px">
+                    <a class="navbar-button-icon icon ion-ios-arrow-left"
+						style="color:#999;font-size:30px" ng-click="ctrl.back()"></a>
+                </md-button>
+                <div flex layout="row">
+                    <h4 flex style="text-align:center;position: relative;top: -4px; right:-25px">{{ctrl.month}}
+						<div style="min-width: 50px;display: inline-block;position: relative;bottom:
+							-4px;left:-20px;">
+                        <md-datepicker id="datepicker" ng-model="ctrl.currentdate" style="color:#777;position: relative; background: rgba(0,0,0,0);"
+                        ng-change="ctrl.refreshdates()"></md-datepicker>
+                        <div style="font-size:26px; color:#777;margin-left: 20px; margin-top: -42px;" class="icon ion-ios-calendar-outline"></div>
+                    </div>
+				</h4>
+                </div>
+				<span flex=10></span>
+            </div>
+
+            <div class="md-toolbar-tools" style="padding:0" layout="row" layout-align="center center">
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">日</a>
+                </div>
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">一</a>
+                </div>
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">二</a>
+                </div>
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">三</a>
+                </div>
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">四</a>
+                </div>
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">五</a>
+                </div>
+                <div flex class="weekday" layout="row"><a flex style="text-align:center">六</a>
+                </div>
+            </div>
+            <div class="md-toolbar-tools" style="padding:0" layout="row" md-swipe-left="ctrl.nextweek()"
+            md-swipe-right="ctrl.prevweek()">
+                <div style="border:none" class="date-day" flex layout="column" ng-repeat="i in [0,1,2,3,4,5,6]"
+                ng-click="ctrl.select(ctrl.dates[i])" ng-class="{'selected': ctrl.selected == ctrl.dates[i]}">
+                    <div flex layout="row" layout-align="center center">
+                        <div class="date-day-item">{{ctrl.dates[i].Format("d")}}</div>
+                    </div>
+                </div>
+            </div>
+        </md-toolbar>
+        <div layout="row" style="margin-top:130px">
+            <ul class="list" flex=10 style="min-width:60px;margin-top:-30px">
+                <li ng-repeat="t in ctrl.bookmap" layout="row" class="list-item" style="border:none">
+                    <div flex ng-class="{'half': t.index%2==1}" class="title-list" style="text-align:center">{{t.time}}</div>
+                    <li>
+            </ul>
+            <ul class="list" flex>
+                <li layout="row" ng-class="{ 'first' : c.index==0, 'hide-border': c.book && !c.extend, 'border-dot': c.index%2 == 0}"
+                class="list-item" style="opacity: 1;" ng-repeat="c in ctrl.bookmap">
+                    <div flex class="event-container" layout="row">
+						<div ng-click="ctrl.showorder(b)"  flex layout="row"
+							ng-repeat="b in c.book track by $index"
+							>
+                            <span ng-show="b" style="background:{{ctrl.colorset[$index%5][0]}};
+								color:{{ctrl.colorset[$index%5][1]}}; border-left:solid 3px"flex="10"></span>
+                            <div ng-show="b" flex=90 style="background:{{ctrl.colorset[$index%5][0]}};
+								color:{{ctrl.colorset[$index%5][1]}};" layout="row" layout-align="start center">
+								<span style="padding-left:10px">{{c.extend[$index]?b.customerprofile.displayname:b.coachprofile.displayname}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </md-content>
+</div>
