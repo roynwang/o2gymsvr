@@ -122,40 +122,40 @@ String.prototype.fixSize = function(w, h) {
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
 
 var app = angular.module('o2m', [
-    'ui.router',
-    'restangular',
-    'oitozero.ngSweetAlert',
-    'ngMaterial',
-    'angularQFileUpload',
-    'LocalStorageModule',
-    //'ngAnimate', 
-    //'anim-in-out'
-])
-/*
-app.directive("scroll", function($window) {
-    return function(scope, element, attrs) {
-        angular.element($window).bind("scroll", function() {
-            scope.$apply(scope.scrolled(this.pageXOffset, this.pageYOffset))
-        });
-    };
-});
-*/
-/*
-app.directive('infiniteScroll', [ "$window", function ($window) {
-        return {
-            link:function (scope, element, attrs) {
-                var offset = parseInt(attrs.threshold) || 0;
-                var e = element[0];
-
-                element.bind('scroll', function () {
-                    if (scope.$eval(attrs.canLoad) && e.scrollTop + e.offsetHeight >= e.scrollHeight - offset) {
-                        scope.$apply(attrs.infiniteScroll);
-                    }
-                });
-            }
+        'ui.router',
+        'restangular',
+        'oitozero.ngSweetAlert',
+        'ngMaterial',
+        'angularQFileUpload',
+        'LocalStorageModule',
+        //'ngAnimate', 
+        //'anim-in-out'
+    ])
+    /*
+    app.directive("scroll", function($window) {
+        return function(scope, element, attrs) {
+            angular.element($window).bind("scroll", function() {
+                scope.$apply(scope.scrolled(this.pageXOffset, this.pageYOffset))
+            });
         };
-    }]);
-*/
+    });
+    */
+    /*
+    app.directive('infiniteScroll', [ "$window", function ($window) {
+            return {
+                link:function (scope, element, attrs) {
+                    var offset = parseInt(attrs.threshold) || 0;
+                    var e = element[0];
+
+                    element.bind('scroll', function () {
+                        if (scope.$eval(attrs.canLoad) && e.scrollTop + e.offsetHeight >= e.scrollHeight - offset) {
+                            scope.$apply(attrs.infiniteScroll);
+                        }
+                    });
+                }
+            };
+        }]);
+    */
 app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider, $mdDateLocaleProvider, $compileProvider) {
     // For any unmatched url, send to /route1
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|local|data|tel|sms):/);
@@ -895,6 +895,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
         that.refresh = function() {
             that.searchText = undefined
+			that.animating = true
+            $timeout(function() {
+                that.animating = false
+            }, 700)
             Restangular.one("api", user)
                 .one("b", that.selected.Format("yyyyMMdd"))
                 .getList()
@@ -1336,9 +1340,10 @@ app.controller("BottomSheetOrderCtrl", function($scope, $mdBottomSheet, order) {
     $scope.items = order.booked
 })
 
-app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$ordersvc', '$usersvc', "$stateParams",
-    function($scope, Restangular, $mdDialog, $ordersvc, $usersvc, $stateParams) {
+app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$ordersvc', '$usersvc', "$stateParams","$timeout",
+    function($scope, Restangular, $mdDialog, $ordersvc, $usersvc, $stateParams, $timeout) {
         var that = this
+        that.animating = false
 
         that.currentdate = new Date()
         if ($stateParams.date) {
@@ -1373,6 +1378,11 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
         }
         that.select = function(td) {
 
+            that.animating = true
+            $timeout(function() {
+                that.animating = false
+            }, 700)
+
             if (that.selected == td) {
                 processtimetable()
                 return
@@ -1403,6 +1413,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
         that.completedbook = []
         that.bookedbook = []
         that.refreshdates = function() {
+            that.animating = true
             for (var i = 0; i < 5; i++) {
                 that.dates[i] = that.currentdate.addDays(i)
             }
@@ -1914,152 +1925,152 @@ app.controller("ProfileCtrl", ["$scope", "$usersvc", "$uploader", "$qupload", "R
     }
 ])
 app.controller("OurCourseCtrl", ["$state", "$usersvc", "$date", "Restangular", "$booksvc", "$mdDialog", "$ordersvc", "$scope", "$paramssvc", "$mdToast", "$mdSidenav", "$document", "$mdSidenav", "$timeout",
-        function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc, $scope, $paramssvc, $mdToast, $mdSidenav, $document, $mdSidenav, $timeout) {
+    function($state, $usersvc, $date, Restangular, $booksvc, $mdDialog, $ordersvc, $scope, $paramssvc, $mdToast, $mdSidenav, $document, $mdSidenav, $timeout) {
 
-            var user = $.cookie("user")
-            var that = this
-            that.timemap = TimeMap
-            that.courselist = []
-            that.currentdate = new Date()
-            that.dates = []
-            that.customerlist = []
-            that.selectedItem = undefined
-            that.querystatus = "unset"
-            that.pendingbook = {}
-            that.isSelecting = false
-			that.gymid = undefined
-			
-			that.back = function(){
-				history.back()
-			}
+        var user = $.cookie("user")
+        var that = this
+        that.timemap = TimeMap
+        that.courselist = []
+        that.currentdate = new Date()
+        that.dates = []
+        that.customerlist = []
+        that.selectedItem = undefined
+        that.querystatus = "unset"
+        that.pendingbook = {}
+        that.isSelecting = false
+        that.gymid = undefined
 
-            that.init = function() {
-                user = $.cookie("user")
-                $usersvc.getuser(undefined, false, function(data) {
-                        that.user = data
-						that.gymid = that.user.gym_id[0]
-						that.refreshdates()
-                    },
-                    function(data) {})
-
-            }
-
-            that.bookmap = []
-			that.colors = [
-				["lavenderblush","rgb(189, 0, 78)"],
-				["rgb(224,247,217)","rgb(54,98,44)"],
-				["rgb(204,239,255)","rgb(30,147,213)"],
-				["rgb(242,224,246)","rgb(77,110,136)"],
-				["rgb(253,243,205)","rgb(126,99,130)"]
-			]
-			that.buildcoaches = function(){
-				that.coachset = []
-				that.colorset = []
-				_.each(that.courselist, function(c){
-					if(that.coachset.indexOf(c.coachprofile.name) < 0 ){
-						that.coachset.push(c.coachprofile.name)
-						that.colorset.push(that.colors[that.coachset.indexOf(c.coachprofile.name)%5])
-					}
-				})
-			}
-            that.buildbookmap = function() {
-				that.buildcoaches()
-                for (var i in that.timemap) {
-                    var tmp = that.bookmap[i]
-                    if (tmp == undefined) {
-                        tmp = {}
-                        tmp["time"] = that.timemap[i]
-                        that.bookmap.push(tmp)
-                    }
-                    tmp["index"] = i
-                    tmp["extend"] = []
-                    tmp["book"] = []
-					tmp["color"] = that.colorset
-					_.each(that.coachset, function(i){
-						tmp["extend"].push(false)
-	                    tmp["book"].push(false)
-					})
-                }
-                _.each(that.courselist, function(item) {
-                    that.bookmap[item.hour]["book"][that.coachset.indexOf(item.coachprofile.name)] = item
-                    that.bookmap[item.hour]["extend"][that.coachset.indexOf(item.coachprofile.name)] = false
-
-                    that.bookmap[item.hour + 1]["book"][that.coachset.indexOf(item.coachprofile.name)] = item
-                    that.bookmap[item.hour + 1]["extend"][that.coachset.indexOf(item.coachprofile.name)] = true
-                })
-            }
-
-            that.refresh = function() {
-                that.searchText = undefined
-                Restangular.one("api/g", that.gymid)
-                    .one(that.selected.Format("yyyyMMdd"))
-                    .getList()
-                    .then(function(data) {
-                            that.courselist = data
-                            that.buildbookmap()
-                            console.log(that.bookmap)
-                        },
-                        function(data) {
-                            //console.log(data.data)
-                            if (data.status == 403) {
-                                window.location.href = "/mobile/login/"
-                            } else {
-                                swal("", data.status + "获取信息失败，请稍后重试。", "warning")
-                            }
-                        })
-            }
-            that.select = function(td) {
-                that.selected = td
-                that.refresh()
-            }
-            that.nextweek = function() {
-                console.log("next")
-                that.currentdate = that.dates[6].addDays(7)
-                that.refreshdates()
-            }
-            that.prevweek = function() {
-                console.log("prev")
-                that.currentdate = that.dates[0].addDays(-7)
-                that.refreshdates()
-            }
-            that.refreshdates = function() {
-                var curweekday = that.currentdate.getDay()
-                for (var i = 0; i < 7; i++) {
-                    that.dates[i] = that.currentdate.addDays(i - curweekday)
-                }
-                that.month = moment(that.currentdate).format('MMMM')
-                that.selected = that.dates[curweekday]
-                that.refresh()
-            }
-
-            that.showorder = function(book) {
-				if(!book){
-					return
-				}
-                $state.transitionTo("orderdetail", {
-                    orderid: book.order,
-                    date: book.date
-                })
-            }
-            if (user == undefined) {
-                $mdDialog.show({
-                        controller: 'LoginCtrl',
-                        templateUrl: '/static/mobile/login.html',
-                        parent: angular.element(document.body),
-                        //targetEvent: ev,
-                        clickOutsideToClose: true,
-                        fullscreen: true
-                    })
-                    .then(function(answer) {
-                        that.init()
-                        that.refreshdates()
-
-                    }, function() {
-                        that.init()
-                        that.refreshdates()
-                    });
-            } else {
-                that.init()
-            }
+        that.back = function() {
+            history.back()
         }
-    ])
+
+        that.init = function() {
+            user = $.cookie("user")
+            $usersvc.getuser(undefined, false, function(data) {
+                    that.user = data
+                    that.gymid = that.user.gym_id[0]
+                    that.refreshdates()
+                },
+                function(data) {})
+
+        }
+
+        that.bookmap = []
+        that.colors = [
+            ["lavenderblush", "rgb(189, 0, 78)"],
+            ["rgb(224,247,217)", "rgb(54,98,44)"],
+            ["rgb(204,239,255)", "rgb(30,147,213)"],
+            ["rgb(242,224,246)", "rgb(77,110,136)"],
+            ["rgb(253,243,205)", "rgb(126,99,130)"]
+        ]
+        that.buildcoaches = function() {
+            that.coachset = []
+            that.colorset = []
+            _.each(that.courselist, function(c) {
+                if (that.coachset.indexOf(c.coachprofile.name) < 0) {
+                    that.coachset.push(c.coachprofile.name)
+                    that.colorset.push(that.colors[that.coachset.indexOf(c.coachprofile.name) % 5])
+                }
+            })
+        }
+        that.buildbookmap = function() {
+            that.buildcoaches()
+            for (var i in that.timemap) {
+                var tmp = that.bookmap[i]
+                if (tmp == undefined) {
+                    tmp = {}
+                    tmp["time"] = that.timemap[i]
+                    that.bookmap.push(tmp)
+                }
+                tmp["index"] = i
+                tmp["extend"] = []
+                tmp["book"] = []
+                tmp["color"] = that.colorset
+                _.each(that.coachset, function(i) {
+                    tmp["extend"].push(false)
+                    tmp["book"].push(false)
+                })
+            }
+            _.each(that.courselist, function(item) {
+                that.bookmap[item.hour]["book"][that.coachset.indexOf(item.coachprofile.name)] = item
+                that.bookmap[item.hour]["extend"][that.coachset.indexOf(item.coachprofile.name)] = false
+
+                that.bookmap[item.hour + 1]["book"][that.coachset.indexOf(item.coachprofile.name)] = item
+                that.bookmap[item.hour + 1]["extend"][that.coachset.indexOf(item.coachprofile.name)] = true
+            })
+        }
+
+        that.refresh = function() {
+            that.searchText = undefined
+            Restangular.one("api/g", that.gymid)
+                .one(that.selected.Format("yyyyMMdd"))
+                .getList()
+                .then(function(data) {
+                        that.courselist = data
+                        that.buildbookmap()
+                        console.log(that.bookmap)
+                    },
+                    function(data) {
+                        //console.log(data.data)
+                        if (data.status == 403) {
+                            window.location.href = "/mobile/login/"
+                        } else {
+                            swal("", data.status + "获取信息失败，请稍后重试。", "warning")
+                        }
+                    })
+        }
+        that.select = function(td) {
+            that.selected = td
+            that.refresh()
+        }
+        that.nextweek = function() {
+            console.log("next")
+            that.currentdate = that.dates[6].addDays(7)
+            that.refreshdates()
+        }
+        that.prevweek = function() {
+            console.log("prev")
+            that.currentdate = that.dates[0].addDays(-7)
+            that.refreshdates()
+        }
+        that.refreshdates = function() {
+            var curweekday = that.currentdate.getDay()
+            for (var i = 0; i < 7; i++) {
+                that.dates[i] = that.currentdate.addDays(i - curweekday)
+            }
+            that.month = moment(that.currentdate).format('MMMM')
+            that.selected = that.dates[curweekday]
+            that.refresh()
+        }
+
+        that.showorder = function(book) {
+            if (!book) {
+                return
+            }
+            $state.transitionTo("orderdetail", {
+                orderid: book.order,
+                date: book.date
+            })
+        }
+        if (user == undefined) {
+            $mdDialog.show({
+                    controller: 'LoginCtrl',
+                    templateUrl: '/static/mobile/login.html',
+                    parent: angular.element(document.body),
+                    //targetEvent: ev,
+                    clickOutsideToClose: true,
+                    fullscreen: true
+                })
+                .then(function(answer) {
+                    that.init()
+                    that.refreshdates()
+
+                }, function() {
+                    that.init()
+                    that.refreshdates()
+                });
+        } else {
+            that.init()
+        }
+    }
+])

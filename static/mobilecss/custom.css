@@ -374,6 +374,13 @@ md-sidenav{
 	}
 }
 
+.slideInLeft{
+  -webkit-animation: slideInLeft 0.4s; /* Safari 4+ */
+  -moz-animation:    slideInLeft 0.4s; /* Fx 5+ */
+  -o-animation:      slideInLeft 0.4s; /* Opera 12+ */
+  animation:         slideInLeft 0.4s; /* IE 10+, Fx 29+ */
+}
+
 
 .slideInRight{
   -webkit-animation: slideInRight 0.4s; /* Safari 4+ */
