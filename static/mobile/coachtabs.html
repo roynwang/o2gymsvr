@@ -9,8 +9,8 @@
                 <md-toolbar layout="column" style="height:100px">
                     <div flex layout="row" layout-align="center center">
 						<div flex class="nav-menu-titles"
-							style="margin-left:20px"><i>{{ctrl.month}}</i>
-							&nbsp;{{ctrl.selected.Format("dd")}}日&nbsp;<i>{{ctrl.editingtime}}</i></div>
+							style="margin-left:20px">{{ctrl.month}}
+							&nbsp;{{ctrl.selected.Format("dd")}}日&nbsp;{{ctrl.editingtime}}</div>
                         <span flex=10 ng-click="ctrl.cancelselect()">
 								<div style="color:#ccc" class="navbar-button-icon icon ion-ios-close-empty"></div>
 						</span>
