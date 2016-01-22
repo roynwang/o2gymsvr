@@ -980,11 +980,20 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
         that.nextweek = function() {
             console.log("next")
+			that.animatingright = true
+            $timeout(function() {
+                that.animatingright = false
+            }, 700)
             that.currentdate = that.dates[6].addDays(7)
             that.refreshdates()
         }
         that.prevweek = function() {
             console.log("prev")
+			that.animatingleft = true
+            $timeout(function() {
+                that.animatingleft = false
+            }, 700)
+   
             that.currentdate = that.dates[0].addDays(-7)
             that.refreshdates()
         }
