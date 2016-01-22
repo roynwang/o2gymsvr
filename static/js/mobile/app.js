@@ -213,7 +213,7 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             templateUrl: "/static/mobile/customerlist.html",
         })
         .state('orderdetail', {
-            url: "/orderdetail/:orderid",
+            url: "/orderdetail/:orderid?date",
             templateUrl: "/static/mobile/orderdetail.html",
         })
 })
@@ -994,9 +994,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             })
         }
 
-        that.showorder = function(orderid) {
+        that.showorder = function(book) {
             $state.transitionTo("orderdetail", {
-                orderid: orderid
+                orderid: book.orderid,
+				date: book.date
             })
         }
         if (user == undefined) {
@@ -1332,7 +1333,12 @@ app.controller("BottomSheetOrderCtrl", function($scope, $mdBottomSheet, order) {
 app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$ordersvc', '$usersvc', "$stateParams",
     function($scope, Restangular, $mdDialog, $ordersvc, $usersvc, $stateParams) {
         var that = this
+
         that.currentdate = new Date()
+		if($stateParams.date){
+            that.startday = new Date(Date.parse($stateParams.date))
+		}
+
         that.dates = []
 
         that.actionlist = []
