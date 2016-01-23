@@ -3,9 +3,10 @@
 		style="z-index:1000;height:70px;width:100%;position:fixed;bottom:0;" id="toast-placeholder">
 	</div>
     <md-content>
-        <div ng-show="ctrl.isSelecting||ctrl.inited">
+        <div >
             <div md-swipe-right="ctrl.isSelecting=false" ng-class="{'animated slideOutRight':  !ctrl.isSelecting, 'animated slideInRight': ctrl.isSelecting}"
-            class="md-whiteframe-z2" style="-vendor-animation-duration: 0.6s;height:100%;width:75%;float:left;position:fixed;top:0;right:0;background:white;z-index:1000;">
+				class="md-whiteframe-z2" style="-vendor-animation-duration: 0.6s;height:100%;width:
+				{{ctrl.inited?'75%':'0%'}};float:left;position:fixed;top:0;right:0;background:white;z-index:1000;">
                 <md-toolbar layout="column" style="height:100px">
                     <div flex layout="row" layout-align="center center">
 						<div flex class="nav-menu-titles"
@@ -19,8 +20,8 @@
 				    margin-top: -10px;
 					    padding-left: 10px;font-size:16px;">
                         <md-input-container flex md-no-float class="md-block"
-						style="padding-right:15px;">
-                            <input ng-model="ctrl.searchText" placeholder="请输入姓名/首字母" ng-change="ctrl.querySearch()"
+						style="padding-right:15px;" ng-click="ctrl.searchText = undefined">
+                            <input ng-click="ctrl.searchText = undefined; ctrl.querySearch()" ng-model="ctrl.searchText" placeholder="请输入姓名/首字母" ng-change="ctrl.querySearch()"
                             style="border-color:#4fd2c2">
                         </md-input-container>
 
