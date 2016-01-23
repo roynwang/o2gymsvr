@@ -669,7 +669,6 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.isSelecting = false
         that.animating = -1
 		that.inited = false
-
 		$timeout(function(){
             that.inited = true
 		},2000)
