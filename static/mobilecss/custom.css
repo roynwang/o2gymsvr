@@ -395,4 +395,8 @@ md-sidenav{
     -webkit-animation-duration: 0.4s;
     animation-duration: 0.4s;
 }
+md-backdrop.md-opaque {
+	opacity: .48;
+	position: fixed
+}
 
