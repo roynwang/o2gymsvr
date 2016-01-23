@@ -45,7 +45,7 @@
 			<div ng-class="{'animated slideInLeft': ctrl.animating}">
                 <div ng-repeat="r in [0,1,2,3,4]" layout="row" style="height:42px">
                     <div flex class="date-tab-hour" ng-repeat="h in [0,1,2,3,4,5]" layout="row" layout-align="center center">
-                        <div flex ng-click="ctrl.addbook(6*r+h)" class="time-na" ng-class="{'time-available': ctrl.isAvaHour(6*r + h)}">{{ctrl.timemap[6*r + h]}}</div>
+						<div ng-hide="6*r + h >= 26" flex ng-click="ctrl.addbook(6*r+h)" class="time-na" ng-class="{'time-available': ctrl.isAvaHour(6*r + h)}">{{ctrl.timemap[6*r + h]}}</div>
                     </div>
                 </div>
             </div>

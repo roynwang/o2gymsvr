@@ -667,9 +667,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.querystatus = "unset"
         that.pendingbook = {}
         that.isSelecting = false
-        that.animatingleft = false
-        that.animatingright = false
-        that.animating = false
+        that.animating = -1
         that.showneworder = function() {
             $mdDialog.show({
                     controller: "NewOrderDialgCtrl",
@@ -898,12 +896,14 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
         that.refresh = function() {
             that.searchText = undefined
-            if (!that.animatingleft) {
-                that.animatingright = true
-                $timeout(function() {
-                    that.animatingright = false
-                }, 700)
-            }
+			if(that.animating == -1){
+				that.animating = 0
+				$timeout(function(){
+					that.animating = -1
+				}, 700)
+			}
+	
+
             Restangular.one("api", user)
                 .one("b", that.selected.Format("yyyyMMdd"))
                 .getList()
@@ -985,19 +985,23 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
         that.nextweek = function() {
             console.log("next")
-            that.animatingright = true
+			/*
+            that.animating = 1
             $timeout(function() {
-                that.animatingright = false
+				that.animating = -1
             }, 700)
+			*/
             that.currentdate = that.dates[6].addDays(7)
             that.refreshdates()
         }
         that.prevweek = function() {
             console.log("prev")
-            that.animatingleft = true
+			/*
+            that.animating = 2
             $timeout(function() {
-                that.animatingleft = false
+				that.animating = -1
             }, 700)
+			*/
 
             that.currentdate = that.dates[0].addDays(-7)
             that.refreshdates()
