@@ -668,10 +668,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.pendingbook = {}
         that.isSelecting = false
         that.animating = -1
-		that.inited = false
-		$timeout(function(){
+        that.inited = false
+        $timeout(function() {
             that.inited = true
-		},2000)
+        }, 2000)
 
         that.showneworder = function() {
             $mdDialog.show({
@@ -900,13 +900,13 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
         that.refresh = function() {
             that.searchText = undefined
-			if(that.animating == -1){
-				that.animating = 0
-				$timeout(function(){
-					that.animating = -1
-				}, 700)
-			}
-	
+            if (that.animating == -1) {
+                that.animating = 0
+                $timeout(function() {
+                    that.animating = -1
+                }, 700)
+            }
+
 
             Restangular.one("api", user)
                 .one("b", that.selected.Format("yyyyMMdd"))
@@ -931,6 +931,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
         that.select = function(td) {
             that.selected = td
+			that.animatingright = true
+			$timeout( function(){
+				that.animatingright = false
+			}, 700)
             that.refresh()
         }
         that.complete = function(book) {
@@ -989,7 +993,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
         that.nextweek = function() {
             console.log("next")
-			/*
+                /*
             that.animating = 1
             $timeout(function() {
 				that.animating = -1
@@ -1000,7 +1004,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
         that.prevweek = function() {
             console.log("prev")
-			/*
+                /*
             that.animating = 2
             $timeout(function() {
 				that.animating = -1
@@ -1009,6 +1013,26 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
             that.currentdate = that.dates[0].addDays(-7)
             that.refreshdates()
+        }
+        that.nextday = function() {
+            that.currentdate = that.currentdate.addDays(1)
+                //that.selected == that.currentdate
+            that.refreshdates()
+
+			that.animatingright = true
+			$timeout( function(){
+				that.animatingright = false
+			},700)
+        }
+        that.prevday = function() {
+            that.currentdate = that.currentdate.addDays(-1)
+                //that.selected == that.currentdate
+            that.refreshdates()
+			that.animatingleft = true
+			$timeout( function(){
+				that.animatingleft = false
+			}, 700)
+			
         }
         that.refreshdates = function() {
             var curweekday = that.currentdate.getDay()

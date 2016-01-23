@@ -103,9 +103,8 @@
                 </div>
             </div>
         </md-toolbar>
-		<div layout="row" style="margin-top:130px" ng-class="{'animated slideInRight':ctrl.animating
-			== 0 || that.animating == 1,'animated slideInLeft':ctrl.animating==2, '':ctrl.animating
-			== -1}">
+		<div layout="row" style="margin-top:130px" md-swipe-right="ctrl.prevday()"
+			md-swipe-left="ctrl.nextday()" ng-class="{'animated slideInRight':ctrl.animatingright,'animated slideInLeft':ctrl.animatingleft}">
             <ul class="list" flex=10 style="min-width:60px;margin-top:-30px">
                 <li ng-repeat="t in ctrl.bookmap" layout="row" class="list-item" style="border:none">
                     <div flex ng-class="{'half': t.index%2==1}" class="title-list" style="text-align:center">{{t.time}}</div>
