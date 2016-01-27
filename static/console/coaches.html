@@ -6,7 +6,7 @@
                 <div ng-click="ctrl.newcoach()" style=" border: 5px dashed #1fb5ad;
 	font-ize:30pt;
 	width: 100%;
-	height: 257px;
+	height: 300px;
 	line-height: 200px;
     border-radius: 3px;
     text-align: center;
@@ -44,14 +44,12 @@
 								class="pull-right" type="checkbox" ng-model="ctrl.coaches[3*i +c].can_book" ng-change="ctrl.modify_can_book(ctrl.coaches[3*i + c])"> 
                         </a>
                         </li>
-						<!--
                         <li>
-                            <a href="javascript:;"><i class="fa  fa-file"></i> 订单完成 <span class="badge label-success pull-right r-activity"> {{ctrl.coaches[3*i + c].order_count}}</span>
+                            <a href="#customer/{{ctrl.coaches[3*i + c].name}}/orders"><i class="fa  fa-file"></i> 订单完成 <span class="badge label-success pull-right r-activity"> {{ctrl.coaches[3*i + c].order_count}}</span>
                         </a>
                         </li>
-						-->
                         <li>
-                            <a href="javascript:;"><i class="fa  fa-file-o" style="width:26px"></i>
+                            <a ><i class="fa  fa-file-o" style="width:26px"></i>
 								授课完成<span class="badge label-primary pull-right r-activity">{{ctrl.coaches[3*i + c].course_count}}</span>
                         </a>
                         </li>
