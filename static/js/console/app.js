@@ -112,9 +112,11 @@ app.factory("$customersvc", function(Restangular) {
     }
 
     function getcustomer(key) {
-        return _.find(customers, {
+        var c = _.find(customers, {
             name: key
         })
+        if (c == undefined)
+            return c
     }
     return {
         getcustomers: getcustomers,
@@ -257,12 +259,59 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                             })
                 })
         }
-        that.customer_displayname = $customersvc.getcustomer($stateParams.customername).displayname
+
+        var c = $customersvc.getcustomer($stateParams.customername)
+        if (c == undefined) {
+            Restangular.one("api", $stateParams.customername)
+                .get()
+                .then(function(data) {
+                    c = data
+					that.customer_displayname = c.displayname
+                })
+        } else {
+            that.customer_displayname = c.displayname
+        }
+        that.nexturl = undefined
+        that.prevurl = undefined
+
+        that.turnpage = function(direction) {
+            var url = that.nexturl
+            if (direction == "prev") {
+                url = that.prevurl
+            }
+			if(url == undefined || url == null){
+				return
+			}
+            $.get(url, function(data) {
+                that.nexturl = data.next
+                that.prevurl = data.previous
+                _.map(data.results, function(item) {
+                    if (eval(item.complete_status) == 1) {
+                        item.status = "done"
+                    }
+                    item["removable"] = false
+                    if (eval(item.complete_status) == 0) {
+                        item["removable"] = true
+                    }
+                })
+                that.tableParams = new NgTableParams({
+                    count: 100,
+                    sorting: {}
+                }, {
+                    counts: [],
+                    dataset: data.results
+                });
+				that.tableParams.reload()
+            })
+        }
+
         that.refresh = function() {
             Restangular.one('api/', $stateParams.customername)
                 .one("o/")
                 .get()
                 .then(function(data) {
+                    that.nexturl = data.next
+                    that.prevurl = data.previous
                     _.map(data.results, function(item) {
                         if (eval(item.complete_status) == 1) {
                             item.status = "done"
@@ -273,8 +322,10 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                         }
                     })
                     that.tableParams = new NgTableParams({
+                        count: 100,
                         sorting: {}
                     }, {
+                        counts: [],
                         dataset: data.results
                     });
                 })
@@ -521,11 +572,11 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     that.gym = data
                 },
                 function(data) {})
-			        Restangular.one("api", coachname)
-		            .get()
-				     .then(function(data) {
-					 that.coach = data
-	            })
+        Restangular.one("api", coachname)
+            .get()
+            .then(function(data) {
+                that.coach = data
+            })
 
 
         $scope.timemap = TimeMap

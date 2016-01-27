@@ -44,6 +44,10 @@
                     </td>
                 </tr>
             </table>
+			<div class="row">
+				<a ng-show="demo.nexturl" class="btn btn-primary pull-right"  style="margin:10px" ng-click="demo.turnpage()">下一页</a>
+				<a ng-show="demo.prevurl" class="btn btn-primary pull-right" ng-click="demo.turnpage('prev')" style="margin:10px">上一页</a>
+			</div>
         </div>
     </section>
 </div>
