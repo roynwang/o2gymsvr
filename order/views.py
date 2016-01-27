@@ -39,7 +39,7 @@ def isFirstOrder(coach,customer):
 	return count == 0
 
 class OrderList(generics.ListCreateAPIView):
-	serializer_class = OrderSerializer
+	serializer_class = OrderDetailSerializer
 	def get_queryset(self):
 		#role =  self.request.query_params.get('role', None)
 		usr = get_object_or_404(User, name=self.kwargs["name"])

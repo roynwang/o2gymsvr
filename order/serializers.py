@@ -16,9 +16,15 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 	booked = serializers.SerializerMethodField()
 	endtime = serializers.SerializerMethodField()
 	course_count = serializers.SerializerMethodField()
+	complete_status = serializers.SerializerMethodField()
 
 	class Meta:
 		model =	Order 
+
+	def get_complete_status(self, obj):
+		completed = Schedule.objects.filter(order=obj,deleted = False, done = True).count()
+		sum_amount = obj.product.amount
+		return str(completed) + "/" + str(sum_amount)
 
 	def get_booked(self, obj):
 		bookedlist = Schedule.objects.filter(order=obj,deleted = False).order_by("-date","hour")
