@@ -84,3 +84,9 @@ ul.sidebar-menu {
 #incomplete.dropdown-menu:after {
 	left: 90%
 }
+#birthdays.dropdown-menu:before {
+	left: 90%
+}
+#birthdays.dropdown-menu:after {
+	left: 90%
+}
