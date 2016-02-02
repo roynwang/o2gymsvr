@@ -31,13 +31,18 @@ class SimpleUserSerilaizer(serializers.ModelSerializer):
 
 class CoachSimpleSerializer(serializers.ModelSerializer):
 	#gym_detail = GymSimpleSerializer(source="gym",many=True,read_only=True)
+	all_order_count = serializers.SerializerMethodField()
 	class Meta:
 		model = User
 		exclude = ("upped","fwded","commented","upped_person","created")
 
+	def get_all_order_count(self, obj):
+		return obj.income_orders.count()
+
 
 class CoachSerializer(serializers.ModelSerializer):
 	gym = serializers.StringRelatedField(many=True)
+
 	class Meta:
 		model = User
 		exclude = ("upped","fwded","commented","upped_person","created")
