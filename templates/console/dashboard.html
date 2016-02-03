@@ -285,6 +285,9 @@
 			console.log($.cookie("token"))
 			return decoded = jwt_decode($.cookie("token"));
 		} else {
+		$.removeCookie("user", {path:"/"})
+		$.removeCookie("gym", {path:"/"})
+		$.removeCookie("autologin", {path:"/"})
 			window.location = "/console/login/"
 		}
 	}
@@ -364,8 +367,9 @@
 	$(function(){
 		refreshuser(getusrauth())
 		$("#logout").click(function(){
-			$.removeCookie("user")
-			$.removeCookie("gym")
+			$.removeCookie("user", {path:"/"})
+			$.removeCookie("gym", {path:"/"})
+			$.removeCookie("autologin", {path:"/"})
 			window.location = "/console/login/"
 		})
 	})
