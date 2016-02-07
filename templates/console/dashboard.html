@@ -84,7 +84,7 @@
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
 
                 <i class="fa fa-bell-o"></i>
-                <span class="badge bg-warning" id="incomplete-count">3</span>
+                <span class="badge bg-warning" id="incomplete-count">0</span>
             </a>
             <ul id="incomplete" class="dropdown-menu extended notification">
                 <li>
@@ -94,14 +94,31 @@
                     <div class="alert alert-success clearfix">
                         <span class="alert-icon"><i class="fa fa-bolt"></i></span>
                         <div class="noti-info">
-                            <a href="#"> Server #3 overloaded.</a>
+                            <a href="#"></a>
                         </div>
                     </div>
                 </li>
             </ul>
         </li>
-
-
+	    <li class="dropdown" style="margin-top: 5px;">
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                <i class="fa fa-gift" style="font-size: 22px;"></i>
+                <span class="badge bg-success" id="birthdays-count">0</span>
+            </a>
+            <ul id="birthdays" class="dropdown-menu extended notification">
+                <li>
+                    <p>生日提醒</p>
+                </li>
+                <li>
+                    <div class="alert alert-success clearfix">
+                        <span class="alert-icon"><i class="fa fa-bolt"></i></span>
+                        <div class="noti-info">
+                            <a href="#"></a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </li>
     </ul>
     <!--search & user info start-->
 
@@ -268,6 +285,9 @@
 			console.log($.cookie("token"))
 			return decoded = jwt_decode($.cookie("token"));
 		} else {
+		$.removeCookie("user", {path:"/"})
+		$.removeCookie("gym", {path:"/"})
+		$.removeCookie("autologin", {path:"/"})
 			window.location = "/console/login/"
 		}
 	}
@@ -327,11 +347,29 @@
 				})
 		})
 	}
+	function getbirthdays(data){
+        var itemtemplate = '<li><div class="alert alert-success clearfix" style="padding-top:0"><div class="noti-info"><a href="#">__</a></div></div></li>'
+		$("#birthdays").html("")
+		$("#birthdays").append("<li><p>生日提醒</p></li>")
+
+		var filtered = _.filter(data, function(item){ 
+			return item.birthday && item.birthday.substring(5) == new Date().Format("MM-dd")
+		})
+
+		$("#birthdays-count").html(filtered.length)
+		_.each(filtered, function(item){
+			if(item.birthday){
+				$("#birthdays").append(itemtemplate.replace(/__/,'<a>' + item.displayname + "</a>"))
+			}
+		})
+	}
+
 	$(function(){
 		refreshuser(getusrauth())
 		$("#logout").click(function(){
-			$.removeCookie("user")
-			$.removeCookie("gym")
+			$.removeCookie("user", {path:"/"})
+			$.removeCookie("gym", {path:"/"})
+			$.removeCookie("autologin", {path:"/"})
 			window.location = "/console/login/"
 		})
 	})

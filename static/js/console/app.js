@@ -1448,6 +1448,9 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
 
             $customersvc.getcustomers(function(data) {
                 that.customers = data
+				//refresh birthdays
+				getbirthdays(data)
+				
                 $('#customer-search').autocomplete({
 
                     lookup: function(query, done) {
