@@ -185,7 +185,7 @@ body{font-family:Montserrat,sans-serif}
 
 }
 .o2-timline-date.month {
-	margin-top: 0px;
+	margin-top: -4px;
 	color: #aaa;
 	text-align: center;
 }
