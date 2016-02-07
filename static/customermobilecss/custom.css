@@ -178,12 +178,27 @@ body{font-family:Montserrat,sans-serif}
 	margin-top: 7px;
 }
 
+.o2-timline-date.day {
+	margin-bottom: 0px;
+    font-size: 24px;
+    margin-top: -8px;
+
+}
+.o2-timline-date.month {
+	margin-top: 0px;
+	color: #aaa;
+	text-align: center;
+}
+
+
+
+
 .o2-timeline .card-content-inner>div{
 	margin-top: 10px;
 }
 
 .o2-timeline .card-content-inner>div:nth-of-type(1){
-	margin-top: 0px;
+	margin-top: -8px;
 }
 
 .o2-timeline .card-content-inner p{
