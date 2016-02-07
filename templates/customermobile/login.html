@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <link rel="stylesheet" type="text/css" href="/static/mobilecss/normalize.css">
+    <link rel="stylesheet" type="text/css" href="/static/mobilecss/framework.css">
+    <link rel="stylesheet" type="text/css" href="/static/mobilecss/washington.css">
+    <link rel="stylesheet" type="text/css" href="/static/mobilecss/custom.css">
+
+    <script src="/static/js/webfont.js"></script>
+    <script>
+        WebFont.load(
+        {
+            google:
+            {
+                families: ["Montserrat:400,700"]
+            }
+        });
+    </script>
+    <script type="text/javascript" src="/static/js/modernizr.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="images/logoStandford32.ico">
+    <link rel="apple-touch-icon" href="images/logoStandford32.ico">
+    <link href="/static/mobilecss/ionicons.min.css" rel="stylesheet" type="text/css"
+    />
+</head>
+
+<body>
+    <section class="w-section mobile-wrapper">
+        <div class="page-content" id="main-stack" data-scroll="0">
+            <div class="w-nav navbar"></div>
+            <div class="body padding">
+                <div class="top-section padding">
+                    <div class="w-form">
+                        <div id="submit-form" name="email-form">
+                            <div>
+                                <label class="label-form">电话号码</label>
+                                <input class="w-input input-form" id="phone" type="number" name="username" data-name="username"
+                                required="required">
+                                <div class="separator-fields"></div>
+                            </div>
+                            <div>
+                                <label class="label-form" for="password">密码</label>
+                                <div class="w-clearfix block-input-combined">
+                                    <input class="w-input input-form left" id="pwd" type="password" name="password"
+                                    data-name="password" required="required">
+                                </div>
+                                <div class="separator-button-input"></div>
+                            </div>
+                            <a id="btn-login" style="font-size:18px" class="w-button
+								action-button">登录</a>
+                            <div class="separator-button"></div>
+                        </div>
+                        <div class="w-form-done">
+                            <p>登陆成功</p>
+                        </div>
+                        <div class="w-form-fail">
+                            <p>登录失败</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-content loading-mask" id="new-stack">
+            <div class="loading-icon">
+                <div class="navbar-button-icon icon ion-load-d"></div>
+            </div>
+        </div>
+        <div class="shadow-layer"></div>
+    </section>
+    <script src="/static/js/jwt-decode.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/static/js/framework.js"></script>
+    <!--[if lte IE 9]><script src="js/placeholders.min.js"></script><![endif]-->
+    <script>
+	function getusrauth(){
+		console.log($.cookie())
+		if($.cookie("token")){
+			console.log($.cookie("token"))
+			return decoded = jwt_decode($.cookie("token"));
+		} else {
+			window.location = "/mobile/login/"
+		}
+	}
+	function refreshuser(authinfo,gymid){
+		$.get("/api/" + authinfo.username + "/", function(data){
+			USER = data
+			$.cookie("user", USER.name, {path:"/"})
+			if(gymid == undefined){
+				$.cookie("gym", USER.gym_id[0], {path:"/"})
+			}else {
+				$.cookie("gym", gymid, {path:"/"})
+			}
+			window.location = "/mobile/home/"
+		}).fail(function(resp){
+			
+		})
+	}
+        $(function()
+        {
+            $("#btn-login").click(function()
+            {
+				$("#new-stack").css("opacity", 0.8)
+                var usrname = $("#phone").val()
+                var pwd = $("#pwd").val()
+                $.post("/api/lg/",
+                {
+                    username: usrname,
+                    password: pwd
+                }, function(data, status)
+                {
+
+					$("#new-stack").css("opacity", 0)
+                    $.cookie("token", data.token,
+                    {
+                        path: '/'
+                    })
+                    $(".w-form-done").show()
+                    $(".w-form-fail").hide()
+                    console.log($.cookie("token",data.token))
+
+					refreshuser(getusrauth())
+                }).fail(function(resp)
+                {
+					$("#new-stack").css("opacity", 0)
+                    $(".w-form-done").hide()
+                    $(".w-form-fail").show()
+                })
+            })
+        })
+    </script>
+</body>
+
+</html>
