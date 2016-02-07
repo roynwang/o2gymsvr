@@ -320,13 +320,13 @@ body{font-family:Montserrat,sans-serif}
 
 
 .o2-timeline-header  .o2-day-count-text{
-	font-size: 16px;
+	font-size: 20px;
 	color: #777;
 	margin: 0;
 } 
 
 .o2-timeline-header .o2-day-count-text > span{
-	font-size: 42px;
+	font-size: 50px;
 	color: #333;
 } 
 .o2-timeline-header  .o2-course-status-text{
@@ -343,6 +343,7 @@ body{font-family:Montserrat,sans-serif}
 	width: 120px;
 	max-width: 120px;
 	min-width: 120px;
+	margin-top: -8px;
 }
 .o2-course-progress >span{
 	background: rgb(109,207,206);
