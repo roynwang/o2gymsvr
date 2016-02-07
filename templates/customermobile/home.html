@@ -32,101 +32,143 @@
     </div>
     <div class="views">
         <div class="view view-main">
+		  <!--
             <div class="navbar">
                 <div class="navbar-inner navbar-on-center">
-                    <!-- We have home navbar without left link-->
                     <div class="center sliding" style="left: 169.5px; transform: translate3d(0px, 0px, 0px);">Awesome App</div>
                     <div class="right">
-                        <!-- Right link contains only icon - additional "icon-only" class-->
                         <a href="#" class="link icon-only open-panel" data-panel="right"> <i class="icon icon-bars"></i>
                         </a>
                     </div>
                 </div>
             </div>
-            <!-- Pages -->
-            <div class="pages navbar-through toolbar-through">
-                <!-- Page, data-page contains page
-                <div data-page="index" class="page page-on-center">
-                    <div class="page-content">
-                        <div class="card o2-bg-red o2-card">
-                            <div class="card-content">
-								<div class="o2-mood l1">
-									<div class="o2-mood l2">
-										<div class="o2-mood l3">
-											<div class="o2-mood l4">
-												<div class="o2-mood-boring"></div>
-											</div>
-										</div>
-									</div>
-								</div>
-                                <div class="card-content-inner">
-									<h2>10月1日</h2>
-								</div>
-                            </div>
-                        </div>
-                        <div class="card o2-bg-green o2-card">
-                            <div class="card-content">
-								<div class="o2-mood l1">
-									<div class="o2-mood l2">
-										<div class="o2-mood l3">
-											<div class="o2-mood l4">
-												<div class="o2-mood-boring"></div>
-											</div>
-										</div>
-									</div>
-								</div>
-                                <div class="card-content-inner">
-									<h2>10月1日</h2>
-								</div>
-                            </div>
-                        </div>
-
-                        <div class="card o2-bg-blue o2-card">
-                            <div class="card-content">
-								<div class="o2-mood l1">
-									<div class="o2-mood l2">
-										<div class="o2-mood l3">
-											<div class="o2-mood l4">
-												<div class="o2-mood-boring"></div>
-											</div>
-										</div>
-									</div>
-								</div>
-                                <div class="card-content-inner">
-									<h2>10月1日</h2>
-								</div>
-                            </div>
-                        </div>
-                    </div>
 			-->
-                <div class="page-content">
-                    <div class="card o2-timeline">
-                        <div class="card-content row no-gutter">
-                            <div class="col-20 o2-timeline-line">
-                                        <p class="o2-timline-date">10/01</p>
+            <!-- Pages -->
+            <div class="pages">
+                <div data-page="home" class="page">
+                    <div class="page-content">
+                        <div class="content-block o2-timeline-header">
+                            <div class="content-block-inner">
+                                <div class="row">
+                                    <div class="col-60" style="padding-left:15px">
+                                        <p class="o2-day-count-text">距上次训练已经<span>7</span>天</p>
+										<div class="row o2-course-progress">
+											<div class="col-50"><p class="o2-course-status-text"><span>3</span>已上</p></div>
+											<div class="col-50"><p class="o2-course-status-text" style="text-align:right"><span>12</span>未上</p></div>
+										</div>
+                                        <div class="progressbar o2-course-progress" style="height:8px" data-progress="20">
+                                            <span></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-40">
+										<div class="o2-book-now">
+											<div>
+												<p class="day"> 18</p>
+												<p class="month">十二月</p>
+											</div>
+											<div><p>20:00</p></div>
+										</div>
+									</div>
+                                </div>
                             </div>
-                            <div class="col-5">
-                                <div class="o2-timeline-point-outline"></div>
+                            <div class="row no-gutter" style="margin-top:20px">
+                                <div class="col-20 o2-timeline-header-hr"></div>
+                                <div class="o2-timeline-header-arrow">
+                                </div>
+                                <div class="col-80 o2-timeline-header-hr"></div>
                             </div>
-                            <div class="col-75">
-                                <div class="card">
-                                    <div class="card-content-inner">
-                                        <div>
-                                            <div class="o2-timeline-info unfilled">
-                                                <p><i class="ion-ios-help-outline"></i></p>
-                                                <p>体重</p>
+                        </div>
+                        <div class="card o2-timeline">
+                            <div class="card-content row no-gutter">
+                                <div class="col-20 o2-timeline-line">
+                                    <p class="o2-timline-date">10/01</p>
+                                </div>
+                                <div class="col-5">
+                                    <div class="o2-timeline-point-outline"></div>
+                                </div>
+                                <div class="col-75">
+                                    <div class="card">
+                                        <div class="card-content-inner">
+                                            <div>
+                                                <div class="o2-timeline-info unfilled">
+                                                    <p><i class="ion-ios-help-outline"></i>
+                                                    </p>
+                                                    <p>体重</p>
+                                                </div>
+                                            </div>
+                                            <div class="o2-timeline-images">
+                                                <div class="o2-timeline-item isimg">
+                                                    <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                                </div>
+                                                <div class="o2-timeline-item isimg">
+                                                    <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                                </div>
+                                                <div class="o2-timeline-info o2-timeline-item unfilled" style="margin-left:5px">
+                                                    <p><i class="ion-ios-camera-outline"></i>
+                                                    </p>
+                                                    <p>拍照</p>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="o2-timeline-images">
-                                            <div class="o2-timeline-item isimg">
-                                                <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card o2-timeline">
+                            <div class="card-content row no-gutter">
+                                <div class="col-20 o2-timeline-line">
+                                    <p class="o2-timline-date">09/25</p>
+                                </div>
+                                <div class="col-5">
+                                    <div class="o2-timeline-point"></div>
+                                </div>
+                                <div class="col-75">
+                                    <div class="card">
+                                        <div class="card-content-inner">
+                                            <div>
+                                                <div class="o2-timeline-info o2-timline-item">
+                                                    <p>90</p>
+                                                    <p>KG</p>
+                                                </div>
                                             </div>
-                                            <div class="o2-timeline-item isimg">
-                                                <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                            <div class="o2-timeline-images">
+                                                <div class="o2-timeline-item">
+                                                    <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                                </div>
+                                                <div class="o2-timeline-item">
+                                                    <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                                </div>
                                             </div>
-                                            <div class="o2-timeline-info o2-timeline-item unfilled" style="margin-left:5px">
-                                                <p><i class="ion-ios-camera-outline"></i></p>
-                                                <p>拍照</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card o2-timeline">
+                            <div class="card-content row no-gutter">
+                                <div class="col-20 o2-timeline-line">
+                                    <p class="o2-timline-date">09/22</p>
+                                </div>
+                                <div class="col-5">
+                                    <div class="o2-timeline-point"></div>
+                                </div>
+                                <div class="col-75">
+                                    <div class="card">
+                                        <div class="card-content-inner">
+                                            <div>
+                                                <div class="o2-timeline-info o2-timline-item">
+                                                    <p>92.3</p>
+                                                    <p>KG</p>
+                                                </div>
+                                            </div>
+                                            <div class="o2-timeline-images">
+                                                <div class="o2-timeline-item">
+                                                    <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                                </div>
+                                                <div class="o2-timeline-item">
+                                                    <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -134,75 +176,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card o2-timeline">
-                        <div class="card-content row no-gutter">
-                            <div class="col-20 o2-timeline-line">
-                                        <p class="o2-timline-date">09/25</p>
-                            </div>
-                            <div class="col-5">
-                                <div class="o2-timeline-point"></div>
-                            </div>
-                            <div class="col-75">
-                                <div class="card">
-                                    <div class="card-content-inner">
-                                        <div>
-                                            <div class="o2-timeline-info o2-timline-item">
-                                                <p>90</p>
-                                                <p>KG</p>
-                                            </div>
-                                        </div>
-                                        <div class="o2-timeline-images">
-                                            <div class="o2-timeline-item">
-                                                <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
-                                            </div>
-                                            <div class="o2-timeline-item">
-                                                <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <div class="card o2-timeline">
-                        <div class="card-content row no-gutter">
-                            <div class="col-20 o2-timeline-line">
-                                        <p class="o2-timline-date">09/22</p>
-                            </div>
-                            <div class="col-5">
-                                <div class="o2-timeline-point"></div>
-                            </div>
-                            <div class="col-75">
-                                <div class="card">
-                                    <div class="card-content-inner">
-                                        <div>
-                                            <div class="o2-timeline-info o2-timline-item">
-                                                <p>92.3</p>
-                                                <p>KG</p>
-                                            </div>
-                                        </div>
-                                        <div class="o2-timeline-images">
-                                            <div class="o2-timeline-item">
-                                                <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
-                                            </div>
-                                            <div class="o2-timeline-item">
-                                                <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </body>
 <script src="//cdn.bootcss.com/framework7/1.4.0/js/framework7.min.js"></script>

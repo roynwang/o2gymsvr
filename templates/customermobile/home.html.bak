@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>氧气健身</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <!-- <link rel="stylesheet" type="text/css" href="/static/css/anim-in-out.css">
+	<link href="//cdn.bootcss.com/angular-material/1.0.1/angular-material.min.css" rel="stylesheet">-->
+
+    <link href="//cdn.bootcss.com/framework7/1.4.0/css/framework7.ios.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/framework7/1.4.0/css/framework7.ios.colors.min.css"
+    rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/customermobilecss/custom.css">
+    <link href="/static/mobilecss/ionicons.min.css" rel="stylesheet" type="text/css"
+    />
+    <link href="/static/css/animate.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="statusbar-overlay"></div>
+    <div class="panel-overlay"></div>
+    <div class="panel panel-left panel-reveal">
+        <div class="content-block">
+            <p>Left panel content goes here</p>
+        </div>
+    </div>
+    <div class="panel panel-right panel-cover">
+        <div class="content-block">
+            <p>Right panel content goes here</p>
+        </div>
+    </div>
+    <div class="views">
+        <div class="view view-main">
+            <div class="navbar">
+                <div class="navbar-inner navbar-on-center">
+                    <!-- We have home navbar without left link-->
+                    <div class="center sliding" style="left: 169.5px; transform: translate3d(0px, 0px, 0px);">Awesome App</div>
+                    <div class="right">
+                        <!-- Right link contains only icon - additional "icon-only" class-->
+                        <a href="#" class="link icon-only open-panel" data-panel="right"> <i class="icon icon-bars"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Pages -->
+            <div class="pages navbar-through toolbar-through">
+                <!-- Page, data-page contains page
+                <div data-page="index" class="page page-on-center">
+                    <div class="page-content">
+                        <div class="card o2-bg-red o2-card">
+                            <div class="card-content">
+								<div class="o2-mood l1">
+									<div class="o2-mood l2">
+										<div class="o2-mood l3">
+											<div class="o2-mood l4">
+												<div class="o2-mood-boring"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+                                <div class="card-content-inner">
+									<h2>10月1日</h2>
+								</div>
+                            </div>
+                        </div>
+                        <div class="card o2-bg-green o2-card">
+                            <div class="card-content">
+								<div class="o2-mood l1">
+									<div class="o2-mood l2">
+										<div class="o2-mood l3">
+											<div class="o2-mood l4">
+												<div class="o2-mood-boring"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+                                <div class="card-content-inner">
+									<h2>10月1日</h2>
+								</div>
+                            </div>
+                        </div>
+
+                        <div class="card o2-bg-blue o2-card">
+                            <div class="card-content">
+								<div class="o2-mood l1">
+									<div class="o2-mood l2">
+										<div class="o2-mood l3">
+											<div class="o2-mood l4">
+												<div class="o2-mood-boring"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+                                <div class="card-content-inner">
+									<h2>10月1日</h2>
+								</div>
+                            </div>
+                        </div>
+                    </div>
+			-->
+                <div class="page-content">
+  			<div class="content-block o2-timeline-header">
+		      <div class="content-block-inner">
+				<div class="row">
+					<div class="col-60">
+						<p>09: 00</p>
+						<p>十月 11日</p>
+<div class="progressbar" data-progress="20">
+    <span></span>
+</div>
+
+					</div>
+					<div class="col-40"></div>
+				</div>
+		  	</div>
+			  <div class="row no-gutter">
+                    <div class="col-20 o2-timeline-header-hr"></div>
+                    <div class="o2-timeline-header-arrow">
+					</div>
+                    <div class="col-80 o2-timeline-header-hr"></div>
+			  </div>
+		    </div>
+                    <div class="card o2-timeline">
+                        <div class="card-content row no-gutter">
+                            <div class="col-20 o2-timeline-line">
+                                        <p class="o2-timline-date">10/01</p>
+                            </div>
+                            <div class="col-5">
+                                <div class="o2-timeline-point-outline"></div>
+                            </div>
+                            <div class="col-75">
+                                <div class="card">
+                                    <div class="card-content-inner">
+                                        <div>
+                                            <div class="o2-timeline-info unfilled">
+                                                <p><i class="ion-ios-help-outline"></i></p>
+                                                <p>体重</p>
+                                            </div>
+                                        </div>
+                                        <div class="o2-timeline-images">
+                                            <div class="o2-timeline-item isimg">
+                                                <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                            </div>
+                                            <div class="o2-timeline-item isimg">
+                                                <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                            </div>
+                                            <div class="o2-timeline-info o2-timeline-item unfilled" style="margin-left:5px">
+                                                <p><i class="ion-ios-camera-outline"></i></p>
+                                                <p>拍照</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card o2-timeline">
+                        <div class="card-content row no-gutter">
+                            <div class="col-20 o2-timeline-line">
+                                        <p class="o2-timline-date">09/25</p>
+                            </div>
+                            <div class="col-5">
+                                <div class="o2-timeline-point"></div>
+                            </div>
+                            <div class="col-75">
+                                <div class="card">
+                                    <div class="card-content-inner">
+                                        <div>
+                                            <div class="o2-timeline-info o2-timline-item">
+                                                <p>90</p>
+                                                <p>KG</p>
+                                            </div>
+                                        </div>
+                                        <div class="o2-timeline-images">
+                                            <div class="o2-timeline-item">
+                                                <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                            </div>
+                                            <div class="o2-timeline-item">
+                                                <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card o2-timeline">
+                        <div class="card-content row no-gutter">
+                            <div class="col-20 o2-timeline-line">
+                                        <p class="o2-timline-date">09/22</p>
+                            </div>
+                            <div class="col-5">
+                                <div class="o2-timeline-point"></div>
+                            </div>
+                            <div class="col-75">
+                                <div class="card">
+                                    <div class="card-content-inner">
+                                        <div>
+                                            <div class="o2-timeline-info o2-timline-item">
+                                                <p>92.3</p>
+                                                <p>KG</p>
+                                            </div>
+                                        </div>
+                                        <div class="o2-timeline-images">
+                                            <div class="o2-timeline-item">
+                                                <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                            </div>
+                                            <div class="o2-timeline-item">
+                                                <img src="http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+<script src="//cdn.bootcss.com/framework7/1.4.0/js/framework7.min.js"></script>
+<script src="/static/js/customermobile/app.js"></script>
+
+</html>
