@@ -261,8 +261,11 @@ body{font-family:Montserrat,sans-serif}
 	margin-bottom: 18px;
     z-index: 1000;
     width: 100%;
-	position: fixed;
 }
+.o2-timeline-nav:after {
+	display:none
+}
+
 .o2-timeline-header .content-block-inner {
 	background: rgba(0,0,0,0);
 }
