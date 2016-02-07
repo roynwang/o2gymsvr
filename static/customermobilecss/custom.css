@@ -251,8 +251,8 @@ body{font-family:Montserrat,sans-serif}
 .o2-timeline-header {
 	margin-top: 0;
 	padding:0;
-	margin-bottom: 20px;
 	background: #f9f9f9;
+	margin-bottom: 18px;
 }
 .o2-timeline-header .content-block-inner {
 	background: rgba(0,0,0,0);
@@ -267,6 +267,7 @@ body{font-family:Montserrat,sans-serif}
 
 
 .o2-timeline-header-arrow {
+	background: #f9f9f9;
 	position: absolute;
     height: 10px;
     min-height: 10px;
@@ -280,7 +281,6 @@ body{font-family:Montserrat,sans-serif}
     margin-left: -6px;
     border-left: none;
     border-top: none;
-    background: white;
     -ms-transform: rotate(45deg);
     -ms-transform-origin: 50% 50%;
     -webkit-transform: rotate(45deg);
@@ -329,6 +329,7 @@ body{font-family:Montserrat,sans-serif}
     margin-top: 10px;
     overflow: hidden;
     border: solid 10px #e7e7e7;
+	margin-left: -60px;
 }
 .o2-book-now .day {
 	font-size:30px;
