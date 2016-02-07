@@ -110,11 +110,17 @@ body{font-family:Montserrat,sans-serif}
 	color: white;
 }
 
+
 .o2-timeline {
     box-shadow: none;
 	height: 140px;
 	margin: 0;
 }
+
+.o2-timeline-header-margin{
+	margin-top: 165px;
+}
+
 .o2-timeline .card {
 	height: 80px;
 	margin: 0;
@@ -253,6 +259,9 @@ body{font-family:Montserrat,sans-serif}
 	padding:0;
 	background: #f9f9f9;
 	margin-bottom: 18px;
+    z-index: 1000;
+    width: 100%;
+	position: fixed;
 }
 .o2-timeline-header .content-block-inner {
 	background: rgba(0,0,0,0);
