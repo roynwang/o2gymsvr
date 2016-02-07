@@ -113,7 +113,7 @@ body{font-family:Montserrat,sans-serif}
 
 .o2-timeline {
     box-shadow: none;
-	height: 140px;
+	height: 130px;
 	margin: 0;
 }
 
@@ -180,7 +180,7 @@ body{font-family:Montserrat,sans-serif}
 
 .o2-timline-date.day {
 	margin-bottom: 0px;
-    font-size: 24px;
+    font-size: 28px;
     margin-top: -8px;
 
 }
@@ -191,10 +191,8 @@ body{font-family:Montserrat,sans-serif}
 }
 
 
-
-
 .o2-timeline .card-content-inner>div{
-	margin-top: 10px;
+	margin-top: 5px;
 }
 
 .o2-timeline .card-content-inner>div:nth-of-type(1){
@@ -247,7 +245,7 @@ body{font-family:Montserrat,sans-serif}
 
 .o2-timeline-line {
 	border-right: solid 1px #ddd;
-	height: 140px;
+	height: 130px;
 }
 
 .o2-timeline-point-outline {
