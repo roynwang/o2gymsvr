@@ -281,6 +281,7 @@ body{font-family:Montserrat,sans-serif}
 
 .o2-timeline-header .content-block-inner {
 	background: rgba(0,0,0,0);
+	padding-bottom: 20px;
 }
 .content-block-inner:after {
 	display: none
@@ -344,6 +345,7 @@ body{font-family:Montserrat,sans-serif}
 	max-width: 120px;
 	min-width: 120px;
 	margin-top: -8px;
+	margin-left: 20px;
 }
 .o2-course-progress >span{
 	background: rgb(109,207,206);
