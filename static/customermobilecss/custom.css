@@ -183,7 +183,6 @@ body{font-family:Montserrat,sans-serif}
     font-size: 26px;
 	margin-top: -4px;
 	margin-left: -30px;
-
 }
 .o2-timline-date.month {
 	margin-top: -6px;
@@ -400,6 +399,96 @@ body{font-family:Montserrat,sans-serif}
     line-height: 34px;
     font-size: 18px;
 }
+
+.o2-book-hours {
+	overflow-x: scroll;
+	margin: 0;
+	padding: 0 0 10px 0;
+	background: #6d6d72;
+	border-radius: 4px;
+}
+/*
+.o2-book-hours > div {
+	width: 600px;
+}
+
+.o2-book-hours > div > div{
+	min-height: 40px;
+	max-height: 40px;
+	min-width:  50px;
+	max-width:  50px;
+	float:right;
+}
+*/
+.o2-book-month {
+	padding: 5px;
+}
+.o2-book-days p{
+	text-align: center;
+	font-size: 16px;
+	margin: 10px;
+}
+.o2-book-days div.active>p>span:after{
+    content: "";
+    display: block;
+    /* background: blue; */
+    width: 0;
+    height: 0;
+    position: relative;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-bottom: 18px solid #6d6d72;
+    /* top: -17px; */
+    z-index: -1;
+    right: -8px;
+}
+.o2-book-hours > .row > div > p{
+	line-height: 50px;
+	text-align: center;
+	margin: 0;
+	font-size: 14px;
+	border-radius: 4px;
+	color: #eee;
+}
+.o2-book-hours {
+	padding: 5px;
+}
+.o2-book-hours>.row {
+	border-bottom: solid 1px #ddd
+}
+
+.o2-book-hours>.row:nth-of-type(1){
+	border-top: solid 1px #ddd
+}
+
+.o2-book-hours>.row>div{
+	border-right: solid 1px #ddd
+}
+.o2-book-hours>.row>div:nth-of-type(1){
+	border-left: solid 1px #ddd
+}
+
+.accordion-item-expanded .o2-timeline-header-hr {
+	display: none;
+}
+.o2-book-month>.accordion-item-expanded>.accordion-item-content{
+	margin-top: -15px;
+}
+
+
+.na {
+    background: 
+       linear-gradient(to top left,
+           rgba(255,255,255,0) 0%,
+           rgba(255,255,255,0) calc(50% - 0.8px),
+           rgba(255,255,255,1) 50%,
+           rgba(255,255,255,0) calc(50% + 0.8px),
+           rgba(255,255,255,0) 100%),
+
+}
+
+
+
 
 
 
