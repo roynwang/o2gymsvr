@@ -181,13 +181,29 @@ body{font-family:Montserrat,sans-serif}
 .o2-timline-date.day {
 	margin-bottom: 0px;
     font-size: 28px;
-    margin-top: -8px;
+	margin-top: -12px;
+	margin-left: -25px;
 
 }
 .o2-timline-date.month {
-	margin-top: -4px;
+	margin-top: -6px;
 	color: #aaa;
-	text-align: center;
+    margin-right: -22px;
+
+}
+.o2-timline-date.hr {
+	margin-top: 12px;
+    margin-left: -36px;
+    width: 50px;
+	height:1px;
+	background:#ddd;
+	position:absolute;
+	-ms-transform: rotate(-45deg);
+    -ms-transform-origin: 100% 50%;
+    -webkit-transform: rotate(-45deg);
+    -webkit-transform-origin: 100% 50%;
+    transform: rotate(-45deg);
+    transform-origin: 100% 50%;
 }
 
 
