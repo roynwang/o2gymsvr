@@ -401,11 +401,12 @@ body{font-family:Montserrat,sans-serif}
 }
 
 .o2-book-hours {
-	overflow-x: scroll;
+	overflow-y: scroll;
 	margin: 0;
 	padding: 0 0 10px 0;
-	background: #6d6d72;
-	border-radius: 4px;
+	background: rgb(117,220,207);
+	height: 300px;
+    box-shadow: inset 0px 1px 10px 1px rgba(79,169,167,0.2), inset 0px 1px 10px 0px rgba(79,169,167,0.6), 0 0px 0px 0px white, 0 0px 0px 0px white;
 }
 /*
 .o2-book-hours > div {
@@ -421,7 +422,7 @@ body{font-family:Montserrat,sans-serif}
 }
 */
 .o2-book-month {
-	padding: 5px;
+	padding: 5px 0;
 }
 .o2-book-days p{
 	text-align: center;
@@ -437,7 +438,7 @@ body{font-family:Montserrat,sans-serif}
     position: relative;
     border-left: 18px solid transparent;
     border-right: 18px solid transparent;
-    border-bottom: 18px solid #6d6d72;
+    border-bottom: 18px solid rgb(103,202,193);
     /* top: -17px; */
     z-index: -1;
     right: -8px;
@@ -451,7 +452,6 @@ body{font-family:Montserrat,sans-serif}
 	color: #eee;
 }
 .o2-book-hours {
-	padding: 5px;
 }
 .o2-book-hours>.row {
 	border-bottom: solid 1px #ddd
@@ -485,6 +485,49 @@ body{font-family:Montserrat,sans-serif}
            rgba(255,255,255,0) calc(50% + 0.8px),
            rgba(255,255,255,0) 100%),
 
+}
+
+.o2-book-hours ul{
+	background: rgba(0,0,0,0);
+}
+.o2-book-hours .list-block{
+	margin-top: 0;
+}
+
+.o2-book-hours .item-media {
+    margin-top: -50px;
+	color: rgba(255,255,255,0.8);
+	width: 50px;
+}
+.o2-book-hours .list-block ul:after,
+.o2-book-hours .list-block ul:before,
+.o2-book-hours .list-block .item-inner:after{
+	display: none;
+}
+
+.o2-book-hours .item-media .hour {
+	font-size: 26px;
+    min-width: 60%;
+    max-width: 60%;
+	text-align: right;
+}
+.o2-book-hours .item-media .hour.hide {
+	color: rgba(0,0,0,0);
+}
+.o2-book-hours .item-media .min {
+	font-size: 14px;
+    margin-left: 5px;
+    margin-bottom: -9px;
+}
+
+.o2-book-hours .list-block .item-media+.item-inner{
+	border-top: solid 1px #fff;
+    margin-right: 40px;
+	margin-left: 35px;
+}
+
+.o2-book-hours .list-block .item-content:first-child .item-media+.item-inner{
+	border-top: none
 }
 
 
