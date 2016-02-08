@@ -424,9 +424,12 @@ body{font-family:Montserrat,sans-serif}
 .o2-book-month {
 	padding: 5px 0;
 }
+.o2-book-days {
+	padding: 0 20px;
+}
 .o2-book-days p{
 	text-align: center;
-	font-size: 16px;
+	font-size: 18px;
 	margin: 10px;
 }
 .o2-book-days div.active>p>span:after{
@@ -510,6 +513,7 @@ body{font-family:Montserrat,sans-serif}
     min-width: 60%;
     max-width: 60%;
 	text-align: right;
+	color: white;
 }
 .o2-book-hours .item-media .hour.hide {
 	color: rgba(0,0,0,0);
