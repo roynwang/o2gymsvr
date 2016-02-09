@@ -403,7 +403,7 @@ body{font-family:Montserrat,sans-serif}
 .o2-book-hours {
 	overflow-y: scroll;
 	margin: 0;
-	padding: 40px 0 10px 0;
+	padding: 10px 0;
 	background: rgb(117,220,207);
 	height: 300px;
     box-shadow: inset 0px 1px 10px 1px rgba(79,169,167,0.2), inset 0px 1px 10px 0px rgba(79,169,167,0.6), 0 0px 0px 0px white, 0 0px 0px 0px white;
@@ -505,6 +505,8 @@ body{font-family:Montserrat,sans-serif}
 }
 .o2-book-hours .list-block{
 	margin-top: 0;
+	overflow-x: hidden;
+	padding-top: 30px;
 }
 
 .o2-book-hours .item-content {
@@ -512,6 +514,7 @@ body{font-family:Montserrat,sans-serif}
 }
 
 .o2-book-hours .item-media {
+	color: rgba(255,255,255,0.8);
     margin-top: -50px;
 	width: 50px;
 }
@@ -557,9 +560,9 @@ body{font-family:Montserrat,sans-serif}
 
 
 .o2-book-hours .list-block .item-content.seized{
-	background: rgba(255,255,255,0.5)
+	/*background: rgba(255,255,255,0.5)*/
 }
-
+/*
 .o2-book-hours .list-block .item-content.seized .item-media+.item-inner{
 	border-bottom: solid 1px #fff;
 }
@@ -571,6 +574,19 @@ body{font-family:Montserrat,sans-serif}
 }
 .o2-book-hours .list-block .item-content.seized+.item-content:not(.seized) .item-media+.item-inner {
 	border-top: none
+}
+*/
+
+.seized .item-inner {
+	padding: 0;
+}
+
+
+.seized .item-title {
+	width: inherit;
+    text-align: center;
+	color: rgba(255,255,255,0.7);
+	font-size:32px;
 }
 
 
