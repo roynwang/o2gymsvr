@@ -545,6 +545,12 @@ body {
 .booking .item-inner {
     border-bottom: none !important;
 }
+.booking>p {
+	text-align:center;
+	width:100%;
+	position:absolute;
+	z-index: 1000;
+}
 .o2-book-submit {
     position: relative;
     border-radius: 50%;
@@ -560,3 +566,40 @@ body {
 	font-size: 20px;
     left: 12px;
 }
+
+
+@-webkit-keyframes o2-pulse {
+  from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+  50% {
+    -webkit-transform: scale3d(1.3, 1.3, 1.3);
+    transform: scale3d(1.05, 1.3, 1.3);
+  }
+  to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes o2-pulse {
+  from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+  50% {
+    -webkit-transform: scale3d(1.3, 1.3, 1.3);
+    transform: scale3d(1.3, 1.3, 1.3);
+  }
+  to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}
+.o2-pulse {
+  -webkit-animation-name: o2-pulse;
+  animation-name: o2-pulse;
+}
+
+
