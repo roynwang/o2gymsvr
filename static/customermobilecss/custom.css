@@ -533,9 +533,11 @@ body {
 .seized .item-title {
     width: inherit;
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 32px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 38px;
+    line-height: 44px;
 }
+
 .o2-book-hours .list-block .item-content:first-child .item-media+.item-inner {
     border-top: solid 1px #fff;
 }
