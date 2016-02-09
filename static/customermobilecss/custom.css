@@ -403,7 +403,7 @@ body{font-family:Montserrat,sans-serif}
 .o2-book-hours {
 	overflow-y: scroll;
 	margin: 0;
-	padding: 0 0 10px 0;
+	padding: 40px 0 10px 0;
 	background: rgb(117,220,207);
 	height: 300px;
     box-shadow: inset 0px 1px 10px 1px rgba(79,169,167,0.2), inset 0px 1px 10px 0px rgba(79,169,167,0.6), 0 0px 0px 0px white, 0 0px 0px 0px white;
@@ -533,15 +533,26 @@ body{font-family:Montserrat,sans-serif}
 .o2-book-hours .list-block .item-content.seized .item-media+.item-inner{
 	background: repeating-linear-gradient(45deg, rgb(79,169,167), rgb(79,169,167) 10px, rgba(79,169,167,0.6) 10px, rgba(79,169,167,0.6) 20px);
 	background: -webkit-repeating-linear-gradient(45deg, rgb(79,169,167), rgb(79,169,167) 10px, rgba(79,169,167,0.6) 10px, rgba(79,169,167,0.6) 20px);
-	border-bottom: none;
+	border-bottom: solid 1px #fff;
 }
 .o2-book-hours .list-block .item-content.seized:nth-of-type(odd) .item-media+.item-inner {
 	background: repeating-linear-gradient(45deg, rgba(79,169,167,0.6), rgba(79,169,167,0.6) 10px, rgba(79,169,167,1) 10px, rgba(79,169,167,1) 20px);
 	background: -webkit-repeating-linear-gradient(45deg, rgba(79,169,167,0.6), rgba(79,169,167,0.6) 10px, rgba(79,169,167,1) 10px, rgba(79,169,167,1) 20px);
-	border-bottom: solid 1px #fff;
+	border-bottom: none;
+}
+.o2-book-hours .list-block .item-content.seized+.item-content.seized .item-media+.item-inner {
+	border-bottom: none;
+}
+.o2-book-hours .list-block .item-content.seized+.item-content:not(.seized) .item-media+.item-inner {
+	border-top: solid 1px #fff;
 }
 
+
 .o2-book-hours .list-block .item-content:first-child .item-media+.item-inner{
+	border-top: solid 1px #fff;
+}
+.o2-book-hours .list-block .item-content:last-child .item-media+.item-inner{
+	border-bottom: none;
 }
 
 
