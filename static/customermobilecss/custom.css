@@ -525,13 +525,23 @@ body{font-family:Montserrat,sans-serif}
 }
 
 .o2-book-hours .list-block .item-media+.item-inner{
-	border-top: solid 1px #fff;
+	border-bottom: solid 1px #fff;
     margin-right: 40px;
 	margin-left: 35px;
 }
 
+.o2-book-hours .list-block .item-content.seized .item-media+.item-inner{
+	background: repeating-linear-gradient(45deg, rgb(79,169,167), rgb(79,169,167) 10px, rgba(79,169,167,0.6) 10px, rgba(79,169,167,0.6) 20px);
+	background: -webkit-repeating-linear-gradient(45deg, rgb(79,169,167), rgb(79,169,167) 10px, rgba(79,169,167,0.6) 10px, rgba(79,169,167,0.6) 20px);
+	border-bottom: none;
+}
+.o2-book-hours .list-block .item-content.seized:nth-of-type(odd) .item-media+.item-inner {
+	background: repeating-linear-gradient(45deg, rgba(79,169,167,0.6), rgba(79,169,167,0.6) 10px, rgba(79,169,167,1) 10px, rgba(79,169,167,1) 20px);
+	background: -webkit-repeating-linear-gradient(45deg, rgba(79,169,167,0.6), rgba(79,169,167,0.6) 10px, rgba(79,169,167,1) 10px, rgba(79,169,167,1) 20px);
+	border-bottom: solid 1px #fff;
+}
+
 .o2-book-hours .list-block .item-content:first-child .item-media+.item-inner{
-	border-top: none
 }
 
 
