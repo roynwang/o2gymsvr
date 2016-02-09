@@ -62,7 +62,7 @@ app.onPageInit('about', function (page) {
 			$$(".o2-book-hours ul li.booking").toggleClass("booking")
 		}
 		$$(".o2-book-hours ul li").on("click", function(event){
-			if(busy) return;
+			if(busy || $$(this).hasClass("booking")) return;
 			cleanSubmit()
 			$$(this).addClass("booking")
 			prepareSubmit($$(this))
