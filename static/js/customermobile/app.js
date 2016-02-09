@@ -22,6 +22,56 @@ $$(".isimg").on("click", function() {
 })
 
 app.onPageInit('about', function (page) {
+	//bind hours click
+	var busy = false
+	var busycount = "·"
+
+	function bindHour(){
+		function prepareSubmit(ele){
+			var btnp = $$('<p class="animated slideInRight"><span class="o2-book-submit">预约</span></p>')
+			$$(ele).prepend(btnp)
+			function submit(){
+				if(busy) return;
+				var btn = $$(this)
+				btn.html(busycount)
+				busy = setInterval(function(){
+					if(busy){
+						if(busycount.length == 5){
+							busycount = ""
+						}
+						busycount += "·"
+						btn.html(busycount)
+					} else {
+						btn.html("")
+						btn.addClass("ion-ios-checkmark-empty")
+						btn.addClass("animated o2-pulse")
+						btn.css("font-size","60px")
+						window.clearInterval(busy)
+						btn.off("click", submit)
+					}
+				},300)
+				busy=true;
+				btnp.removeClass("animated slideInRight")
+				setTimeout(function(){ busy = false}, 2000);
+			}
+
+			btnp.find(".o2-book-submit").on("click", submit)
+		}
+		function cleanSubmit(){
+			$$(".o2-book-hours ul li.booking>p").remove()
+			$$(".o2-book-hours ul li.booking").toggleClass("booking")
+		}
+		$$(".o2-book-hours ul li").on("click", function(event){
+			if(busy) return;
+			cleanSubmit()
+			$$(this).addClass("booking")
+			prepareSubmit($$(this))
+		})
+	}
+
+	bindHour()
+
+
 	var expanding = undefined
 	$$(".back").on("click", function(){
 		mainView.router.back();
