@@ -503,6 +503,7 @@ body{font-family:Montserrat,sans-serif}
 
 .o2-book-hours .item-media {
     margin-top: -50px;
+	color: rgba(255,255,255,0.8);
 	width: 50px;
 }
 .o2-book-hours .list-block ul:after,
@@ -516,6 +517,7 @@ body{font-family:Montserrat,sans-serif}
     min-width: 60%;
     max-width: 60%;
 	text-align: right;
+	color: white;
 }
 .o2-book-hours .item-media .hour.hide {
 	color: rgba(0,0,0,0);
@@ -544,23 +546,21 @@ body{font-family:Montserrat,sans-serif}
 	border-bottom: none;
 }
 */
-
-
-.o2-book-hours .list-block .item-content.seized{
-	background: #f1f1f1
-}
-
 .o2-book-hours .list-block .item-content.seized .item-media+.item-inner{
+	background: repeating-linear-gradient(45deg, rgb(79,169,167), rgb(79,169,167) 10px, rgba(79,169,167,0.6) 10px, rgba(79,169,167,0.6) 20px);
+	background: -webkit-repeating-linear-gradient(45deg, rgb(79,169,167), rgb(79,169,167) 10px, rgba(79,169,167,0.6) 10px, rgba(79,169,167,0.6) 20px);
 	border-bottom: solid 1px #fff;
 }
 .o2-book-hours .list-block .item-content.seized:nth-of-type(odd) .item-media+.item-inner {
+	background: repeating-linear-gradient(45deg, rgba(79,169,167,0.6), rgba(79,169,167,0.6) 10px, rgba(79,169,167,1) 10px, rgba(79,169,167,1) 20px);
+	background: -webkit-repeating-linear-gradient(45deg, rgba(79,169,167,0.6), rgba(79,169,167,0.6) 10px, rgba(79,169,167,1) 10px, rgba(79,169,167,1) 20px);
 	border-bottom: none;
 }
 .o2-book-hours .list-block .item-content.seized+.item-content.seized .item-media+.item-inner {
 	border-bottom: none;
 }
 .o2-book-hours .list-block .item-content.seized+.item-content:not(.seized) .item-media+.item-inner {
-	border-top: none
+	border-top: solid 1px #fff;
 }
 
 
