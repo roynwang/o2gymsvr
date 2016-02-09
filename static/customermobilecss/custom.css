@@ -555,6 +555,10 @@ body{font-family:Montserrat,sans-serif}
 	border-bottom: none;
 }
 
+.booking .item-inner {
+	border-bottom: none !important;
+}
+
 
 
 
