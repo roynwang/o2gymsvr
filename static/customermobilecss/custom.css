@@ -677,6 +677,8 @@ body {
 	max-width: 65px;
     height: 65px;
 	float: right;
+	-webkit-filter: brightness(1.12);
+	filter: brightness(1.12);
 }
 .o2-book-header-item > .date {
 	float: right;
@@ -706,8 +708,9 @@ body {
 }
 
 .o2-book-header-coach {
-	position: absolute;
-	right: 0;
+    position: absolute;
+    right: 0;
+    z-index: 1;
 }
 
 
