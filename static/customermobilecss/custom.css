@@ -657,17 +657,47 @@ body {
 	font-size: 40px;
 	color: white;
 }
+.o2-book-header-mask  {
+	position: absolute;
+    min-width: 65px;
+    max-width: 65px;
+    height: 65px;
+    background: rgb(55,194,219);
+    border-bottom-left-radius: 6px;
+    box-shadow: 0px 0px 10px 2px;
+    overflow: hidden;
+    float: right;
+    right: 0;
+    opacity: 0.2;
+    z-index: 1;
+}
 
 .o2-book-header-item > img {
-	width: 60px;
-	height: 60px;
-	/*
-	filter: blur(1px);
-	-webkit-filter: blur(1px);
-	-moz-filter: blur(1px);
-	-o-filter: blur(1px);
-	-ms-filter: blur(1px);
-	*/
+    min-width: 65px;
+	max-width: 65px;
+    height: 65px;
+	float: right;
+}
+
+.o2-book-header-item > .date > h4 {
+	margin: 0;
+    color: white;
+    font-size: 22px;
+    padding-left: 10px;
+}
+.o2-book-header-item .month,
+.o2-book-header-item .day {
+}
+
+.o2-book-header-item .hour {
+	padding-left: 20px;
+}
+.o2-book-header-item .min {
+}
+
+.o2-book-header-coach {
+	position: absolute;
+	right: 0;
 }
 
 

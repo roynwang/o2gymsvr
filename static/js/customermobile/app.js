@@ -9,7 +9,6 @@ var pages = {
 	"bookdetail": "/static/customermobile/book.html"
 }
 
-
 $$(".isimg").on("click", function() {
 	app.photoBrowser({
 		photos: [
