@@ -97,29 +97,56 @@ app.onPageInit('about', function(page) {
         var row = '<div class="col-auto"><p><span>##</span></p></div>'
         var rows = ""
         $$.each(arr, function(i, v) {
-            rows += row.replace("##", v);
+			if(v==""){
+				rows += '<div class="col-auto"></div>'			
+			} else {
+	            rows += row.replace("##", v);
+			}
         })
         return container.replace("##", rows)
     }
 
-    function buildMonth() {
-        var month = '<div class="monthview"><div class="content-block-title"><h2 style="margin:0px">十月</h2></div>' +
+    function buildMonth(m) {
+        var days = []
+		var curmonth = moment()
+		curmonth.set('date', 1)
+
+		if(m != undefined){
+			curmonth = curmonth.add(m, 'months')
+		}
+        var month = '<div class="monthview"><div class="content-block-title">' + curmonth.format("MMMM") + '</div>' +
             '<div class="content-block accordion-list custom-accordion o2-book-month">' +
             '##</div>' +
             '</div></div>';
-        var days = [1, 2, 3, 4, 5, 6, 7]
+		
+		var week = []
+		var wd = curmonth.format("d")
+		var lastday = curmonth.add(1, 'months').subtract(1,"days").format("D")
+		
+		for(var i = 0; i < wd; i++){
+			week.push("")
+		}
+	
         var weeks = ""
-        for (var i = 0; i < 4; i++) {
-            weeks += buildMonthRow(days)
-        }
+		for(var i=1; i<= lastday; i++){
+			week.push(i)
+			if(week.length == 7){
+				weeks += buildMonthRow(week)
+				week = []
+			}
+		}
+		if(week.length != 0){
+			while(week.length != 7) { week.push("")}
+			weeks += buildMonthRow(week)
+		}
+
         return month.replace("##", weeks)
     }
 
     function loadmore() {
         var months = buildMonth();
-        months += buildMonth();
-        months += buildMonth();
-        $$(".infinite-scroll .months").append(months)
+        months += buildMonth(1);
+        $$(".months").append(months)
     }
 
 	function buildDayView() {
@@ -153,35 +180,12 @@ app.onPageInit('about', function(page) {
     })
     $$('.accordion-item').on('close', function(e) {
         $$(".o2-book-days .col-auto").removeClass("active")
+		$$(this).find(".o2-book-hours").html("");
     });
     $$('.accordion-item').on('open', function(e) {
         expanding.addClass("active")
 		$$(this).find(".o2-book-hours").html(buildDayView());
 	    bindHour($$(this))
-    });
-    $$('.infinite-scroll').on('infinite', function() {
-        // Exit, if loading in progress
-        if (loading) return;
-        // Set loading flag
-        loading = true;
-        // Emulate 1s loading
-        // Reset loading flag
-        loading = false;
-        if (lastIndex >= maxItems) {
-            // Nothing more to load, detach infinite scroll events to prevent unnecessary loadings
-            app.detachInfiniteScroll($$('.infinite-scroll'));
-            // Remove preloader
-            $$('.infinite-scroll-preloader').remove();
-            return;
-        }
-        // Generate new items HTML
-
-        // Append new items
-        //$$('.list-block ul').append(html);
-        loadmore()
-
-        // Update last loaded index
-        lastIndex = $$('.list-block .monthview').length;
     });
 });
 

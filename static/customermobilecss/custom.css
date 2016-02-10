@@ -386,6 +386,7 @@ body {
 
 .o2-book-month {
     padding: 5px 0;
+	margin-top: 0 !important;
 }
 .o2-book-days {
     padding: 0 20px;
@@ -395,20 +396,21 @@ body {
     font-size: 18px;
     margin: 10px;
 }
+
+/*
 .o2-book-days div.active>p>span:after {
     content: "";
     display: block;
-    /* background: blue; */
     width: 0;
     height: 0;
     position: relative;
     border-left: 18px solid transparent;
     border-right: 18px solid transparent;
     border-bottom: 18px solid rgb(103, 202, 193);
-    /* top: -17px; */
     z-index: -1;
     right: -8px;
 }
+*/
 .o2-book-hours > .row > div > p {
     line-height: 50px;
     text-align: center;
@@ -433,7 +435,7 @@ body {
     display: none;
 }
 .o2-book-month>.accordion-item-expanded>.accordion-item-content {
-    margin-top: -20px;
+    margin-top: -4px;
 }
 .na {
     background: linear-gradient(to top left, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) calc(50% - 0.8px), rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) calc(50% + 0.8px), rgba(255, 255, 255, 0) 100%),
@@ -644,8 +646,13 @@ body {
 	padding-bottom: 5px;
 	padding-top: 20px;
 	border-bottom: 1px solid #eee;
+	font-family: sans-serif;
 }
-
+.o2-book-days>.col-auto.active>p{
+	color: rgb(57,219,209);
+	font-size:28px;
+	font-weight: bold;
+}
 
 .o2-book-header-item {
 	min-height: 60px;
@@ -745,5 +752,19 @@ body {
 .o2-book-header-bottom>div:nth-of-type(8){
 	background:#37c2d8;
 }
+
+.monthview .content-block-title{
+    font-size: 20px;
+    margin-bottom: 0;
+	margin-left: 25px;
+}
+.o2-book-month .accordion-item:first-child .col-auto>p{
+	padding-top:5px;
+}
+.o2-book-days>.col-auto:first-child>p,
+.o2-book-days>.col-auto:last-child>p{
+	color: #aaa;
+}
+
 
 
