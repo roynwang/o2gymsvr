@@ -691,8 +691,12 @@ body {
 
 .o2-book-header-item .hour {
 	padding-left: 20px;
+    font-family: sans-serif;
+    font-weight: 200;
 }
-.o2-book-header-item .min {
+.o2-book-header-item .minute {
+    font-family: sans-serif;
+    font-weight: 200;
 }
 
 .o2-book-header-coach {
