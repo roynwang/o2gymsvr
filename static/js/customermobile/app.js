@@ -28,11 +28,12 @@ app.onPageInit('about', function (page) {
 
 	function bindHour(){
 		function prepareSubmit(ele){
-			var btnp = $$('<p class="animated slideInRight"><span class="o2-book-submit">预约</span></p>')
+			var btnp = $$('<p class="animated slideInRight" style="display:none"><span class="o2-book-submit">预约</span></p>')
 			$$(ele).prepend(btnp)
+			var btn = btnp.find(".o2-book-submit")
+			btnp.show()
 			function submit(){
 				if(busy) return;
-				var btn = $$(this)
 				btn.html(busycount)
 				busy = setInterval(function(){
 					if(busy){
