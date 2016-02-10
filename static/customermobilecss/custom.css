@@ -678,26 +678,31 @@ body {
     height: 65px;
 	float: right;
 }
+.o2-book-header-item > .date {
+	float: right;
+	padding-right: 80px;
+}
 
 .o2-book-header-item > .date > h4 {
 	margin: 0;
     color: white;
-    font-size: 22px;
+    font-size: 24px;
     padding-left: 10px;
     font-family: sans-serif;
     font-weight: 200;
 }
 .o2-book-header-item .month,
 .o2-book-header-item .day {
-	font-size: 24px;
 	padding-left: 5px;
 	padding-right: 5px;
 }
 
 .o2-book-header-item .hour {
 	padding-left: 20px;
+	font-size: 18px;
 }
 .o2-book-header-item .minute {
+	font-size: 18px;
 }
 
 .o2-book-header-coach {
