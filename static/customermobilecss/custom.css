@@ -765,6 +765,7 @@ body {
 	color: #aaa;
 }
 
+
 #o2-book-overlay-top, #o2-book-overlay-bottom {
     position: absolute;
     background: white;
@@ -774,6 +775,16 @@ body {
 }
 #o2-book-overlay-bottom {
 	bottom:0;
+}
+
+#o2-book-overlay-top > h4 {
+    position: absolute;
+    text-align: center;
+    bottom: 0;
+    font-size: 24px;
+    margin: 0px;
+    width: 100%;
+    color: #777;
 }
 
 
