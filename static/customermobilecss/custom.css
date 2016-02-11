@@ -767,10 +767,10 @@ body {
 
 #o2-book-overlay-top, #o2-book-overlay-bottom {
     position: absolute;
-    background: black;
+    background: white;
     width: 100%;
     z-index: 1000;
-    opacity: 0.4;
+    opacity: 0.88;
 }
 #o2-book-overlay-bottom {
 	bottom:0;
