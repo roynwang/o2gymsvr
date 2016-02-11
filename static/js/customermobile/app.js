@@ -192,7 +192,7 @@ app.onPageInit('about', function(page) {
 		//set overlay
 		current_accordion = $$(this)
 		$$("#o2-book-overlay-top").css("height", current_accordion.offset().top + "px")
-		$$("#o2-book-overlay-bottom").css("height", $$(".views").height() - current_accordion.offset().top - 335  + "px")
+		$$("#o2-book-overlay-bottom").css("height", $$(".views").height() - current_accordion.offset().top - 350  + "px")
 		$$(this).find(".o2-book-hours").html(buildDayView());
 	    bindHour($$(this))
 		e.stopPropagation()
