@@ -147,7 +147,7 @@ app.onPageInit('about', function(page) {
     function loadmore() {
         var months = buildMonth();
         months += buildMonth(1);
-        months += buildMonth(1);
+        months += buildMonth(2);
         $$(".months").append(months)
     }
 
@@ -193,12 +193,24 @@ app.onPageInit('about', function(page) {
         expanding.addClass("active")
 		//set overlay
 		current_accordion = $$(this)
-		$$("#o2-book-overlay-top").css("height", current_accordion.offset().top + 10 + "px")
-		$$("#o2-book-overlay-bottom").css("height", $$(".views").height() - current_accordion.offset().top - 350  + "px")
-		$$("#o2-book-overlay-top").show()
-		$$(this).find(".o2-book-hours").html(buildDayView());
-	    bindHour($$(this))
-		e.stopPropagation()
+		var to = 0;
+		var actual = $$(".months").offset().top + current_accordion.offset().top
+		if(actual> 160){
+			to = actual - $$(".page").height() * 0.4
+		}
+		function cb(){
+			$$("#o2-book-overlay-top").css("height", current_accordion.offset().top + 10 + "px")
+			$$("#o2-book-overlay-bottom").css("height", $$(".views").height() - current_accordion.offset().top - 350  + "px")
+			$$("#o2-book-overlay-top").show()
+			current_accordion.find(".o2-book-hours").html(buildDayView());
+		    bindHour(current_accordion)
+			e.stopPropagation()
+		}
+		if(to <= 0){
+			cb()
+		} else {
+			$$(".page-content").scrollTop(to,300, cb)
+		}
     });
 	$$('.accordion-item').on('opened', function(e){	
 	});
