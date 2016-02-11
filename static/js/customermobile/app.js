@@ -180,6 +180,10 @@ app.onPageInit('about', function(page) {
     $$(".o2-book-days .col-auto").on("click", function() {
         expanding = $$(this)
     })
+
+	$$("#o2-book-overlay-top, #o2-book-overlay-bottom").on("scroll", function(){
+		alert("xxxxxxxxxxxx");
+	})
 	$$("#o2-book-overlay-top, #o2-book-overlay-bottom").on("click", function(){
 		app.accordionClose(current_accordion)
 	})
