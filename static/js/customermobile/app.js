@@ -147,7 +147,7 @@ app.onPageInit('about', function(page) {
     function loadmore() {
         var months = buildMonth();
         months += buildMonth(1);
-        months += buildMonth(1);
+        months += buildMonth(2);
         $$(".months").append(months)
     }
 
