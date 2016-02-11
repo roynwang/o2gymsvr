@@ -36,6 +36,7 @@ app.onPageInit('about', function(page) {
     var itemsPerLoad = 4;
 
     var expanding = undefined
+	var current_accordion = undefined
 
     function bindHour(tar) {
         function prepareSubmit(ele) {
@@ -178,15 +179,26 @@ app.onPageInit('about', function(page) {
     $$(".o2-book-days .col-auto").on("click", function() {
         expanding = $$(this)
     })
+	$$("#o2-book-overlay-top, #o2-book-overlay-bottom").on("click", function(){
+		app.accordionClose(current_accordion)
+	})
     $$('.accordion-item').on('close', function(e) {
         $$(".o2-book-days .col-auto").removeClass("active")
+		$$("#o2-book-overlay-top").css("height", 0)
 		$$(this).find(".o2-book-hours").html("");
     });
     $$('.accordion-item').on('open', function(e) {
         expanding.addClass("active")
+		//set overlay
+		current_accordion = $$(this)
+		$$("#o2-book-overlay-top").css("height", current_accordion.offset().top + "px")
+		$$("#o2-book-overlay-bottom").css("height", $$(".views").height() - current_accordion.offset().top - 335  + "px")
 		$$(this).find(".o2-book-hours").html(buildDayView());
 	    bindHour($$(this))
+		e.stopPropagation()
     });
+	$$('.accordion-item').on('opened', function(e){	
+	});
 });
 
 $$("#book-detail").on("click", function() {
