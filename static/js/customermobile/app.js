@@ -184,14 +184,14 @@ app.onPageInit('about', function(page) {
 	})
     $$('.accordion-item').on('close', function(e) {
         $$(".o2-book-days .col-auto").removeClass("active")
-		$$("#o2-book-overlay-top").css("height", 0)
+		$$("#o2-book-overlay-top, #o2-book-overlay-bottom").css("height", 0)
 		$$(this).find(".o2-book-hours").html("");
     });
     $$('.accordion-item').on('open', function(e) {
         expanding.addClass("active")
 		//set overlay
 		current_accordion = $$(this)
-		$$("#o2-book-overlay-top").css("height", current_accordion.offset().top + "px")
+		$$("#o2-book-overlay-top").css("height", current_accordion.offset().top + 10 + "px")
 		$$("#o2-book-overlay-bottom").css("height", $$(".views").height() - current_accordion.offset().top - 350  + "px")
 		$$(this).find(".o2-book-hours").html(buildDayView());
 	    bindHour($$(this))

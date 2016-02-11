@@ -386,6 +386,7 @@ body {
 
 .o2-book-month {
     padding: 5px 0;
+    margin-top: -5px !important;
 }
 .o2-book-days {
     padding: 0 20px;
@@ -758,7 +759,6 @@ body {
 	margin-left: 25px;
 }
 .o2-book-month .accordion-item:first-child .col-auto>p{
-	padding-top:5px;
 }
 .o2-book-days>.col-auto:first-child>p,
 .o2-book-days>.col-auto:last-child>p{
