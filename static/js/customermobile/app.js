@@ -40,7 +40,7 @@ app.onPageInit('about', function(page) {
 
     function bindHour(tar) {
         function prepareSubmit(ele) {
-            var btnp = $$('<p class="animated slideInRight" style="display:none"><span class="o2-book-submit">预约</span></p>')
+            var btnp = $$('<p class="animated fadeIn o2-fadeIn" style="display:none"><span class="o2-book-submit">预约</span></p>')
             $$(ele).prepend(btnp)
             var btn = btnp.find(".o2-book-submit")
             btnp.show()

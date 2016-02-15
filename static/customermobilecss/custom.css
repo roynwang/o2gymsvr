@@ -826,6 +826,13 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 	margin-bottom: 5px;
 }
 
+.o2-fadeIn{
+	-webkit-animation-duration: 0.4s !important;
+	-moz-animation-duration: 0.4s !important;
+	animation-duration: 0.4s !important;
+}
+
+
 
 
 
