@@ -726,6 +726,7 @@ body {
 .o2-book-header-item .day {
 	padding-left: 5px;
 	padding-right: 5px;
+	font-family: Montserrat, sans-serif;
 }
 
 .o2-book-header-item .hour {
@@ -861,6 +862,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 	color: rgba(0, 0, 0, 0.4);
 }
 
+.picker-modal .picker-items-col:nth-of-type(1) .picker-item {
+	padding-right: 20px;
+}
+
 .picker-modal .picker-items-col:nth-of-type(2) .picker-item{
 	padding:0;
 	font-size: 20px;
@@ -868,11 +873,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 .picker-modal .picker-items-col:nth-of-type(3) .picker-item{
 	padding-left: 5px;
 	font-size: 20px;
+	padding-right: 30px;
 }
 .picker-modal .toolbar {
 	background: rgba(255,255,255,0.4);
 }
-.toolbar a.link {
+.toolbar a.link.o2-custom {
 	color: rgba(255,255,255,0.88);
     /* padding-left: 10px; */
     /* padding-right: 10px; */
