@@ -892,6 +892,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 .picker-center-highlight:after {
 	background-color: rgba(41,134,129,0.85);
 }
+.picker-modal .toolbar:before {
+    background: rgba(69,203,220,1.5);
+}
 
 
 
