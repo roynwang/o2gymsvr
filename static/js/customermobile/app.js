@@ -40,7 +40,7 @@ var weightPicker = app.picker({
 	toolbarTemplate:'<div class="toolbar"><div class="toolbar-inner"><div class="left"></div><div class="right"><a href="#" class="link close-picker">保存</a></div></div></div>',
  	cols: [
         {
-            textAlign: 'right',
+            textAlign: 'center',
             values: range(40, 100)
         },
         {
@@ -48,7 +48,7 @@ var weightPicker = app.picker({
             values: "."
         },
         {
-            textAlign: 'left',
+            textAlign: 'center',
             values: range(0,9)
         },
 
