@@ -188,24 +188,28 @@ app.onPageInit('about', function(page) {
 		app.accordionClose(current_accordion)
 	})
     $$('.accordion-item').on('close', function(e) {
-        $$(".o2-book-days .col-auto").removeClass("active")
-		$$("#o2-book-overlay-top, #o2-book-overlay-bottom").css("height", 0)
-		$$("#o2-book-overlay-top").hide()
+	
+		$$(".o2-book-days .col-auto").removeClass("active")
+		$$("#o2-book-overlay-top, #o2-book-overlay-bottom").hide()
 		$$(this).find(".o2-book-hours").html("");
     });
-    $$('.accordion-item').on('open', function(e) {
+    $$('.accordion-item').on('opened', function(e) {
         expanding.addClass("active")
+		$$(".months").css("margin-bottom", "400px")
 		//set overlay
 		current_accordion = $$(this)
 		var to = 0;
-		var actual = $$(".months").offset().top + current_accordion.offset().top
-		if(actual> 160){
-			to = actual - $$(".page").height() * 0.4
+		var minheight = $$(".page").height() * 0.2
+
+		if(current_accordion.offset().top > minheight){
+			to = $$('#month-scroll').scrollTop() + current_accordion.offset().top - minheight
 		}
 		function cb(){
 			$$("#o2-book-overlay-top").css("height", current_accordion.offset().top + 10 + "px")
 			$$("#o2-book-overlay-bottom").css("height", $$(".views").height() - current_accordion.offset().top - 350  + "px")
-			$$("#o2-book-overlay-top").show()
+			$$("#o2-book-overlay-top").addClass("animated fadeIn")
+			$$("#o2-book-overlay-bottom").addClass("animated fadeIn")
+			$$("#o2-book-overlay-top, #o2-book-overlay-bottom").show()
 			current_accordion.find(".o2-book-hours").html(buildDayView());
 		    bindHour(current_accordion)
 			e.stopPropagation()
@@ -213,13 +217,14 @@ app.onPageInit('about', function(page) {
 		if(to <= 0){
 			cb()
 		} else {
-			$$(".page-content").scrollTop(to,300, cb)
+			//scroll
+			$$("#month-scroll").scrollTop(to,300, cb)
 		}
     });
 	$$('.accordion-item').on('opened', function(e){	
 	});
 });
 
-$$("#book-detail").on("click", function() {
+$$("#booknow").on("click", function() {
     mainView.router.loadPage(pages.bookdetail);
 })
