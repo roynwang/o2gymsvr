@@ -864,6 +864,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 
 .picker-modal .picker-items-col:nth-of-type(1) .picker-item {
 	padding-right: 20px;
+	padding-left: 100px;
 }
 
 .picker-modal .picker-items-col:nth-of-type(2) .picker-item{
@@ -873,7 +874,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 .picker-modal .picker-items-col:nth-of-type(3) .picker-item{
 	padding-left: 5px;
 	font-size: 20px;
-	padding-right: 30px;
+	padding-right: 100px;
 }
 .picker-modal .toolbar {
 	background: rgba(255,255,255,0.4);
