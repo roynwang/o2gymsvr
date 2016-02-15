@@ -10,6 +10,21 @@ var pages = {
 }
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
 
+function range(start, end, step){
+	var ret = []
+	if(step == undefined){
+		step = 1
+	}
+	var tmp = start
+	while(tmp<=end){
+		ret.push(tmp)
+		tmp += step
+	}
+	return ret
+}
+
+
+
 $$(".isimg").on("click", function() {
     app.photoBrowser({
         photos: [
@@ -20,6 +35,28 @@ $$(".isimg").on("click", function() {
         theme: 'dark'
     }).open();
 })
+var weightPicker = app.picker({
+	input:"#weight-picker",
+	toolbarTemplate:'<div class="toolbar"><div class="toolbar-inner"><div class="left"></div><div class="right"><a href="#" class="link close-picker">保存</a></div></div></div>',
+ 	cols: [
+        {
+            textAlign: 'right',
+            values: range(40, 100)
+        },
+        {
+            textAlign: 'center',
+            values: "."
+        },
+        {
+            textAlign: 'left',
+            values: range(0,9)
+        },
+
+    ]
+});
+
+
+
 
 app.onPageInit('about', function(page) {
     //busy flat	
@@ -228,3 +265,10 @@ app.onPageInit('about', function(page) {
 $$("#booknow").on("click", function() {
     mainView.router.loadPage(pages.bookdetail);
 })
+/*
+$$("#setweight").on("click",function() {
+	weightPicker.open()
+})
+*/
+
+
