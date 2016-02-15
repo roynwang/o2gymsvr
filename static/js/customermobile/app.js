@@ -37,7 +37,7 @@ $$(".isimg").on("click", function() {
 })
 var weightPicker = app.picker({
 	input:"#weight-picker",
-	toolbarTemplate:'<div class="toolbar"><div class="toolbar-inner"><div class="left"></div><div class="right"><a href="#" class="link close-picker">保存</a></div></div></div>',
+	toolbarTemplate:'<div class="toolbar"><div class="toolbar-inner"><div class="left"></div><div class="right"><a href="#" class="link close-picker o2-custom">保存</a></div></div></div>',
  	cols: [
         {
             textAlign: 'center',

@@ -726,6 +726,7 @@ body {
 .o2-book-header-item .day {
 	padding-left: 5px;
 	padding-right: 5px;
+	font-family: Montserrat, sans-serif;
 }
 
 .o2-book-header-item .hour {
@@ -877,7 +878,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 .picker-modal .toolbar {
 	background: rgba(255,255,255,0.4);
 }
-.toolbar a.link {
+.toolbar a.link.o2-custom {
 	color: rgba(255,255,255,0.88);
     /* padding-left: 10px; */
     /* padding-right: 10px; */
