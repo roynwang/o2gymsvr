@@ -230,6 +230,11 @@ app.onPageInit('about', function(page) {
 		$$("#o2-book-overlay-top, #o2-book-overlay-bottom").hide()
 		$$(this).find(".o2-book-hours").html("");
     });
+
+    $$('.accordion-item').on('open', function(e) {
+		current_accordion = $$(this)
+		current_accordion.find(".o2-book-hours").html(buildDayView());
+	})
     $$('.accordion-item').on('opened', function(e) {
         expanding.addClass("active")
 		$$(".months").css("margin-bottom", "400px")
@@ -247,10 +252,9 @@ app.onPageInit('about', function(page) {
 			$$("#o2-book-overlay-top").addClass("animated fadeIn")
 			$$("#o2-book-overlay-bottom").addClass("animated fadeIn")
 			$$("#o2-book-overlay-top, #o2-book-overlay-bottom").show()
-			current_accordion.find(".o2-book-hours").html(buildDayView());
-		    bindHour(current_accordion)
 			e.stopPropagation()
 		}
+		bindHour(current_accordion)
 		if(to <= 0){
 			cb()
 		} else {
