@@ -844,7 +844,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 
 }
 .picker-modal.modal-in {
-    opacity: 0.93;
+    opacity: 0.96;
 	background: rgb(59,247,200);
 	background: -moz-linear-gradient(-45deg, rgb(59,247,200) 0%, rgb(55,194,219) 100%);
 	background: -webkit-gradient(left top, right bottom, color-stop(0%, rgb(59,247,200)), color-stop(100%, rgb(55,194,219)));
@@ -895,6 +895,75 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 }
 .picker-modal .toolbar:before {
     background: rgba(69,203,220,1.5);
+}
+.login-screen-title {
+	color: rgba(0, 0, 0, 0.4);
+}
+.login-screen-content input {
+    text-align: center;
+    color: rgba(255,255,255,0.8) !important;
+	background: rgba(62,195,217,0.6) !important;
+}
+
+.login-screen-content .item-content:nth-of-type(1) input{
+	border-top-left-radius: 6px;
+	border-top-right-radius: 6px;
+}
+
+.login-screen-content .item-content:nth-of-type(2) input{
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
+}
+
+.login-screen-content input:-webkit-autofill,
+.login-screen-content textarea:-webkit-autofill,
+.login-screen-content select:-webkit-autofill {
+    background-color: transparent !important;
+    background-image: none !important;
+    color: rgba(0,0,0,0.8) !important;
+}
+.login-screen-content input::-webkit-input-placeholder{
+    color: rgba(255,255,255,0.8) !important;
+}
+.login-screen-content input:-ms-input-placeholder{
+    color: rgba(255,255,255,0.8) !important;
+}
+.login-screen-content input::-moz-placeholder{
+    color: rgba(255,255,255,0.8) !important;
+}
+.login-screen-content input:-moz-placeholder{
+	color: rgba(255,255,255,0.8) !important;
+}
+.list-block .item-inner:after {
+	opacity: 0;
+}
+
+
+
+
+
+
+.login-screen-content input:-webkit-autofill,
+.login-screen-content textarea:-webkit-autofill,
+.login-screen-content select:-webkit-autofill {
+    background-color: transparent !important;
+    background-image: none !important;
+    color: rgba(0,0,0,0.8) !important;
+}
+.login-screen-content input::-webkit-input-placeholder{
+    color: rgba(255,255,255,0.8) !important;
+}
+.login-screen-content input:-ms-input-placeholder{
+    color: rgba(255,255,255,0.8) !important;
+}
+.login-screen-content input::-moz-placeholder{
+    color: rgba(255,255,255,0.8) !important;
+}
+.login-screen-content input:-moz-placeholder{
+	color: rgba(255,255,255,0.8) !important;
+}
+.list-block .item-inner:after {
+	opacity: 0;
 }
 
 

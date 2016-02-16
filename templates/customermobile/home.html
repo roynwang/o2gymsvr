@@ -1,3 +1,4 @@
+{%verbatim%}
 <!DOCTYPE html>
 <html>
 
@@ -65,7 +66,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="page-content" style="padding-top:90px;padding-bottom:40px">
+                    <div id="o2-timeline" class="page-content" style="padding-top:90px;padding-bottom:40px">
                         <div class="card o2-timeline booking">
                             <div class="card-content row no-gutter">
                                 <div class="col-20 o2-timeline-line">
@@ -109,7 +110,8 @@
                                             <div>
                                                 <div class="o2-timeline-info unfilled">
                                                     <input id="weight-picker"></input>
-                                                    <p><i class="ion-ios-help-outline" id="setweight"></i>
+                                                    <p><i class="ion-ios-help-outline"
+                                                        id="setweight"></i>
                                                     </p>
                                                     <p>体重</p>
                                                 </div>
@@ -238,10 +240,112 @@
             </div>
         </div>
     </div>
+    <div class="login-screen modal-in">
+        <div class="view">
+            <div class="page">
+                <div class="page-content login-screen-content o2-bg-gradient">
+                    <div class="login-screen-title">登录</div>
+                    <form>
+                        <div class="list-block">
+                            <ul>
+                                <li class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-input">
+                                            <input type="text" name="username" placeholder="手机号码">
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-input">
+                                            <input type="password" name="password" placeholder="密码">
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="list-block">
+                            <ul>
+                                <li><a href="#" class="item-link list-button">Sign In</a>
+                                </li>
+                            </ul>
+                            <div class="list-block-label">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing
+                                    elit.</p>
+                                <p><a href="#" class="close-login-screen">Close Login Screen</a>
+                                </p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script src="//cdn.bootcss.com/framework7/1.4.0/js/framework7.min.js"></script>
 <script src="//cdn.bootcss.com/moment.js/2.11.1/moment.min.js"></script>
 <script src="//cdn.bootcss.com/moment.js/2.11.1/locale/zh-cn.js"></script>
+<script id="tpl_timelineitem" type="text/template7">
+    <div class="card o2-timeline {{#if booking}}booking{{/if}}">
+        <div class="card-content row no-gutter">
+            {{#with date}}
+            <div class="col-20 o2-timeline-line">
+                <p class="o2-timline-date day">{{day}}
+                    <span class="o2-timline-date hr"></span>
+                </p>
+                <p class="o2-timline-date month">{{month}}</p>
+            </div>
+            {{/with}}
+            <div class="col-5">
+                {{#if booking}}
+                <div class="o2-timeline-point-gray"></div>
+                {{else}} {{#if showscale}}
+                <div class="o2-timeline-point-outline"></div>
+                {{else}}
+                <div class="o2-timeline-point-gray"></div>
+                {{/if}} {{/if}}
+            </div>
+            <div class="col-75">
+                <div class="card">
+                    <div class="card-content-inner">
+                        {{#if booking}}
+                        <div>
+                            <div class="o2-timeline-info unfilled" id="booknow">
+                                <p><i class="ion-ios-plus-outline"></i>
+                                </p>
+                                <p>预约</p>
+                            </div>
+                        </div>
+                        {{/if}} {{#if showscale}}
+                        <div>
+                            <div class="o2-timeline-info unfilled">
+                                <input id="weight-picker"></input>
+                                <p><i class="ion-ios-help-outline" id="setweight"></i>
+                                </p>
+                                <p>体重</p>
+                            </div>
+                        </div>
+                        {{/if}} {{#unless booking}}
+                        <div class="o2-timeline-images">
+                            {{#each photos}}
+                            <div class="o2-timeline-item isimg">
+                                <img src="{{this}}">
+                            </div>
+                            {{/each}} {{#if showcamera}}
+                            <div class="o2-timeline-info o2-timeline-item unfilled" style="margin-left:5px">
+                                <p><i class="ion-ios-camera-outline"></i>
+                                </p>
+                                <p>拍照</p>
+                            </div>
+                            {{/if}}
+                        </div>
+                        {{/unless}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
 <script src="/static/js/customermobile/app.js"></script>
-
 </html>
+{%endverbatim%}

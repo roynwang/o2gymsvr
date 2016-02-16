@@ -1406,7 +1406,6 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
             that.user = usr
         })
 
-
         function processtimetable(td) {
             _.each(that.actionlist, function(book) {
                 if (book.pendingaction == "remove") {

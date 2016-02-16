@@ -22,6 +22,11 @@ function range(start, end, step){
 	}
 	return ret
 }
+/*init template */
+var T = {
+	timelineitem: Template7.compile($$("#tpl_timelineitem").html())
+}
+/*end init template*/
 
 
 
@@ -54,6 +59,23 @@ var weightPicker = app.picker({
 
     ]
 });
+
+
+app.onPageInit("home", function(page){
+	var item0 = {
+		booking: false,
+		date: {day: "10", month:"十二月"},
+		showscale: true,
+		photos: ["http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg"],
+		showcamera: true
+	}
+	var item1 = {
+		booking: true,
+		date: {day: "", month:""}
+	}
+	$$("#o2-timeline").prepend(T.timelineitem(item0))
+	$$("#o2-timeline").prepend(T.timelineitem(item1))
+}).trigger()
 
 
 
