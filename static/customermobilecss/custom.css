@@ -924,7 +924,6 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
     margin-top: 0;
     margin-bottom: 0;
     text-align: center;
-    color: rgba(0,0,0,0.4);
     opacity: 0.8;
     line-height: 50px;
 	font-size: 18px;
@@ -953,6 +952,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 }
 .close-login-screen {
 	text-align:center;
+	color: rgba(0,0,0,0.4);
 }
 
 
