@@ -904,10 +904,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 	background: white !important;
 	font-size: 16px !important;
 	color: #333 !important;
+	height: 59px !important;
 	/*background: rgba(255,255,255,0.88) !important;*/
 }
 .login-screen-content .list-block .item-content {
 	padding-left: 0;
+    height: 60px;
 }
 .login-screen-content .list-block .item-inner {
 	padding-right:0;
