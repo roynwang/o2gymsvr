@@ -1032,7 +1032,7 @@ body {
 }
 
 .o2-logo-line-top {
-    height: 2px;
+    height: 1px;
     background: #444;
 	width: 200px;
 	position: absolute;
@@ -1045,7 +1045,7 @@ body {
 	transform: scale(0.45,1)
 }
 .o2-logo-line-bottom {
-    height: 2px;
+    height: 1px;
     background: #444;
 	width: 200px;
 	position: absolute;
