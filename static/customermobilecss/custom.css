@@ -1009,7 +1009,7 @@ body {
 .o2-logo {
 	position: absolute;
 	height: 100px;
-	top: 60px;
+	top: 10%;
 	width: 100%;
 }
 .o2-logo>div{
@@ -1077,21 +1077,38 @@ body {
 }
 @keyframes o2-login-animation {
     0% {opacity: 0}
-    50% {opacity: 0}
+    80% {opacity: 0}
     100% {opacity: 1}
 }
 @-web-kit-keyframes o2-login-animation {
     0% {opacity: 0}
-    50% {opacity: 0}
+    80% {opacity: 0}
     100% {opacity: 1}
 }
+@keyframes o2-logo-animation {
+    0% {top:40%}
+    80% {top:40%}
+    100% {top: 10%}
+}
+@-web-kit-keyframes o2-logo-animation {
+    0% {top:40%}
+    80% {top:40%}
+    100% {top: 10%}
+}
+
 
 .o2-login-form {
 	animation: o2-login-animation 3s ease;
 	-moz-animation: o2-login-animation 3s ease;	/* Firefox */
 	-webkit-animation: o2-login-animation 3s ease;	/* Safari 和 Chrome */
 	-o-animation: o2-login-animation 3s ease;	/* Opera */
-
 }
+.o2-logo {
+	animation: o2-logo-animation 3s ease;
+	-moz-animation: o2-logo-animation 3s ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation 3s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation 3s ease;	/* Opera */
+}
+
 
 
