@@ -933,36 +933,36 @@ body {
 }
 
 @-webkit-keyframes o2-logo-animation-line-top {
-    from {opacity:0;-webkit-transform: rotate(25deg); margin-top:40px; }
+    from {opacity:0;-webkit-transform: rotate(25deg); margin-top:30px; }
 	10% {opacity:0}
-    30% {opacity:1;-webkit-transform: rotate(25deg); margin-top:40px}
+    30% {opacity:1;-webkit-transform: rotate(25deg); margin-top:30px}
     40% {-webkit-transform: rotate(0deg);}
-	50% {-webkit-transform: scale(0.6,1); margin-top:40px}
+	50% {-webkit-transform: scale(0.6,1); margin-top:30px}
 	70% {margin-top: 0; -webkit-transform: scale(0.6,1);}
 }
 @keyframes o2-logo-animation-line-top {
-    from {opacity:0;transform: rotate(25deg); margin-top:40px; }
+    from {opacity:0;transform: rotate(25deg); margin-top:30px; }
 	10% {opacity:0}
-    30% {opacity:1;transform: rotate(25deg); margin-top:40px;}
+    30% {opacity:1;transform: rotate(25deg); margin-top:30px;}
     40% {transform: rotate(0deg);}
-	50% {transform: scale(0.6,1); margin-top:40px}
+	50% {transform: scale(0.6,1); margin-top:30px}
 	70% {margin-top: 0;transform: scale(0.6,1);}
 	90% {margin-top: 0;transform: scale(0.6,1);}
 }
 @-webkit-keyframes o2-logo-animation-line-bottom {
-    from {opacity:0;-webkit-transform: rotate(-25deg); margin-top:40px;}
+    from {opacity:0;-webkit-transform: rotate(-25deg); margin-top:30px;}
 	10% {opacity:0}
-    30% {opacity:1;-webkit-transform: rotate(-25deg); margin-top:40px;}
+    30% {opacity:1;-webkit-transform: rotate(-25deg); margin-top:30px;}
     30% {-webkit-transform: rotate(0deg);}
-	50% {-webkit-transform: scale(0.6,1); margin-top:40px}
+	50% {-webkit-transform: scale(0.6,1); margin-top:30px}
 	70% {margin-top: 60px; -webkit-transform: scale(0.6,1);}
 }
 @keyframes o2-logo-animation-line-bottom {
-    from {opacity:0;transform: rotate(-25deg); margin-top:40px; }
+    from {opacity:0;transform: rotate(-25deg); margin-top:30px; }
 	10% {opacity:0}
-    30% {opacity:1;transform: rotate(-25deg); margin-top:40px; }
+    30% {opacity:1;transform: rotate(-25deg); margin-top:30px; }
     40% {transform: rotate(0deg);}
-	50% {transform: scale(0.6,1); margin-top:40px}
+	50% {transform: scale(0.6,1); margin-top:30px}
 	70% {margin-top: 60px;transform: scale(0.6,1);}
 	90% {margin-top: 60px;transform: scale(0.6,1);}
 }
