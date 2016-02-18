@@ -1037,10 +1037,10 @@ body {
 	width: 200px;
 	position: absolute;
 	margin: auto;
-	animation: o2-logo-animation-line-top 3s;
-	-moz-animation: o2-logo-animation-line-top 3s;	/* Firefox */
-	-webkit-animation: o2-logo-animation-line-top 3s;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-line-top 3s;	/* Opera */
+	animation: o2-logo-animation-line-top 3s  ease;
+	-moz-animation: o2-logo-animation-line-top 3s  ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation-line-top 3s  ease;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-line-top 3s  ease;	/* Opera */
 	transform: scale(0.45,1)
 }
 .o2-logo-line-bottom {
@@ -1050,10 +1050,10 @@ body {
 	position: absolute;
 	margin-top: 50px;
 
-	animation: o2-logo-animation-line-bottom 3s;
-	-moz-animation: o2-logo-animation-line-bottom 3s;	/* Firefox */
-	-webkit-animation: o2-logo-animation-line-bottom 3s;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-line-bottom 3s;	/* Opera */
+	animation: o2-logo-animation-line-bottom 3s  ease;
+	-moz-animation: o2-logo-animation-line-bottom 3s  ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation-line-bottom 3s  ease;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-line-bottom 3s  ease;	/* Opera */
 	transform: scale(0.45,1)
 }
 
@@ -1087,27 +1087,27 @@ body {
 }
 @keyframes o2-logo-animation {
     0% {top:40%}
-    80% {top:40%}
+    85% {top:40%}
     100% {top: 10%}
 }
 @-web-kit-keyframes o2-logo-animation {
     0% {top:40%}
-    80% {top:40%}
+    85% {top:40%}
     100% {top: 10%}
 }
 
 
 .o2-login-form {
-	animation: o2-login-animation 3s ease;
-	-moz-animation: o2-login-animation 3s ease;	/* Firefox */
-	-webkit-animation: o2-login-animation 3s ease;	/* Safari 和 Chrome */
-	-o-animation: o2-login-animation 3s ease;	/* Opera */
+	animation: o2-login-animation 5s ease;
+	-moz-animation: o2-login-animation 5s ease;	/* Firefox */
+	-webkit-animation: o2-login-animation 5s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-login-animation 5s ease;	/* Opera */
 }
 .o2-logo {
-	animation: o2-logo-animation 3s ease;
-	-moz-animation: o2-logo-animation 3s ease;	/* Firefox */
-	-webkit-animation: o2-logo-animation 3s ease;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation 3s ease;	/* Opera */
+	animation: o2-logo-animation 3.8s ease;
+	-moz-animation: o2-logo-animation 3.8s ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation 3.8s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation 3.8s ease;	/* Opera */
 }
 
 
