@@ -932,7 +932,7 @@ body {
     text-align: center;
     color: rgba(0, 0, 0, 0.8);
     /*color: rgb(79,210,194);
-    border-left: solid 4px rgb(79,210,194);*/
+    border-left: solid 4px rgb(79,210,194);*/*/
 }
 
 @-webkit-keyframes o2-logo-animation-line-top {
@@ -1067,13 +1067,31 @@ body {
 	animation: o2-logo-animation-char-center-delay 3s ease;
 	-moz-animation: o2-logo-animation-char-center-delay 3s ease;	/* Firefox */
 	-webkit-animation: o2-logo-animation-char-center-delay 3s ease;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-char-center 5s-delay ease;	/* Opera */
+	-o-animation: o2-logo-animation-char-center-delay ease;	/* Opera */
 }
 .o2-logo-char-side {
 	animation: o2-logo-animation-char-side 3s ease;
 	-moz-animation: o2-logo-animation-char-side 3s ease;	/* Firefox */
 	-webkit-animation: o2-logo-animation-char-side 3s ease;	/* Safari 和 Chrome */
 	-o-animation: o2-logo-animation-char-side 3s ease;	/* Opera */
+}
+@keyframes o2-login-animation {
+    0% {opacity: 0}
+    50% {opacity: 0}
+    100% {opacity: 1}
+}
+@-web-kit-keyframes o2-login-animation {
+    0% {opacity: 0}
+    50% {opacity: 0}
+    100% {opacity: 1}
+}
+
+.o2-login-form {
+	animation: o2-login-animation 3s ease;
+	-moz-animation: o2-login-animation 3s ease;	/* Firefox */
+	-webkit-animation: o2-login-animation 3s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-login-animation 3s ease;	/* Opera */
+
 }
 
 
