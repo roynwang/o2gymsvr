@@ -1038,10 +1038,10 @@ body {
 	position: absolute;
 	margin: auto;
 	border-radius:2px;
-	animation: o2-logo-animation-line-top 3s ;
-	-moz-animation: o2-logo-animation-line-top 3s ;	/* Firefox */
-	-webkit-animation: o2-logo-animation-line-top 3s ;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-line-top 3s ;	/* Opera */
+	animation: o2-logo-animation-line-top 2.8s ;
+	-moz-animation: o2-logo-animation-line-top 2.8s ;	/* Firefox */
+	-webkit-animation: o2-logo-animation-line-top 2.8s ;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-line-top 2.8s ;	/* Opera */
 	transform: scale(0.45,1)
 }
 .o2-logo-line-bottom {
@@ -1051,30 +1051,30 @@ body {
 	position: absolute;
 	margin-top: 50px;
 	border-radius:2px;
-	animation: o2-logo-animation-line-bottom 3s;
-	-moz-animation: o2-logo-animation-line-bottom 3s;	/* Firefox */
-	-webkit-animation: o2-logo-animation-line-bottom 3s;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-line-bottom 3s ;	/* Opera */
+	animation: o2-logo-animation-line-bottom 2.8s;
+	-moz-animation: o2-logo-animation-line-bottom 2.8s;	/* Firefox */
+	-webkit-animation: o2-logo-animation-line-bottom 2.8s;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-line-bottom 2.8s ;	/* Opera */
 	transform: scale(0.45,1)
 }
 
 .o2-logo-char-center-0{
-	animation: o2-logo-animation-char-center 3s ease;
-	-moz-animation: o2-logo-animation-char-center 3s ease;	/* Firefox */
-	-webkit-animation: o2-logo-animation-char-center 3s ease;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-char-center 3s ease;	/* Opera */
+	animation: o2-logo-animation-char-center 2.5s ease;
+	-moz-animation: o2-logo-animation-char-center 2.5s ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation-char-center 2.5s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-char-center 2.5s ease;	/* Opera */
 }
 .o2-logo-char-center-1{
-	animation: o2-logo-animation-char-center-delay 3s ease;
-	-moz-animation: o2-logo-animation-char-center-delay 3s ease;	/* Firefox */
-	-webkit-animation: o2-logo-animation-char-center-delay 3s ease;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-char-center-delay 3s ease;	/* Opera */
+	animation: o2-logo-animation-char-center-delay 2.5s ease;
+	-moz-animation: o2-logo-animation-char-center-delay 2.5s ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation-char-center-delay 2.5s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-char-center-delay 2.5s ease;	/* Opera */
 }
 .o2-logo-char-side {
-	animation: o2-logo-animation-char-side 3s ease;
-	-moz-animation: o2-logo-animation-char-side 3s ease;	/* Firefox */
-	-webkit-animation: o2-logo-animation-char-side 3s ease;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-char-side 3s ease;	/* Opera */
+	animation: o2-logo-animation-char-side 2.5s ease;
+	-moz-animation: o2-logo-animation-char-side 2.5s ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation-char-side 2.5s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-char-side 2.5s ease;	/* Opera */
 }
 @keyframes o2-login-animation {
     0% {opacity: 0}
@@ -1088,21 +1088,21 @@ body {
 }
 @keyframes o2-logo-animation {
     0% {top:40%}
-    85% {top:40%}
-    100% {top: 10%}
+    70% {top:40%}
+    90% {top: 10%}
 }
 @-web-kit-keyframes o2-logo-animation {
     0% {top:40%}
-    85% {top:40%}
-    100% {top: 10%}
+    70% {top:40%}
+    90% {top: 10%}
 }
 
 
 .o2-login-form {
-	animation: o2-login-animation 3.5s ease;
-	-moz-animation: o2-login-animation 3.5s ease;	/* Firefox */
-	-webkit-animation: o2-login-animation 3.5s ease;	/* Safari 和 Chrome */
-	-o-animation: o2-login-animation 3.5s ease;	/* Opera */
+	animation: o2-login-animation 2.8s ease;
+	-moz-animation: o2-login-animation 2.8s ease;	/* Firefox */
+	-webkit-animation: o2-login-animation 2.8s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-login-animation 2.8s ease;	/* Opera */
 }
 .o2-logo {
 	animation: o2-logo-animation 3s ease;
