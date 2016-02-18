@@ -893,7 +893,7 @@ body {
     margin: 0 40px;
     /*background: rgba(255,255,255,0.5);*/
     border-radius: 10px;
-    margin-top: 100px;
+    margin-top: 200px;
     overflow: hidden;
     box-shadow: 3px 5px 10px 5px rgba(0, 0, 0, 0.1)
 }
@@ -933,40 +933,40 @@ body {
 }
 
 @-webkit-keyframes o2-logo-animation-line-top {
-    0% {opacity:0;-webkit-transform: rotate(25deg); margin-top:30px; -webkit-transform:scale(0.6,1) }
+    0% {opacity:0;-webkit-transform: rotate(25deg); margin-top:24px; -webkit-transform:scale(0.6,1) }
 	20% {opacity:0}
-    30% {opacity:1;-webkit-transform: rotate(25deg); margin-top:30px}
+    30% {opacity:1;-webkit-transform: rotate(25deg); margin-top:24px}
     40% {-webkit-transform: rotate(0deg);-webkit-transform: scale(0.6,1);}
-	44% {-webkit-transform: scale(0.6,1); margin-top:30px}
+	44% {-webkit-transform: scale(0.6,1); margin-top:24px}
 	55% {margin-top: 0; -webkit-transform: scale(0.6,1);}
 	90% {margin-top: 0; -webkit-transform: scale(0.6,1);}
 }
 @keyframes o2-logo-animation-line-top {
-    0% {opacity:0;transform: rotate(25deg); margin-top:30px; transform: scale(0.6,1)}
+    0% {opacity:0;transform: rotate(25deg); margin-top:24px; transform: scale(0.6,1)}
 	20% {opacity:0}
-    30% {opacity:1;transform: rotate(25deg); margin-top:30px;}
+    30% {opacity:1;transform: rotate(25deg); margin-top:24px;}
     40% {transform: rotate(0deg); transform:scale(0.6,1);}
-	44% {transform: scale(0.6,1); margin-top:30px}
+	44% {transform: scale(0.6,1); margin-top:24px}
 	55% {margin-top: 0;transform: scale(0.6,1);}
 	90% {margin-top: 0;transform: scale(0.6,1);}
 }
 @-webkit-keyframes o2-logo-animation-line-bottom {
-    0% {opacity:0;-webkit-transform: rotate(-25deg); margin-top:30px; -webkit-transform:scale(0.6,1) }
+    0% {opacity:0;-webkit-transform: rotate(-25deg); margin-top:26px; -webkit-transform:scale(0.6,1) }
 	20% {opacity:0}
-    30% {opacity:1;-webkit-transform: rotate(-25deg); margin-top:30px}
+    30% {opacity:1;-webkit-transform: rotate(-25deg); margin-top:26px}
     40% {-webkit-transform: rotate(0deg);-webkit-transform: scale(0.6,1);}
-	44% {-webkit-transform: scale(0.6,1); margin-top:30px}
-	55% {margin-top: 60px; -webkit-transform: scale(0.6,1);}
-	90% {margin-top: 60px; -webkit-transform: scale(0.6,1);}
+	44% {-webkit-transform: scale(0.6,1); margin-top:25px}
+	55% {margin-top: 50px; -webkit-transform: scale(0.6,1);}
+	90% {margin-top: 50px; -webkit-transform: scale(0.6,1);}
 }
 @keyframes o2-logo-animation-line-bottom {
-    0% {opacity:0;transform: rotate(-25deg); margin-top:30px; transform: scale(0.6,1)}
+    0% {opacity:0;transform: rotate(-25deg); margin-top:25px; transform: scale(0.6,1)}
 	20% {opacity:0}
-    30% {opacity:1;transform: rotate(-25deg); margin-top:30px;}
+    30% {opacity:1;transform: rotate(-25deg); margin-top:25px;}
     40% {transform: rotate(0deg); transform:scale(0.6,1);}
 	44% {transform: scale(0.6,1); margin-top:30px}
-	55% {margin-top: 60px;transform: scale(0.6,1);}
-	90% {margin-top: 60px;transform: scale(0.6,1);}
+	55% {margin-top: 50px;transform: scale(0.6,1);}
+	90% {margin-top: 50px;transform: scale(0.6,1);}
 }
 
 
@@ -1006,22 +1006,23 @@ body {
 .o2-logo {
 	position: absolute;
 	height: 100px;
-	bottom: 60px;
+	top: 60px;
 	width: 100%;
 }
 .o2-logo>div{
 	width: 200px;
 	margin:auto;
-	height: 60px;
+	height: 50px;
 }
 .o2-logo-title {
     position: absolute;
     text-align: center;
     width: 200px;
     margin: 0;
-    line-height: 60px;
+    line-height: 50px;
     font-size: 36px;
 	margin-left: -3px;
+	color: #333;
 }
 .o2-logo-title > span {
 	margin-right: -10px;
@@ -1029,7 +1030,7 @@ body {
 
 .o2-logo-line-top {
     height: 1px;
-    background: black;
+    background: #444;
 	width: 200px;
 	position: absolute;
 	margin: auto;
@@ -1037,20 +1038,20 @@ body {
 	-moz-animation: o2-logo-animation-line-top 3s;	/* Firefox */
 	-webkit-animation: o2-logo-animation-line-top 3s;	/* Safari 和 Chrome */
 	-o-animation: o2-logo-animation-line-top 3s;	/* Opera */
-	transform: scale(0.5,1)
+	transform: scale(0.45,1)
 }
 .o2-logo-line-bottom {
     height: 1px;
-    background: black;
+    background: #444;
 	width: 200px;
 	position: absolute;
-	margin-top: 60px;
+	margin-top: 50px;
 
 	animation: o2-logo-animation-line-bottom 3s;
 	-moz-animation: o2-logo-animation-line-bottom 3s;	/* Firefox */
 	-webkit-animation: o2-logo-animation-line-bottom 3s;	/* Safari 和 Chrome */
 	-o-animation: o2-logo-animation-line-bottom 3s;	/* Opera */
-	transform: scale(0.5,1)
+	transform: scale(0.45,1)
 }
 
 .o2-logo-char-center-0{
