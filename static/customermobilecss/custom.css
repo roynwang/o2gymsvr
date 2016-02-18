@@ -933,59 +933,72 @@ body {
 }
 
 @-webkit-keyframes o2-logo-animation-line-top {
-    from {opacity:0;-webkit-transform: rotate(25deg); margin-top:30px; }
-	10% {opacity:0}
+    0% {opacity:0;-webkit-transform: rotate(25deg); margin-top:30px; -webkit-transform:scale(0.6,1) }
+	20% {opacity:0}
     30% {opacity:1;-webkit-transform: rotate(25deg); margin-top:30px}
-    40% {-webkit-transform: rotate(0deg);}
-	50% {-webkit-transform: scale(0.6,1); margin-top:30px}
-	70% {margin-top: 0; -webkit-transform: scale(0.6,1);}
+    40% {-webkit-transform: rotate(0deg);-webkit-transform: scale(0.6,1);}
+	44% {-webkit-transform: scale(0.6,1); margin-top:30px}
+	55% {margin-top: 0; -webkit-transform: scale(0.6,1);}
+	90% {margin-top: 0; -webkit-transform: scale(0.6,1);}
 }
 @keyframes o2-logo-animation-line-top {
-    from {opacity:0;transform: rotate(25deg); margin-top:30px; }
-	10% {opacity:0}
+    0% {opacity:0;transform: rotate(25deg); margin-top:30px; transform: scale(0.6,1)}
+	20% {opacity:0}
     30% {opacity:1;transform: rotate(25deg); margin-top:30px;}
-    40% {transform: rotate(0deg);}
-	50% {transform: scale(0.6,1); margin-top:30px}
-	70% {margin-top: 0;transform: scale(0.6,1);}
+    40% {transform: rotate(0deg); transform:scale(0.6,1);}
+	44% {transform: scale(0.6,1); margin-top:30px}
+	55% {margin-top: 0;transform: scale(0.6,1);}
 	90% {margin-top: 0;transform: scale(0.6,1);}
 }
 @-webkit-keyframes o2-logo-animation-line-bottom {
-    from {opacity:0;-webkit-transform: rotate(-25deg); margin-top:30px;}
-	10% {opacity:0}
-    30% {opacity:1;-webkit-transform: rotate(-25deg); margin-top:30px;}
-    30% {-webkit-transform: rotate(0deg);}
-	50% {-webkit-transform: scale(0.6,1); margin-top:30px}
-	70% {margin-top: 60px; -webkit-transform: scale(0.6,1);}
+    0% {opacity:0;-webkit-transform: rotate(-25deg); margin-top:30px; -webkit-transform:scale(0.6,1) }
+	20% {opacity:0}
+    30% {opacity:1;-webkit-transform: rotate(-25deg); margin-top:30px}
+    40% {-webkit-transform: rotate(0deg);-webkit-transform: scale(0.6,1);}
+	44% {-webkit-transform: scale(0.6,1); margin-top:30px}
+	55% {margin-top: 60px; -webkit-transform: scale(0.6,1);}
+	90% {margin-top: 60px; -webkit-transform: scale(0.6,1);}
 }
 @keyframes o2-logo-animation-line-bottom {
-    from {opacity:0;transform: rotate(-25deg); margin-top:30px; }
-	10% {opacity:0}
-    30% {opacity:1;transform: rotate(-25deg); margin-top:30px; }
-    40% {transform: rotate(0deg);}
-	50% {transform: scale(0.6,1); margin-top:30px}
-	70% {margin-top: 60px;transform: scale(0.6,1);}
+    0% {opacity:0;transform: rotate(-25deg); margin-top:30px; transform: scale(0.6,1)}
+	20% {opacity:0}
+    30% {opacity:1;transform: rotate(-25deg); margin-top:30px;}
+    40% {transform: rotate(0deg); transform:scale(0.6,1);}
+	44% {transform: scale(0.6,1); margin-top:30px}
+	55% {margin-top: 60px;transform: scale(0.6,1);}
 	90% {margin-top: 60px;transform: scale(0.6,1);}
 }
 
+
 @keyframes o2-logo-animation-char-center {
     0% {opacity: 0}
-    75% {opacity: 0}
-    85% {opacity: 1}
+    65% {opacity: 0}
+    75% {opacity: 1}
 }
 @-web-kit-keyframes o2-logo-animation-char-center {
     0% {opacity: 0}
-    75% {opacity: 0}
-    85% {opacity: 1}
+    65% {opacity: 0}
+    75% {opacity: 1}
+}
+@keyframes o2-logo-animation-char-center-delay {
+    0% {opacity: 0}
+    66% {opacity: 0}
+    76% {opacity: 1}
+}
+@-web-kit-keyframes o2-logo-animation-char-center-delay {
+    0% {opacity: 0}
+    66% {opacity: 0}
+    76% {opacity: 1}
 }
 @keyframes o2-logo-animation-char-side {
     0% {opacity: 0}
-    80% {opacity: 0}
-    90% {opacity: 1}
+    72% {opacity: 0}
+    82% {opacity: 1}
 }
-@-web-kit-keyframes o2-logo-animation-char-center {
+@-web-kit-keyframes o2-logo-animation-char-side {
     0% {opacity: 0}
-    80% {opacity: 0}
-    80% {opacity: 1}
+    72% {opacity: 0}
+    82% {opacity: 1}
 }
 
 
@@ -1007,8 +1020,8 @@ body {
     width: 200px;
     margin: 0;
     line-height: 60px;
-    font-size: 34px;
-	margin-left: -5px;
+    font-size: 36px;
+	margin-left: -3px;
 }
 .o2-logo-title > span {
 	margin-right: -10px;
@@ -1020,11 +1033,11 @@ body {
 	width: 200px;
 	position: absolute;
 	margin: auto;
-	animation: o2-logo-animation-line-top 5s ease;
-	-moz-animation: o2-logo-animation-line-top 5s ease;	/* Firefox */
-	-webkit-animation: o2-logo-animation-line-top 5s ease;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-line-top 5s ease;	/* Opera */
-	transform: scale(0.4,1)
+	animation: o2-logo-animation-line-top 3s;
+	-moz-animation: o2-logo-animation-line-top 3s;	/* Firefox */
+	-webkit-animation: o2-logo-animation-line-top 3s;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-line-top 3s;	/* Opera */
+	transform: scale(0.5,1)
 }
 .o2-logo-line-bottom {
     height: 1px;
@@ -1033,24 +1046,30 @@ body {
 	position: absolute;
 	margin-top: 60px;
 
-	animation: o2-logo-animation-line-bottom 5s ease;
-	-moz-animation: o2-logo-animation-line-bottom 5s ease;	/* Firefox */
-	-webkit-animation: o2-logo-animation-line-bottom 5s ease;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-line-bottom 5s ease;	/* Opera */
-	transform: scale(0.4,1)
+	animation: o2-logo-animation-line-bottom 3s;
+	-moz-animation: o2-logo-animation-line-bottom 3s;	/* Firefox */
+	-webkit-animation: o2-logo-animation-line-bottom 3s;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-line-bottom 3s;	/* Opera */
+	transform: scale(0.5,1)
 }
 
-.o2-logo-char-center {
-	animation: o2-logo-animation-char-center 5s ease;
-	-moz-animation: o2-logo-animation-char-center 5s ease;	/* Firefox */
-	-webkit-animation: o2-logo-animation-char-center 5s ease;	/* Safari 和 Chrome */
+.o2-logo-char-center-0{
+	animation: o2-logo-animation-char-center 3s ease;
+	-moz-animation: o2-logo-animation-char-center 3s ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation-char-center 3s ease;	/* Safari 和 Chrome */
 	-o-animation: o2-logo-animation-char-center 5s ease;	/* Opera */
 }
+.o2-logo-char-center-1{
+	animation: o2-logo-animation-char-center-delay 3s ease;
+	-moz-animation: o2-logo-animation-char-center-delay 3s ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation-char-center-delay 3s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-char-center 5s-delay ease;	/* Opera */
+}
 .o2-logo-char-side {
-	animation: o2-logo-animation-char-side 5s ease;
-	-moz-animation: o2-logo-animation-char-side 5s ease;	/* Firefox */
-	-webkit-animation: o2-logo-animation-char-side 5s ease;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-char-side 5s ease;	/* Opera */
+	animation: o2-logo-animation-char-side 3s ease;
+	-moz-animation: o2-logo-animation-char-side 3s ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation-char-side 3s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-char-side 3s ease;	/* Opera */
 }
 
 
