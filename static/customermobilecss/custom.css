@@ -891,13 +891,14 @@ body {
 }
 .login-screen-content .list-block {
     margin: 0 40px;
-    /*background: rgba(255,255,255,0.5);*/
-    border-radius: 10px;
+    background: #eee;
+    border-radius: 2px;
     margin-top: 200px;
     overflow: hidden;
-    box-shadow: 3px 5px 10px 5px rgba(0, 0, 0, 0.1)
+	box-shadow: 1px 4px 8px 2px rgba(0, 0, 0, 0.1)
 }
 .login-screen-content h4 {
+    background:#ececec;
     margin-top: 0;
     margin-bottom: 0;
     text-align: center;
@@ -929,7 +930,9 @@ body {
 }
 .close-login-screen {
     text-align: center;
-    color: rgba(0, 0, 0, 0.4);
+    color: rgba(0, 0, 0, 0.8);
+    /*color: rgb(79,210,194);
+    border-left: solid 4px rgb(79,210,194);*/
 }
 
 @-webkit-keyframes o2-logo-animation-line-top {
@@ -942,7 +945,7 @@ body {
 	90% {margin-top: 0; -webkit-transform: scale(0.6,1);}
 }
 @keyframes o2-logo-animation-line-top {
-    0% {opacity:0;transform: rotate(25deg); margin-top:24px; transform: scale(0.6,1)}
+    0% {opacity:0;transform: rotate(25deg); margin-top:24px; transform: scale(0.1,1)}
 	20% {opacity:0}
     30% {opacity:1;transform: rotate(25deg); margin-top:24px;}
     40% {transform: rotate(0deg); transform:scale(0.6,1);}
