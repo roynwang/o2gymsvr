@@ -101,7 +101,7 @@ var svc_login = function() {
 			}else{
 				timeOut = true
 			}
-		},2700)
+		},3000)
         $$.ajax({
             url: R.refreshToken,
             method: "POST",
