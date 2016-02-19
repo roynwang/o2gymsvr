@@ -250,19 +250,19 @@
                                 <li class="item-content">
                                     <div class="item-inner">
                                         <div class="item-input">
-                                            <input type="text" name="username" placeholder="手机号码">
+                                            <input id="phone"type="text" name="username" placeholder="手机号码">
                                         </div>
                                     </div>
                                 </li>
                                 <li class="item-content">
                                     <div class="item-inner">
                                         <div class="item-input">
-                                            <input type="password" name="password" placeholder="密码">
+                                            <input id="pwd" type="password" name="password" placeholder="密码">
                                         </div>
                                     </div>
                                 </li>
                             </ul>
-                    		<h4><a href="#" class="close-login-screen">登录</a></h4>
+                    		<h4 id="o2-login-btn-touch"><a id="o2-login-btn" href="#">登录</a></h4>
                         </div>
                     </form>
 					<div class="o2-logo row no-gutter">
@@ -286,6 +286,7 @@
 <script src="//cdn.bootcss.com/framework7/1.4.0/js/framework7.min.js"></script>
 <script src="//cdn.bootcss.com/moment.js/2.11.1/moment.min.js"></script>
 <script src="//cdn.bootcss.com/moment.js/2.11.1/locale/zh-cn.js"></script>
+<script src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.min.js"></script>
 <script id="tpl_timelineitem" type="text/template7">
     <div class="card o2-timeline {{#if booking}}booking{{/if}}">
         <div class="card-content row no-gutter">

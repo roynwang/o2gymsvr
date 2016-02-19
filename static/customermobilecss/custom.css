@@ -898,7 +898,7 @@ body {
 	box-shadow: 1px 4px 8px 2px rgba(0, 0, 0, 0.1)
 }
 .login-screen-content h4 {
-    background:#ececec;
+    background:#fcfcfc;
     margin-top: 0;
     margin-bottom: 0;
     text-align: center;
@@ -921,18 +921,12 @@ body {
 .list-block .item-inner:after {
     opacity: 0;
 }
-.o2-login-btn {
-    text-align: center;
-    background: white;
-    margin: 0;
-    line-height: 45px;
-    margin-top: 1px;
+#o2-login-btn {
+    color: rgba(0, 0, 0, 0.8);
 }
 .close-login-screen {
-    text-align: center;
-    color: rgba(0, 0, 0, 0.8);
     /*color: rgb(79,210,194);
-    border-left: solid 4px rgb(79,210,194);*/*/
+    border-left: solid 4px rgb(79,210,194);*/
 }
 
 @-webkit-keyframes o2-logo-animation-line-top {
@@ -1009,7 +1003,7 @@ body {
 .o2-logo {
 	position: absolute;
 	height: 100px;
-	top: 10%;
+	top: 40%;
 	width: 100%;
 }
 .o2-logo>div{
@@ -1088,28 +1082,36 @@ body {
 }
 @keyframes o2-logo-animation {
     0% {top:40%}
-    70% {top:40%}
     90% {top: 10%}
 }
 @-web-kit-keyframes o2-logo-animation {
     0% {top:40%}
-    70% {top:40%}
     90% {top: 10%}
 }
-
-
 .o2-login-form {
-	animation: o2-login-animation 2.8s ease;
-	-moz-animation: o2-login-animation 2.8s ease;	/* Firefox */
-	-webkit-animation: o2-login-animation 2.8s ease;	/* Safari 和 Chrome */
-	-o-animation: o2-login-animation 2.8s ease;	/* Opera */
+	opacity: 0;
 }
-.o2-logo {
-	animation: o2-logo-animation 3s ease;
-	-moz-animation: o2-logo-animation 3s ease;	/* Firefox */
-	-webkit-animation: o2-logo-animation 3s ease;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation 3s ease;	/* Opera */
+
+.o2-login-form-show {
+	animation: o2-login-animation 0.8s ease;
+	-moz-animation: o2-login-animation 0.8s ease;	/* Firefox */
+	-webkit-animation: o2-login-animation 0.8s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-login-animation 0.8s ease;	/* Opera */
 }
+.o2-logo-move-up {
+	animation: o2-logo-animation 0.6s ease;
+	-moz-animation: o2-logo-animation 0.6s ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation 0.6s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation 0.6s ease;	/* Opera */
+}
+/*
+.notifications {
+	color: rgba(0,0,0,0.7);
+}
+.notifications .item-text {
+    color: rgba(255,255,255,0.88);
+}
+*/
 
 
 
