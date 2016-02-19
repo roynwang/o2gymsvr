@@ -31,6 +31,15 @@ var R = {
         refreshToken: "/api/t/",
         user: function(phone) {
             return "/api/" + phone + "/"
+        },
+        orders: function(phone) {
+            return "/api/" + phone + "/o/"
+        },
+        order: function(phone, orderid) {
+            return "/api/" + phone + "/o/" + orderid + "/"
+        },
+        train: function(train) {
+            return "/api/" + train.coachprofile.name + "/b/" + train.date.replace(/-/g, "") + "/" + train.hour + "/"
         }
     }
     /*end init template*/
@@ -47,21 +56,26 @@ $$(".isimg").on("click", function() {
         theme: 'dark'
     }).open();
 })
+
+var current_train = undefined
+
 var weightPicker = app.picker({
     input: "#weight-picker",
     toolbarTemplate: '<div class="toolbar"><div class="toolbar-inner"><div class="left"></div><div class="right"><a href="#" class="link close-picker o2-custom">保存</a></div></div></div>',
     cols: [{
-            textAlign: 'center',
-            values: range(40, 100)
-        }, {
-            textAlign: 'center',
-            values: "."
-        }, {
-            textAlign: 'center',
-            values: range(0, 9)
-        },
-
-    ]
+        textAlign: 'center',
+        values: range(40, 100)
+    }, {
+        textAlign: 'center',
+        values: "."
+    }, {
+        textAlign: 'center',
+        values: range(0, 9)
+    }],
+    onClose: function(p) {
+        var weight = $$("#weight-picker").val()
+        current_train.setweight(weight.replace(/ /g, ""))
+    }
 });
 
 var svc_login = function() {
@@ -79,39 +93,40 @@ var svc_login = function() {
         })
     }
 
-    function refreshToken(onsuccess) {
+    function refreshToken(onsuccess, afteranimation) {
         var token = Cookies.get("token")
         if (!token) {
-			setTimeout(function(){
-				$$(".o2-login-form").addClass("o2-login-form-show")
-				$$(".o2-login-form").css("opacity", 1)
-				$$(".o2-logo").addClass("o2-logo-move-up")
-				$$(".o2-logo").css("top", "10%")
-			}, 2000)
+            setTimeout(function() {
+                $$(".o2-login-form").addClass("o2-login-form-show")
+                $$(".o2-login-form").css("opacity", 1)
+                $$(".o2-logo").addClass("o2-logo-move-up")
+                $$(".o2-logo").css("top", "10%")
+            }, 2000)
             return
         }
         var pdata = {
             token: token
         }
-		var isOK = false
-		var timeOut = false
-		setTimeout(function(){
-			if(isOK){
-				onsuccess()
-			}else{
-				timeOut = true
-			}
-		},3000)
+        var isOK = false
+        var timeOut = false
+        setTimeout(function() {
+            if (isOK) {
+                afteranimation()
+            } else {
+                timeOut = true
+            }
+        }, 3000)
         $$.ajax({
             url: R.refreshToken,
             method: "POST",
             data: pdata,
             success: function(data) {
-				isOK = true
+                isOK = true
+                onsuccess()
                 Cookies.set("token", JSON.parse(data).token)
-				if(timeOut){
-	                onsuccess()
-				}
+                if (timeOut) {
+                    afteranimation()
+                }
             },
             error: function(data) {}
         })
@@ -125,12 +140,18 @@ var svc_login = function() {
 
 var svc_usr = function() {
     var usr = undefined
-    var history = undefined
+    var count_items = 0
+    var that = this
+    that.onloaded = undefined
+    var history = []
 
-    function init(phone, onsuccess, onfail) {
+    function init(phone, onsuccess, onfail, onloaded) {
+        that.onloaded = onloaded
         $$.ajax({
             url: R.user(phone),
             success: function(data) {
+                usr = JSON.parse(data)
+                loadOrders()
                 onsuccess(data)
             },
             function(data) {
@@ -139,39 +160,192 @@ var svc_usr = function() {
         })
     }
 
-    function getHistory(onsuccess, onfail) {}
+    function completeOrder() {
+        count_items--;
+        if (count_items == 0) {
+            history.sort(function(a, b) {
+                return moment(a.date).isAfter(moment(b.date))
+            })
+            that.onloaded(history)
+        }
+    }
+
+    function loadOrderDetail(order) {
+        $$.get(R.order(usr.name, order.id), function(data) {
+            var tmp = JSON.parse(data)
+            if (!tmp.detail || tmp.detail == "") {
+                tmp.detail = "[]"
+            }
+            $$.each(tmp.booked, function(i, v) {
+                v.setweight = function(weight) {
+                    //TODO  set weight
+                    var detail = JSON.parse(tmp.detail)
+                    var found = false
+                    var pdata = {}
+                    var submit = function(onsuccess, onfail) {
+                        $$.ajax({
+                            url: R.train(v),
+                            method: "PATCH",
+                            data: pdata,
+                            success: onsuccess,
+                            error: onfail
+                        })
+                    }
+                    $$.each(detail, function(i, v) {
+                        if (v.contenttype == "weight") {
+                            v.content = weight
+                            found = true
+                        }
+                    })
+                    if (!found) {
+                        detail.push({
+                            "contenttype": "weight",
+                            "content": weight
+                        })
+                    }
+                    var pdata = {
+                        id: v.id,
+                        date: v.date,
+                        hour: v.hour,
+                        detail: JSON.stringify(detail)
+                    }
+                    $$.each(history, function(i) {
+                        if (history[i].id == v.id) {
+                            history[i].detail = JSON.stringify(detail)
+                            submit(function() {
+                                    that.onloaded(history)
+                                },
+                                function() {})
+
+                        }
+                    })
+                }
+                v.addPic = function() {
+                    //TODO add pic
+                }
+                v.getTimeLineCard = function() {
+                    var item = {
+                            booking: false,
+                            date: {
+                                day: "10",
+                                month: "十二月"
+                            },
+                            completed: false,
+                            showscale: true,
+                            weight: 0,
+                            photos: ["http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg"],
+                            showcamera: false
+                        }
+                        //set date
+                    item.id = this.id
+                    var date = moment(this.date)
+                    item.date.day = date.format("DD")
+                    item.date.month = date.format("MMMM")
+                        //set photos weight
+                    if (!this.detail || this.detail == "") {
+                        this.detail = "[]"
+                    }
+                    var details = JSON.parse(this.detail)
+                    $$.each(details, function(i, v) {
+                            if (v.contenttype == "image") {
+                                item.photos.push(v.content)
+                            }
+                            if (v.contenttype == "weight") {
+                                item.showscale = false
+                                item.weight = v.content
+                            }
+                        })
+                        //set show camera
+                    var start = moment().subtract(2, "days")
+                    var end = moment()
+                    if (date.isBetween(start, end)) {
+                        item.showcamera = true
+                    }
+                    //set done
+                    item.completed = this.done
+
+                    return item
+                }
+                history.push(v)
+            })
+            if (!order.alltrains) {
+                order.alltrains = []
+            }
+            order.alltrains.push(tmp)
+            completeOrder()
+        })
+    }
+
+    function loadOrders() {
+        $$.get(R.orders(usr.name), function(data) {
+            usr.orders = JSON.parse(data).results
+            count_items = usr.orders.length
+            $$.each(usr.orders, function(i, v) {
+                loadOrderDetail(v)
+            })
+        })
+    }
+
+    function getHistory() {
+        loadOrders()
+    }
     return {
+        user: function() {
+            return usr
+        },
         init: init,
         getHistory: getHistory
     }
 }()
 
-
-
-
-
 app.onPageInit("home", function(page) {
-    var item0 = {
-        booking: false,
-        date: {
-            day: "10",
-            month: "十二月"
-        },
-        showscale: true,
-        photos: ["http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg"],
-        showcamera: true
-    }
-    var item1 = {
+    var booking = {
         booking: true,
         date: {
             day: "",
             month: ""
         }
     }
-    $$("#o2-timeline").prepend(T.timelineitem(item0))
-    $$("#o2-timeline").prepend(T.timelineitem(item1))
 
+    function renderTimeline(history) {
+        $$("#o2-timeline").html("")
+        for (var i = 0; i < history.length; i++) {
+            var v = history[i]
+            var item = T.timelineitem(v.getTimeLineCard())
+		    $$("#o2-timeline").prepend(item)
+        }
+        $$(".pickweight").on("click", function(e) {
+            var tar = this
+            e.stopPropagation()
+            $$.each(history, function(i, v) {
+                if (v.id == tar.dataset["id"]) {
+                    weightPicker.open()
+                    current_train = v
+                    console.log(v.date)
+                }
+            })
+        })
+        $$("#o2-timeline").prepend(T.timelineitem(booking))
+        $$("#booknow").on("click", function() {
+            mainView.router.loadPage(pages.bookdetail);
+        })
+    }
     svc_login.refreshToken(function() {
+        svc_usr.init(Cookies.get("user"), function() {
+                isBusy = false
+                $$("#o2-login-btn").html("登录")
+            },
+            function() {
+                var noti = app.addNotification({
+                    title: '读取信息失败',
+                    message: '获取用户信息失败，请稍后重试',
+                });
+                setTimeout(function() {
+                    app.closeNotification(noti)
+                }, 3000);
+            },
+            renderTimeline)
+    }, function() {
         app.closeModal()
     })
 
@@ -186,11 +360,11 @@ app.onPageInit("home", function(page) {
             function(data) {
                 //write to cookie
                 Cookies.set("user", $$("#phone").val(), {
-					expires: 365
+                    expires: 365
                 })
-				var t = JSON.parse(data).token
+                var t = JSON.parse(data).token
                 Cookies.set("token", t, {
-					expires: 365
+                    expires: 365
                 })
                 svc_usr.init($$("#phone").val(), function() {
                         isBusy = false
@@ -206,7 +380,7 @@ app.onPageInit("home", function(page) {
                         setTimeout(function() {
                             app.closeNotification(noti)
                         }, 3000);
-                    })
+                    }, renderTimeline)
 
             },
             function(data) {
@@ -437,11 +611,8 @@ app.onPageInit('about', function(page) {
     $$('.accordion-item').on('opened', function(e) {});
 });
 
-$$("#booknow").on("click", function() {
-        mainView.router.loadPage(pages.bookdetail);
-    })
-    /*
-    $$("#setweight").on("click",function() {
-    	weightPicker.open()
-    })
-    */
+/*
+$$("#setweight").on("click",function() {
+	weightPicker.open()
+})
+*/

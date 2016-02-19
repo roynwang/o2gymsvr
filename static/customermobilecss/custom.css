@@ -267,13 +267,13 @@ body {
     box-shadow: 0px 0px 20px 2px rgb(109, 207, 206);
 }
 .o2-timeline-point {
-    width: 10px;
-    height: 10px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     border: solid 2px rgb(109, 207, 206);
     background: rgb(109, 207, 206);
-    margin-left: -7px;
-    margin-top: 10px;
+    margin-left: -5px;
+    margin-top: 8px;
     box-shadow: 0px 0px 20px 2px rgb(109, 207, 206);
 }
 .o2-timeline-header {
@@ -811,7 +811,7 @@ body {
     -moz-animation-duration: 0.4s !important;
     animation-duration: 0.4s !important;
 }
-#weight-picker {
+.weight-picker {
     height: 50px;
     width: 50px;
     position: absolute;
@@ -934,36 +934,36 @@ body {
 	20% {opacity:0}
     30% {opacity:1;-webkit-transform: rotate(25deg); margin-top:24px}
     40% {-webkit-transform: rotate(0deg);-webkit-transform: scale(0.6,1);}
-	44% {-webkit-transform: scale(0.6,1); margin-top:24px}
-	55% {margin-top: 0; -webkit-transform: scale(0.6,1);}
-	90% {margin-top: 0; -webkit-transform: scale(0.6,1);}
+	35% {-webkit-transform: scale(0.6,1); margin-top:24px}
+	50% {margin-top: 0; -webkit-transform: scale(0.6,1);}
+	80% {margin-top: 0; -webkit-transform: scale(0.6,1);}
 }
 @keyframes o2-logo-animation-line-top {
     0% {opacity:0;transform: rotate(25deg); margin-top:24px; transform: scale(0.1,1)}
 	20% {opacity:0}
     30% {opacity:1;transform: rotate(25deg); margin-top:24px;}
     40% {transform: rotate(0deg); transform:scale(0.6,1);}
-	44% {transform: scale(0.6,1); margin-top:24px}
-	55% {margin-top: 0;transform: scale(0.6,1);}
-	90% {margin-top: 0;transform: scale(0.6,1);}
+	35% {transform: scale(0.6,1); margin-top:24px}
+	50% {margin-top: 0;transform: scale(0.6,1);}
+	70% {margin-top: 0;transform: scale(0.6,1);}
 }
 @-webkit-keyframes o2-logo-animation-line-bottom {
     0% {opacity:0;-webkit-transform: rotate(-25deg); margin-top:26px; -webkit-transform:scale(0.6,1) }
 	20% {opacity:0}
     30% {opacity:1;-webkit-transform: rotate(-25deg); margin-top:26px}
+	38% {-webkit-transform: scale(0.6,1); margin-top:30px}
     40% {-webkit-transform: rotate(0deg);-webkit-transform: scale(0.6,1);}
-	44% {-webkit-transform: scale(0.6,1); margin-top:25px}
-	55% {margin-top: 50px; -webkit-transform: scale(0.6,1);}
-	90% {margin-top: 50px; -webkit-transform: scale(0.6,1);}
+	50% {margin-top: 50px; -webkit-transform: scale(0.6,1);}
+	70% {margin-top: 50px; -webkit-transform: scale(0.6,1);}
 }
 @keyframes o2-logo-animation-line-bottom {
     0% {opacity:0;transform: rotate(-25deg); margin-top:25px; transform: scale(0.6,1)}
 	20% {opacity:0}
     30% {opacity:1;transform: rotate(-25deg); margin-top:25px;}
     40% {transform: rotate(0deg); transform:scale(0.6,1);}
-	44% {transform: scale(0.6,1); margin-top:30px}
-	55% {margin-top: 50px;transform: scale(0.6,1);}
-	90% {margin-top: 50px;transform: scale(0.6,1);}
+	35% {transform: scale(0.6,1); margin-top:30px}
+	50% {margin-top: 50px;transform: scale(0.6,1);}
+	70% {margin-top: 50px;transform: scale(0.6,1);}
 }
 
 
@@ -1032,10 +1032,10 @@ body {
 	position: absolute;
 	margin: auto;
 	border-radius:2px;
-	animation: o2-logo-animation-line-top 2.8s ;
-	-moz-animation: o2-logo-animation-line-top 2.8s ;	/* Firefox */
-	-webkit-animation: o2-logo-animation-line-top 2.8s ;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-line-top 2.8s ;	/* Opera */
+	animation: o2-logo-animation-line-top 2.8s ease;
+	-moz-animation: o2-logo-animation-line-top 2.8s ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation-line-top 2.8s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-line-top 2.8s ease;	/* Opera */
 	transform: scale(0.45,1)
 }
 .o2-logo-line-bottom {
@@ -1045,10 +1045,10 @@ body {
 	position: absolute;
 	margin-top: 50px;
 	border-radius:2px;
-	animation: o2-logo-animation-line-bottom 2.8s;
-	-moz-animation: o2-logo-animation-line-bottom 2.8s;	/* Firefox */
-	-webkit-animation: o2-logo-animation-line-bottom 2.8s;	/* Safari 和 Chrome */
-	-o-animation: o2-logo-animation-line-bottom 2.8s ;	/* Opera */
+	animation: o2-logo-animation-line-bottom 2.8s ease;
+	-moz-animation: o2-logo-animation-line-bottom 2.8s ease;	/* Firefox */
+	-webkit-animation: o2-logo-animation-line-bottom 2.8s ease;	/* Safari 和 Chrome */
+	-o-animation: o2-logo-animation-line-bottom 2.8s ease;	/* Opera */
 	transform: scale(0.45,1)
 }
 
