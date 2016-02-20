@@ -152,7 +152,7 @@ var svc_usr = function() {
                 loadOrders()
                 onsuccess(data)
             },
-            function(data) {
+			error:function(data) {
                 onfail(data)
             }
         })
