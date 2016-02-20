@@ -44,8 +44,6 @@ var R = {
     }
     /*end init template*/
 
-
-
 $$(".isimg").on("click", function() {
     app.photoBrowser({
         photos: [
@@ -57,7 +55,7 @@ $$(".isimg").on("click", function() {
     }).open();
 })
 
-var current_train = undefined
+var current_train_weight = undefined
 
 var weightPicker = app.picker({
     input: "#weight-picker",
@@ -74,7 +72,7 @@ var weightPicker = app.picker({
     }],
     onClose: function(p) {
         var weight = $$("#weight-picker").val()
-        current_train.setweight(weight.replace(/ /g, ""))
+        current_train_weight.setweight(weight.replace(/ /g, ""))
     }
 });
 
@@ -215,8 +213,15 @@ var svc_usr = function() {
                             submit(function() {
                                     that.onloaded(history)
                                 },
-                                function() {})
-
+                                function() {
+                                    var noti = app.addNotification({
+                                        title: '更新失败',
+                                        message: '更新体重数据失败，轻稍后再试',
+                                    });
+                                    setTimeout(function() {
+                                        app.closeNotification(noti)
+                                    }, 3000);
+                                })
                         }
                     })
                 }
@@ -312,15 +317,18 @@ app.onPageInit("home", function(page) {
         for (var i = 0; i < history.length; i++) {
             var v = history[i]
             var item = T.timelineitem(v.getTimeLineCard())
-		    $$("#o2-timeline").prepend(item)
+            $$("#o2-timeline").prepend(item)
         }
+		if(current_train_weight != undefined){
+			$$('.pickweight[data-id="'+current_train_weight.id+'"]').addClass("animated tada")
+		}
         $$(".pickweight").on("click", function(e) {
             var tar = this
             e.stopPropagation()
             $$.each(history, function(i, v) {
                 if (v.id == tar.dataset["id"]) {
                     weightPicker.open()
-                    current_train = v
+                    current_train_weight = v
                     console.log(v.date)
                 }
             })
