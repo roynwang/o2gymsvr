@@ -1012,7 +1012,6 @@ body {
 	height: 50px;
 }
 .o2-logo-title {
-    position: absolute;
     text-align: center;
     width: 100%;
     margin: 0;
@@ -1026,12 +1025,16 @@ body {
 	margin-right: -10px;
 }
 
+.o2-logo-title-container {
+	width: 200px;
+	height: 60px;
+}
+
 .o2-logo-line-top {
 	left: calc(50% - 93px);
     height: 1px;
     background: #444;
 	width: 200px;
-	position: absolute;
 	margin: auto;
 	border-radius:2px;
 	animation: o2-logo-animation-line-top 2.8s ease;
@@ -1045,8 +1048,6 @@ body {
     height: 1px;
     background: #444;
 	width: 200px;
-	position: absolute;
-	margin-top: 50px;
 	border-radius:2px;
 	animation: o2-logo-animation-line-bottom 2.8s ease;
 	-moz-animation: o2-logo-animation-line-bottom 2.8s ease;	/* Firefox */
