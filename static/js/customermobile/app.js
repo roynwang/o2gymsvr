@@ -1,7 +1,19 @@
+
+String.prototype.fixSize = function(w, h) {
+    if (w == undefined) {
+        w = 200
+    }
+    if (h == undefined) {
+        h = w
+    }
+    var str = this + "?imageView2/1/w/" + w.toString() + "/h/" + h.toString()
+    return str
+}
 var app = new Framework7({
     template7Pages: true,
     template7Data: {}
 });
+
 var $$ = Dom7;
 var mainView = app.addView('.view-main');
 
@@ -23,6 +35,18 @@ function range(start, end, step) {
         return ret
     }
     /*init template */
+function notify(title, message, keep) {
+    var noti = app.addNotification({
+        title: title,
+        message: message,
+    });
+	if(!keep){
+	    setTimeout(function() {
+			app.closeNotification(noti)
+	    }, 3000);
+	}
+
+}
 var T = {
     timelineitem: Template7.compile($$("#tpl_timelineitem").html())
 }
@@ -40,7 +64,13 @@ var R = {
         },
         train: function(train) {
             return "/api/" + train.coachprofile.name + "/b/" + train.date.replace(/-/g, "") + "/" + train.hour + "/"
-        }
+        },
+        coachSchedule: function(phone, day) {
+            return "/api/" + phone + "/d/" + day + "/"
+        },
+		book: function(coachname, datestr){
+            return "/api/" + coachname + "/b/" + datestr + "/"
+		}
     }
     /*end init template*/
 
@@ -143,6 +173,16 @@ var svc_usr = function() {
     that.onloaded = undefined
     var history = []
 
+    function submitBook(coachname,datestr, book, onsuccess, onfail) {
+		$$.ajax({
+			url: R.book(coachname, datestr),
+			method: "POST",
+			data: book,
+			success: onsuccess,
+			error: onfail
+		})
+    }
+
     function init(phone, onsuccess, onfail, onloaded) {
         that.onloaded = onloaded
         $$.ajax({
@@ -152,13 +192,13 @@ var svc_usr = function() {
                 loadOrders()
                 onsuccess(data)
             },
-			error:function(data) {
+            error: function(data) {
                 onfail(data)
             }
         })
     }
 
-    function completeOrder() {
+    function completeOrderLoad() {
         count_items--;
         if (count_items == 0) {
             history.sort(function(a, b) {
@@ -277,7 +317,7 @@ var svc_usr = function() {
                 order.alltrains = []
             }
             order.alltrains.push(tmp)
-            completeOrder()
+            completeOrderLoad()
         })
     }
 
@@ -291,15 +331,23 @@ var svc_usr = function() {
         })
     }
 
-    function getHistory() {
-        loadOrders()
+    function getCurrentOrder() {
+        for (var i in usr.orders) {
+            var order = usr.orders[i]
+            if (order.status != 'done' && order.status != 'unpaid') {
+                return order
+            }
+        }
+        return false
     }
+
     return {
         user: function() {
             return usr
         },
         init: init,
-        getHistory: getHistory
+        getCurrentOrder: getCurrentOrder,
+        submitBook: submitBook
     }
 }()
 
@@ -319,9 +367,9 @@ app.onPageInit("home", function(page) {
             var item = T.timelineitem(v.getTimeLineCard())
             $$("#o2-timeline").prepend(item)
         }
-		if(current_train_weight != undefined){
-			$$('.pickweight[data-id="'+current_train_weight.id+'"]').addClass("animated tada")
-		}
+        if (current_train_weight != undefined) {
+            $$('.pickweight[data-id="' + current_train_weight.id + '"]').addClass("animated tada")
+        }
         $$(".pickweight").on("click", function(e) {
             var tar = this
             e.stopPropagation()
@@ -427,6 +475,7 @@ app.onPageInit('about', function(page) {
     var current_accordion = undefined
 
     function bindHour(tar) {
+        var done = null
         function prepareSubmit(ele) {
             var btnp = $$('<p class="animated fadeIn o2-fadeIn" style="display:none"><span class="o2-book-submit">预约</span></p>')
             $$(ele).prepend(btnp)
@@ -434,29 +483,60 @@ app.onPageInit('about', function(page) {
             btnp.show()
 
             function submit() {
+                var date = ele.attr("data-date")
+                var hour = ele.attr("data-hour")
                 if (busy) return;
                 btn.html(busycount)
-                busy = setInterval(function() {
-                    if (busy) {
+                busy = window.setInterval(function() {
+                    if (done == null) {
                         if (busycount.length == 5) {
                             busycount = ""
                         }
                         busycount += "·"
                         btn.html(busycount)
-                    } else {
+                    }
+                    if (done == true) {
                         btn.html("")
                         btn.addClass("ion-ios-checkmark-empty")
                         btn.addClass("animated o2-pulse")
                         btn.css("font-size", "60px")
                         window.clearInterval(busy)
                         btn.off("click", submit)
+                        busy = false
+						setTimeout(function(){
+							app.accordionClose(tar) 
+						},1300)
+                    }
+                    if (done == false) {
+                        btnp.remove()
+                        window.clearInterval(busy)
+                        busy = false
+                        ele.removeClass("booking")
+						notify("失败","提交预约失败,请稍后再试")
                     }
                 }, 300)
-                busy = true;
                 btnp.removeClass("animated slideInRight")
+
+                var curOrder = svc_usr.getCurrentOrder()
+                var newbook = {
+                        date: moment(date).format("YYYY-MM-DD"),
+                        hour: hour,
+                        coach: curOrder.coachdetail.id,
+                        custom: svc_usr.user().id,
+                        order: curOrder.id
+                    }
+				svc_usr.submitBook(curOrder.coachdetail.name, date, newbook, function(data){
+                    done = true
+				},function(data){
+                    done = false
+				})
+
+                /* submit the book */
+				/*
                 setTimeout(function() {
-                    busy = false
+                    done = false
                 }, 2000);
+				*/
             }
 
             btnp.find(".o2-book-submit").on("click", submit)
@@ -467,7 +547,16 @@ app.onPageInit('about', function(page) {
             tar.find(".o2-book-hours ul li.booking").toggleClass("booking")
         }
         tar.find(".o2-book-hours ul li").on("click", function(event) {
+			//if submitted then return
+			if(done == true){
+				return
+			}
             if (busy || $$(this).hasClass("booking")) return;
+
+            //do not show submit btn if next is na
+            if ($$(this).next().find(".o2-hour-status").hasClass("na")) {
+                return;
+            }
             cleanSubmit()
             $$(this).addClass("booking")
             prepareSubmit($$(this))
@@ -475,8 +564,8 @@ app.onPageInit('about', function(page) {
     }
 
 
-    function buildMonthRow(arr) {
-        var container = '<div class="accordion-item">' +
+    function buildMonthRow(arr, month, monthstr) {
+        var container = '<div class="accordion-item" data-month=' + month + ' data-monthstr="' + monthstr + '">' +
             '<div class="accordion-item-toggle row no-gutter o2-book-days">' +
             '##</div>' +
             '<div class="accordion-item-content">' +
@@ -503,7 +592,7 @@ app.onPageInit('about', function(page) {
         if (m != undefined) {
             curmonth = curmonth.add(m, 'months')
         }
-        var month = '<div class="monthview"><div class="content-block-title">' + curmonth.format("MMMM") + '</div>' +
+        var month = '<div class="monthview"><div class="content-block-title"><span>' + curmonth.format("MMMM") + '</span></div>' +
             '<div class="content-block accordion-list custom-accordion o2-book-month">' +
             '##</div>' +
             '</div></div>';
@@ -515,12 +604,12 @@ app.onPageInit('about', function(page) {
         for (var i = 0; i < wd; i++) {
             week.push("")
         }
-
+        var datamonth = curmonth.format("YYYYMM")
         var weeks = ""
         for (var i = 1; i <= lastday; i++) {
             week.push(i)
             if (week.length == 7) {
-                weeks += buildMonthRow(week)
+                weeks += buildMonthRow(week, datamonth, curmonth.format("MMMM"))
                 week = []
             }
         }
@@ -528,7 +617,7 @@ app.onPageInit('about', function(page) {
             while (week.length != 7) {
                 week.push("")
             }
-            weeks += buildMonthRow(week)
+            weeks += buildMonthRow(week, datamonth, curmonth.format("MMMM"))
         }
 
         return month.replace("##", weeks)
@@ -537,32 +626,56 @@ app.onPageInit('about', function(page) {
     function loadmore() {
         var months = buildMonth();
         months += buildMonth(1);
-        months += buildMonth(2);
         $$(".months").append(months)
     }
 
+    function setDayView(phone, month, day) {
+        var date = month
+        if (day.length == 1) {
+            day = "0" + day
+        }
+        date += day
+        current_accordion.find("li").attr("data-date", date)
+        $$.getJSON(R.coachSchedule(phone, date), function(data) {
+            var ava = data.availiable
+            var nodes = current_accordion.find(".o2-book-hours .o2-hour-status")
+            for (var i = 0; i < TimeMap.length; i++) {
+                if (ava.indexOf(i) == -1) {
+                    $$(nodes[i]).addClass("na")
+                } else {
+                    $$(nodes[i]).removeClass("na")
+                }
+            }
+        })
+    }
+
     function buildDayView() {
+        //TODO get date status
+
+
         var rows = '<div class="list-block"><ul>##</ul></div>'
-        var hour = '<li class="item-content">' +
+        var hour = '<li class="item-content" data-hour="#hour#">' +
             '<div class="item-media"><span class="hour">##</span><span class="min">00</span></div>' +
-            '<div class="item-inner"><div class="item-title"></div></div>' +
+            '<div class="item-inner"><div class="item-title o2-hour-status"><span class="ion-ios-minus"></span></div></div>' +
             '</li>';
-        var hourhalf = '<li class="item-content">' +
+        var hourhalf = '<li class="item-content" data-hour="#hour#">' +
             '<div class="item-media"><span class="hour hide"></span><span class="min">30</span></div>' +
-            '<div class="item-inner"><div class="item-title"></div></div>' +
+            '<div class="item-inner"><div class="item-title o2-hour-status"><span class="ion-ios-minus"></span></div></div>' +
             '</li>';
         var alltext = ""
         for (var i = 0; i < TimeMap.length; i++) {
             if (i % 2 == 0) {
-                alltext += hour.replace("##", 9 + i / 2)
+                alltext += hour.replace("##", 9 + i / 2).replace("#hour#", i)
             } else {
-                alltext += hourhalf
+                alltext += hourhalf.replace("#hour#", i)
             }
         }
         return rows.replace("##", alltext);
     }
 
     loadmore()
+
+	$$(".o2-book-header-coach img").attr("src", svc_usr.getCurrentOrder().coachdetail.avatar.fixSize())
 
     $$(".back").on("click", function() {
         mainView.router.back();
@@ -578,7 +691,6 @@ app.onPageInit('about', function(page) {
         app.accordionClose(current_accordion)
     })
     $$('.accordion-item').on('close', function(e) {
-
         $$(".o2-book-days .col-auto").removeClass("active")
         $$("#o2-book-overlay-top, #o2-book-overlay-bottom").hide()
         $$(this).find(".o2-book-hours").html("");
@@ -586,7 +698,9 @@ app.onPageInit('about', function(page) {
 
     $$('.accordion-item').on('open', function(e) {
         current_accordion = $$(this)
+        $$("#o2-book-overlay-top span").html(this.dataset["monthstr"])
         current_accordion.find(".o2-book-hours").html(buildDayView());
+        setDayView(svc_usr.getCurrentOrder().coachdetail.name, this.dataset["month"], expanding.find("p>span").html())
     })
     $$('.accordion-item').on('opened', function(e) {
         expanding.addClass("active")
@@ -616,7 +730,6 @@ app.onPageInit('about', function(page) {
             $$("#month-scroll").scrollTop(to, 300, cb)
         }
     });
-    $$('.accordion-item').on('opened', function(e) {});
 });
 
 /*
