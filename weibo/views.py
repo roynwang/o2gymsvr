@@ -140,7 +140,7 @@ class PicFetch(APIView):
 		token = wxutils.get_accesstoken()
 		mediaurl = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=" + token + "&media_id=" + mediaid
 		ret, info = bucket.fetch(mediaurl,settings.QNBUKET,filename)
-		return Response(info)
+		return Response({"pic": filename})
 
 
 

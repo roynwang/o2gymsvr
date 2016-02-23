@@ -192,7 +192,7 @@ class WechatSignature(APIView):
 		print ticket
 		signature = '&'.join(['%s=%s' % (key.lower(), sign[key]) for key in sorted(sign)])
 		sign["signature"] = hashlib.sha1(signature).hexdigest()
-		sign["appid"] = settings.WECHAT_APPID
+		sign["appId"] = settings.WECHAT_APPID
 		sign["debug"] = True
 		return sign
 	def get_accesstoken(self):
