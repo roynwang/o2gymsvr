@@ -12,5 +12,6 @@ urlpatterns = patterns('',
         url(r'^api/(?P<by>[0-9]+)/i/(?P<pk>[0-9]+)/$', ImageItem.as_view()),
         url(r'^api/l/$', LongWeiboList.as_view()),
 		url(r'^api/p/token/$', PicToken.as_view()),
+		url(r'^api/p/fetch/$', PicFetch.as_view()),
 		url(r'^api/l/(?P<weiboid>[0-9]+)/$', ArticlePage.as_view()),
 		)

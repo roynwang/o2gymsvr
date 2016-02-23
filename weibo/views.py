@@ -9,7 +9,7 @@ from weibo.serializers import *
 from usr.models import *
 from rest_framework import status
 from rest_framework.views import APIView
-from qiniu import Auth
+from qiniu import Auth, BucketManager
 import json
 import pprint
 from django.conf import settings
@@ -17,6 +17,7 @@ import os
 import uuid
 
 from rest_framework.decorators import api_view,renderer_classes
+from utils import wxutils
 
 # Create your views here.
 
@@ -129,6 +130,19 @@ class LongWeiboItem(generics.RetrieveUpdateDestroyAPIView):
 	lookup_field = "weiboid"
 	queryset = LongWeibo.objects.all()
 	serializer_class = LongWeiboSerializer
+
+class PicFetch(APIView):
+	def get(self,request):
+		mediaid = request.query_params["media"]
+		filename = str(uuid.uuid1()).replace("-","") + ".jpg"
+		q = Auth(settings.QNACCESSKEY, settings.QNSECRETKEY)
+		bucket = BucketManager(q)
+		token = wxutils.get_accesstoken()
+		mediaurl = "http://file.api.weixin.qq.com/cgi-bin/media/get?access_token=" + token + "&media_id=" + mediaid
+		ret, info = bucket.fetch(mediaurl,settings.QNBUKET,filename)
+		return Response(info)
+
+
 
 class PicToken(APIView):
 	def get(self,request):

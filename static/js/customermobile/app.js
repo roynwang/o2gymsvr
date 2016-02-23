@@ -20,7 +20,7 @@ var pages = {
     "bookdetail": "/static/customermobile/book.html"
 }
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
-//init wx
+    //init wx
 
 
 
@@ -56,7 +56,7 @@ var T = {
 var R = {
         login: "/api/lg/",
         refreshToken: "/api/t/",
-		wxinit: "/api/wx/signature/",
+        wxinit: "/api/wx/signature/",
         user: function(phone) {
             return "/api/" + phone + "/"
         },
@@ -75,21 +75,29 @@ var R = {
         book: function(coachname, datestr) {
             return "/api/" + coachname + "/b/" + datestr + "/"
         },
+		picFetch: function() {
+            return "/api/p/fetch/"
+		}
     }
     /*end init template*/
-$$.post(R.wxinit,{url:window.location.href}, function(data){
-	var config = JSON.parse(data)
-	config.jsApiList = ["chooseImage", "uploadImage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-	wx.config(config);
-	wx.ready(function() {
-   		 alert("load success")
-        // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
-	});
-	wx.error(function(res) {
-   		alert("load error")
-	})
+$$.post(R.wxinit, {
+    url: window.location.href
+	}, function(data) {
+    var config = JSON.parse(data)
+    config.jsApiList = ["chooseImage", "uploadImage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+    wx.config(config);
+    wx.ready(function() {
+        alert("load success")
+            // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+    });
+    wx.error(function(res) {
+        alert("load error")
+    })
 })
 
+function notiyFetchPic(mediaid){
+	$$.get(R.picFetch(),{mediaid: mediaid})
+}
 
 
 $$(".isimg").on("click", function() {
@@ -119,10 +127,10 @@ var weightPicker = app.picker({
         values: range(0, 9)
     }],
     onOpen: function() {
-		$$(".close-picker.o2-custom").on("click",function(){
-	        var weight = $$("#weight-picker").val()
-		    current_train_weight.setweight(weight.replace(/ /g, ""))
-		})
+        $$(".close-picker.o2-custom").on("click", function() {
+            var weight = $$("#weight-picker").val()
+            current_train_weight.setweight(weight.replace(/ /g, ""))
+        })
     }
 });
 
@@ -235,20 +243,21 @@ var svc_usr = function() {
                 tmp.detail = "[]"
             }
             $$.each(tmp.booked, function(i, v) {
+                var submit = function(pdata, onsuccess, onfail) {
+                    $$.ajax({
+                        url: R.train(v),
+                        method: "PATCH",
+                        data: pdata,
+                        success: onsuccess,
+                        error: onfail
+                    })
+                }
+
                 v.setweight = function(weight) {
                     //TODO  set weight
                     var detail = JSON.parse(tmp.detail)
                     var found = false
                     var pdata = {}
-                    var submit = function(onsuccess, onfail) {
-                        $$.ajax({
-                            url: R.train(v),
-                            method: "PATCH",
-                            data: pdata,
-                            success: onsuccess,
-                            error: onfail
-                        })
-                    }
                     $$.each(detail, function(i, v) {
                         if (v.contenttype == "weight") {
                             v.content = weight
@@ -270,7 +279,7 @@ var svc_usr = function() {
                     $$.each(history, function(i) {
                         if (history[i].id == v.id) {
                             history[i].detail = JSON.stringify(detail)
-                            submit(function() {
+                            submit(pdata, function() {
                                     that.onloaded(history)
                                 },
                                 function() {
@@ -285,7 +294,16 @@ var svc_usr = function() {
                         }
                     })
                 }
-                v.addPic = function() {
+                v.addPic = function(imgid) {
+                    //upload file
+                    wx.uploadImage({
+                        localId: imgid, // 需要上传的图片的本地ID，由chooseImage接口获得
+                        isShowProgressTips: 1, // 默认为1，显示进度提示
+                        success: function(res) {
+                            var serverId = res.serverId; // 返回图片的服务器端ID
+							picFetch(res.serverId)
+                        }
+                    });
                     //TODO add pic
                 }
                 v.getTimeLineCard = function() {
@@ -371,7 +389,7 @@ var svc_usr = function() {
     }
 }()
 
-app.onPageInit("home", function(page) {
+var home = app.onPageInit("home", function(page) {
     var booking = {
         booking: true,
         date: {
@@ -402,15 +420,19 @@ app.onPageInit("home", function(page) {
             })
         })
         $$(".camera").on("click", function() {
-            console.log("picking img")
-            wx.chooseImage({
-                count: 1, // 默认9
-                sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-                sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-                success: function(res) {
-                    var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+            $$.each(history, function(i, v) {
+                if (v.id == tar.dataset["id"]) {
+                    console.log("picking img")
+                    wx.chooseImage({
+                        count: 1, // 默认9
+                        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+                        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+                        success: function(res) {
+                            var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                        }
+                    });
                 }
-            });
+            })
         })
         $$("#o2-timeline").prepend(T.timelineitem(booking))
         $$("#booknow").on("click", function() {
@@ -538,7 +560,8 @@ app.onPageInit('about', function(page) {
                         btn.off("click", submit)
                         busy = false
                         setTimeout(function() {
-                            app.accordionClose(tar)
+                            mainView.router.back();
+                            //should refresh
                         }, 1300)
                     }
                     if (done == false) {
@@ -561,8 +584,8 @@ app.onPageInit('about', function(page) {
                 }
                 svc_usr.submitBook(curOrder.coachdetail.name, date, newbook, function(data) {
                     var mdate = moment(ele.attr("data-date"))
-                    $$(".o2-book-header-item .month").html(mdate.format("MM/DD"))
-                    $$(".o2-book-header-item .hour").html(TimeMap[ele.attr("data-hour")])
+                    $$("#o2-book-time .month").html(mdate.format("MM/DD"))
+                    $$("#o2-book-time .hour").html(TimeMap[ele.attr("data-hour")])
                     done = true
                 }, function(data) {
                     done = false
