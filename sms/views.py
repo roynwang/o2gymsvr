@@ -180,6 +180,8 @@ class WechatSignature(APIView):
 		"""随机数"""
 		return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
 	def jsapiTicket(self,access_token):
+		print "token"
+		print access_token
 		_JSAPI_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={0}&type=jsapi"
 		return requests.get(_JSAPI_URL.format(access_token)).json()["ticket"]
 
@@ -192,9 +194,12 @@ class WechatSignature(APIView):
 				'timestamp': int(time.time()),
 				'url': url,
 				}
+		print "ticket"
+		print ticket
 		signature = '&'.join(['%s=%s' % (key.lower(), sign[key]) for key in sorted(sign)])
 		sign["signature"] = hashlib.sha1(signature).hexdigest()
 		sign["appid"] = settings.WECHAT_APPID
+		sign["debug"] = True
 		return sign
 	def get_accesstoken(self):
 		params = {"grant_type":"client_credential",\
@@ -203,9 +208,8 @@ class WechatSignature(APIView):
 		resp = requests.get(settings.WECHAT_TICKETURL,params)
 		return resp.json()["access_token"]
 
-	def get(self, request):
-		url="http://182.92.203.171/mobile/i/"
-		print "xxxxxxxxxxxxxx"
+	def post(self, request):
+		url=request.data["url"]
 		return Response(self.jsapiSign(self.get_accesstoken(), url))
 
 class Wechat(APIView):

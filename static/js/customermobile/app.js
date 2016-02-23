@@ -1,19 +1,5 @@
 /*init wechat*/
-wx.config({
-    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-    "timestamp": 1456206798,
-    "appid": "wx72a88ef05d4fadc0",
-    "signature": "91748b7281a901f68250c2a327f1765aa33746fa",
-    "nonceStr": "bRqVr35YolcsktA",
-    jsApiList: ["chooseImage", "uploadImage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-});
-wx.ready(function() {
-    alert("success")
-        // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
-});
-wx.error(function(res) {
-    alert("error")
-})
+
 
 
 
@@ -39,6 +25,9 @@ var pages = {
     "bookdetail": "/static/customermobile/book.html"
 }
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
+//init wx
+
+
 
 function range(start, end, step) {
         var ret = []
@@ -72,6 +61,7 @@ var T = {
 var R = {
         login: "/api/lg/",
         refreshToken: "/api/t/",
+		wxinit: "/api/wx/signature/",
         user: function(phone) {
             return "/api/" + phone + "/"
         },
@@ -89,9 +79,23 @@ var R = {
         },
         book: function(coachname, datestr) {
             return "/api/" + coachname + "/b/" + datestr + "/"
-        }
+        },
     }
     /*end init template*/
+$$.post(R.wxinit,{url:window.location.href}, function(data){
+	var config = JSON.parse(data)
+	config.jsApiList = ["chooseImage", "uploadImage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+	wx.config(config);
+	wx.ready(function() {
+   		 alert("load success")
+        // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+	});
+	wx.error(function(res) {
+   		alert("load error")
+	})
+})
+
+
 
 $$(".isimg").on("click", function() {
     app.photoBrowser({
