@@ -1,8 +1,3 @@
-/*init wechat*/
-
-
-
-
 String.prototype.fixSize = function(w, h) {
     if (w == undefined) {
         w = 200
@@ -123,9 +118,11 @@ var weightPicker = app.picker({
         textAlign: 'center',
         values: range(0, 9)
     }],
-    onClose: function(p) {
-        var weight = $$("#weight-picker").val()
-        current_train_weight.setweight(weight.replace(/ /g, ""))
+    onOpen: function() {
+		$$(".close-picker.o2-custom").on("click",function(){
+	        var weight = $$("#weight-picker").val()
+		    current_train_weight.setweight(weight.replace(/ /g, ""))
+		})
     }
 });
 
@@ -404,8 +401,8 @@ app.onPageInit("home", function(page) {
                 }
             })
         })
-        $$(".unfilled").on("click", function() {
-            console.log("picking ... ...")
+        $$(".camera").on("click", function() {
+            console.log("picking img")
             wx.chooseImage({
                 count: 1, // 默认9
                 sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
