@@ -179,18 +179,22 @@ class WechatSignature(APIView):
 	def nonceStr(self, length):
 		"""随机数"""
 		return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
+	def jsapiTicket(self,access_token):
+		_JSAPI_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token={0}&type=jsapi"
+		return requests.get(_JSAPI_URL.format(access_token)).json()["ticket"]
 
 	def jsapiSign(self, access_token, url):
 		"""jsapi_ticket 签名"""
+		ticket = self.jsapiTicket(access_token)
 		sign = {
 				'nonceStr': self.nonceStr(15),
-				'access_token': access_token,
+				'jsapi_ticket': ticket,
 				'timestamp': int(time.time()),
 				'url': url,
-				"appid":settings.WECHAT_APPID,
 				}
 		signature = '&'.join(['%s=%s' % (key.lower(), sign[key]) for key in sorted(sign)])
 		sign["signature"] = hashlib.sha1(signature).hexdigest()
+		sign["appid"] = settings.WECHAT_APPID
 		return sign
 	def get_accesstoken(self):
 		params = {"grant_type":"client_credential",\
