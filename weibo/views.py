@@ -133,7 +133,7 @@ class LongWeiboItem(generics.RetrieveUpdateDestroyAPIView):
 
 class PicFetch(APIView):
 	def get(self,request):
-		mediaid = request.query_params["media"]
+		mediaid = request.query_params["mediaid"]
 		filename = str(uuid.uuid1()).replace("-","") + ".jpg"
 		q = Auth(settings.QNACCESSKEY, settings.QNSECRETKEY)
 		bucket = BucketManager(q)
