@@ -420,6 +420,8 @@ var home = app.onPageInit("home", function(page) {
             })
         })
         $$(".camera").on("click", function() {
+            var tar = this
+            e.stopPropagation()
             $$.each(history, function(i, v) {
                 if (v.id == tar.dataset["id"]) {
                     console.log("picking img")
@@ -429,6 +431,7 @@ var home = app.onPageInit("home", function(page) {
                         sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
                         success: function(res) {
                             var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+							v.addPic(localIds[0])
                         }
                     });
                 }

@@ -168,12 +168,6 @@ class GymReg(APIView):
 		else:
 			return Response({"result":"failed"}, status=status.HTTP_403_FORBIDDEN)
 
-class PicFetch(APIView):
-	def get(self, request):
-		q = Auth(settings.QNACCESSKEY, settings.QNSECRETKEY)
-		bucket = BucketManager(q)
-		ret, info = bucket.fetch('http://developer.qiniu.com/docs/v6/sdk/python-sdk.html', bucket_name, 'fetch.html')
-
 
 class WechatSignature(APIView):
 	def nonceStr(self, length):
