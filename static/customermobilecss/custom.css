@@ -770,6 +770,7 @@ body {
     margin-bottom: 0;
     margin-left: 25px;
 	line-height: 36px;
+    margin-top: 20px;
 }
 
 .monthview .content-block-title>span{
@@ -1157,6 +1158,22 @@ body {
 }
 .o2-book-hours .item-content:nth-last-of-type(1) .o2-hour-status{
 	display: none;
+}
+
+.o2-book-coach {
+    padding: 0 10px;
+	text-align: center;
+}
+.o2-book-coach img{
+	min-width:60px;
+	max-width:60px;
+	border-radius: 6px;
+}
+.o2-book-coach img.selected{
+	min-width:56px;
+	max-width:56px;
+	border-radius: 50%;
+	border: solid 2px rgb(79,210,194);
 }
 
 

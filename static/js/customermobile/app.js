@@ -1,3 +1,21 @@
+/*init wechat*/
+wx.config({
+    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    "timestamp": 1456206798,
+    "appid": "wx72a88ef05d4fadc0",
+    "signature": "91748b7281a901f68250c2a327f1765aa33746fa",
+    "nonceStr": "bRqVr35YolcsktA",
+    jsApiList: ["chooseImage", "uploadImage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+});
+wx.ready(function() {
+    alert("success")
+        // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+});
+wx.error(function(res) {
+    alert("error")
+})
+
+
 
 String.prototype.fixSize = function(w, h) {
     if (w == undefined) {
@@ -35,16 +53,17 @@ function range(start, end, step) {
         return ret
     }
     /*init template */
+
 function notify(title, message, keep) {
     var noti = app.addNotification({
         title: title,
         message: message,
     });
-	if(!keep){
-	    setTimeout(function() {
-			app.closeNotification(noti)
-	    }, 3000);
-	}
+    if (!keep) {
+        setTimeout(function() {
+            app.closeNotification(noti)
+        }, 3000);
+    }
 
 }
 var T = {
@@ -68,9 +87,9 @@ var R = {
         coachSchedule: function(phone, day) {
             return "/api/" + phone + "/d/" + day + "/"
         },
-		book: function(coachname, datestr){
+        book: function(coachname, datestr) {
             return "/api/" + coachname + "/b/" + datestr + "/"
-		}
+        }
     }
     /*end init template*/
 
@@ -173,14 +192,14 @@ var svc_usr = function() {
     that.onloaded = undefined
     var history = []
 
-    function submitBook(coachname,datestr, book, onsuccess, onfail) {
-		$$.ajax({
-			url: R.book(coachname, datestr),
-			method: "POST",
-			data: book,
-			success: onsuccess,
-			error: onfail
-		})
+    function submitBook(coachname, datestr, book, onsuccess, onfail) {
+        $$.ajax({
+            url: R.book(coachname, datestr),
+            method: "POST",
+            data: book,
+            success: onsuccess,
+            error: onfail
+        })
     }
 
     function init(phone, onsuccess, onfail, onloaded) {
@@ -279,7 +298,7 @@ var svc_usr = function() {
                             showscale: true,
                             weight: 0,
                             photos: ["http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg"],
-                            showcamera: false
+                            showcamera: true
                         }
                         //set date
                     item.id = this.id
@@ -381,6 +400,17 @@ app.onPageInit("home", function(page) {
                 }
             })
         })
+        $$(".unfilled").on("click", function() {
+            console.log("picking ... ...")
+            wx.chooseImage({
+                count: 1, // 默认9
+                sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+                sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+                success: function(res) {
+                    var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                }
+            });
+        })
         $$("#o2-timeline").prepend(T.timelineitem(booking))
         $$("#booknow").on("click", function() {
             mainView.router.loadPage(pages.bookdetail);
@@ -390,6 +420,7 @@ app.onPageInit("home", function(page) {
         svc_usr.init(Cookies.get("user"), function() {
                 isBusy = false
                 $$("#o2-login-btn").html("登录")
+                $$(".o2-book-header-coach img").attr("src", svc_usr.user().avatar.fixSize())
             },
             function() {
                 var noti = app.addNotification({
@@ -424,6 +455,7 @@ app.onPageInit("home", function(page) {
                 })
                 svc_usr.init($$("#phone").val(), function() {
                         isBusy = false
+                        $$(".o2-book-header-coach img").attr("src", svc_usr.user().avatar.fixSize())
                         console.log(data);
                         $$("#o2-login-btn").html("登录")
                         app.closeModal()
@@ -476,6 +508,7 @@ app.onPageInit('about', function(page) {
 
     function bindHour(tar) {
         var done = null
+
         function prepareSubmit(ele) {
             var btnp = $$('<p class="animated fadeIn o2-fadeIn" style="display:none"><span class="o2-book-submit">预约</span></p>')
             $$(ele).prepend(btnp)
@@ -503,36 +536,39 @@ app.onPageInit('about', function(page) {
                         window.clearInterval(busy)
                         btn.off("click", submit)
                         busy = false
-						setTimeout(function(){
-							app.accordionClose(tar) 
-						},1300)
+                        setTimeout(function() {
+                            app.accordionClose(tar)
+                        }, 1300)
                     }
                     if (done == false) {
                         btnp.remove()
                         window.clearInterval(busy)
                         busy = false
                         ele.removeClass("booking")
-						notify("失败","提交预约失败,请稍后再试")
+                        notify("失败", "提交预约失败,请稍后再试")
                     }
                 }, 300)
                 btnp.removeClass("animated slideInRight")
 
                 var curOrder = svc_usr.getCurrentOrder()
                 var newbook = {
-                        date: moment(date).format("YYYY-MM-DD"),
-                        hour: hour,
-                        coach: curOrder.coachdetail.id,
-                        custom: svc_usr.user().id,
-                        order: curOrder.id
-                    }
-				svc_usr.submitBook(curOrder.coachdetail.name, date, newbook, function(data){
+                    date: moment(date).format("YYYY-MM-DD"),
+                    hour: hour,
+                    coach: curOrder.coachdetail.id,
+                    custom: svc_usr.user().id,
+                    order: curOrder.id
+                }
+                svc_usr.submitBook(curOrder.coachdetail.name, date, newbook, function(data) {
+                    var mdate = moment(ele.attr("data-date"))
+                    $$(".o2-book-header-item .month").html(mdate.format("MM/DD"))
+                    $$(".o2-book-header-item .hour").html(TimeMap[ele.attr("data-hour")])
                     done = true
-				},function(data){
+                }, function(data) {
                     done = false
-				})
+                })
 
                 /* submit the book */
-				/*
+                /*
                 setTimeout(function() {
                     done = false
                 }, 2000);
@@ -547,10 +583,10 @@ app.onPageInit('about', function(page) {
             tar.find(".o2-book-hours ul li.booking").toggleClass("booking")
         }
         tar.find(".o2-book-hours ul li").on("click", function(event) {
-			//if submitted then return
-			if(done == true){
-				return
-			}
+            //if submitted then return
+            if (done == true) {
+                return
+            }
             if (busy || $$(this).hasClass("booking")) return;
 
             //do not show submit btn if next is na
@@ -675,7 +711,7 @@ app.onPageInit('about', function(page) {
 
     loadmore()
 
-	$$(".o2-book-header-coach img").attr("src", svc_usr.getCurrentOrder().coachdetail.avatar.fixSize())
+    $$(".o2-book-header-coach img").attr("src", svc_usr.user().avatar.fixSize())
 
     $$(".back").on("click", function() {
         mainView.router.back();

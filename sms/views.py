@@ -13,6 +13,9 @@ from usr.models import *
 from .serializers import *
 from django.contrib.auth import get_user_model
 from business.models import *
+import random
+import hashlib
+import string
 
 import base64
 import datetime
@@ -26,6 +29,8 @@ from utils import smsutils
 from django.http import HttpResponse
 import hashlib, time, re
 from xml.etree import ElementTree as ET
+import requests
+from qiniu import Auth, BucketManager
 
 
 def get_or_create_user_return_token(number,pwd):
@@ -162,6 +167,42 @@ class GymReg(APIView):
 			return Response({"result":"success"})
 		else:
 			return Response({"result":"failed"}, status=status.HTTP_403_FORBIDDEN)
+
+class PicFetch(APIView):
+	def get(self, request):
+		q = Auth(settings.QNACCESSKEY, settings.QNSECRETKEY)
+		bucket = BucketManager(q)
+		ret, info = bucket.fetch('http://developer.qiniu.com/docs/v6/sdk/python-sdk.html', bucket_name, 'fetch.html')
+
+
+class WechatSignature(APIView):
+	def nonceStr(self, length):
+		"""随机数"""
+		return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(length))
+
+	def jsapiSign(self, access_token, url):
+		"""jsapi_ticket 签名"""
+		sign = {
+				'nonceStr': self.nonceStr(15),
+				'access_token': access_token,
+				'timestamp': int(time.time()),
+				'url': url,
+				"appid":settings.WECHAT_APPID,
+				}
+		signature = '&'.join(['%s=%s' % (key.lower(), sign[key]) for key in sorted(sign)])
+		sign["signature"] = hashlib.sha1(signature).hexdigest()
+		return sign
+	def get_accesstoken(self):
+		params = {"grant_type":"client_credential",\
+				"appid":settings.WECHAT_APPID,\
+				"secret": settings.WECHAT_APPSECRET}
+		resp = requests.get(settings.WECHAT_TICKETURL,params)
+		return resp.json()["access_token"]
+
+	def get(self, request):
+		url="http://182.92.203.171/mobile/i/"
+		print "xxxxxxxxxxxxxx"
+		return Response(self.jsapiSign(self.get_accesstoken(), url))
 
 class Wechat(APIView):
 	def get(self,request):
