@@ -96,8 +96,8 @@ $$.post(R.wxinit, {
     })
 })
 
-function notiyFetchPic(mediaid, onsuccess) {
-    $$.get(R.picFetch(), {
+function notifyFetchPic(mediaid, onsuccess) {
+    $$.getJSON(R.picFetch(), {
         mediaid: mediaid
     }, onsuccess)
 }
@@ -305,7 +305,7 @@ var svc_usr = function() {
                         isShowProgressTips: 1, // 默认为1，显示进度提示
                         success: function(res) {
                             var serverId = res.serverId; // 返回图片的服务器端ID
-                            notiyFetchPic(res.serverId, function(pic) {
+                            notifyFetchPic(res.serverId, function(pic) {
                                 //TODO
                                 //add to train
                                 var newpic = {
