@@ -258,7 +258,7 @@ var svc_usr = function() {
 
                 v.setweight = function(weight) {
                     //TODO  set weight
-                    var detail = JSON.parse(tmp.detail)
+                    var detail = JSON.parse(v.detail)
                     var found = false
                     var pdata = {}
                     $$.each(detail, function(i, v) {
