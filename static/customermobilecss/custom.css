@@ -209,6 +209,9 @@ body {
     text-align: center;
     color: rgba(0, 0, 0, 0.4);
 }
+.o2-timeline-images {
+	width: 100%
+}
 /*
 .o2-timeline-images>.isimg:first-child {
     border-top-left-radius: 4px;

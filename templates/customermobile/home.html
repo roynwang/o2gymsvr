@@ -66,7 +66,7 @@
                             </div>
                         </div>
                     </div>
-					<input id="weight-picker">
+                    <input id="weight-picker">
                     <div id="o2-timeline" class="page-content" style="padding-top:60px;padding-bottom:40px">
                     </div>
                 </div>
@@ -78,12 +78,12 @@
             <div class="page">
                 <div class="page-content login-screen-content">
                     <form>
-                        <div class="list-block o2-login-form" >
+                        <div class="list-block o2-login-form">
                             <ul>
                                 <li class="item-content">
                                     <div class="item-inner">
                                         <div class="item-input">
-                                            <input id="phone"type="text" name="username" placeholder="手机号码">
+                                            <input id="phone" type="text" name="username" placeholder="手机号码">
                                         </div>
                                     </div>
                                 </li>
@@ -95,21 +95,21 @@
                                     </div>
                                 </li>
                             </ul>
-                    		<h4 id="o2-login-btn-touch"><a id="o2-login-btn" href="#">登录</a></h4>
+                            <h4 id="o2-login-btn-touch"><a id="o2-login-btn" href="#">登录</a></h4>
                         </div>
                     </form>
-					<div class="o2-logo row">
-						<div class="o2-logo-title-container">
-							<div class="o2-logo-line-top"></div>
-							<h1 class="o2-logo-title">
+                    <div class="o2-logo row">
+                        <div class="o2-logo-title-container">
+                            <div class="o2-logo-line-top"></div>
+                            <h1 class="o2-logo-title">
 								<span class="o2-logo-char-side o2-logo-char">氧</span>
 								<span class="o2-logo-char-center-0 o2-logo-char">气</span>
 								<span class="o2-logo-char-center-1 o2-logo-char">健</span>
 								<span class="o2-logo-char-side o2-logo-char">身</span>
 							</h1>
-							<div class="o2-logo-line-bottom"></div>
-						</div>
-					</div>
+                            <div class="o2-logo-line-bottom"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -151,8 +151,7 @@
                                 <p>预约</p>
                             </div>
                         </div>
-                        {{/if}}
-						{{#if showscale}}
+                        {{/if}} {{#if showscale}}
                         <div>
                             <div class="o2-timeline-info unfilled pickweight" data-id="{{id}}">
                                 <p><i class="ion-ios-help-outline" id="setweight"></i>
@@ -160,28 +159,29 @@
                                 <p>体重</p>
                             </div>
                         </div>
-                        {{/if}} 
-						{{#if weight}}
-						<div>
+                        {{/if}} {{#if weight}}
+                        <div>
                             <div class="o2-timeline-info pickweight" data-id="{{id}}">
                                 <p>{{weight}}</p>
                                 <p>KG</p>
                             </div>
                         </div>
-                        {{/if}} 
-						{{#unless booking}}
-						<div data-id="{{id}}" class="o2-timeline-images">
-                            {{#each photos}}
-							<div class="o2-timeline-item isimg" data-index="{{@index}}">
-                                <img src="{{this}}">
+                        {{/if}} {{#unless booking}}
+                        <div style="width:100%; overflow-x:scroll">
+                            <div data-id="{{id}}" class="o2-timeline-images">
+                                {{#each photos}}
+                                <div class="o2-timeline-item isimg" data-index="{{@index}}">
+                                    <img src="{{this}}">
+                                </div>
+                                {{/each}} {{#if showcamera}}
+                                <div data-id="{{id}}" class="o2-timeline-info o2-timeline-item camera unfilled"
+                                style="margin-left:5px">
+                                    <p><i class="ion-ios-camera-outline"></i>
+                                    </p>
+                                    <p>拍照</p>
+                                </div>
+                                {{/if}}
                             </div>
-                            {{/each}} {{#if showcamera}}
-                            <div data-id="{{id}}" class="o2-timeline-info o2-timeline-item camera unfilled" style="margin-left:5px">
-                                <p><i class="ion-ios-camera-outline"></i>
-                                </p>
-                                <p>拍照</p>
-                            </div>
-                            {{/if}}
                         </div>
                         {{/unless}}
                     </div>
