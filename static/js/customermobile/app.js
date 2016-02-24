@@ -370,7 +370,7 @@ var svc_usr = function() {
                     var details = JSON.parse(this.detail)
                     $$.each(details, function(i, v) {
                             if (v.contenttype == "image") {
-                                item.photos.push(v.content)
+                                item.photos.push(v.content.fixSize())
                             }
                             if (v.contenttype == "weight") {
                                 item.showscale = false
