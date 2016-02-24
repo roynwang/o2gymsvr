@@ -103,16 +103,6 @@ function notifyFetchPic(mediaid, onsuccess) {
 }
 
 
-$$(".isimg").on("click", function() {
-    app.photoBrowser({
-        photos: [
-            "http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg",
-            "http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg",
-            "http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg",
-        ],
-        theme: 'dark'
-    }).open();
-})
 
 var current_train_weight = undefined
 
@@ -282,7 +272,7 @@ var svc_usr = function() {
                     $$.each(history, function(i) {
                         if (history[i].id == v.id) {
                             history[i].detail = JSON.stringify(detail)
-							v.detail = history[i].detail
+                            v.detail = history[i].detail
                             submit(pdata, function() {
                                     that.onloaded(history)
                                 },
@@ -324,7 +314,7 @@ var svc_usr = function() {
                                 $$.each(history, function(i) {
                                     if (history[i].id == v.id) {
                                         history[i].detail = JSON.stringify(detail)
-										v.detail = history[i].detail
+                                        v.detail = history[i].detail
                                         submit(pdata, function() {
                                                 that.onloaded(history)
                                             },
@@ -355,8 +345,10 @@ var svc_usr = function() {
                             completed: false,
                             showscale: true,
                             weight: 0,
-                            photos: ["http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg"],
-                            showcamera: true
+                            //photos: ["http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg"],
+                            photos: [],
+                            showcamera: true,
+                            id: this.id
                         }
                         //set date
                     item.id = this.id
@@ -480,7 +472,32 @@ var home = app.onPageInit("home", function(page) {
         $$("#booknow").on("click", function() {
             mainView.router.loadPage(pages.bookdetail);
         })
+        $$(".isimg").on("click", function(e) {
+			var cur = this
+            var tar = this.parentElement
+            e.stopPropagation()
+            $$.each(history, function(i, v) {
+                if (v.id == tar.dataset["id"]) {
+					var photos = []
+					$$.each(JSON.parse(v.detail), function(i, v){
+						if(v.contenttype = "image"){
+							photos.push(v.content)
+						}
+					})
+                    app.photoBrowser({
+                        photos: photos,
+                        theme: 'dark',
+						ofText: "/",
+						backLinkText: "",
+						toolbar: false,
+						initialSlide: cur.dataset["index"]
+                    }).open();
+                }
+            })
+        })
+
     }
+
     svc_login.refreshToken(function() {
         svc_usr.init(Cookies.get("user"), function() {
                 isBusy = false

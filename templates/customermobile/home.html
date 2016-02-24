@@ -170,9 +170,9 @@
                         </div>
                         {{/if}} 
 						{{#unless booking}}
-                        <div class="o2-timeline-images">
+						<div data-id="{{id}}" class="o2-timeline-images">
                             {{#each photos}}
-                            <div class="o2-timeline-item isimg">
+							<div class="o2-timeline-item isimg" data-index="{{@index}}">
                                 <img src="{{this}}">
                             </div>
                             {{/each}} {{#if showcamera}}
