@@ -1,3 +1,4 @@
+var HOST = "https://dn-o2fit.qbox.me/"
 String.prototype.fixSize = function(w, h) {
     if (w == undefined) {
         w = 200
@@ -75,14 +76,14 @@ var R = {
         book: function(coachname, datestr) {
             return "/api/" + coachname + "/b/" + datestr + "/"
         },
-		picFetch: function() {
+        picFetch: function() {
             return "/api/p/fetch/"
-		}
+        }
     }
     /*end init template*/
 $$.post(R.wxinit, {
     url: window.location.href
-	}, function(data) {
+}, function(data) {
     var config = JSON.parse(data)
     config.jsApiList = ["chooseImage", "uploadImage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
     wx.config(config);
@@ -95,8 +96,10 @@ $$.post(R.wxinit, {
     })
 })
 
-function notiyFetchPic(mediaid, onsuccess){
-	$$.get(R.picFetch(),{mediaid: mediaid}, onsuccess)
+function notiyFetchPic(mediaid, onsuccess) {
+    $$.get(R.picFetch(), {
+        mediaid: mediaid
+    }, onsuccess)
 }
 
 
@@ -296,15 +299,46 @@ var svc_usr = function() {
                 }
                 v.addPic = function(imgid) {
                     //upload file
+                    var detail = JSON.parse(tmp.detail)
                     wx.uploadImage({
                         localId: imgid, // 需要上传的图片的本地ID，由chooseImage接口获得
                         isShowProgressTips: 1, // 默认为1，显示进度提示
                         success: function(res) {
                             var serverId = res.serverId; // 返回图片的服务器端ID
-							notiyFetchPic(res.serverId, function(pic){
-								//TODO
-								//add to train save
-							})
+                            notiyFetchPic(res.serverId, function(pic) {
+                                //TODO
+                                //add to train
+                                var newpic = {
+                                    contenttype: "image",
+                                    content: HOST + pic.pic
+                                }
+                                detail.push(newpic)
+                                    //save
+                                var pdata = {
+                                    id: v.id,
+                                    date: v.date,
+                                    hour: v.hour,
+                                    detail: JSON.stringify(detail)
+                                }
+                                $$.each(history, function(i) {
+                                    if (history[i].id == v.id) {
+                                        history[i].detail = JSON.stringify(detail)
+                                        submit(pdata, function() {
+                                                that.onloaded(history)
+                                            },
+                                            function() {
+                                                var noti = app.addNotification({
+                                                    title: '更新失败',
+                                                    message: '照片刷新失败，轻稍后再试',
+                                                });
+                                                setTimeout(function() {
+                                                    app.closeNotification(noti)
+                                                }, 3000);
+                                            })
+                                    }
+                                })
+
+                            })
                         }
                     });
                     //TODO add pic
@@ -434,7 +468,7 @@ var home = app.onPageInit("home", function(page) {
                         sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
                         success: function(res) {
                             var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-							v.addPic(localIds[0])
+                            v.addPic(localIds[0])
                         }
                     });
                 }
