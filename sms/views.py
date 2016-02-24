@@ -31,6 +31,7 @@ import hashlib, time, re
 from xml.etree import ElementTree as ET
 import requests
 from qiniu import Auth, BucketManager
+from utils import wxutils
 
 
 def get_or_create_user_return_token(number,pwd):
@@ -204,7 +205,7 @@ class WechatSignature(APIView):
 
 	def post(self, request):
 		url=request.data["url"]
-		return Response(self.jsapiSign(self.get_accesstoken(), url))
+		return Response(self.jsapiSign(wxutils.get_accesstoken(), url))
 
 class Wechat(APIView):
 	def get(self,request):
