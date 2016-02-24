@@ -223,7 +223,10 @@ var svc_usr = function() {
         count_items--;
         if (count_items == 0) {
             history.sort(function(a, b) {
-                return moment(a.date).isAfter(moment(b.date))
+                if(moment(a.date).isAfter(moment(b.date))){
+					return 1
+				}
+				return -1
             })
             that.onloaded(history)
         }
