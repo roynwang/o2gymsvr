@@ -282,6 +282,7 @@ var svc_usr = function() {
                     $$.each(history, function(i) {
                         if (history[i].id == v.id) {
                             history[i].detail = JSON.stringify(detail)
+							v.detail = history[i].detail
                             submit(pdata, function() {
                                     that.onloaded(history)
                                 },
@@ -299,7 +300,7 @@ var svc_usr = function() {
                 }
                 v.addPic = function(imgid) {
                     //upload file
-                    var detail = JSON.parse(tmp.detail)
+                    var detail = JSON.parse(v.detail)
                     wx.uploadImage({
                         localId: imgid, // 需要上传的图片的本地ID，由chooseImage接口获得
                         isShowProgressTips: 1, // 默认为1，显示进度提示
@@ -323,6 +324,7 @@ var svc_usr = function() {
                                 $$.each(history, function(i) {
                                     if (history[i].id == v.id) {
                                         history[i].detail = JSON.stringify(detail)
+										v.detail = history[i].detail
                                         submit(pdata, function() {
                                                 that.onloaded(history)
                                             },
