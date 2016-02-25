@@ -194,6 +194,7 @@ var svc_usr = function() {
     var that = this
     that.onloaded = undefined
     var history = []
+	var needReload = false
 
     function submitBook(coachname, datestr, book, onsuccess, onfail) {
         $$.ajax({
@@ -219,8 +220,14 @@ var svc_usr = function() {
             }
         })
     }
+	function refreshWhenNeed(skipcallback) {
+		if(needReload){
+			loadOrders(skipcallback)
+			needReload = false
+		}
+	}
 
-    function completeOrderLoad() {
+    function completeOrderLoad(skipcallback) {
         count_items--;
         if (count_items == 0) {
             history.sort(function(a, b) {
@@ -229,13 +236,16 @@ var svc_usr = function() {
 				}
 				return -1
             })
-            that.onloaded(history)
+			if(skipcallback != true){
+				that.onloaded(history)
+			}
         }
     }
 
-    function loadOrderDetail(order) {
+    function loadOrderDetail(order, skipcallback) {
         $$.get(R.order(usr.name, order.id), function(data) {
             var tmp = JSON.parse(data)
+			order.booked = tmp.booked
             if (!tmp.detail || tmp.detail == "") {
                 tmp.detail = "[]"
             }
@@ -347,12 +357,13 @@ var svc_usr = function() {
                                 month: "十二月"
                             },
                             completed: false,
-                            showscale: true,
+                            showscale: false,
                             weight: 0,
                             //photos: ["http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg"],
                             photos: [],
-                            showcamera: true,
-                            id: this.id
+                            showcamera: false,
+                            id: this.id,
+							fromnow: ""
                         }
                         //set date
                     item.id = this.id
@@ -363,19 +374,27 @@ var svc_usr = function() {
                     if (!this.detail || this.detail == "") {
                         this.detail = "[]"
                     }
+
+                    var start = moment().subtract(2, "days")
+                    var end = moment()
                     var details = JSON.parse(this.detail)
+					item.fromnow = date.fromNow(true)
+					if(date.isBefore(end)){
+						item.showscale = true
+						item.fromnow = false
+					}
+
                     $$.each(details, function(i, v) {
                             if (v.contenttype == "image") {
                                 item.photos.push(v.content.fixSize())
                             }
-                            if (v.contenttype == "weight") {
+							if (v.contenttype == "weight") {
                                 item.showscale = false
                                 item.weight = v.content
                             }
+						
                         })
                         //set show camera
-                    var start = moment().subtract(2, "days")
-                    var end = moment()
                     if (date.isBetween(start, end)) {
                         item.showcamera = true
                     }
@@ -394,9 +413,10 @@ var svc_usr = function() {
         })
     }
 
-    function loadOrders() {
+    function loadOrders(skipcallback) {
         $$.get(R.orders(usr.name), function(data) {
             usr.orders = JSON.parse(data).results
+			usr.history = []
             count_items = usr.orders.length
             $$.each(usr.orders, function(i, v) {
                 loadOrderDetail(v)
@@ -407,12 +427,19 @@ var svc_usr = function() {
     function getCurrentOrder() {
         for (var i in usr.orders) {
             var order = usr.orders[i]
-            if (order.status != 'done' && order.status != 'unpaid') {
+            if (order.status != 'done' && order.status != 'unpaid' && order.booked.length < order.course_count) {
                 return order
             }
         }
         return false
     }
+	function needRefresh(isneed){
+		if(isneed == undefined){
+			needReload = true
+		} else {
+		needReload = isneed
+		}
+	}
 
     return {
         user: function() {
@@ -420,7 +447,9 @@ var svc_usr = function() {
         },
         init: init,
         getCurrentOrder: getCurrentOrder,
-        submitBook: submitBook
+        submitBook: submitBook,
+		refreshWhenNeed: refreshWhenNeed,
+		needRefresh: needRefresh
     }
 }()
 
@@ -432,6 +461,7 @@ var home = app.onPageInit("home", function(page) {
             month: ""
         }
     }
+	
 
     function renderTimeline(history) {
         $$("#o2-timeline").html("")
@@ -472,9 +502,17 @@ var home = app.onPageInit("home", function(page) {
                 }
             })
         })
-        $$("#o2-timeline").prepend(T.timelineitem(booking))
+		//add booking
+		if(svc_usr.getCurrentOrder() && moment().isAfter(moment(history[history.length-1].date))){
+	        $$("#o2-timeline").prepend(T.timelineitem(booking))
+		}
+
         $$("#booknow").on("click", function() {
-            mainView.router.loadPage(pages.bookdetail);
+			if(svc_usr.getCurrentOrder()){
+	            mainView.router.loadPage(pages.bookdetail);
+			} else {
+				notify("没有匹配的订单","")
+			}
         })
         $$(".isimg").on("click", function(e) {
 			var cur = this
@@ -521,6 +559,11 @@ var home = app.onPageInit("home", function(page) {
     }, function() {
         app.closeModal()
     })
+	app.onPageAfterAnimation("home", function(page){
+			console.log("I'm backing ... ....")
+			svc_usr.refreshWhenNeed()
+	})
+
 
     var isBusy = false
     $$("#o2-login-btn-touch").on("click", function() {
@@ -625,6 +668,7 @@ app.onPageInit('about', function(page) {
                         setTimeout(function() {
                             mainView.router.back();
                             //should refresh
+							svc_usr.needRefresh();
                         }, 1300)
                     }
                     if (done == false) {

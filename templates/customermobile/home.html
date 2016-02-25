@@ -166,7 +166,13 @@
                                 <p>KG</p>
                             </div>
                         </div>
-                        {{/if}} {{#unless booking}}
+						{{/if}}
+						{{#if fromnow}}
+                        <div>
+                            <p class="o2-book-future-time">{{fromnow}}后</p>
+                        </div>
+						{{/if}}
+						{{#unless booking}}
                         <div style="width:100%; overflow-x:scroll;height:65px">
                             <div data-id="{{id}}" class="o2-timeline-images">
                                 {{#each photos}}
