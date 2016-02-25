@@ -533,7 +533,7 @@ var home = app.onPageInit("home", function(page) {
                 if (v.id == tar.dataset["id"]) {
 					var photos = []
 					$$.each(JSON.parse(v.detail), function(i, v){
-						if(v.contenttype = "image"){
+						if(v.contenttype == "image"){
 							photos.push(v.content)
 						}
 					})
