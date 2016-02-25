@@ -364,7 +364,8 @@ var svc_usr = function() {
                             photos: [],
                             showcamera: false,
                             id: this.id,
-							fromnow: ""
+							fromnow: "",
+							hourstr: TimeMap[v.hour]
                         }
                         //set date
                     item.id = this.id
@@ -466,11 +467,19 @@ var home = app.onPageInit("home", function(page) {
 
     function renderTimeline(history) {
         $$("#o2-timeline").html("")
+		var today = moment()
+		var tolasttrain = "?"
         for (var i = 0; i < history.length; i++) {
             var v = history[i]
             var item = T.timelineitem(v.getTimeLineCard())
             $$("#o2-timeline").prepend(item)
+			var tmp = today.diff(moment(v.date), "days")
+			if(tolasttrain == "?" || (tmp>=0 && tmp<tolasttrain)){
+				tolasttrain = tmp
+			}
         }
+		console.log(tolasttrain)
+		$$("#o2-last-train").html(tolasttrain)
         if (current_train_weight != undefined) {
             $$('.pickweight[data-id="' + current_train_weight.id + '"]').addClass("animated tada")
         }

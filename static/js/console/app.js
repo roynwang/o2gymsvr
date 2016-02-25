@@ -1452,7 +1452,6 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
 				getbirthdays(data)
 				
                 $('#customer-search').autocomplete({
-
                     lookup: function(query, done) {
                         // Do ajax call or lookup locally, when done,
                         // call the callback and pass your results:

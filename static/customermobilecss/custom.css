@@ -1187,7 +1187,15 @@ body {
 .o2-timeline .card-content-inner p.o2-book-future-time {
     font-size: 20px;
     margin-top: 10px;
-    color: #aaa;
+    color: rgba(79, 210, 194, 0.6);
     text-align: left;
     padding-left: 20px;
+
+}
+#o2-last-train {
+	font-family: Montserrat, sans-serif;
+}
+.o2-book-future-time>.o2-book-future-time-hour {
+	font-size: 16px !important;
+	color: rgba(79, 210, 194, 0.4) !important; 
 }
