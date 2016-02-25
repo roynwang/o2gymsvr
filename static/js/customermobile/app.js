@@ -222,6 +222,7 @@ var svc_usr = function() {
     }
 	function refreshWhenNeed(skipcallback) {
 		if(needReload){
+			history = []
 			loadOrders(skipcallback)
 			needReload = false
 		}
