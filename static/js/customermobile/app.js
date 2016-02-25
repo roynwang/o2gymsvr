@@ -482,6 +482,7 @@ var home = app.onPageInit("home", function(page) {
 		$$("#o2-last-train").html(tolasttrain)
         if (current_train_weight != undefined) {
             $$('.pickweight[data-id="' + current_train_weight.id + '"]').addClass("animated tada")
+			current_train_weight = undefined
         }
         $$(".pickweight").on("click", function(e) {
             var tar = this
