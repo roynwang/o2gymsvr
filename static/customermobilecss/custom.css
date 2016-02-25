@@ -1187,9 +1187,9 @@ body {
 .o2-timeline .card-content-inner p.o2-book-future-time {
     font-size: 20px;
     margin-top: 10px;
-    color: rgba(79, 210, 194, 0.6);
+    color: rgba(79, 210, 194, 0.8);
     text-align: left;
-    padding-left: 20px;
+    padding-left: 5px;
 
 }
 #o2-last-train {
@@ -1197,5 +1197,5 @@ body {
 }
 .o2-book-future-time>.o2-book-future-time-hour {
 	font-size: 16px !important;
-	color: rgba(79, 210, 194, 0.4) !important; 
+	color: rgba(79, 210, 194, 0.6) !important; 
 }
