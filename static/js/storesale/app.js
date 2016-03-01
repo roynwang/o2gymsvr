@@ -166,7 +166,7 @@ var svc_usr = function() {
 
     function init(phone, onsuccess, onfail) {
         $$.ajax({
-            url: R.user(phone.replace(/ /g,""),
+            url: R.user(phone.replace(/ /g,"")),
             success: function(data) {
                 usr = JSON.parse(data)
                 onsuccess(data)
