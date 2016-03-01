@@ -91,7 +91,7 @@ var R = {
 var svc_login = function() {
     function login(name, pwd, onsuccess, onfail) {
         var pdata = {
-            username: name,
+            username: name.replace(" ",""),
             password: pwd
         }
         $$.ajax({
@@ -166,7 +166,7 @@ var svc_usr = function() {
 
     function init(phone, onsuccess, onfail) {
         $$.ajax({
-            url: R.user(phone),
+            url: R.user(phone.replace(/ /g,""),
             success: function(data) {
                 usr = JSON.parse(data)
                 onsuccess(data)
