@@ -497,10 +497,12 @@ app.onPageInit("customerform", function(page) {
         return true
     }
     $$("#offline-submit").on("click", function() {
-        notify("支付成功", "支付成功,祝您健身愉快")
-        setTimeout(function() {
-            mainView.router.loadPage(pages.home)
-        }, 1500)
+        app.confirm('确定支付已经完成了吗?', function() {
+            notify("支付成功", "支付成功,祝您健身愉快")
+            setTimeout(function() {
+                mainView.router.loadPage(pages.home)
+            }, 1500)
+        })
     })
 
     function buildOrder() {
