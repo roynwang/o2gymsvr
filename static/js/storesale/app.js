@@ -14,7 +14,7 @@ var app = new Framework7({
     template7Data: {},
     modalButtonOk: "确认",
     modalButtonCancel: "取消",
-	modalTitle: "氧气健身"
+    modalTitle: "氧气健身"
 });
 
 function notify(title, message, keep) {
@@ -540,11 +540,9 @@ app.onPageInit("alipayqr", function(page) {
     var node = qr.image(currentQr)
     $$("#qrarea").append(node)
     $$("#pay-done").on("click", function() {
-        app.confirm("确认创建订单吗？", function() {
-            notify("订单创建成功", "已经支付,祝您健身愉快")
-            setTimeout(function() {
-                mainView.router.loadPage(pages.home)
-            }, 1500)
-        })
+        notify("支付已确认", "支付成功,祝您健身愉快")
+        setTimeout(function() {
+            mainView.router.loadPage(pages.home)
+        }, 1500)
     })
 })
