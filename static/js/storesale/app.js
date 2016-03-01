@@ -94,6 +94,10 @@ var R = {
     order: function(phone, orderid) {
         return "/api/" + phone + "/o/" + orderid + "/"
     },
+    order_by_no: function(phone, orderno) {
+        return "/api/" + phone + "/b/" + orderno + "/"
+    },
+
     train: function(train) {
         return "/api/" + train.coachprofile.name + "/b/" + train.date.replace(/-/g, "") + "/" + train.hour + "/"
     },
@@ -241,6 +245,7 @@ var svc_gym = function() {
 var currentCoach = ""
 var currentProduct = null
 var currentQr = ""
+var currentOrderNo = ""
 
 
 app.onPageInit("home", function(page) {
@@ -517,7 +522,7 @@ app.onPageInit("customerform", function(page) {
             var onsuccess = function(resp) {
                 resp = JSON.parse(resp)
                 currentQr = resp.credential.alipay_qr
-
+                currentOrderNo = resp.order_no
                 mainView.router.loadPage(pages.alipayqr)
             }
 
@@ -539,10 +544,29 @@ app.onPageInit("alipayqr", function(page) {
     $$("#ali-qr-area").attr("src", currentQr)
     var node = qr.image(currentQr)
     $$("#qrarea").append(node)
+
+    function checkorder(onsuccess, onfail) {
+        $$.ajax({
+            url: R.order_by_no(currentCoach, currentOrderNo),
+            method: "GET",
+            success: onsuccess,
+            error: onfail
+        })
+    }
     $$("#pay-done").on("click", function() {
-        notify("支付已确认", "支付成功,祝您健身愉快")
-        setTimeout(function() {
-            mainView.router.loadPage(pages.home)
-        }, 1500)
+        checkorder(function(data) {
+                var order = JSON.parse(data)
+                if (order.status == "paid" || order.status == "inprogress") {
+                    notify("支付已确认", "支付成功,祝您健身愉快")
+                    setTimeout(function() {
+                        mainView.router.loadPage(pages.home)
+                    }, 1500)
+                } else {
+                    app.alert("还未查询到您的支付信息，请稍等再点击确认")
+                }
+            },
+            function() {
+                notify("失败", "获取订单信息失败")
+            })
     })
 })
