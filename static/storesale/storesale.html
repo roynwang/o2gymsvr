@@ -23,8 +23,8 @@
                         <div class="row coach-list">
                         </div>
                         <div class="coach-gallary">
-							<div>
-							</div>
+                            <div>
+                            </div>
                         </div>
                         <div class="coach-to-price">
                             <a href="/static/storesale/price.html" style="text-align:center">
@@ -80,15 +80,105 @@
 <script src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.min.js"></script>
 <script id="tpl-coach-avatar" type="text/template7">
     <div class="coach-item-new col-auto" id="{{name}}">
-       <p class="coach-avatar">
-	   <img src="{{avatar}}?imageView2/1/w/150/h/150">
-	   </p>
-	   <div class="coach-introduction">
-		   <p><a href="#">{{displayname}}</a>
-		   </p>
-	   </div>
-   </div>
+        <p class="coach-avatar">
+            <img src="{{avatar}}?imageView2/1/w/150/h/150">
+        </p>
+        <div class="coach-introduction">
+            <p><a href="#">{{displayname}}</a>
+            </p>
+        </div>
+    </div>
 </script>
-<script src="/static/js/storesale/app.js"></script>
+<script id="tpl-product-header" type="text/template7">
+    <div class="col-auto price-item" id="product{{id}}">
+        <p class=" title "><span>V{{level}}</span>
+        </p>
+        <p class="description ">{{subtitle}}</p>
+    </div>
+</script>
+
+<script id="tpl-product-course-head" type="text/template7">
+    <div class="row price-detail-label col-100">
+        <p><span>{{count}}</span>次</p>
+    </div>
+</script>
+<script id="tpl-product-off" type="text/template7">
+                <div class="row price-detail-label col-100">
+                    <p><span>{{num}}</span>折</p>
+                </div>
+                <div class="row price-detail-off-row  no-gutter col-100">
+                    <div class="price-detail-off-percent"></div>
+                    <div class="o2-bg-gradient-v2 price-detail-on-percent"></div>
+                </div>
+</script>
+<script id="tpl-product-duration" type="text/template7">
+                <div class="row price-detail-label col-100">
+                    <p><span>{{num}}</span>个月</p>
+                </div>
+                <div class="price-detail-duration-iconrow  no-gutter col-100">
+                </div>
+</script>
+
+
+<script id="tpl-product-course-row" type="text/template7">
+    <div class="row price-detail-item-iconrow o2-bg-gradient-v2 no-gutter">
+        <div class="col-10">
+            <span class="course-item"><img src="/static/images/course.png">
+					</span>
+        </div>
+        <div class="col-10">
+            <span class="course-item">
+						<img src="/static/images/course.png">
+					</span>
+        </div>
+        <div class="col-10">
+            <span class="course-item">
+						<img src="/static/images/course.png">
+					</span>
+        </div>
+        <div class="col-10">
+            <span class="course-item">
+						<img src="/static/images/course.png">
+					</span>
+        </div>
+        <div class="col-10">
+            <span class="course-item">
+						<img src="/static/images/course.png">
+					</span>
+        </div>
+        <div class="col-10">
+            <span class="course-item">
+						<img src="/static/images/course.png">
+					</span>
+        </div>
+
+        <div class="col-10">
+            <span class="course-item">
+						<img src="/static/images/course.png">
+					</span>
+        </div>
+
+        <div class="col-10">
+            <span class="course-item">
+						<img src="/static/images/course.png">
+					</span>
+        </div>
+
+        <div class="col-10">
+            <span class="course-item">
+						<img src="/static/images/course.png">
+					</span>
+        </div>
+
+        <div class="col-10">
+            <span class="course-item">
+						<img src="/static/images/course.png">
+					</span>
+        </div>
+    </div>
+</script>
+
+<script src="/static/js/storesale/app.js "></script>
+
 </html>
 {%endverbatim%}

@@ -19,8 +19,39 @@ var pages = {
 var $$ = Dom7;
 var mainView = app.addView('.view-main');
 
+var P = [
+	{id: 0,
+	level:"1",
+	 subtitle:"Change",
+	 course_count: 10,
+	 off: 9,
+	 price: 2700,
+	 duration: 1},
+	{id: 1,
+	level:"2",
+	 subtitle:"Habituate",
+	 course_count: 20,
+	 off: 8.5,
+	 price: 5000,
+	 duration: 6},
+	{ id:2,
+     level:"3",
+	 subtitle:"Enjoy",
+	 course_count: 40,
+	 off: 6.6,
+	 price: 8000,
+	 duration: 12}
+]
+
+
+
 var T = {
-    coach_avatar: Template7.compile($$("#tpl-coach-avatar").html())
+    coach_avatar: Template7.compile($$("#tpl-coach-avatar").html()),
+	product_header: Template7.compile($$("#tpl-product-header").html()),
+	product_course_row: Template7.compile($$("#tpl-product-course-row").html()),
+	product_course_head: Template7.compile($$("#tpl-product-course-head").html()),
+	product_off: Template7.compile($$("#tpl-product-off").html()),
+	product_duration: Template7.compile($$("#tpl-product-duration").html())
 }
 var R = {
     login: "/api/lg/",
@@ -190,12 +221,9 @@ var currentCoach = ""
 
 app.onPageInit("home", function(page) {
     var isBusy = false
-    $$("#to-product-page").on("click", function() {
-        currentCoach = $$(".coach-item-new.active").attr("id")
-        mainView.router.loadPage(pages.productpage)
-    })
 
     function swithCoach(phone) {
+		currentCoach = phone
         $$(".coach-item-new").removeClass("active")
         $$("#" + phone).addClass("active")
 
@@ -333,4 +361,60 @@ app.onPageInit("home", function(page) {
 
 app.onPageInit("price", function(page) {
     console.log(currentCoach)
+
+	function renderCourse(num){
+		$$(".price-detail-price").html("")
+		$$(".price-detail-price").append(T.product_course_head({count:num}))
+		var rowcount = Math.floor(num/10)
+		for(var i=0; i<rowcount; i++){
+			$$(".price-detail-price").append(T.product_course_row())
+		}
+		var half = num%10
+		if(half != 0){
+			var last = $$(T.product_course_row())
+			var m = $$(".price-detail-price").append(last)
+			for(var i = 10; i >= half; i--){
+				var t = 10 - i
+				$$(".price-detail-price .price-detail-item-iconrow:nth-last-of-type(1)>div:nth-of-type("+ t + ")>.course-item").addClass("hide")
+			}
+		}
+	}
+	function renderOff(num){
+		$$(".price-detail-off").html("")
+		$$(".price-detail-off").append(T.product_off({num:num}))
+		$$(".price-detail-off .price-detail-off-percent").css("width", (10-num +1)*10 + "%")
+		$$(".price-detail-off .price-detail-on-percent").css("width", (num-1)*10 + "%")
+	}
+	function renderDuration(num){
+        var tpl = '<span class="ion-ionic active"></span>'
+		$$(".price-detail-duration").html("")
+		$$(".price-detail-duration").append(T.product_duration({num:num}))
+		for(var i = 0; i<Math.ceil(num);i++){
+			$$(".price-detail-duration .price-detail-duration-iconrow").append(tpl)
+		}
+	}
+	function swichProduct(i){
+		$$(".price-item").removeClass("active")
+		$$("#product" + i).addClass("active")
+		renderCourse(P[i].course_count)
+		renderOff(P[i].off)
+		renderDuration(P[i].duration)
+		var len = P[i].price.toString().length
+	    var head = P[i].price.toString().substr(0,len-3)	
+		var tail = "," + P[i].price.toString().substr(len-3)
+		$$("#price-head").html(head)
+		$$("#price-tail").html(tail)
+		
+	}
+	function renderProductHeader(){
+		$$.each(P, function(i,v){
+			var node = $$(T.product_header(v))
+			node.on("click",function(){
+				swichProduct(i)
+			})
+			$$(".price-row").append(node)
+		})
+	}
+	renderProductHeader()
+	swichProduct(0)
 })
