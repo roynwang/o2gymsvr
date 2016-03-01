@@ -252,7 +252,7 @@ app.onPageInit("home", function(page) {
                 setTimeout(function() {
                     node.css("visibility", "visible")
                     node.addClass("animated fadeIn")
-                }, 500 * Math.random())
+                }, 1000 * Math.random())
             })
         }
         var found = false
