@@ -416,5 +416,5 @@ app.onPageInit("price", function(page) {
 		})
 	}
 	renderProductHeader()
-	swichProduct(0)
+	swichProduct(1)
 })
