@@ -131,7 +131,7 @@ def update_order(billid, status):
 	order.save()
 def pay_order(billid):
 	order = Order.objects.get(billid=billid)
-	order.paidtime = datetime.now()
+	order.paidtime = datetime.datetime.now()
 	order.save()
 
 from django.views.decorators.csrf import csrf_exempt
@@ -149,7 +149,7 @@ def pay_callback(request):
 			print order_no
 			order = get_object_or_404(Order, billid=int(order_no))
 			order.status = "paid"
-			order.paidtime = datetime.now()
+			order.paidtime = datetime.datetime.now()
 			order.channel = charge["channel"]
 			coach = order.coach
 			coach.order_count += 1
