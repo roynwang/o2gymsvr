@@ -21,9 +21,9 @@ from django.utils import timezone
 from django.db.models import Sum, Count
 
 
-def create_pay(request, billid,channel):
-	order = get_object_or_404(Order,billid=int(billid))
-	ch = PayProcess.get_charge(billid,
+def create_pay(request, order,channel):
+	#order = get_object_or_404(Order,billid=int(billid))
+	ch = PayProcess.get_charge(order.billid,
 			channel,
 			order.amount*100,
 			get_ip(request),
@@ -37,6 +37,7 @@ def isFirstOrder(coach,customer):
 	count = Order.objects.filter(coach=coach, custom = customer).exclude(status="unpaid").count()
 	print count
 	return count == 0
+		
 
 class OrderList(generics.ListCreateAPIView):
 	serializer_class = OrderSerializer
@@ -185,7 +186,7 @@ class ManualOrder(APIView):
 		print customer
 		#create product
 		introduction = self.request.data["product_introduction"]
-		price = self.request.data["product_price"]
+		price = int(self.request.data["product_price"])
 		amount = self.request.data["product_amount"]
 		promotion = self.request.data["product_promotion"]
 		subsidy = self.request.data["subsidy"]
@@ -218,8 +219,26 @@ class ManualOrder(APIView):
 		if "product_duration" in request.data:
 			order.duration = request.data["product_duration"]
 			order.save()
+
+		#if "qr"
+		if "channel" in request.data:
+			return self.trackQRPay(order, request, request.data["channel"])
+
+		#if just create
 		serializer = OrderSerializer(order)
 		return Response(serializer.data, status=status.HTTP_201_CREATED)
+	def trackQRPay(self, order, request, channel="alipay_qr"):
+		#set to unpaid
+		order.paidtime = None
+		order.status = "unpaid"
+		order.save()
+		#create charge
+		# alipay_qr
+		return create_pay(request,order, channel)
+
+		
+		
+		
 
 class GymSoldRange(APIView):
 	def get(self,request,gymid):

@@ -8,50 +8,69 @@ String.prototype.fixSize = function(w, h) {
     var str = this + "?imageView2/1/w/" + w.toString() + "/h/" + h.toString()
     return str
 }
+
 var app = new Framework7({
     template7Pages: true,
-    template7Data: {}
+    template7Data: {},
+    modalButtonOk: "确认",
+    modalButtonCancel: "取消",
+	modalTitle: "氧气健身"
 });
+
+function notify(title, message, keep) {
+    var noti = app.addNotification({
+        title: title,
+        message: message,
+    });
+    if (!keep) {
+        setTimeout(function() {
+            app.closeNotification(noti)
+        }, 3000);
+    }
+}
 var pages = {
-    "productpage": "/static/storesale/storesale.html"
+    "home": "/static/storesale/storesale.html",
+    "alipayqr": "/static/storesale/alipayqr.html"
 }
 
 var $$ = Dom7;
 var mainView = app.addView('.view-main');
 
-var P = [
-	{id: 0,
-	level:"1",
-	 subtitle:"Change",
-	 course_count: 10,
-	 off: 9,
-	 price: 2700,
-	 duration: 1},
-	{id: 1,
-	level:"2",
-	 subtitle:"Habituate",
-	 course_count: 20,
-	 off: 8.5,
-	 price: 5000,
-	 duration: 6},
-	{ id:2,
-     level:"3",
-	 subtitle:"Enjoy",
-	 course_count: 40,
-	 off: 6.6,
-	 price: 8000,
-	 duration: 12}
-]
+var P = [{
+    id: 0,
+    level: "1",
+    subtitle: "Change",
+    course_count: 10,
+    off: 9,
+    price: 2700,
+    duration: 1
+}, {
+    id: 1,
+    level: "2",
+    subtitle: "Habituate",
+    course_count: 20,
+    off: 8.5,
+    price: 5000,
+    duration: 6
+}, {
+    id: 2,
+    level: "3",
+    subtitle: "Enjoy",
+    course_count: 40,
+    off: 6.6,
+    price: 8000,
+    duration: 12
+}]
 
 
 
 var T = {
     coach_avatar: Template7.compile($$("#tpl-coach-avatar").html()),
-	product_header: Template7.compile($$("#tpl-product-header").html()),
-	product_course_row: Template7.compile($$("#tpl-product-course-row").html()),
-	product_course_head: Template7.compile($$("#tpl-product-course-head").html()),
-	product_off: Template7.compile($$("#tpl-product-off").html()),
-	product_duration: Template7.compile($$("#tpl-product-duration").html())
+    product_header: Template7.compile($$("#tpl-product-header").html()),
+    product_course_row: Template7.compile($$("#tpl-product-course-row").html()),
+    product_course_head: Template7.compile($$("#tpl-product-course-head").html()),
+    product_off: Template7.compile($$("#tpl-product-off").html()),
+    product_duration: Template7.compile($$("#tpl-product-duration").html())
 }
 var R = {
     login: "/api/lg/",
@@ -59,6 +78,9 @@ var R = {
     wxinit: "/api/wx/signature/",
     gym: function(gymid) {
         return "/api/g/" + gymid + "/"
+    },
+    manualorder: function(phone) {
+        return "/api/" + phone + "/manualorder/"
     },
     album: function(phone) {
         return "/api/" + phone + "/album/"
@@ -91,7 +113,7 @@ var R = {
 var svc_login = function() {
     function login(name, pwd, onsuccess, onfail) {
         var pdata = {
-            username: name.replace(" ",""),
+            username: name.replace(" ", ""),
             password: pwd
         }
         $$.ajax({
@@ -166,7 +188,7 @@ var svc_usr = function() {
 
     function init(phone, onsuccess, onfail) {
         $$.ajax({
-            url: R.user(phone.replace(/ /g,"")),
+            url: R.user(phone.replace(/ /g, "")),
             success: function(data) {
                 usr = JSON.parse(data)
                 onsuccess(data)
@@ -217,13 +239,15 @@ var svc_gym = function() {
 }()
 
 var currentCoach = ""
+var currentProduct = null
+var currentQr = ""
 
 
 app.onPageInit("home", function(page) {
     var isBusy = false
 
     function swithCoach(phone) {
-		currentCoach = phone
+        currentCoach = phone
         $$(".coach-item-new").removeClass("active")
         $$("#" + phone).addClass("active")
 
@@ -252,7 +276,7 @@ app.onPageInit("home", function(page) {
                 setTimeout(function() {
                     node.css("visibility", "visible")
                     node.addClass("animated fadeIn")
-                }, 1000 * Math.random())
+                }, 300 * Math.random())
             })
         }
         var found = false
@@ -362,59 +386,165 @@ app.onPageInit("home", function(page) {
 app.onPageInit("price", function(page) {
     console.log(currentCoach)
 
-	function renderCourse(num){
-		$$(".price-detail-price").html("")
-		$$(".price-detail-price").append(T.product_course_head({count:num}))
-		var rowcount = Math.floor(num/10)
-		for(var i=0; i<rowcount; i++){
-			$$(".price-detail-price").append(T.product_course_row())
-		}
-		var half = num%10
-		if(half != 0){
-			var last = $$(T.product_course_row())
-			var m = $$(".price-detail-price").append(last)
-			for(var i = 10; i >= half; i--){
-				var t = 10 - i
-				$$(".price-detail-price .price-detail-item-iconrow:nth-last-of-type(1)>div:nth-of-type("+ t + ")>.course-item").addClass("hide")
-			}
-		}
-	}
-	function renderOff(num){
-		$$(".price-detail-off").html("")
-		$$(".price-detail-off").append(T.product_off({num:num}))
-		$$(".price-detail-off .price-detail-off-percent").css("width", (10-num +1)*10 + "%")
-		$$(".price-detail-off .price-detail-on-percent").css("width", (num-1)*10 + "%")
-	}
-	function renderDuration(num){
+    function renderCourse(num) {
+        $$(".price-detail-price").html("")
+        $$(".price-detail-price").append(T.product_course_head({
+            count: num
+        }))
+        var rowcount = Math.floor(num / 10)
+        for (var i = 0; i < rowcount; i++) {
+            $$(".price-detail-price").append(T.product_course_row())
+        }
+        var half = num % 10
+        if (half != 0) {
+            var last = $$(T.product_course_row())
+            var m = $$(".price-detail-price").append(last)
+            for (var i = 10; i >= half; i--) {
+                var t = 10 - i
+                $$(".price-detail-price .price-detail-item-iconrow:nth-last-of-type(1)>div:nth-of-type(" + t + ")>.course-item").addClass("hide")
+            }
+        }
+    }
+
+    function renderOff(num) {
+        $$(".price-detail-off").html("")
+        $$(".price-detail-off").append(T.product_off({
+            num: num
+        }))
+        $$(".price-detail-off .price-detail-off-percent").css("width", (10 - num + 1) * 10 + "%")
+        $$(".price-detail-off .price-detail-on-percent").css("width", (num - 1) * 10 + "%")
+    }
+
+    function renderDuration(num) {
         var tpl = '<span class="ion-ionic active"></span>'
-		$$(".price-detail-duration").html("")
-		$$(".price-detail-duration").append(T.product_duration({num:num}))
-		for(var i = 0; i<Math.ceil(num);i++){
-			$$(".price-detail-duration .price-detail-duration-iconrow").append(tpl)
-		}
-	}
-	function swichProduct(i){
-		$$(".price-item").removeClass("active")
-		$$("#product" + i).addClass("active")
-		renderCourse(P[i].course_count)
-		renderOff(P[i].off)
-		renderDuration(P[i].duration)
-		var len = P[i].price.toString().length
-	    var head = P[i].price.toString().substr(0,len-3)	
-		var tail = "," + P[i].price.toString().substr(len-3)
-		$$("#price-head").html(head)
-		$$("#price-tail").html(tail)
-		
-	}
-	function renderProductHeader(){
-		$$.each(P, function(i,v){
-			var node = $$(T.product_header(v))
-			node.on("click",function(){
-				swichProduct(i)
-			})
-			$$(".price-row").append(node)
-		})
-	}
-	renderProductHeader()
-	swichProduct(1)
+        $$(".price-detail-duration").html("")
+        $$(".price-detail-duration").append(T.product_duration({
+            num: num
+        }))
+        for (var i = 0; i < Math.ceil(num); i++) {
+            $$(".price-detail-duration .price-detail-duration-iconrow").append(tpl)
+        }
+    }
+
+    function swichProduct(i) {
+        $$(".price-item").removeClass("active")
+        $$("#product" + i).addClass("active")
+        currentProduct = P[i]
+        renderCourse(P[i].course_count)
+        renderOff(P[i].off)
+        renderDuration(P[i].duration)
+        var len = P[i].price.toString().length
+        var head = P[i].price.toString().substr(0, len - 3)
+        var tail = "," + P[i].price.toString().substr(len - 3)
+        $$("#price-head").html(head)
+        $$("#price-tail").html(tail)
+
+    }
+
+    function renderProductHeader() {
+        $$.each(P, function(i, v) {
+            var node = $$(T.product_header(v))
+            node.on("click", function() {
+                swichProduct(i)
+            })
+            $$(".price-row").append(node)
+        })
+    }
+    renderProductHeader()
+    swichProduct(1)
+})
+
+app.onPageInit("customerform", function(page) {
+    var that = this;
+    that.mo = {}
+    that.mo.customer_displayname = ""
+    that.mo.customer_phone = ""
+    that.mo.product_introduction = "dummy"
+    that.mo.product_price = ""
+    that.mo.product_promotion = -1
+    that.mo.product_amount = ""
+    that.mo.product_duration = 0
+    that.mo.sex = '0'
+    that.mo.age = undefined
+    that.mo.subsidy = undefined
+
+    function validate() {
+        if (that.mo.subsidy == undefined) {
+            that.mo.subsidy = 0
+        }
+        if (that.birthday_str) {
+            that.mo.birthday = that.birthday_str
+        }
+        if (that.mo.age == undefined) {
+            that.mo.age = 0
+        }
+        var data = that.mo
+        if (that.mo.customer_phone.toString().length != 11) {
+            notify("订单信息错误", "请输入正确的11位电话号码")
+            return false
+        }
+        for (var k in data) {
+            if (data[k] == undefined) {
+                notify("订单信息错误", "请填完所有选项")
+                return false
+            }
+        }
+        return true
+    }
+    $$("#offline-submit").on("click", function() {
+        notify("支付成功", "支付成功,祝您健身愉快")
+        setTimeout(function() {
+            mainView.router.loadPage(pages.home)
+        }, 1500)
+    })
+
+    function buildOrder() {
+        that.birthday_str = $$("#customerbirtyday").val()
+        that.mo.customer_displayname = $$("#customername").val()
+        that.mo.customer_phone = $$("#customerphone").val()
+        that.mo.sex = $$("#customersex").val()
+        that.mo.product_price = currentProduct.price
+        that.mo.product_amount = currentProduct.course_count
+    }
+    $$("#alipay-submit").on("click", function() {
+        currentQr = ""
+        buildOrder()
+        if (!validate()) {
+            return
+        }
+        app.confirm('确认提交吗?', function() {
+            that.mo.channel = "alipay_qr"
+            var onsuccess = function(resp) {
+                resp = JSON.parse(resp)
+                currentQr = resp.credential.alipay_qr
+
+                mainView.router.loadPage(pages.alipayqr)
+            }
+
+            $$.ajax({
+                url: R.manualorder(currentCoach),
+                method: "POST",
+                data: that.mo,
+                success: onsuccess,
+                error: function(data) {
+                    console.log(data)
+                    notify("创建订单失败", "")
+                }
+            })
+        });
+    })
+})
+
+app.onPageInit("alipayqr", function(page) {
+    $$("#ali-qr-area").attr("src", currentQr)
+    var node = qr.image(currentQr)
+    $$("#qrarea").append(node)
+    $$("#pay-done").on("click", function() {
+        app.confirm("确认创建订单吗？", function() {
+            notify("订单创建成功", "已经支付,祝您健身愉快")
+            setTimeout(function() {
+                mainView.router.loadPage(pages.home)
+            }, 1500)
+        })
+    })
 })
