@@ -22,4 +22,5 @@ urlpatterns = [
 		url(r'^mobile/home/$', TemplateView.as_view(template_name="mobile/home.html")),
 		url(r'^mobile/login/$', TemplateView.as_view(template_name="mobile/login.html")),
 		url(r'^mobile/i/$', TemplateView.as_view(template_name="customermobile/home.html")),
+		url(r'^gym/home/$', TemplateView.as_view(template_name="storesale.html")),
 		]

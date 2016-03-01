@@ -17,6 +17,7 @@ import datetime
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIRS = (
 		os.path.join(BASE_DIR, 'templates'),
+		os.path.join(BASE_DIR, 'static/storesale')
 		)
 
 
@@ -189,4 +190,10 @@ DEFAULT_AVATAR = "http://7xiwfp.com1.z0.glb.clouddn.com/default_avatar.png"
 GAODE_KEY = "a2be60fd9e30425d8e7c003ba81a1f12"
 GAODE_TABLEID = "560353bae4b0fe6c79f8f0d0"
 GAODE_URL = "http://yuntuapi.amap.com/datasearch/around"
+
+
+WECHAT_APPID = "wx72a88ef05d4fadc0"
+WECHAT_APPSECRET = "629d00d5bbf75f8ca4728aee7c3feed2"
+WECHAT_GRANT = "client_credential"
+WECHAT_TICKETURL = "https://api.weixin.qq.com/cgi-bin/token"
 

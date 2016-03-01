@@ -380,7 +380,14 @@ var svc_usr = function() {
                     var start = moment().subtract(2, "days")
                     var end = moment()
                     var details = JSON.parse(this.detail)
-					item.fromnow = date.fromNow(true)
+					var delta = date.diff(moment(), "days")
+					if(delta > 0){
+						item.fromnow = delta+"天后"
+					}
+					if(delta == 0){
+						item.fromnow = "今天"
+					}
+
 					if(date.isBefore(end)){
 						item.showscale = true
 						item.fromnow = false
@@ -473,9 +480,11 @@ var home = app.onPageInit("home", function(page) {
             var v = history[i]
             var item = T.timelineitem(v.getTimeLineCard())
             $$("#o2-timeline").prepend(item)
-			var tmp = today.diff(moment(v.date), "days")
-			if(tolasttrain == "?" || (tmp>=0 && tmp<tolasttrain)){
-				tolasttrain = tmp
+			if(v.done){
+				var tmp = today.diff(moment(v.date), "days")
+				if(tolasttrain == "?" || (tmp>=0 && tmp<tolasttrain)){
+					tolasttrain = tmp
+				}
 			}
         }
 		console.log(tolasttrain)

@@ -268,7 +268,7 @@ body {
     background: white;
     margin-left: -5px;
     margin-top: 8px;
-    box-shadow: 0px 0px 20px 2px rgb(109, 207, 206);
+    /*box-shadow: 0px 0px 20px 2px rgb(109, 207, 206);*/
 }
 .o2-timeline-point {
     width: 5px;
