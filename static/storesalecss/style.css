@@ -150,7 +150,8 @@
     height: 80px;
     background: white;
     border-radius: 10px;
-    box-shadow: 10px 10px 40px 8px rgba(160, 160, 160, 0.4) -webkit-animation: head-scale-animation-b 0.6s;
+    box-shadow: 10px 10px 40px 8px rgba(160, 160, 160, 0.4);
+	-webkit-animation: head-scale-animation-b 0.6s;
     animation: head-scale-animation-b 0.6s;
 }
 .price-item > p {
@@ -379,7 +380,9 @@
     width: 12.5% !important;
 }
 .customer-form {
-    padding: 40px 100px;
+    padding: 0 100px;
+	margin-bottom: 0;
+	margin-top: 0;
 }
 .customer-form li {
     padding-top: 40px;
@@ -432,4 +435,8 @@
 #pay-done {
 	margin-top: 80px;
 	color: rgba(255,255,255,0.8)
+}
+.customer-restriction {
+	margin: 10px 120px;
+	color: #999;
 }
