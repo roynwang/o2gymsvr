@@ -461,17 +461,6 @@ app.onPageInit("price", function(page) {
 
 app.onPageInit("customerform", function(page) {
     var that = this;
-    that.mo = {}
-    that.mo.customer_displayname = ""
-    that.mo.customer_phone = ""
-    that.mo.product_introduction = "dummy"
-    that.mo.product_price = ""
-    that.mo.product_promotion = -1
-    that.mo.product_amount = ""
-    that.mo.product_duration = 0
-    that.mo.sex = '0'
-    that.mo.age = undefined
-    that.mo.subsidy = undefined
 
     function validate() {
         if (that.mo.subsidy == undefined) {
@@ -497,15 +486,47 @@ app.onPageInit("customerform", function(page) {
         return true
     }
     $$("#offline-submit").on("click", function() {
+        buildOrder()
+        if (!validate()) {
+            return
+        }
         app.confirm('确定支付已经完成了吗?', function() {
-            notify("支付成功", "支付成功,祝您健身愉快")
-            setTimeout(function() {
-                mainView.router.loadPage(pages.home)
-            }, 1500)
+            app.showPreloader('订单创建中')
+            var onsuccess = function(resp) {
+                resp = JSON.parse(resp)
+                app.hidePreloader()
+                notify("支付成功", "支付成功,祝您健身愉快")
+                setTimeout(function() {
+                    mainView.router.loadPage(pages.home)
+                }, 1500)
+            }
+            $$.ajax({
+                url: R.manualorder(currentCoach),
+                method: "POST",
+                data: that.mo,
+                success: onsuccess,
+                error: function(data) {
+                    app.hidePreloader()
+                    console.log(data)
+                    notify("创建订单失败", "")
+                }
+            })
         })
     })
 
     function buildOrder() {
+        that.mo = {}
+        that.mo.customer_displayname = ""
+        that.mo.customer_phone = ""
+        that.mo.product_introduction = "dummy"
+        that.mo.product_price = ""
+        that.mo.product_promotion = -1
+        that.mo.product_amount = ""
+        that.mo.product_duration = 0
+        that.mo.sex = '0'
+        that.mo.age = undefined
+        that.mo.subsidy = undefined
+
         that.birthday_str = $$("#customerbirtyday").val()
         that.mo.customer_displayname = $$("#customername").val()
         that.mo.customer_phone = $$("#customerphone").val()
@@ -513,18 +534,24 @@ app.onPageInit("customerform", function(page) {
         that.mo.product_price = currentProduct.price
         that.mo.product_amount = currentProduct.course_count
     }
+
     $$("#alipay-submit").on("click", function() {
         currentQr = ""
         buildOrder()
         if (!validate()) {
             return
         }
+
         app.confirm('确认提交吗?', function() {
             that.mo.channel = "alipay_qr"
+
+            app.showPreloader('订单创建中')
+
             var onsuccess = function(resp) {
                 resp = JSON.parse(resp)
                 currentQr = resp.credential.alipay_qr
                 currentOrderNo = resp.order_no
+                app.hidePreloader()
                 mainView.router.loadPage(pages.alipayqr)
             }
 
@@ -534,6 +561,7 @@ app.onPageInit("customerform", function(page) {
                 data: that.mo,
                 success: onsuccess,
                 error: function(data) {
+                    app.hidePreloader()
                     console.log(data)
                     notify("创建订单失败", "")
                 }
@@ -556,19 +584,22 @@ app.onPageInit("alipayqr", function(page) {
         })
     }
     $$("#pay-done").on("click", function() {
+        app.showPreloader('查询中')
         checkorder(function(data) {
                 var order = JSON.parse(data)
+                app.hidePreloader()
                 if (order.status == "paid" || order.status == "inprogress") {
                     notify("支付已确认", "支付成功,祝您健身愉快")
                     setTimeout(function() {
                         mainView.router.loadPage(pages.home)
                     }, 1500)
                 } else {
-                    app.alert("还未查询到您的支付信息，请稍等再点击确认")
+                    app.alert("还未查询到您的支付信息，请支付完成后点击该按钮")
                 }
             },
             function() {
-                notify("失败", "获取订单信息失败")
+                app.hidePreloader()
+                app.alert("查询支付状态失败,轻稍后再试")
             })
     })
 })
