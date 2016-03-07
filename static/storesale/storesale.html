@@ -15,20 +15,29 @@
 <body>
     <div class="statusbar-overlay"></div>
     <div class="panel-overlay"></div>
+    <div class="panel panel-left panel-reveal">
+        <div class="content-block">
+            <p><a href="/static/storesale/storesale.html">我们的店</a>
+            </p>
+            <p><a href="/static/storesale/storemanage.html">店面管理</a>
+            </p>
+        </div>
+    </div>
     <div class="views">
         <div class="view view-main">
             <div class="pages">
                 <div id="page1" class="page navbar-fixed" data-page="home" style="background:white">
                     <div class="page-content">
-						<div class="row" style="margin-bottom:80px;margin-top:-20px">
-							<div class="col-100">
-								<div class="line"></div>
-							</div>
-							<p class="brand">氧气健身</p>
-							<div class="col-100">
-								<div class="line"></div>
-							</div>
-						</div>
+                        <a><span class="menu-icon ion-android-menu open-panel" data-panel="right"></span></a>
+                        <div class="row" style="margin-bottom:80px;margin-top:0px">
+                            <div class="col-100">
+                                <div class="line"></div>
+                            </div>
+                            <p class="brand">氧气健身</p>
+                            <div class="col-100">
+                                <div class="line"></div>
+                            </div>
+                        </div>
                         <div class="row coach-list">
                         </div>
                         <div class="coach-gallary">
@@ -85,6 +94,7 @@
             </div>
         </div>
 </body>
+<script src="//cdn.bootcss.com/moment.js/2.11.1/moment.min.js"></script>
 <script src="//cdn.bootcss.com/framework7/1.4.0/js/framework7.min.js"></script>
 <script src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.min.js"></script>
 <script id="tpl-coach-avatar" type="text/template7">
@@ -112,20 +122,20 @@
     </div>
 </script>
 <script id="tpl-product-off" type="text/template7">
-                <div class="row price-detail-label col-100">
-                    <p><span>{{num}}</span>折</p>
-                </div>
-                <div class="row price-detail-off-row  no-gutter col-100">
-                    <div class="price-detail-off-percent"></div>
-                    <div class="o2-bg-gradient-v2 price-detail-on-percent"></div>
-                </div>
+    <div class="row price-detail-label col-100">
+        <p><span>{{num}}</span>折</p>
+    </div>
+    <div class="row price-detail-off-row  no-gutter col-100">
+        <div class="price-detail-off-percent"></div>
+        <div class="o2-bg-gradient-v2 price-detail-on-percent"></div>
+    </div>
 </script>
 <script id="tpl-product-duration" type="text/template7">
-                <div class="row price-detail-label col-100">
-                    <p><span>{{num}}</span>个月</p>
-                </div>
-                <div class="price-detail-duration-iconrow  no-gutter col-100">
-                </div>
+    <div class="row price-detail-label col-100">
+        <p><span>{{num}}</span>个月</p>
+    </div>
+    <div class="price-detail-duration-iconrow  no-gutter col-100">
+    </div>
 </script>
 
 
@@ -185,6 +195,31 @@
 					</span>
         </div>
     </div>
+</script>
+<script id="tpl-free-course" type="text/template7">
+	{{#if coachdetail}}
+    <div class="card">
+        <div class="card-content">
+            <div class="card-content-inner row">
+                <div class="col-20">
+					<img src="{{coachdetail.avatar}}" style="width:100px;height:100px;">
+                </div>
+				<div class="col-20">
+                    <p>{{coachdetail.displayname}}</p>
+                    <p>{{hour_str}}</p>
+				</div>
+                <div class="col-60 theme-gray" style="text-align: right;">
+					{{#if customerdetail}}
+					<p style="padding-right:20px">{{customerdetail.displayname}}</p>
+					<p style="padding-right:20px">{{customerdetail.name}}</p>
+					{{else}}
+					<p><a data-id="{{id}}" href="#" style="width:120px;float:right;margin-right:10px"class="button button-round cancel-course">取消</a></p>
+					{{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+	{{/if}}
 </script>
 <script src="/static/js/qr.min.js"></script>
 <script src="/static/js/storesale/app.js "></script>

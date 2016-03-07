@@ -9,6 +9,8 @@ String.prototype.fixSize = function(w, h) {
     return str
 }
 
+var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
+
 var app = new Framework7({
     template7Pages: true,
     template7Data: {},
@@ -39,15 +41,15 @@ var mainView = app.addView('.view-main');
 var P = [{
     id: 0,
     level: "1",
-    subtitle: "Change",
+    subtitle: "Change/改变",
     course_count: 10,
-    off: 9,
-    price: 2700,
+    off: 9.5,
+    price: 2850,
     duration: 1
 }, {
     id: 1,
     level: "2",
-    subtitle: "Habituate",
+    subtitle: "Habituate/习惯",
     course_count: 20,
     off: 8.5,
     price: 5000,
@@ -55,7 +57,7 @@ var P = [{
 }, {
     id: 2,
     level: "3",
-    subtitle: "Enjoy",
+    subtitle: "Enjoy/享受",
     course_count: 40,
     off: 6.6,
     price: 8000,
@@ -70,7 +72,8 @@ var T = {
     product_course_row: Template7.compile($$("#tpl-product-course-row").html()),
     product_course_head: Template7.compile($$("#tpl-product-course-head").html()),
     product_off: Template7.compile($$("#tpl-product-off").html()),
-    product_duration: Template7.compile($$("#tpl-product-duration").html())
+    product_duration: Template7.compile($$("#tpl-product-duration").html()),
+    freecourse: Template7.compile($$("#tpl-free-course").html())
 }
 var R = {
     login: "/api/lg/",
@@ -78,6 +81,13 @@ var R = {
     wxinit: "/api/wx/signature/",
     gym: function(gymid) {
         return "/api/g/" + gymid + "/"
+    },
+    freecourseitem: function(cid) {
+        return "/api/f/" + cid + "/"
+    },
+    gymfreecourse: function(gymid, date) {
+        date = date.replace(/-/g, '')
+        return "/api/g/" + gymid + "/d/" + date + "/free/"
     },
     manualorder: function(phone) {
         return "/api/" + phone + "/manualorder/"
@@ -227,6 +237,59 @@ var svc_gym = function() {
         })
     }
 
+    function getCoachId(phone) {
+        for (var i = 0; i < coaches.length; i++) {
+            if (coaches[i].name == phone) {
+                return coaches[i].id
+            }
+        }
+        return false
+    }
+
+    function newFreeCourse(coachphone, date, hour, onsuccess) {
+		var pdata = {
+			coach: getCoachId(coachphone),
+			day: date.format("YYYY-MM-DD"),
+			hour: hour,
+			budget: 1,
+			sealed: 0,
+			gym: gym.id
+		}
+        $$.ajax({
+            url: R.gymfreecourse(gym.id, date.format("YYYYMMDD")),
+            method: "POST",
+            data: pdata,
+            success: onsuccess,
+            error: function(data) {
+                app.hidePreloader()
+                console.log(data)
+                notify("创建免费课程失败", "")
+            }
+        })
+    }
+
+    function getFreeCourse(date, onsuccess) {
+        $$.getJSON(R.gymfreecourse(gym.id, date), onsuccess)
+    }
+
+    function cancelFreeCourse(cid, onsuccess) {
+        app.showPreloader("正在取消")
+        $$.ajax({
+            url: R.freecourseitem(cid),
+            method: "DELETE",
+            success: function(data) {
+                app.hidePreloader()
+                onsuccess()
+            },
+            error: function(data) {
+                app.hidePreloader()
+                console.log(data)
+                notify("取消免费课程失败", "")
+            }
+        })
+
+    }
+
     function refreshPhoto(phone, onsuccess) {
         $$.getJSON(R.album(phone), onsuccess)
     }
@@ -238,7 +301,10 @@ var svc_gym = function() {
             return coaches
         },
         refreshPhoto: refreshPhoto,
-        init: init
+        init: init,
+        getFreeCourse: getFreeCourse,
+        cancelFreeCourse: cancelFreeCourse,
+		newFreeCourse: newFreeCourse
     }
 }()
 
@@ -249,6 +315,7 @@ var currentOrderNo = ""
 
 
 app.onPageInit("home", function(page) {
+    app.closePanel()
     var isBusy = false
 
     function swithCoach(phone) {
@@ -602,4 +669,115 @@ app.onPageInit("alipayqr", function(page) {
                 app.alert("查询支付状态失败,轻稍后再试")
             })
     })
+})
+app.onPageInit("storemanage", function(page) {
+    var currentdate = moment(new Date())
+    app.closePanel()
+    app.modalPassword('请再次输入密码', function(password) {
+        svc_login.login(Cookies.get("user"), password, function() {
+            notify("成功", "密码验证通过")
+        }, function() {
+            alert("密码验证失败")
+            mainView.router.back()
+        })
+    });
+
+    function cancelFreeCourse(cid) {
+        svc_gym.cancelFreeCourse(cid, function() {
+            notify("成功", "免费课程已取消")
+            refresh()
+        })
+    }
+
+    function refresh(date) {
+        if (date == undefined) {
+            date = currentdate
+        } else {
+            date = moment(date)
+            currentdate = date
+        }
+        svc_gym.getFreeCourse(date.format("YYYY-MM-DD"), function(resp) {
+            $$("#day-free-course").html("")
+                //wrap course
+            $$.each(resp, function(i, v) {
+                v.hour_str = TimeMap[v.hour]
+                if (v.customerdetail == null) {
+                    v.nocustomer = true
+                }
+                $$("#day-free-course").append(T.freecourse(v))
+            })
+            $$(".cancel-course").on("click", function() {
+                var cid = this.dataset["id"]
+                app.confirm("确认取消吗", function() {
+                    cancelFreeCourse(cid)
+                })
+            })
+        })
+    }
+
+    var calendarDefault = app.calendar({
+        input: '#calendar-default',
+        closeOnSelect: true,
+        value: [new Date()],
+        onClose: function(p) {
+            refresh(p.input.val())
+        }
+    });
+    refresh()
+})
+
+app.onPageInit("freecourseform", function(page) {
+    var currentdate = moment(new Date())
+    var calendarDefault = app.calendar({
+        input: '#free-course-date',
+        closeOnSelect: true,
+        value: [new Date()],
+        onClose: function(p) {
+            renderhour(p.input.val())
+        }
+    });
+
+    function rendercoach() {
+        $$("#free_coach").html("")
+        var tmpl = '<option value="#phone#">#name#</option>'
+        $$.each(svc_gym.coaches(), function(i, v) {
+            $$("#free_coach").append(tmpl.replace("#phone#", v.name).replace("#name#", v.displayname))
+        })
+        renderhour()
+    }
+
+    function renderhour(date) {
+        if (date == undefined) {
+            date = currentdate
+        } else {
+            date = moment(date)
+            currentdate = date
+        }
+        var coach = $$("#free_coach").val()
+        $$.getJSON(R.coachSchedule(coach, date.format("YYYYMMDD")), function(resp) {
+            $$("#free_hour").html("")
+            var tmpl = '<option value="#hour#">#hour_str#</option>'
+            $$.each(resp.availiable, function(i, v) {
+                $$("#free_hour").append(tmpl.replace("#hour#", v).replace("#hour_str#", TimeMap[v]))
+            })
+        })
+    }
+    $$("#free-course-submit").on("click", function() {
+		svc_gym.newFreeCourse($$("#free_coach").val(),
+			moment($$("#free-course-date").val()), 
+			$$("#free_hour").val(),
+			function(){
+				notify("成功","添加免费课程成功")
+				setTimeout(function(){
+		            mainView.router.back()
+				}, 2000)
+			})
+    })
+
+    $$("#free_coach").on("change", function() {
+        renderhour()
+    })
+
+    rendercoach()
+
 })

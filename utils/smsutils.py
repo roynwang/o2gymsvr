@@ -3,6 +3,9 @@ import datetime
 import urllib2
 import md5
 from django.conf import settings
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 

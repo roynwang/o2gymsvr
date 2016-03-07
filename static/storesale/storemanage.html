@@ -1,0 +1,39 @@
+{%verbatim%}
+<div class="page with-subnavbar" data-page="storemanage" style="background:white"
+ass="link">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="left">
+                <a><span class="menu-icon ion-android-menu open-panel" style="margin-top: -25px;" data-panel="right"></span></a>
+            </div>
+            <div class="center">管理</div>
+            <div class="right"></div>
+            <!-- Sub navbar -->
+            <div class="subnavbar">
+                <div class="buttons-row">
+                    <a href="#tab1" class="button tab-link active">体验课程</a>
+                    <a href="#tab2" class="button tab-link">Tab 2</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-content" style="padding-top:80px">
+        <div class="tabs">
+            <div id="tab1" class="tab active">
+                <div class="content-block-title">
+                    <input style="width:140px;border: none;font-size: 20px;margin-left: 100px;color: #666;background:rgba(255,255,255,0)" type="text" placeholder="Your birth date" readonly id="calendar-default">
+					<span style="z-index: -1;font-size: 20px;position: relative;left: -20px;"class="ion-ios-calendar-outline"></span>
+					<a href="/static/storesale/newfreecourse.html" class="button" style="display:inline-block;float:right">+ 添加免费课程</a>
+                </div>
+                <div class="content-block" id="day-free-course">
+                </div>
+            </div>
+            <div id="tab2" class="tab">
+                <div class="content-block">
+                    <p>constructing ... ...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%endverbatim%}
