@@ -92,7 +92,7 @@ class CoachSalaryView(APIView):
 			start = datetime.datetime.strptime(request.GET["start"], "%Y%m%d")
 		else:
 			start = add_months(end, -1)
-		end = end + datetime.timedelta(days=1)
+		#end = end + datetime.timedelta(days=1)
 
 		resp = []
 		print start
