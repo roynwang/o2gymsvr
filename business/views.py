@@ -138,7 +138,7 @@ class ScheduleForReadPagination(pagination.CursorPagination):
 class ScheduleForRead(generics.ListAPIView):
 	serializer_class = ScheduleSerializer 
 	def list(self, request, *args, **kwargs):
-		duration = 7
+		duration = 6
 		usr = get_object_or_404(User, name=self.kwargs.get("name"))
 		startdate = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
 		enddate = startdate + datetime.timedelta(days=duration)
