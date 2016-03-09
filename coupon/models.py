@@ -5,7 +5,7 @@ from django.db import models
 class FreeCourse(models.Model):
 	id = models.AutoField(primary_key=True)
 	coach = models.IntegerField()
-	customer = models.IntegerField(null=True, blank=True)
+	customer = models.CharField(max_length=32,null=True, blank=True)
 	day = models.DateField()
 	hour = models.IntegerField()
 	budget = models.IntegerField(default=1)

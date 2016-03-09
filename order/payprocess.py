@@ -7,16 +7,31 @@ class PayProcess:
 	@staticmethod
 	def get_charge(order_no, channel, amount, client_ip, subject,body):
 		pingpp.api_key = PayProcess.app_key
-		ch = pingpp.Charge.create(
-				order_no=order_no,
-				amount=amount,
-				app=dict(id=PayProcess.appid),
-				channel=channel,
-				currency='cny',
-				client_ip=client_ip,
-				subject=subject,
-				body=body,
-				)
+		extra = {"success_url":"http://localhost:8000/pay/success/",\
+				"cancel_url":"http://lochalhost:8000/pay/cancel/"}
+		if channel == "alipay_wap":
+			ch = pingpp.Charge.create(
+					order_no=order_no,
+					amount=amount,
+					app=dict(id=PayProcess.appid),
+					channel=channel,
+					currency='cny',
+					extra = extra,
+					client_ip=client_ip,
+					subject=subject,
+					body=body,
+					)
+		else:
+			ch = pingpp.Charge.create(
+					order_no=order_no,
+					amount=amount,
+					app=dict(id=PayProcess.appid),
+					channel=channel,
+					currency='cny',
+					client_ip=client_ip,
+					subject=subject,
+					body=body,
+					)
 		print ch
 		return ch
 

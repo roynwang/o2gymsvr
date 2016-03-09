@@ -670,8 +670,7 @@ app.onPageInit("alipayqr", function(page) {
             })
     })
 })
-app.onPageInit("storemanage", function(page) {
-    var currentdate = moment(new Date())
+app.onPageAfterAnimation("storemanage", function(page){
     app.closePanel()
     app.modalPassword('请再次输入密码', function(password) {
         svc_login.login(Cookies.get("user"), password, function() {
@@ -681,6 +680,9 @@ app.onPageInit("storemanage", function(page) {
             mainView.router.back()
         })
     });
+})
+app.onPageInit("storemanage", function(page) {
+    var currentdate = moment(new Date())
 
     function cancelFreeCourse(cid) {
         svc_gym.cancelFreeCourse(cid, function() {
@@ -701,7 +703,7 @@ app.onPageInit("storemanage", function(page) {
                 //wrap course
             $$.each(resp, function(i, v) {
                 v.hour_str = TimeMap[v.hour]
-                if (v.customerdetail == null) {
+                if (v.customer == null) {
                     v.nocustomer = true
                 }
                 $$("#day-free-course").append(T.freecourse(v))

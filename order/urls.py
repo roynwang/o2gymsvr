@@ -1,5 +1,7 @@
 from django.conf.urls import patterns, url
 from order.views import *
+from django.views.generic import TemplateView
+
 urlpatterns = patterns('',
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/o/$',OrderList.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/b/(?P<billid>[0-9]+)/$',OrderItemByBillid.as_view()),
@@ -12,4 +14,6 @@ urlpatterns = patterns('',
 		url(r'^api/g/(?P<gymid>[0-9]+)/sold/$',GymSoldRange.as_view()),
 		url(r'^api/g/(?P<gymid>[0-9]+)/sold/(?P<day>[0-9]+)/$',GymSoldDay.as_view()),
 		url(r'^api/g/(?P<gymid>[0-9]+)/customers/$',GymCustomers.as_view()),
+		url(r'^pay/success/$',TemplateView.as_view(template_name="paysuccess.html")),
+		url(r'^pay/cancel/$',TemplateView.as_view(template_name="paycancel.html")),
 		)

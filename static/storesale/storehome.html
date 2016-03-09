@@ -13,9 +13,19 @@
 </head>
 
 <body>
+    <div class="statusbar-overlay"></div>
+    <div class="panel-overlay"></div>
+    <div class="panel panel-left panel-reveal">
+        <div class="content-block">
+            <p><a href="/static/storesale/storehome.html">主页</a>
+            </p>
+            <p><a href="/static/storesale/freecancel.html">免费课程取消</a>
+            </p>
+        </div>
+    </div>
     <div class="view view-main">
         <div class="pages">
-            <div id="page1" class="page toolbar-fixed" data-page="home">
+            <div id="page1" class="page toolbar-fixed" data-page="gymhome">
                 <div class="toolbar tabbar tabbar-labels">
                     <div class="toolbar-inner">
                         <a href="#tab1" class="tab-link active">
@@ -29,6 +39,8 @@
                     </div>
                 </div>
                 <div class="page-content">
+					<a href="#" style="display:block;color: rgb(87,193,199);right:20px;z-index: 100;margin-top:
+							0;" class="menu-icon ion-android-menu link open-popover" data-popover=".popover-links"></a>
                     <div class="cotent-block">
                         <div class="tabs">
                             <div id="tab1" class="tab active">
@@ -47,56 +59,10 @@
                                     <div class="swiper-pagination"></div>
                                 </div>
                                 <div id="coach-introduction-card">
-                                    <div class="card">
-                                        <div class="card-content">
-                                            <div class="card-content-inner row no-gutter">
-                                                <div class="col-40">
-                                                    <img src="https://dn-o2fit.qbox.me/69664ac4cf1a11e5b79200163e00701b.jpg">
-                                                    <span class="coach-introduction-name">虞柳河</span>
-                                                </div>
-                                                <div class="col-60">
-                                                    <div class="row no-gutter">
-                                                        <div class="col-auto">
-                                                            <img src="https://dn-o2fit.qbox.me/69664ac4cf1a11e5b79200163e00701b.jpg">
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <img src="https://dn-o2fit.qbox.me/69664ac4cf1a11e5b79200163e00701b.jpg">
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <img src="https://dn-o2fit.qbox.me/69664ac4cf1a11e5b79200163e00701b.jpg">
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="margin-top: -5px;">
-                                                        <div class="col-auto">
-                                                            <img src="https://dn-o2fit.qbox.me/69664ac4cf1a11e5b79200163e00701b.jpg">
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <img src="https://dn-o2fit.qbox.me/69664ac4cf1a11e5b79200163e00701b.jpg">
-                                                        </div>
-                                                        <div class="col-auto">
-                                                            <img src="https://dn-o2fit.qbox.me/69664ac4cf1a11e5b79200163e00701b.jpg">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer row">
-                                            <div class="col-100 row">
-                                                <div class="col-auto" style="line-height:29px">体验一次</div>
-                                                <div class="col-auto"><a href="#" class="coach-button-outline button button-round">120</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-100 row" style="margin-top:3px">
-                                                <div class="col-auto" style="line-height:29px">免费良机</div>
-                                                <div class="col-auto"><a href="#" class="coach-button-outline button button-round">抢!</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div id="tab2" class="tab">
-								<p>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+                                <p>xxxxxxxxxxxxxx</p>
                             </div>
                         </div>
                     </div>
@@ -104,11 +70,67 @@
             </div>
         </div>
     </div>
+  <div class="popover popover-links">
+    <div class="popover-angle"></div>
+    <div class="popover-inner">
+      <div class="list-block">
+        <ul>
+          <li><a href="/static/storesale/cancelfree.html" class="list-button item-link" style="color:rgb(87,193,199)" >取消预约</a></li>
+          <li><a id="contact-me" href="#" class="list-button item-link" style="color:rgb(87,193,199)" >联系我们</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="popover" id="popover-freecourse">
+    <div class="popover-angle"></div>
+    <div class="popover-inner">
+      <div class="list-block">
+        <ul>
+          <li><a class="list-button item-link" style="color:rgb(87,193,199)" >取消预约</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </body>
+<script id="tpl-coach-introduction" type="text/template7">
+    <div class="card">
+        <div class="card-content">
+            <div class="card-content-inner row no-gutter" data-coach={{name}}>
+                <div class="col-40" data-phone={{name}} data-id=0>
+                    <img src="{{avatar}}?imageView2/1/w/200/h/200">
+                    <span class="coach-introduction-name">{{displayname}}</span>
+                </div>
+                <div class="col-60 coach-photos" style="font-size:0">
+						{{#each playerphotos}}
+                        <div class="coach-photo col-33" data-phone={{name}} data-id={{ind}}>
+		                    <img src="{{url}}?imageView2/1/w/200/h/200">
+                        </div>
+						{{/each}}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer row">
+            <div class="col-100 row">
+                <div class="col-auto" style="line-height:29px">超值体验</div>
+				<div class="col-auto"><a id="book-now-{{name}}" href="#" class="coach-button-outline button button-round">¥120</a>
+                </div>
+            </div>
+			<div class="col-100 row" style="margin-top:3px" id="free-{{name}}-row">
+                <div class="col-auto" style="line-height:29px">免费机会</div>
+				<div class="col-auto" data-course="-1" id="free-{{name}}"
+					style="line-height:29px"><span class="ion-ios-clock-outline"
+						style="margin-right:4px"></span>选择时间</div>
+				<div class="col-auto"><a  id="book-free-{{name}}" data-phone="{{name}}" class="book-free coach-button-outline button button-round">抢!</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
 <script src="//cdn.bootcss.com/moment.js/2.11.1/moment.min.js"></script>
 <script src="//cdn.bootcss.com/framework7/1.4.0/js/framework7.min.js"></script>
 <script src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.min.js"></script>
+<script src="/static/js/pingpp.js"></script>
+<script src="/static/js/ap.js"></script>
 <script src="/static/js/storesale/storehome.js "></script>
-
 </html>
 {%endverbatim%}

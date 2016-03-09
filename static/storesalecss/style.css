@@ -465,8 +465,8 @@
     opacity: 0.9;
     padding: 2px 8px;
     border-radius: 4px;
-    box-shadow: 1px 10px 40px 8px rgba(75, 208, 199, 0.3);
-    background: rgba(0,0,0,.3);
+    /*box-shadow: 1px 10px 40px 8px rgba(75, 208, 199, 0.3);*/
+    background: rgba(0, 0, 0, .3);
 }
 .coach-button {
     width: 70px;
@@ -488,23 +488,85 @@
     width: 100%;
 }
 #coach-introduction-card .card {
-    box-shadow: 0 1px 30px rgba(0, 0, 0, .3);
+    box-shadow: 0 1px 10px rgba(0, 0, 0, .2);
     border-radius: 4px;
     overflow: hidden;
+    margin: 30px 10px;
 }
 .swiper-pagination-bullet.swiper-pagination-bullet-active {
     background: rgb(75, 208, 199);
     box-shadow: 1px 1px 2px 2px rgba(75, 208, 199, 0.2);
 }
-.tabbar a.active i{
+.tabbar a.active i {
     color: white;
     background: rgb(75, 208, 199);
     width: 24px;
-	height: 24px;
+    height: 24px;
     text-align: center;
     border-radius: 50%;
 }
 .tabbar a.active {
     color: rgb(75, 208, 199);
 }
+.coach-dating {
+    display: inline-block;
+    background: white;
+}
+.coach-dating>.coach-dating-btn {
+    border: 1px solid rgb(75, 208, 199);
+    height: 99%;
+    border-radius: 4px;
+    font-size: 20px;
+    color: rgb(75, 208, 199);
+    text-align: center;
+}
+.coach-photo {
+    font-size: 0;
+    display: inline-block;
+}
+.book-free {
+    padding: 0 20px;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+.book-free li {
+    padding-top: 18px;
+}
+.book-free .item-title,
+.book-free .item-input {
+    font-size: 14px !important;
+    font-weight: bolder;
+    color: #666;
+}
+.book-free .item-input input:focus {
+    border-bottom: 2px solid rgb(87, 193, 199);
+}
+.book-free-restriction {
+    margin: 5px 40px;
+    color: #999;
+    font-size: 12px;
+}
+#cancel-free-submit,
+#book-free-submit {
+    width: 60px;
+    text-align: center;
+    margin: auto;
+    border: none;
+    color: white;
+    font-size: 12px;
+    line-height: 30px;
+    height: 30px;
+	margin-top: 20px;
+}
 
+#wx-submit{
+    width: 80px;
+    text-align: center;
+    margin: auto;
+    border: none;
+    color: white;
+    font-size: 12px;
+    line-height: 30px;
+    height: 30px;
+	margin-top: 20px;
+}
