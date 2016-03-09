@@ -1,4 +1,6 @@
 from django.shortcuts import render,get_object_or_404
+from django.contrib.auth import get_user_model
+from rest_framework_jwt.settings import api_settings
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView 
@@ -19,6 +21,7 @@ import pytz
 from django.http import JsonResponse
 from django.utils import timezone
 from django.db.models import Sum, Count
+from random import randint
 
 
 def create_pay(request, order,channel):
@@ -37,7 +40,7 @@ def isFirstOrder(coach,customer):
 	count = Order.objects.filter(coach=coach, custom = customer).exclude(status="unpaid").count()
 	print count
 	return count == 0
-		
+
 
 class OrderList(generics.ListCreateAPIView):
 	serializer_class = OrderSerializer
@@ -65,7 +68,7 @@ class OrderList(generics.ListCreateAPIView):
 		print request.data
 		obj = create_order(request.data["custom"],request.data["coach"], request.data["product"])
 		return Response(OrderSerializer(instance=obj).data, status=status.HTTP_201_CREATED) 
-		
+
 
 class OrderItemById(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = OrderDetailSerializer
@@ -107,8 +110,6 @@ class ProductList(generics.ListCreateAPIView):
 		usr = get_object_or_404(User, name=self.kwargs["name"])
 		return usr.products.exclude(product_type=1)
 
-
-
 class ProductItem(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = ProductSerializer
 	queryset = Product.objects.all()
@@ -116,7 +117,7 @@ class ProductItem(generics.RetrieveUpdateDestroyAPIView):
 def getbillid(customerid, coachid):
 	ts = int(time.time())
 	return int(str(ts) + str(customerid) + str(coachid))
-	
+
 def create_order(customer, coach, product):
 	billid = getbillid(customer, coach)
 	customobj = get_object_or_404(User,id=customer)
@@ -125,8 +126,8 @@ def create_order(customer, coach, product):
 	isfirst = isFirstOrder(coachobj,customobj)
 	return Order.objects.create(billid=str(billid), custom=customobj, coach=coachobj, product=productobj,
 			amount=productobj.price, status="unpaid",isfirst=isfirst, gym=coachobj.gym.all()[0])
-def update_order(billid, status):
-	order = Order.objects.get(billid=billid)
+	def update_order(billid, status):
+		order = Order.objects.get(billid=billid)
 	order.status = status
 	order.save()
 def pay_order(billid):
@@ -236,9 +237,9 @@ class ManualOrder(APIView):
 		# alipay_qr
 		return create_pay(request,order, channel)
 
-		
-		
-		
+
+
+
 
 class GymSoldRange(APIView):
 	def get(self,request,gymid):
@@ -250,7 +251,7 @@ class GymSoldRange(APIView):
 				.annotate(sold_pirce=Sum('amount')) \
 				.annotate(sold_count=Count('amount'))
 		return Response(orders)
-				
+
 
 class GymSoldDay(APIView):
 	def cal_course_income(self,query):
@@ -269,7 +270,7 @@ class GymSoldDay(APIView):
 		books = Schedule.objects.filter(date = day_obj,coach__in = coaches)
 		#print books.query
 		return (books.count(),self.cal_course_income(books))
-		
+
 
 	def get(self,request,gymid, day):
 		utc = pytz.utc
@@ -302,6 +303,30 @@ class GymCustomers(generics.ListAPIView):
 		ret = User.objects.filter(name__in = customlist)
 		return ret
 
+def alipay_success(request):
+	#http://182.92.203.171/pay/success/?result=success&out_trade_no=1457523599263297
+	if request.GET["result"] != "success":
+		return render(request, "payfail.html")
+	orderid = request.GET["out_trade_no"]
+	order = get_object_or_404(Order,billid=orderid)
+	'''
+	order.status = "paid"
+	order.save()
+	'''
+	print order.custom
+	auth_usr = get_user_model().objects.create_user(username=order.custom.name)
+	pwd = randint(100000,999999)
+	auth_usr.set_password(pwd)
+	auth_usr.save()
+	jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+	jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+	payload = jwt_payload_handler(auth_usr)
+	token = jwt_encode_handler(payload)
+	ret = render(request, "paysuccess.html",{"username":auth_usr.username,"pwd":pwd,"token":token})
+	ret.set_cookie("token", token)
+	ret.set_cookie("user",auth_usr.username)
+	return ret
 
-		
+
+
 
