@@ -286,6 +286,13 @@ app.onPageInit("gymhome", function(page) {
             mainView.router.loadPage(pages.bookfree)
         })
 
+		/*
+		var w = (screen.width-20)/5
+        $$('div[data-phone="' + coach.name + '"] .coach-photo').width(w)
+        $$('div[data-phone="' + coach.name + '"] .coach-photo').height(w)
+		*/
+
+
         /*
 		var node = $('<div class="col-33 coach-dating" style="position:relative;"><div class="coach-dating-btn">约</div></div>')
 		var w = (screen.width-20)/5
