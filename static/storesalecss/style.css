@@ -474,7 +474,7 @@
     font-family: Montserrat;
     color: white;
     border: none;
-    font-size: 12px;
+    font-size: 14px;
 }
 .coach-button-outline {
     border-color: rgb(75, 208, 199);
@@ -482,7 +482,7 @@
     width: 70px;
     float: right;
     font-family: Montserrat;
-    font-size: 12px;
+    font-size: 14px;
 }
 .swiper-slide img {
     width: 100%;
@@ -553,7 +553,7 @@
     margin: auto;
     border: none;
     color: white;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 30px;
     height: 30px;
 	margin-top: 20px;
@@ -565,7 +565,7 @@
     margin: auto;
     border: none;
     color: white;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 30px;
     height: 30px;
 	margin-top: 20px;
