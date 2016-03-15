@@ -1,3 +1,9 @@
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Montserrat-Regular'), url(/static/fonts/Montserrat-Regular.ttf) format('truetype');
+}
 .tab-pane {
 	padding:0
 }

@@ -74,6 +74,7 @@
             </div>
         </div>
     </div>
+
     <div class="login-screen modal-in">
         <div class="view">
             <div class="page">
@@ -81,22 +82,32 @@
                     <form>
                         <div class="list-block o2-login-form">
                             <ul>
-                                <li class="item-content">
+                                <li class="item-content login-options">
                                     <div class="item-inner">
                                         <div class="item-input">
                                             <input id="phone" type="text" name="username" placeholder="手机号码">
                                         </div>
                                     </div>
                                 </li>
-                                <li class="item-content">
+                                <li class="item-content login-options">
                                     <div class="item-inner">
                                         <div class="item-input">
                                             <input id="pwd" type="password" name="password" placeholder="密码">
                                         </div>
                                     </div>
                                 </li>
+                                <li class="item-content pwdinit" style="display:none">
+                                    <div class="item-inner">
+                                        <div class="item-input">
+                                            <input id="newpwd" type="text"
+											placeholder="请设定您的8位密码">
+                                        </div>
+                                    </div>
+                             </li>
                             </ul>
-                            <h4 id="o2-login-btn-touch"><a id="o2-login-btn" href="#">登录</a></h4>
+                            <h4 id="o2-login-btn-touch" class="login-options"><a id="o2-login-btn" href="#">登录</a></h4>
+							<h4 style="text-align:center;display:none" class="pwdinit"><a id="btn-newpwd" style="color: rgba(0,0, 0, 0.8);">确认</a></h4>
+   
                         </div>
                     </form>
                     <div class="o2-logo row">

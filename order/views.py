@@ -22,6 +22,9 @@ from django.http import JsonResponse
 from django.utils import timezone
 from django.db.models import Sum, Count
 from random import randint
+from utils import smsutils
+from django.conf import settings
+from sms.models import *
 
 
 def create_pay(request, order,channel):
@@ -177,6 +180,25 @@ class ManualOrder(APIView):
 			if request.data["sex"] == '1':
 				sex = True
 			customer = User.objects.create(name=phone,displayname=displayname,sex=sex,iscoach=False)
+
+			if "advance" in request.data:
+				print "##############sending register sms##############"
+				#create user for customer 
+				pwd = randint(100000,999999)
+				auth_usr = get_user_model().objects.create_user(username=phone)
+				auth_usr.set_password(pwd)
+				auth_usr.save()
+				num, _ =  Sms.objects.get_or_create(number=phone)
+				num.vcode = pwd
+				num.save()
+				resp = smsutils.templateSMS(settings.UCPAASSID,
+					settings.UCPAASTOKEN,
+					settings.UCPAASAPPID,
+					phone,
+					settings.UCPAASTEMPLATE_REGISTER,
+					str(pwd))
+			
+
 		if "age" in self.request.data:
 			customer.age = self.request.data["age"]
 			customer.save()

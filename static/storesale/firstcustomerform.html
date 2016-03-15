@@ -1,64 +1,98 @@
-<div class="page" data-page="firstcustomerform" style="background:white" ass="link">
-    <div class="page-content">
-        <a href="#" class="back" style="font-size: 24px;margin-left: 20px;color: #aaa;">
+<div class="page navbar-fixed" data-page="firstcustomerform" style="background:white" ass="link">
+	<div class="navbar row">
+		<div class="col-10">
+        <a href="#" class="back" style="line-height: 46px;font-size: 24px;margin-left: 14px;color: #aaa;">
             <i class="ion-ios-arrow-left"></i>
         </a>
+		</div>
+		<div class="col-90 row">
+		<div class="col-auto customer-step active">
+			<p><span>1</span>提交</p>
+		</div>
+		<div class="col-auto customer-step">
+			<p><span>2</span>支付</p>
+		</div>
+		<div class="col-auto customer-step">
+			<p><span>3</span>预约</p>
+		</div>
+	</div>
+	</div>
+    <div class="page-content">
+        <div id="introduction" style="padding:0 30px;">
+            <p style="text-align:center;color:#444;font-size:18px;">一节体验课/60分钟</p>
+			<p class="introduction-title"><span id="coach-name"
+				style="font-size:18px;padding:0 5px;">虞柳河</span>全程陪伴你：</p>
+            <p class="introduction-title">*帮你更多了解自己的身体</p>
+            <p class="introduction-detail">一份仪器分析的身体报告</p>
+            <p class="introduction-detail">一些教练提供的评估建议</p>
+            <p class="introduction-title">*带你尝试全新的锻炼</p>
+            <p class="introduction-detail">许多有趣而又有效的动作</p>
+            <p class="introduction-detail">几个值得让你尽力一试的小挑战</p>
 
-		<h4 style="text-align: center;
+            <p class="introduction-title">这是一个开始训练的好理由</p>
+            <p class="introduction-detail">好过微博转发的健身tips以及励志段子</p>
+			<br>
+            <a class="button button-round" id="hide-introduction"><span style="position: relative;
+    left: 2px;" class="ion-ios-arrow-right"></span></a>
+        </div>
+
+        <div id="customerform" style="display:none;padding-top: 30px;">
+            <h4 style="text-align: center;
 			    font-size: 16px;
 				    color: #777;margin: 0;">信息录入</h4>
-        <div class="list-block book-free">
-            <ul>
-                <li>
-                    <div class="item-content">
-                        <div class="item-inner">
-                            <div class="item-title label">姓名</div>
-                            <div class="item-input">
-                                <input id="customername" type="text" placeholder="请输入您的姓名">
+            <div class="list-block book-free">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">姓名</div>
+                                <div class="item-input">
+                                    <input id="customername" type="text" placeholder="请输入您的姓名">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="item-content">
-                        <div class="item-inner">
-                            <div class="item-title label">电话号码</div>
-                            <div class="item-input">
-                                <input id="customerphone" type="text" placeholder="请输入您的手机号码">
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">电话号码</div>
+                                <div class="item-input">
+                                    <input id="customerphone" type="text" placeholder="请输入您的手机号码">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="item-content">
-                        <div class="item-inner">
-                            <div class="item-title label">性别</div>
-                            <div class="item-input">
-                                <select id="customersex">
-                                    <option selected value="0">女</option>
-                                    <option value="1">男</option>
-                                </select>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">性别</div>
+                                <div class="item-input">
+                                    <select id="customersex">
+                                        <option selected value="0">女</option>
+                                        <option value="1">男</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="item-content">
-                        <div class="item-inner">
-                            <div class="item-title label">生日</div>
-                            <div class="item-input">
-                                <input id="customerbirtyday" type="date" placeholder="Birth day" value="1990-01-01">
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">生日</div>
+                                <div class="item-input">
+                                    <input id="customerbirtyday" type="date" placeholder="Birth day" value="1990-01-01">
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </li>
-                <li>
-                </li>
-            </ul>
+                    </li>
+                    <li>
+                    </li>
+                </ul>
+            </div>
+            <p class="book-free-restriction">*我们会确保您的个人信息被严格保密。</p>
+            <p class="book-free-restriction">*您的手机号码及姓名只会用于接收课程提醒，以及必要时教练与您的联系。</p>
+            <p class="book-free-restriction">*年龄和性别是为您制订训练计划需要参照的必要信息。</p>
+            <a class="o2-bg-gradient button button-round" id="wx-submit">支付宝</a>
         </div>
-		<p class="book-free-restriction">*我们会确保您的个人信息被严格保密。</p>
-		<p class="book-free-restriction">*您的手机号码及姓名只会用于接收课程提醒，以及必要时教练与您的联系。</p>
-		<p class="book-free-restriction">*年龄和性别是为您制订训练计划需要参照的必要信息。</p>
-        <a class="o2-bg-gradient button button-round" id="wx-submit">支付宝</a>
     </div>
 </div>

@@ -58,6 +58,9 @@ var R = {
         login: "/api/lg/",
         refreshToken: "/api/t/",
         wxinit: "/api/wx/signature/",
+        changepwd: function(phone) {
+            return "/api/sms/" + phone + "/"
+        },
         user: function(phone) {
             return "/api/" + phone + "/"
         },
@@ -86,7 +89,7 @@ $$.post(R.wxinit, {
 }, function(data) {
     var config = JSON.parse(data)
     config.jsApiList = ["chooseImage", "uploadImage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-	config.debug = false
+    config.debug = false
     wx.config(config);
     wx.ready(function() {
         console.log("load wechat success")
@@ -194,7 +197,7 @@ var svc_usr = function() {
     var that = this
     that.onloaded = undefined
     var history = []
-	var needReload = false
+    var needReload = false
 
     function submitBook(coachname, datestr, book, onsuccess, onfail) {
         $$.ajax({
@@ -220,33 +223,34 @@ var svc_usr = function() {
             }
         })
     }
-	function refreshWhenNeed(skipcallback) {
-		if(needReload){
-			history = []
-			loadOrders(skipcallback)
-			needReload = false
-		}
-	}
+
+    function refreshWhenNeed(skipcallback) {
+        if (needReload) {
+            history = []
+            loadOrders(skipcallback)
+            needReload = false
+        }
+    }
 
     function completeOrderLoad(skipcallback) {
         count_items--;
         if (count_items == 0) {
             history.sort(function(a, b) {
-                if(moment(a.date).isAfter(moment(b.date))){
-					return 1
-				}
-				return -1
+                if (moment(a.date).isAfter(moment(b.date))) {
+                    return 1
+                }
+                return -1
             })
-			if(skipcallback != true){
-				that.onloaded(history)
-			}
+            if (skipcallback != true) {
+                that.onloaded(history)
+            }
         }
     }
 
     function loadOrderDetail(order, skipcallback) {
         $$.get(R.order(usr.name, order.id), function(data) {
             var tmp = JSON.parse(data)
-			order.booked = tmp.booked
+            order.booked = tmp.booked
             if (!tmp.detail || tmp.detail == "") {
                 tmp.detail = "[]"
             }
@@ -364,8 +368,8 @@ var svc_usr = function() {
                             photos: [],
                             showcamera: false,
                             id: this.id,
-							fromnow: "",
-							hourstr: TimeMap[v.hour]
+                            fromnow: "",
+                            hourstr: TimeMap[v.hour]
                         }
                         //set date
                     item.id = this.id
@@ -380,28 +384,28 @@ var svc_usr = function() {
                     var start = moment().subtract(2, "days")
                     var end = moment()
                     var details = JSON.parse(this.detail)
-					var delta = date.diff(moment(), "days")
-					if(delta > 0){
-						item.fromnow = delta+"天后"
-					}
-					if(delta == 0){
-						item.fromnow = "今天"
-					}
+                    var delta = date.diff(moment(), "days")
+                    if (delta > 0) {
+                        item.fromnow = delta + "天后"
+                    }
+                    if (delta == 0) {
+                        item.fromnow = "今天"
+                    }
 
-					if(date.isBefore(end)){
-						item.showscale = true
-						item.fromnow = false
-					}
+                    if (date.isBefore(end)) {
+                        item.showscale = true
+                        item.fromnow = false
+                    }
 
                     $$.each(details, function(i, v) {
                             if (v.contenttype == "image") {
                                 item.photos.push(v.content.fixSize())
                             }
-							if (v.contenttype == "weight") {
+                            if (v.contenttype == "weight") {
                                 item.showscale = false
                                 item.weight = v.content
                             }
-						
+
                         })
                         //set show camera
                     if (date.isBetween(start, end)) {
@@ -425,7 +429,7 @@ var svc_usr = function() {
     function loadOrders(skipcallback) {
         $$.get(R.orders(usr.name), function(data) {
             usr.orders = JSON.parse(data).results
-			usr.history = []
+            usr.history = []
             count_items = usr.orders.length
             $$.each(usr.orders, function(i, v) {
                 loadOrderDetail(v)
@@ -442,13 +446,14 @@ var svc_usr = function() {
         }
         return false
     }
-	function needRefresh(isneed){
-		if(isneed == undefined){
-			needReload = true
-		} else {
-		needReload = isneed
-		}
-	}
+
+    function needRefresh(isneed) {
+        if (isneed == undefined) {
+            needReload = true
+        } else {
+            needReload = isneed
+        }
+    }
 
     return {
         user: function() {
@@ -457,8 +462,8 @@ var svc_usr = function() {
         init: init,
         getCurrentOrder: getCurrentOrder,
         submitBook: submitBook,
-		refreshWhenNeed: refreshWhenNeed,
-		needRefresh: needRefresh
+        refreshWhenNeed: refreshWhenNeed,
+        needRefresh: needRefresh
     }
 }()
 
@@ -470,28 +475,28 @@ var home = app.onPageInit("home", function(page) {
             month: ""
         }
     }
-	
+
 
     function renderTimeline(history) {
         $$("#o2-timeline").html("")
-		var today = moment()
-		var tolasttrain = "?"
+        var today = moment()
+        var tolasttrain = "?"
         for (var i = 0; i < history.length; i++) {
             var v = history[i]
             var item = T.timelineitem(v.getTimeLineCard())
             $$("#o2-timeline").prepend(item)
-			if(v.done){
-				var tmp = today.diff(moment(v.date), "days")
-				if(tolasttrain == "?" || (tmp>=0 && tmp<tolasttrain)){
-					tolasttrain = tmp
-				}
-			}
+            if (v.done) {
+                var tmp = today.diff(moment(v.date), "days")
+                if (tolasttrain == "?" || (tmp >= 0 && tmp < tolasttrain)) {
+                    tolasttrain = tmp
+                }
+            }
         }
-		console.log(tolasttrain)
-		$$("#o2-last-train").html(tolasttrain)
+        console.log(tolasttrain)
+        $$("#o2-last-train").html(tolasttrain)
         if (current_train_weight != undefined) {
             $$('.pickweight[data-id="' + current_train_weight.id + '"]').addClass("animated tada")
-			current_train_weight = undefined
+            current_train_weight = undefined
         }
         $$(".pickweight").on("click", function(e) {
             var tar = this
@@ -505,54 +510,54 @@ var home = app.onPageInit("home", function(page) {
             })
         })
         $$(".camera").on("click", function(e) {
-            var tar = this
-            e.stopPropagation()
-            $$.each(history, function(i, v) {
-                if (v.id == tar.dataset["id"]) {
-                    console.log("picking img")
-                    wx.chooseImage({
-                        count: 1, // 默认9
-                        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-                        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-                        success: function(res) {
-                            var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-                            v.addPic(localIds[0])
-                        }
-                    });
-                }
+                var tar = this
+                e.stopPropagation()
+                $$.each(history, function(i, v) {
+                    if (v.id == tar.dataset["id"]) {
+                        console.log("picking img")
+                        wx.chooseImage({
+                            count: 1, // 默认9
+                            sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+                            sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+                            success: function(res) {
+                                var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                                v.addPic(localIds[0])
+                            }
+                        });
+                    }
+                })
             })
-        })
-		//add booking
-		if(svc_usr.getCurrentOrder() && moment().isAfter(moment(history[history.length-1].date))){
-	        $$("#o2-timeline").prepend(T.timelineitem(booking))
-		}
+            //add booking
+        if (svc_usr.getCurrentOrder() && (history.length == 0 || moment().isAfter(moment(history[history.length - 1].date)))) {
+            $$("#o2-timeline").prepend(T.timelineitem(booking))
+        }
 
         $$("#booknow").on("click", function() {
-			if(svc_usr.getCurrentOrder()){
-	            mainView.router.loadPage(pages.bookdetail);
-			} else {
-				notify("没有匹配的订单","")
-			}
+            if (svc_usr.getCurrentOrder()) {
+                mainView.router.loadPage(pages.bookdetail);
+            } else {
+                notify("没有匹配的订单", "")
+            }
         })
         $$(".isimg").on("click", function(e) {
-			var cur = this
+            var cur = this
             var tar = this.parentElement
             e.stopPropagation()
             $$.each(history, function(i, v) {
                 if (v.id == tar.dataset["id"]) {
-					var photos = []
-					$$.each(JSON.parse(v.detail), function(i, v){
-						if(v.contenttype == "image"){
-							photos.push(v.content)
-						}
-					})
+                    var photos = []
+                    $$.each(JSON.parse(v.detail), function(i, v) {
+                        if (v.contenttype == "image") {
+                            photos.push(v.content)
+                        }
+                    })
                     app.photoBrowser({
                         photos: photos,
                         theme: 'dark',
-						ofText: "/",
-						backLinkText: "",
-						toolbar: false,
-						initialSlide: cur.dataset["index"]
+                        ofText: "/",
+                        backLinkText: "",
+                        toolbar: false,
+                        initialSlide: cur.dataset["index"]
                     }).open();
                 }
             })
@@ -579,13 +584,42 @@ var home = app.onPageInit("home", function(page) {
     }, function() {
         app.closeModal()
     })
-	app.onPageAfterAnimation("home", function(page){
-			console.log("I'm backing ... ....")
-			svc_usr.refreshWhenNeed()
-	})
+    app.onPageAfterAnimation("home", function(page) {
+        console.log("I'm backing ... ....")
+        svc_usr.refreshWhenNeed()
+    })
 
 
     var isBusy = false
+
+    function initPwd(phone, oldpwd, newpwd, onsuccess, onfail) {
+        var pdata = {
+            vcode: oldpwd,
+            password: newpwd
+        }
+        $$.ajax({
+            url: R.changepwd(phone),
+            method: "POST",
+            data: pdata,
+            success: onsuccess,
+            error: onfail
+        })
+    }
+	$$("#btn-newpwd").on("click", function(){
+		if($$("#newpwd").val().length < 8){
+			notify("密码至少8位")
+			return 
+		}
+        initPwd($$("#phone").val(), $$("#pwd").val(), $$("#newpwd").val(), function(data) {
+			notify("密码设置成功")
+            app.closeModal()
+        }, function(data) {
+            notify("密码设置失败,请刷新后重试")
+        })
+	})
+
+
+
     $$("#o2-login-btn-touch").on("click", function() {
         if (isBusy) return
         isBusy = true
@@ -607,7 +641,12 @@ var home = app.onPageInit("home", function(page) {
                         $$(".o2-book-header-coach img").attr("src", svc_usr.user().avatar.fixSize())
                         console.log(data);
                         $$("#o2-login-btn").html("登录")
-                        app.closeModal()
+                        if ($$("#pwd").val().length > 6) {
+                            app.closeModal()
+						} else {
+                            $$(".login-options").hide()
+                            $$(".pwdinit").show()
+                        }
                     },
                     function() {
                         var noti = app.addNotification({
@@ -688,7 +727,7 @@ app.onPageInit('about', function(page) {
                         setTimeout(function() {
                             mainView.router.back();
                             //should refresh
-							svc_usr.needRefresh();
+                            svc_usr.needRefresh();
                         }, 1300)
                     }
                     if (done == false) {

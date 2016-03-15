@@ -192,6 +192,14 @@ var svc_gym = function() {
     function refreshFreeCourse(phone, onsuccess) {
         $$.getJSON(R.coachfreecourse(phone), onsuccess)
     }
+	function getCoach(phone){
+		for(var i = 0; i < coaches.length; i++){
+			if(coaches[i].name == phone){
+				return coaches[i]
+			}
+		}
+		return false;
+	}
     return {
         gym: function() {
             return gym
@@ -204,7 +212,8 @@ var svc_gym = function() {
         init: init,
         getFreeCourse: getFreeCourse,
         cancelFreeCourse: cancelFreeCourse,
-        newFreeCourse: newFreeCourse
+        newFreeCourse: newFreeCourse,
+		getCoach: getCoach
     }
 }()
 
@@ -455,6 +464,16 @@ app.onPageInit("firstcustomerform", function(page) {
         }
         return true
     }
+	$$("#coach-name").html(svc_gym.getCoach(currentCoach).displayname)
+
+	$$("#hide-introduction").on("click",function(){
+		$$("#customerform").show()
+		$$("#customerform").addClass("fadeIn animated")
+		$$("#introduction").addClass("fadeOutLeft animated")
+		setTimeout(function(){
+		$$("#introduction").hide()
+		},500)
+	})
 
     function buildOrder() {
         that.mo = {}

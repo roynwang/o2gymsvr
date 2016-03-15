@@ -585,7 +585,6 @@ app.onPageInit("customerform", function(page) {
         that.mo = {}
         that.mo.customer_displayname = ""
         that.mo.customer_phone = ""
-        that.mo.product_introduction = "dummy"
         that.mo.product_price = ""
         that.mo.product_promotion = -1
         that.mo.product_amount = ""
@@ -593,6 +592,7 @@ app.onPageInit("customerform", function(page) {
         that.mo.sex = '0'
         that.mo.age = undefined
         that.mo.subsidy = undefined
+		that.mo.advance = true
 
         that.birthday_str = $$("#customerbirtyday").val()
         that.mo.customer_displayname = $$("#customername").val()
@@ -600,6 +600,7 @@ app.onPageInit("customerform", function(page) {
         that.mo.sex = $$("#customersex").val()
         that.mo.product_price = currentProduct.price
         that.mo.product_amount = currentProduct.course_count
+        that.mo.product_introduction = "氧气健身: 私教课 " +  currentProduct.course_count + "节"
     }
 
     $$("#alipay-submit").on("click", function() {
