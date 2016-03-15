@@ -104,7 +104,7 @@ $$.post(R.wxinit, {
 }, function(data) {
     var config = JSON.parse(data)
     config.jsApiList = ["chooseImage", "uploadImage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-	config.debug = false
+    config.debug = false
     wx.config(config);
     wx.ready(function() {
         console.log("load wechat success")
@@ -192,14 +192,15 @@ var svc_gym = function() {
     function refreshFreeCourse(phone, onsuccess) {
         $$.getJSON(R.coachfreecourse(phone), onsuccess)
     }
-	function getCoach(phone){
-		for(var i = 0; i < coaches.length; i++){
-			if(coaches[i].name == phone){
-				return coaches[i]
-			}
-		}
-		return false;
-	}
+
+    function getCoach(phone) {
+        for (var i = 0; i < coaches.length; i++) {
+            if (coaches[i].name == phone) {
+                return coaches[i]
+            }
+        }
+        return false;
+    }
     return {
         gym: function() {
             return gym
@@ -213,7 +214,7 @@ var svc_gym = function() {
         getFreeCourse: getFreeCourse,
         cancelFreeCourse: cancelFreeCourse,
         newFreeCourse: newFreeCourse,
-		getCoach: getCoach
+        getCoach: getCoach
     }
 }()
 
@@ -295,7 +296,7 @@ app.onPageInit("gymhome", function(page) {
             mainView.router.loadPage(pages.bookfree)
         })
 
-		/*
+        /*
 		var w = (screen.width-20)/5
         $$('div[data-phone="' + coach.name + '"] .coach-photo').width(w)
         $$('div[data-phone="' + coach.name + '"] .coach-photo').height(w)
@@ -440,6 +441,12 @@ app.onPageInit("cancelfree", function(page) {
 })
 app.onPageInit("firstcustomerform", function(page) {
     var that = this;
+    var mySwiper = app.swiper('.swiper-container-2', {
+        speed: 400,
+        spaceBetween: 0,
+        autoplay: 10000
+    });
+
 
     function validate() {
         if (that.mo.subsidy == undefined) {
@@ -464,16 +471,16 @@ app.onPageInit("firstcustomerform", function(page) {
         }
         return true
     }
-	$$("#coach-name").html(svc_gym.getCoach(currentCoach).displayname)
+    $$("#coach-name").html(svc_gym.getCoach(currentCoach).displayname)
 
-	$$("#hide-introduction").on("click",function(){
-		$$("#customerform").show()
-		$$("#customerform").addClass("fadeIn animated")
-		$$("#introduction").addClass("fadeOutLeft animated")
-		setTimeout(function(){
-		$$("#introduction").hide()
-		},500)
-	})
+    $$("#hide-introduction, .next-step").on("click", function() {
+        $$("#customerform").show()
+        $$("#customerform").addClass("fadeIn animated")
+        $$("#introduction").addClass("fadeOutLeft animated")
+        setTimeout(function() {
+            $$("#introduction").hide()
+        }, 500)
+    })
 
     function buildOrder() {
         that.mo = {}
@@ -509,7 +516,7 @@ app.onPageInit("firstcustomerform", function(page) {
                 app.hidePreloader()
                 resp = JSON.parse(resp)
                 pingpp.createPayment(resp, function(result, error) {
-						console.log(result)
+                        console.log(result)
                         if (result == "success") {
                             // 只有微信公众账号 wx_pub 支付成功的结果会在这里返回，其他的 wap 支付结果都是在 extra 中对应的 URL 跳转。
                         } else if (result == "fail") {

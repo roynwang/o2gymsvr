@@ -1,50 +1,27 @@
-<div class="page navbar-fixed" data-page="firstcustomerform" style="background:white"
-ass="link">
-    <div class="navbar row">
-        <div class="col-10">
-            <a href="#" class="back" style="line-height: 46px;font-size: 24px;margin-left: 14px;color: #aaa;">
-                <i class="ion-ios-arrow-left"></i>
-            </a>
-        </div>
-        <div class="col-90 row">
-            <div class="col-auto customer-step active">
-                <p><span>1</span>提交</p>
-            </div>
-            <div class="col-auto customer-step">
-                <p><span>2</span>支付</p>
-            </div>
-            <div class="col-auto customer-step">
-                <p><span>3</span>预约</p>
-            </div>
-        </div>
-    </div>
+<div class="page navbar-fixed" data-page="firstcustomerform" style="background:white" ass="link">
+	<div class="navbar row">
+		<div class="col-10">
+        <a href="#" class="back" style="line-height: 46px;font-size: 24px;margin-left: 14px;color: #aaa;">
+            <i class="ion-ios-arrow-left"></i>
+        </a>
+		</div>
+		<div class="col-90 row">
+		<div class="col-auto customer-step active">
+			<p><span>1</span>提交</p>
+		</div>
+		<div class="col-auto customer-step">
+			<p><span>2</span>支付</p>
+		</div>
+		<div class="col-auto customer-step">
+			<p><span>3</span>预约</p>
+		</div>
+	</div>
+	</div>
     <div class="page-content">
-        <div id="introduction" style="padding:0;">
-            <div class="swiper-container-2" style="height: 200px;overflow:hidden">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <img src="https://dn-o2fit.qbox.me/5890690_131647681000_2.jpg">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="https://dn-o2fit.qbox.me/5890690_131647681000_2.jpg">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="https://dn-o2fit.qbox.me/5890690_131647681000_2.jpg">
-                    </div>
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-            <div class="row no-gutter" style="background:#f7f7f7;border-bottom: 1px solid #eee">
-                <div class="col-60">
-                    <p style="text-align:center;color:#444;font-size:14px;margin:0.6em
-					0;line-height:22px">一节体验课/60分钟</p>
-                </div>
-                <div class="col-40 o2-bg-gradient next-step">
-                    <p style="text-align:center;color:white;font-size: 16px;
-					    margin: 0.6em 0;">￥120</p>
-                </div>
-            </div>
-            <p class="introduction-title"><span id="coach-name" style="font-size:18px;padding:0 5px;">虞柳河</span>全程陪伴你：</p>
+        <div id="introduction" style="padding:0 30px;">
+            <p style="text-align:center;color:#444;font-size:18px;">一节体验课/60分钟</p>
+			<p class="introduction-title"><span id="coach-name"
+				style="font-size:18px;padding:0 5px;">虞柳河</span>全程陪伴你：</p>
             <p class="introduction-title">*帮你更多了解自己的身体</p>
             <p class="introduction-detail">一份仪器分析的身体报告</p>
             <p class="introduction-detail">一些教练提供的评估建议</p>
@@ -54,10 +31,7 @@ ass="link">
 
             <p class="introduction-title">这是一个开始训练的好理由</p>
             <p class="introduction-detail">好过微博转发的健身tips以及励志段子</p>
-
-            <p class="book-free-restriction" style="margin-top:20px;margin-left:20px">**您需要穿着或携带运动服装和运动鞋。</p>
-            <p class="book-free-restriction" style="margin-left:20px">**我们提供洗浴用品，但基于卫生和健康考虑，您需要自己携带毛巾。</p>
-            <br>
+			<br>
             <a class="button button-round" id="hide-introduction"><span style="position: relative;
     left: 2px;" class="ion-ios-arrow-right"></span></a>
         </div>
