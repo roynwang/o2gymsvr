@@ -40,7 +40,7 @@
                     <td><a ng-if="row.status!='unpaid'" class="btn {{row.status=='done'?'btn-success':'btn-primary'}}"
                         href="#order/{{row.coachdetail.name}}/{{row.id}}">{{row.status ==
 						"done"?"查看":"预约"}}</a>
-                        <a ng-if="row.status != 'done' && row.removable" class="btn btn-danger" ng-click="demo.remove(row.id)">移除</a>
+                        <a ng-if="row.status =='unpaid' || (row.status != 'done' && row.removable)" class="btn btn-danger" ng-click="demo.remove(row.id)">移除</a>
                         <!--<a ng-if="row.status != 'done'" class="btn btn-info"
 						style="margin-left:3px">修改</a>-->
                     </td>
