@@ -325,7 +325,13 @@ app.onPageInit("gymhome", function(page) {
         })
     }
 
+
     function renderSwiper(gym) {
+		var pictmp = '<div class="swiper-slide"><img src="##"></div>'
+		$$.each(JSON.parse(gym.imgs),function(i,v){
+			$$("#gym-pics").append(pictmp.replace("##",v))		
+		})
+
         var mySwiper = app.swiper('.swiper-container', {
             speed: 400,
             spaceBetween: 0,
