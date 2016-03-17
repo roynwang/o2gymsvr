@@ -318,10 +318,12 @@ app.onPageInit("gymhome", function(page) {
 
     function renderCoaches(gym) {
         $$.each(gym.coaches_set, function(i, v) {
+			if(v.can_book){
             svc_gym.refreshPhoto(v.name, function(data) {
                 v.album = data.results
                 renderCoach(v)
             })
+			}
         })
     }
 

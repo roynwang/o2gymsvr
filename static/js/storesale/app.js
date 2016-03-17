@@ -368,11 +368,13 @@ app.onPageInit("home", function(page) {
 
     function renderCoachesAvatar(coaches) {
         $$.each(coaches, function(i, v) {
+				if(v.can_book){
                 var node = $$(T.coach_avatar(v))
                 node.on("click", function() {
                     swithCoach(v.name)
                 })
                 $$(".coach-list").prepend(node)
+				}
             })
             //$$(".coach-list .coach-item-new:nth-of-type(1)").addClass("active")
         swithCoach(coaches[0].name)
@@ -380,6 +382,10 @@ app.onPageInit("home", function(page) {
     svc_login.refreshToken(function() {
         svc_usr.init(Cookies.get("user"), function() {
                 isBusy = false
+				var targym = svc_usr.user().gym_id[0]
+				if(!targym){
+					targym = JSON.parse(svc_usr.user().corps)[0]
+				}
                 svc_gym.init(svc_usr.user().gym_id[0], function(gym) {
                     //render avatar
                     renderCoachesAvatar(gym.coaches_set)
