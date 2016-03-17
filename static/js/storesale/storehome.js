@@ -99,6 +99,7 @@ var R = {
         return "/api/p/fetch/"
     }
 }
+/*
 $$.post(R.wxinit, {
     url: window.location.href
 }, function(data) {
@@ -114,6 +115,7 @@ $$.post(R.wxinit, {
         alert("load wechat sdk fail")
     })
 })
+*/
 
 var svc_gym = function() {
     var gym = null
