@@ -102,7 +102,7 @@ def sendBookNotification(book):
 				"%(appId,toNumbers,templateId,param)
 		responseMode = "xml"
 	req = urllib2.Request(url)
-	return urlOpen(createHttpReq(req,url,accountSid,timestamp,responseMode,body))
+	return urlOpen(createHttpReq(req,url,accountSid,timestamp,responseMode,body.encode("utf-8")))
 
 	
 	
