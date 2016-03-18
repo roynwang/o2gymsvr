@@ -482,13 +482,19 @@ app.onPageInit("bookfree", function(page) {
             app.alert("请输入正确的电话号码")
             return
         }
+        if ($$("#customerdisplayname").val().length == 0) {
+            app.alert("请输入您的姓名")
+            return
+        }
 
         app.showPreloader("预约中")
         $$.ajax({
             url: R.freecourseitem(cid),
             method: "PATCH",
             data: {
-                customer: cp
+                customer: cp,
+				displayname: $$("#customerdisplayname").val(),
+				sex: $$("#customersex").val()
             },
             success: function(data) {
                 app.hidePreloader()

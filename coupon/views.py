@@ -39,6 +39,8 @@ class FreeCourseItemView(generics.RetrieveUpdateDestroyAPIView):
 		if customer == -1:
 			tar.sealed = 0
 			tar.customer = None
+			tar.displayname = None
+			tar.sex = False
 			tar.save()
 			return Response({'msg':'success'}) 
 
@@ -49,6 +51,8 @@ class FreeCourseItemView(generics.RetrieveUpdateDestroyAPIView):
 			return Response({"error":"existed"})
 		tar.customer = customer
 		tar.sealed = 1
+		tar.displayname = request.data["displayname"]
+		tar.sex = request.data["sex"]
 		tar.save()
 		return Response({'msg':'success'}) 
 

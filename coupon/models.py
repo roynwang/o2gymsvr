@@ -11,6 +11,8 @@ class FreeCourse(models.Model):
 	budget = models.IntegerField(default=1)
 	sealed = models.IntegerField(default=0)
 	gym = models.IntegerField()
+	displayname = models.CharField(max_length=32,null=True, blank=True)
+	sex = models.BooleanField(default=False)
 
 	def hasSeat(self):
 		return budget > sealed
