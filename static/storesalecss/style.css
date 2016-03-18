@@ -702,8 +702,10 @@
 .prev-week,
 .next-week {
 	font-size: 18px;
-	padding-left:20px;
-	padding-right:20px;
+	line-height: 50px;
+	text-align:center;
+	margin-left: 5px;
+	margin-right: 5px;
 }
 .tabbar-label{
 	font-size:14px !important;
