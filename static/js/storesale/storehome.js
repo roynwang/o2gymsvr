@@ -232,7 +232,7 @@ var svc_gym = function() {
 
 
 app.onPageInit("gymhome", function(page) {
-    var basedate = new Date()
+    var basedate = new Date().addDays(1)
     var dates = [0, 0, 0, 0, 0, 0, 0]
     var selected = false
     var month = false
