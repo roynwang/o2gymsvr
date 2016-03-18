@@ -26,7 +26,7 @@ class CoachFreeCourseListView(generics.ListAPIView):
 	pagination_class = None
 	def get_queryset(self):
 		coach = get_object_or_404(User, name=self.kwargs["pk"])
-		return FreeCourse.objects.filter(coach=coach.id, sealed=0)
+		return FreeCourse.objects.filter(coach=coach.id).order_by("hour")
 		
 
 class FreeCourseItemView(generics.RetrieveUpdateDestroyAPIView):

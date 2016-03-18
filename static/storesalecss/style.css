@@ -624,4 +624,84 @@
 	border-radius: 50%;
 	margin-bottom: 20px;
 }
+.free-date-title{
+	font-size:18px;
+	padding-left: 20px;
+	margin: 0;
+	line-height: 50px;
+	background: #f7f7f6;
+    color: #666;
+	text-align:center;
+}
 
+.free-date-row{
+	margin-top: 0;
+	text-align: center;
+	background: #f7f7f6;
+	border-bottom: solid 1px #ddd;
+}
+.free-date-item {
+	height: 50px;
+	line-height: 50px;
+}
+.free-date-item.active{
+    background: rgba(79, 210, 194, 0.8);
+	color: white;
+	border-radius: 2px;
+	font-size: 18px;
+}
+
+.free-date-item.active .free-date-weekday{
+	display:none
+}
+.free-date-item.active .free-date-day{
+	font-size: 24px;
+	line-height: 50px;
+	color:white;
+}
+.free-date-item.disable{
+	color: #aaa;
+	background: #eee;
+}
+.free-date-item>p{
+	margin: 0;
+	text-align:center;
+}
+.free-date-weekday {
+	font-size: 10px;
+	line-height: 24px;
+	color: #aaa;
+}
+.free-date-day {
+	font-size: 18px;
+	line-height: 30px;
+	color: #666;
+}
+.book-free-round {
+    width: 40px;
+    height: 40px;
+    line-height: 38px;
+    border-radius: 50%;
+    border: 1px solid rgb(79, 210, 194);
+    color: rgb(79, 210, 194);
+	position: absolute;
+    right: 20px;
+    top: 20px;
+}
+.book-free-round.disable {
+    width: 40px;
+    height: 40px;
+    line-height: 38px;
+    border-radius: 50%;
+    border: 1px solid #aaa;
+    color: #aaa;
+	position: absolute;
+    right: 20px;
+    top: 20px;
+}
+.prev-week,
+.next-week {
+	font-size: 14px;
+	margin-left:20px;
+	margin-right:20px;
+}

@@ -12,6 +12,7 @@ String.prototype.fixSize = function(w, h) {
 var freecourse = ""
 var currentCoach = ""
 
+var WeekDays = ["日", "一", "二", "三", "四", "五", "六"]
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
 
 var app = new Framework7({
@@ -21,6 +22,12 @@ var app = new Framework7({
     modalButtonCancel: "取消",
     modalTitle: "氧气健身"
 });
+Date.prototype.addDays = function(days) {
+    var dat = new Date(this.valueOf());
+    dat.setDate(dat.getDate() + days);
+    return dat;
+}
+
 
 
 function notify(title, message, keep) {
@@ -44,78 +51,79 @@ var pages = {
 var $$ = Dom7;
 var mainView = app.addView('.view-main');
 var T = {
-    coachintroduction: Template7.compile($$("#tpl-coach-introduction").html())
+    coachintroduction: Template7.compile($$("#tpl-coach-introduction").html()),
+    coachfree: Template7.compile($$("#tpl-coach-free").html())
 }
 
 var R = {
-    login: "/api/lg/",
-    refreshToken: "/api/t/",
-    wxinit: "/api/wx/signature/",
-    gym: function(gymid) {
-        return "/api/g/" + gymid + "/"
-    },
-    customerfreecourse: function(phone) {
-        return "/api/" + phone + "/free/"
-    },
-    coachfreecourse: function(phone) {
-        return "/api/" + phone + "/coachfree/"
-    },
-    freecourseitem: function(cid) {
-        return "/api/f/" + cid + "/"
-    },
-    gymfreecourse: function(gymid, date) {
-        date = date.replace(/-/g, '')
-        return "/api/g/" + gymid + "/d/" + date + "/free/"
-    },
-    manualorder: function(phone) {
-        return "/api/" + phone + "/manualorder/"
-    },
-    album: function(phone) {
-        return "/api/" + phone + "/album/"
-    },
-    user: function(phone) {
-        return "/api/" + phone + "/"
-    },
-    orders: function(phone) {
-        return "/api/" + phone + "/o/"
-    },
-    order: function(phone, orderid) {
-        return "/api/" + phone + "/o/" + orderid + "/"
-    },
-    order_by_no: function(phone, orderno) {
-        return "/api/" + phone + "/b/" + orderno + "/"
-    },
+        login: "/api/lg/",
+        refreshToken: "/api/t/",
+        wxinit: "/api/wx/signature/",
+        gym: function(gymid) {
+            return "/api/g/" + gymid + "/"
+        },
+        customerfreecourse: function(phone) {
+            return "/api/" + phone + "/free/"
+        },
+        coachfreecourse: function(phone) {
+            return "/api/" + phone + "/coachfree/"
+        },
+        freecourseitem: function(cid) {
+            return "/api/f/" + cid + "/"
+        },
+        gymfreecourse: function(gymid, date) {
+            date = date.replace(/-/g, '')
+            return "/api/g/" + gymid + "/d/" + date + "/free/"
+        },
+        manualorder: function(phone) {
+            return "/api/" + phone + "/manualorder/"
+        },
+        album: function(phone) {
+            return "/api/" + phone + "/album/"
+        },
+        user: function(phone) {
+            return "/api/" + phone + "/"
+        },
+        orders: function(phone) {
+            return "/api/" + phone + "/o/"
+        },
+        order: function(phone, orderid) {
+            return "/api/" + phone + "/o/" + orderid + "/"
+        },
+        order_by_no: function(phone, orderno) {
+            return "/api/" + phone + "/b/" + orderno + "/"
+        },
 
-    train: function(train) {
-        return "/api/" + train.coachprofile.name + "/b/" + train.date.replace(/-/g, "") + "/" + train.hour + "/"
-    },
-    coachSchedule: function(phone, day) {
-        return "/api/" + phone + "/d/" + day + "/"
-    },
-    book: function(coachname, datestr) {
-        return "/api/" + coachname + "/b/" + datestr + "/"
-    },
-    picFetch: function() {
-        return "/api/p/fetch/"
+        train: function(train) {
+            return "/api/" + train.coachprofile.name + "/b/" + train.date.replace(/-/g, "") + "/" + train.hour + "/"
+        },
+        coachSchedule: function(phone, day) {
+            return "/api/" + phone + "/d/" + day + "/"
+        },
+        book: function(coachname, datestr) {
+            return "/api/" + coachname + "/b/" + datestr + "/"
+        },
+        picFetch: function() {
+            return "/api/p/fetch/"
+        }
     }
-}
-/*
-$$.post(R.wxinit, {
-    url: window.location.href
-}, function(data) {
-    var config = JSON.parse(data)
-    config.jsApiList = ["chooseImage", "uploadImage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-    config.debug = false
-    wx.config(config);
-    wx.ready(function() {
-        console.log("load wechat success")
-            // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
-    });
-    wx.error(function(res) {
-        alert("load wechat sdk fail")
+    /*
+    $$.post(R.wxinit, {
+        url: window.location.href
+    }, function(data) {
+        var config = JSON.parse(data)
+        config.jsApiList = ["chooseImage", "uploadImage"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        config.debug = false
+        wx.config(config);
+        wx.ready(function() {
+            console.log("load wechat success")
+                // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+        });
+        wx.error(function(res) {
+            alert("load wechat sdk fail")
+        })
     })
-})
-*/
+    */
 
 var svc_gym = function() {
     var gym = null
@@ -224,6 +232,85 @@ var svc_gym = function() {
 
 
 app.onPageInit("gymhome", function(page) {
+    var basedate = new Date()
+    var dates = [0, 0, 0, 0, 0, 0, 0]
+    var selected = false
+    var month = false
+
+    function getgymdayfree(tar) {
+        if (moment(tar).format("YYYYMMDD") < moment().format("YYYYMMDD")) {
+            $$(".free-date-detail").html('<p style="text-align:center;font-size:20px;color:#aaa;margin-top:80px">选错日期了，换一天试试</p>')
+            return
+        }
+
+        svc_gym.getFreeCourse(moment(tar).format("YYYYMMDD"), function(data) {
+            $$(".free-date-detail").html("")
+            if (data.length == 0) {
+                $$(".free-date-detail").html('<p style="text-align:center;font-size:20px;color:#aaa;margin-top:80px">今天没有课程，换一天试试</p>')
+                return
+            }
+            $$.each(data, function(i, v) {
+                v.hour_str = TimeMap[v.hour]
+                v.endhour_str = TimeMap[v.hour + 2]
+                v.availiable = true
+                if (v.sealed == 1) {
+                    v.availiable = false
+                }
+                $$(".free-date-detail").append(T.coachfree(v))
+            })
+
+            $$(".book-free-round").on("click", function() {
+                if ($$(this).hasClass("disable")) {
+                    return
+                }
+                freecourse = $$(this).attr("data-freeid")
+                if (freecourse == "-1") {
+                    app.alert("请先选择时段")
+                    return
+                }
+                mainView.router.loadPage(pages.bookfree)
+            })
+        })
+    }
+
+    function renderDate() {
+		$$(".free-date-row").html("")
+        $$("#month-str").html(month)
+        var dayitem = '<div data-daystr="#daystr#" class="col-auto free-date-item"><p class="free-date-weekday">#weekday#</p><p class="free-date-day">#day#</p></div>'
+        for (var i = 0; i < 7; i++) {
+            var weekday = WeekDays[i]
+            var day = moment(dates[i]).format("D")
+            var daystr = moment(dates[i]).format("YYYYMMDD")
+            var stat = ""
+            if (moment().format("YYYYMMDD") > moment(dates[i]).format("YYYYMMDD")) {
+                stat = "disable"
+            }
+            $$(".free-date-row").append(dayitem.replace("#stat#", stat).replace("#weekday#", weekday).replace("#day#", day).replace("#daystr#", daystr))
+        }
+        $$(".free-date-item").on("click", function() {
+            selectDate(moment($$(this).attr("data-daystr")))
+        })
+        selectDate(selected)
+    }
+
+    function selectDate(tar) {
+        if (tar) {
+            selected = tar
+        }
+        $$('.free-date-item').removeClass("active")
+        $$('.free-date-item[data-daystr="' + moment(selected).format("YYYYMMDD") + '"]').addClass("active")
+        getgymdayfree(selected)
+    }
+
+    function fillDateRow() {
+        var curweekday = basedate.getDay()
+        for (var i = 0; i < 7; i++) {
+            dates[i] = basedate.addDays(i - curweekday)
+        }
+        month = moment(basedate).format('MMMM')
+        selected = dates[curweekday]
+        renderDate()
+    }
 
     function getcurrentgym() {
         var currentUrl = window.location.href;
@@ -297,6 +384,7 @@ app.onPageInit("gymhome", function(page) {
             }
             mainView.router.loadPage(pages.bookfree)
         })
+   
 
         /*
 		var w = (screen.width-20)/5
@@ -320,39 +408,55 @@ app.onPageInit("gymhome", function(page) {
 
     function renderCoaches(gym) {
         $$.each(gym.coaches_set, function(i, v) {
-			if(v.can_book){
-            svc_gym.refreshPhoto(v.name, function(data) {
-                v.album = data.results
-                renderCoach(v)
-            })
-			}
+            if (v.can_book) {
+                svc_gym.refreshPhoto(v.name, function(data) {
+                    v.album = data.results
+                    renderCoach(v)
+                })
+            }
         })
     }
 
 
     function renderSwiper(gym) {
-		var pictmp = '<div class="swiper-slide"><img src="##"></div>'
-		$$.each(JSON.parse(gym.imgs),function(i,v){
-			$$("#gym-pics").append(pictmp.replace("##",v))		
-		})
+        var pictmp = '<div><img style="width:100%" src="##"></div>'
+        $$.each(JSON.parse(gym.imgs), function(i, v) {
+			if(i<3){
+            $$("#gym-pics").append(pictmp.replace("##", v))
+			}
+        })
 
+		/*
         var mySwiper = app.swiper('.swiper-container', {
             speed: 400,
             spaceBetween: 0,
             pagination: '.swiper-pagination',
             autoplay: 10000
         });
+		*/
     }
     svc_gym.init(getcurrentgym(), function(gym) {
         renderSwiper(gym)
             //render avatar
         renderCoaches(gym)
+        fillDateRow()
 
         $$("#contact-me").on("click", function() {
             app.closeModal()
             app.alert(gym.phone)
         })
     })
+     function nextweek(e) {
+            basedate = dates[0].addDays(7)
+			fillDateRow()
+        }
+        function prevweek(e) {
+            basedate = dates[0].addDays(-7)
+            fillDateRow()
+        }
+		$$(".prev-week").on("click", prevweek)
+		$$(".next-week").on("click", nextweek)
+
 }).trigger()
 
 app.onPageInit("bookfree", function(page) {
