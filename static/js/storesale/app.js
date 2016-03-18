@@ -40,27 +40,27 @@ var mainView = app.addView('.view-main');
 
 var P = [{
     id: 0,
-    level: "1",
-    subtitle: "Change/改变",
+    level: "改变",
+    subtitle: "Change",
     course_count: 10,
-    off: 9.5,
-    price: 2850,
+    off: 9.3,
+    price: 3000,
     duration: 1
 }, {
     id: 1,
-    level: "2",
-    subtitle: "Habituate/习惯",
+    level: "习惯",
+    subtitle: "Habituate",
     course_count: 20,
-    off: 8.5,
-    price: 5000,
+    off: 8.2,
+    price: 5200,
     duration: 6
 }, {
     id: 2,
-    level: "3",
-    subtitle: "Enjoy/享受",
+    level: "乐享",
+    subtitle: "Enjoy",
     course_count: 40,
-    off: 6.6,
-    price: 8000,
+    off: 7.0,
+    price: 9000,
     duration: 12
 }]
 

@@ -238,13 +238,8 @@ app.onPageInit("gymhome", function(page) {
     var month = false
 
     function getgymdayfree(tar) {
-        if (moment(tar).format("YYYYMMDD") < moment().format("YYYYMMDD")) {
-            $$(".free-date-detail").html('<p style="text-align:center;font-size:20px;color:#aaa;margin-top:80px">选错日期了，换一天试试</p>')
-            return
-        }
-
+        $$(".free-date-detail").html("")
         svc_gym.getFreeCourse(moment(tar).format("YYYYMMDD"), function(data) {
-            $$(".free-date-detail").html("")
             if (data.length == 0) {
                 $$(".free-date-detail").html('<p style="text-align:center;font-size:20px;color:#aaa;margin-top:80px">今天没有课程，换一天试试</p>')
                 return
@@ -256,6 +251,9 @@ app.onPageInit("gymhome", function(page) {
                 if (v.sealed == 1) {
                     v.availiable = false
                 }
+				if (moment(tar).format("YYYYMMDD") < moment().format("YYYYMMDD")) {
+					v.availiable = false
+				}
                 $$(".free-date-detail").append(T.coachfree(v))
             })
             $$(".free-coachavatar").on("click", function() {
