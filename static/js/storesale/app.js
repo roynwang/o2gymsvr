@@ -714,7 +714,7 @@ app.onPageInit("storemanage", function(page) {
                     v.nocustomer = true
                 }
 				v.sexstr = "男"
-				if(v.sex == 0){
+				if(!v.sex){
 					v.sexstr = "女"
 				}
                 $$("#day-free-course").append(T.freecourse(v))
