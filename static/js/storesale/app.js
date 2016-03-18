@@ -713,6 +713,10 @@ app.onPageInit("storemanage", function(page) {
                 if (v.customer == null) {
                     v.nocustomer = true
                 }
+				v.sexstr = "男"
+				if(v.sex == 0){
+					v.sexstr = "女"
+				}
                 $$("#day-free-course").append(T.freecourse(v))
             })
             $$(".cancel-course").on("click", function() {
