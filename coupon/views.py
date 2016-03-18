@@ -13,7 +13,7 @@ class FreeCourseListView(generics.ListCreateAPIView):
 		#parse by date
 		d = self.kwargs.get("date")
 		query_day = d[:4] + "-" + d[4:6] + "-" + d[-2:]
-		return FreeCourse.objects.filter(day=query_day).order_by("hour")
+		return FreeCourse.objects.filter(gym=self.kwargs.get("pk"),day=query_day).order_by("hour")
 
 class CustomerFreeCourseItemView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = FreeCourse.objects.all()
