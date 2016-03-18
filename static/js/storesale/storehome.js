@@ -466,8 +466,8 @@ app.onPageInit("gymhome", function(page) {
         basedate = dates[0].addDays(-7)
         fillDateRow()
     }
-    $$(".prev-week").on("click", prevweek)
-    $$(".next-week").on("click", nextweek)
+    $$(".prev-week-btn").on("click", prevweek)
+    $$(".next-week-btn").on("click", nextweek)
 
 }).trigger()
 
