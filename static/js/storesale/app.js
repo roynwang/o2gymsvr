@@ -777,9 +777,11 @@ app.onPageInit("freecourseform", function(page) {
 			$$("#free_hour").val(),
 			function(){
 				notify("成功","添加免费课程成功")
+				/*
 				setTimeout(function(){
 		            mainView.router.back()
 				}, 2000)
+				*/
 			})
     })
 
