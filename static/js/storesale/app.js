@@ -45,7 +45,7 @@ var P = [{
     course_count: 10,
     off: 9.3,
     price: 3000,
-    duration: 1
+    duration: 2
 }, {
     id: 1,
     level: "习惯",
@@ -53,7 +53,7 @@ var P = [{
     course_count: 20,
     off: 8.2,
     price: 5200,
-    duration: 6
+    duration: 4
 }, {
     id: 2,
     level: "乐享",
@@ -61,7 +61,7 @@ var P = [{
     course_count: 40,
     off: 7.0,
     price: 9000,
-    duration: 12
+    duration: 8
 }]
 
 
