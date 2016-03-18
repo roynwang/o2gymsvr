@@ -259,8 +259,14 @@ app.onPageInit("gymhome", function(page) {
                 $$(".free-date-detail").append(T.coachfree(v))
             })
             $$(".free-coachavatar").on("click", function() {
+                var playerphotos = []
+				var coach = svc_gym.getCoach($$(this).attr("data-coach"))
+                playerphotos.push(coach.avatar)
+                $$.each(coach.album, function(i, v) {
+                    playerphotos.push(v.url)
+                })
                 app.photoBrowser({
-                    photos: [$$(this).attr("src")],
+                    photos: playerphotos,
                     theme: 'dark',
                     ofText: "/",
                     backLinkText: "",
@@ -493,8 +499,8 @@ app.onPageInit("bookfree", function(page) {
             method: "PATCH",
             data: {
                 customer: cp,
-				displayname: $$("#customerdisplayname").val(),
-				sex: $$("#customersex").val()
+                displayname: $$("#customerdisplayname").val(),
+                sex: $$("#customersex").val()
             },
             success: function(data) {
                 app.hidePreloader()
