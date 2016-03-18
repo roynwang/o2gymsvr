@@ -258,6 +258,16 @@ app.onPageInit("gymhome", function(page) {
                 }
                 $$(".free-date-detail").append(T.coachfree(v))
             })
+            $$(".free-coachavatar").on("click", function() {
+                app.photoBrowser({
+                    photos: [$$(this).attr("src")],
+                    theme: 'dark',
+                    ofText: "/",
+                    backLinkText: "",
+                    toolbar: false,
+                    initialSlide: 0
+                }).open();
+            })
 
             $$(".book-free-round").on("click", function() {
                 if ($$(this).hasClass("disable")) {
@@ -274,7 +284,7 @@ app.onPageInit("gymhome", function(page) {
     }
 
     function renderDate() {
-		$$(".free-date-row").html("")
+        $$(".free-date-row").html("")
         $$("#month-str").html(month)
         var dayitem = '<div data-daystr="#daystr#" class="col-auto free-date-item"><p class="free-date-weekday">#weekday#</p><p class="free-date-day">#day#</p></div>'
         for (var i = 0; i < 7; i++) {
@@ -384,7 +394,7 @@ app.onPageInit("gymhome", function(page) {
             }
             mainView.router.loadPage(pages.bookfree)
         })
-   
+
 
         /*
 		var w = (screen.width-20)/5
@@ -421,12 +431,12 @@ app.onPageInit("gymhome", function(page) {
     function renderSwiper(gym) {
         var pictmp = '<div><img style="width:100%" src="##"></div>'
         $$.each(JSON.parse(gym.imgs), function(i, v) {
-			if(i<3){
-            $$("#gym-pics").append(pictmp.replace("##", v))
-			}
+            if (i < 3) {
+                $$("#gym-pics").append(pictmp.replace("##", v))
+            }
         })
 
-		/*
+        /*
         var mySwiper = app.swiper('.swiper-container', {
             speed: 400,
             spaceBetween: 0,
@@ -446,16 +456,18 @@ app.onPageInit("gymhome", function(page) {
             app.alert(gym.phone)
         })
     })
-     function nextweek(e) {
-            basedate = dates[0].addDays(7)
-			fillDateRow()
-        }
-        function prevweek(e) {
-            basedate = dates[0].addDays(-7)
-            fillDateRow()
-        }
-		$$(".prev-week").on("click", prevweek)
-		$$(".next-week").on("click", nextweek)
+
+    function nextweek(e) {
+        basedate = dates[0].addDays(7)
+        fillDateRow()
+    }
+
+    function prevweek(e) {
+        basedate = dates[0].addDays(-7)
+        fillDateRow()
+    }
+    $$(".prev-week").on("click", prevweek)
+    $$(".next-week").on("click", nextweek)
 
 }).trigger()
 
