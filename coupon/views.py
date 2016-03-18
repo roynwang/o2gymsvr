@@ -39,7 +39,7 @@ class FreeCourseItemView(generics.RetrieveUpdateDestroyAPIView):
 		if customer == -1:
 			tar.sealed = 0
 			tar.customer = None
-			tar.displayname = None
+			tar.displayname = ""
 			tar.sex = False
 			tar.save()
 			return Response({'msg':'success'}) 
