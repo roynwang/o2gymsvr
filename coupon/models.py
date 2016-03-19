@@ -1,6 +1,10 @@
 from django.db import models
+from usr.models import *
+from utils import smsutils
 
 # Create your models here.
+TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
+
 
 class FreeCourse(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -17,6 +21,19 @@ class FreeCourse(models.Model):
 	def hasSeat(self):
 		return budget > sealed
 
+	def sendCoachNoti(self):
+		tplid=21767
+		timestr = str(self.day)[5:] + " " + TimeMap[self.hour]
+		print smsutils.sendSMS(self.customer, tplid,",".join([self.displayname,str(self.customer),timestr]))
+		print "coach noti sent"
+
+	def sendCustomerNoti(self):
+		tplid=17152
+		coach = User.objects.get(id=self.coach)
+		timestr = str(self.day)[5:] + " " + TimeMap[self.hour]
+		print smsutils.sendSMS(self.customer, tplid,",".join([coach.displayname,timestr,coach.name,str(4)]))
+		print "customer noti sent"
+
 
 class Coupon(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -29,3 +46,4 @@ class Coupon(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	gym = models.IntegerField()
  	
+		

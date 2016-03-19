@@ -54,6 +54,11 @@ class FreeCourseItemView(generics.RetrieveUpdateDestroyAPIView):
 		tar.displayname = request.data["displayname"]
 		tar.sex = request.data["sex"]
 		tar.save()
+		print "xxxxxxxxxxxxxxxxxxxxx"
+		tar.sendCustomerNoti()
+		tar.sendCoachNoti()
+		#send sms
+		
 		return Response({'msg':'success'}) 
 
 class CouponListView(generics.ListCreateAPIView):	
