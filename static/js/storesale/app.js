@@ -253,7 +253,6 @@ var svc_gym = function() {
 			hour: hour,
 			budget: 1,
 			sealed: 0,
-			displayname: "",
 			gym: gym.id
 		}
         $$.ajax({
