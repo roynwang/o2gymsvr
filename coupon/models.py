@@ -24,7 +24,8 @@ class FreeCourse(models.Model):
 	def sendCoachNoti(self):
 		tplid=21767
 		timestr = str(self.day)[5:] + " " + TimeMap[self.hour]
-		print smsutils.sendSMS(self.customer, tplid,",".join([self.displayname,str(self.customer),timestr]))
+		coach = User.objects.get(id=self.coach)
+		print smsutils.sendSMS(coach.name, tplid,",".join([self.displayname,str(self.customer),timestr]))
 		print "coach noti sent"
 
 	def sendCustomerNoti(self):
