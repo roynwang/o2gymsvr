@@ -750,7 +750,6 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                             that.reload()
                         })
 						*/
-
                 });
         }
         that.cancelbook = function(book) {
@@ -857,7 +856,6 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             if (h == undefined || (h + 1) > TimeMap.length) {
                 return false
             }
-
             for (var i = 0; i < that.tableParams.data.length; i++) {
                 var item = that.tableParams.data[i]
                 if (that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction == "remove" && (item.hour == h || item.hour + 1 == h)) {
@@ -1024,6 +1022,10 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
             if (that.mo.subsidy == undefined) {
                 that.mo.subsidy = 0
             }
+			if (that.mo.product_duration>60){
+                swal("", "请输入正确的有效时间单位(月)，如 12 ", "warning")
+                return false
+			}
             if (that.birthday_str) {
                 that.mo.birthday = that.birthday_str
             }
