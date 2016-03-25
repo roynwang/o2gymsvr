@@ -44,6 +44,10 @@
                             <div>
                             </div>
                         </div>
+                        <div class="row" style="margin:40px">
+                            <p id="coach-introduction-text" style="font-size:18px;color:#666">
+                            </p>
+                        </div>
                         <div class="coach-to-price">
                             <a href="/static/storesale/price.html" style="text-align:center">
                                 <span class="o2-bg-gradient-v2">
@@ -197,29 +201,90 @@
     </div>
 </script>
 <script id="tpl-free-course" type="text/template7">
-	{{#if coachdetail}}
+    {{#if coachdetail}}
     <div class="card">
         <div class="card-content">
             <div class="card-content-inner row">
                 <div class="col-20">
-					<img src="{{coachdetail.avatar}}" style="width:100px;height:100px;">
+                    <img src="{{coachdetail.avatar}}" style="width:100px;height:100px;">
                 </div>
-				<div class="col-20">
+                <div class="col-20">
                     <p>{{coachdetail.displayname}}</p>
                     <p>{{hour_str}}</p>
-				</div>
+                </div>
                 <div class="col-60 theme-gray" style="text-align: right;">
-					{{#if customer}}
-					<p style="padding-right:20px">{{customer}}</p>
-					<p style="padding-right:20px">{{displayname}}/{{sexstr}}</p>
-					{{else}}
-					<p><a data-id="{{id}}" href="#" style="width:120px;float:right;margin-right:10px"class="button button-round cancel-course">取消</a></p>
-					{{/if}}
+                    {{#if customer}}
+                    <p style="padding-right:20px">{{customer}}</p>
+                    <p style="padding-right:20px">{{displayname}}/{{sexstr}}</p>
+                    {{else}}
+                    <p><a data-id="{{id}}" href="#" style="width:120px;float:right;margin-right:10px"
+                        class="button button-round cancel-course">取消</a>
+                    </p>
+                    {{/if}}
                 </div>
             </div>
         </div>
     </div>
-	{{/if}}
+    {{/if}}
+</script>
+<script id="tpl-customers" type="text/template7">
+    <ul style="background:#f1f1f1">
+        {{#each customers}}
+        <li class="item-content customer-item">
+            <div class="item-inner">
+                <div class="item-title" data-phone="{{name}}" data-id="{{id}}">{{displayname}}</div>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</script>
+<script id="tpl-customer-train" type="text/template7">
+    <ul style="background:#f7f7f7">
+        {{#each trains}}
+        <li class="item-content train-date">
+            <div class="item-inner">
+                <div class="item-title" data-date="{{date}}">{{date}}</div>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</script>
+<script id="tpl-train-detail" type="text/template7">
+    <ul>
+        {{#each trains}}
+        <li class="item-content">
+            <div class="item-inner">
+                <div data-group="{{groupid}}" class="item-title row no-gutter" style="width:100%">
+                    <div class="col-auto">{{action_name}}</div>
+                    <div class="col-auto" style="text-align:center">{{strleft}} {{strright}}
+                    </div>
+                </div>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</script>
+<script id="tpl-workout-action" type="text/template7">
+    <ul style="background:#f7f7f7">
+        {{#each trains}}
+        <li class="item-content workout-action-item">
+            <div class="item-inner">
+                <div class="item-title" data-id="{{id}}">{{name}}</div>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</script>
+<script id="tpl-workout-set" type="text/template7">
+    <ul style="background:#f7f7f7">
+        {{#each trains}}
+        <li class="item-content workout-action-item">
+            <div class="item-inner">
+                <div class="item-title" data-id="{{id}}">{{name}}</div>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
 </script>
 <script src="/static/js/qr.min.js"></script>
 <script src="/static/js/storesale/app.js "></script>

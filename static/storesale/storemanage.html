@@ -12,7 +12,7 @@ ass="link">
             <div class="subnavbar">
                 <div class="buttons-row">
                     <a href="#tab1" class="button tab-link active">体验课程</a>
-                    <a href="#tab2" class="button tab-link">Tab 2</a>
+                    <a href="#tab2" class="button tab-link">编制课程</a>
                 </div>
             </div>
         </div>
@@ -21,16 +21,23 @@ ass="link">
         <div class="tabs">
             <div id="tab1" class="tab active">
                 <div class="content-block-title">
-                    <input style="width:140px;border: none;font-size: 20px;margin-left: 100px;color: #666;background:rgba(255,255,255,0)" type="text" placeholder="Your birth date" readonly id="calendar-default">
-					<span style="z-index: -1;font-size: 20px;position: relative;left: -20px;"class="ion-ios-calendar-outline"></span>
-					<a href="/static/storesale/newfreecourse.html" class="button" style="display:inline-block;float:right">+ 添加免费课程</a>
+                    <input style="width:140px;border: none;font-size: 20px;margin-left: 100px;color: #666;background:rgba(255,255,255,0)"
+                    type="text" placeholder="Your birth date" readonly id="calendar-default">
+                    <span style="z-index: -1;font-size: 20px;position: relative;left: -20px;" class="ion-ios-calendar-outline"></span>
+                    <a href="/static/storesale/newfreecourse.html" class="button" style="display:inline-block;float:right">+ 添加免费课程</a>
                 </div>
                 <div class="content-block" id="day-free-course">
                 </div>
             </div>
             <div id="tab2" class="tab">
-                <div class="content-block">
-                    <p>constructing ... ...</p>
+                <div class="row no-gutter">
+                    <div id="customerlist" style="background:#f1f1f1;margin-top:0;padding-top:20px" class="col-20 list-block">
+                    </div>
+                    <div class="col-20
+						list-block"style="background:#f7f7f7;margin-top:0;padding-top:20px"  id="customertrain">
+                    </div>
+                    <div class="col-60 list-block" style="margin-top:0;padding-top:20px" id="customertraindetail">
+                    </div>
                 </div>
             </div>
         </div>

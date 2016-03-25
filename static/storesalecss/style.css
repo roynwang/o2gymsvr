@@ -710,3 +710,8 @@
 .tabbar-label{
 	font-size:14px !important;
 }
+
+#customerlist .item-content.active,
+#customertrain .item-content.active{
+    border-right: 4px solid rgb(55, 194, 219);
+}

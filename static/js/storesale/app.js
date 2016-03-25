@@ -73,7 +73,11 @@ var T = {
     product_course_head: Template7.compile($$("#tpl-product-course-head").html()),
     product_off: Template7.compile($$("#tpl-product-off").html()),
     product_duration: Template7.compile($$("#tpl-product-duration").html()),
-    freecourse: Template7.compile($$("#tpl-free-course").html())
+    freecourse: Template7.compile($$("#tpl-free-course").html()),
+    customers: Template7.compile($$("#tpl-customers").html()),
+    customer_train: Template7.compile($$("#tpl-customer-train").html()),
+    train_detail: Template7.compile($$("#tpl-train-detail").html()),
+    workout_action: Template7.compile($$("#tpl-workout-action").html())
 }
 var R = {
     login: "/api/lg/",
@@ -119,10 +123,33 @@ var R = {
     },
     picFetch: function() {
         return "/api/p/fetch/"
+    },
+    customers: function(coach) {
+        return "/api/" + coach + "/customers/"
+    },
+    customertrain: function(phone) {
+        return "/api/" + phone + "/t/"
+    },
+    traindetail: function(phone, date) {
+        return "/api/" + phone + "/t/" + date + "/"
+    },
+    workout_action: function(coach, workout) {
+        return "/api/" + coach + "/workout/" + workout + "/"
     }
 }
 
 
+
+
+var Actions = {}
+
+function initActions() {
+    $$.each([1,2,3,4,5], function(i,v){
+        $$.getJSON(R.workout_action(Cookies.get("user"),v), function(data) {
+            Actions[v] = data
+        })
+    })
+}
 
 var svc_login = function() {
     function login(name, pwd, onsuccess, onfail) {
@@ -141,6 +168,8 @@ var svc_login = function() {
 
     function refreshToken(onsuccess, afteranimation) {
         var token = Cookies.get("token")
+
+			
         if (!token) {
             setTimeout(function() {
                 $$(".o2-login-form").addClass("o2-login-form-show")
@@ -204,6 +233,8 @@ var svc_usr = function() {
         $$.ajax({
             url: R.user(phone.replace(/ /g, "")),
             success: function(data) {
+
+				initActions()
                 usr = JSON.parse(data)
                 onsuccess(data)
             },
@@ -212,11 +243,26 @@ var svc_usr = function() {
             }
         })
     }
+
+    function getCustomer(coach, onsuccess) {
+        $$.getJSON(R.customers(coach), onsuccess)
+    }
+
+    function getTrainDetail(phone, date, onsuccess) {
+        $$.getJSON(R.traindetail(phone, date.replace(/-/g, "")), onsuccess)
+    }
+
+    function getCustomerTrain(phone, onsuccess) {
+        $$.getJSON(R.customertrain(phone), onsuccess)
+    }
     return {
         init: init,
         user: function() {
             return usr
-        }
+        },
+        getCustomer: getCustomer,
+        getCustomerTrain: getCustomerTrain,
+        getTrainDetail: getTrainDetail
     }
 }()
 
@@ -247,14 +293,14 @@ var svc_gym = function() {
     }
 
     function newFreeCourse(coachphone, date, hour, onsuccess) {
-		var pdata = {
-			coach: getCoachId(coachphone),
-			day: date.format("YYYY-MM-DD"),
-			hour: hour,
-			budget: 1,
-			sealed: 0,
-			gym: gym.id
-		}
+        var pdata = {
+            coach: getCoachId(coachphone),
+            day: date.format("YYYY-MM-DD"),
+            hour: hour,
+            budget: 1,
+            sealed: 0,
+            gym: gym.id
+        }
         $$.ajax({
             url: R.gymfreecourse(gym.id, date.format("YYYYMMDD")),
             method: "POST",
@@ -304,7 +350,7 @@ var svc_gym = function() {
         init: init,
         getFreeCourse: getFreeCourse,
         cancelFreeCourse: cancelFreeCourse,
-		newFreeCourse: newFreeCourse
+        newFreeCourse: newFreeCourse
     }
 }()
 
@@ -356,10 +402,12 @@ app.onPageInit("home", function(page) {
             if (v.name == phone && v.album) {
                 draw(v.album)
                 found = true
+				$$("#coach-introduction-text").html(v.introduction)
             }
         })
         if (!found) {
             svc_gym.refreshPhoto(phone, function(resp) {
+
                 draw(resp.results)
             })
         }
@@ -368,13 +416,13 @@ app.onPageInit("home", function(page) {
 
     function renderCoachesAvatar(coaches) {
         $$.each(coaches, function(i, v) {
-				if(v.can_book){
-                var node = $$(T.coach_avatar(v))
-                node.on("click", function() {
-                    swithCoach(v.name)
-                })
-                $$(".coach-list").prepend(node)
-				}
+                if (v.can_book) {
+                    var node = $$(T.coach_avatar(v))
+                    node.on("click", function() {
+                        swithCoach(v.name)
+                    })
+                    $$(".coach-list").prepend(node)
+                }
             })
             //$$(".coach-list .coach-item-new:nth-of-type(1)").addClass("active")
         swithCoach(coaches[0].name)
@@ -382,10 +430,10 @@ app.onPageInit("home", function(page) {
     svc_login.refreshToken(function() {
         svc_usr.init(Cookies.get("user"), function() {
                 isBusy = false
-				var targym = svc_usr.user().gym_id[0]
-				if(!targym){
-					targym = JSON.parse(svc_usr.user().corps)[0]
-				}
+                var targym = svc_usr.user().gym_id[0]
+                if (!targym) {
+                    targym = JSON.parse(svc_usr.user().corps)[0]
+                }
                 svc_gym.init(svc_usr.user().gym_id[0], function(gym) {
                     //render avatar
                     renderCoachesAvatar(gym.coaches_set)
@@ -598,7 +646,7 @@ app.onPageInit("customerform", function(page) {
         that.mo.sex = '0'
         that.mo.age = undefined
         that.mo.subsidy = undefined
-		that.mo.advance = true
+        that.mo.advance = true
 
         that.birthday_str = $$("#customerbirtyday").val()
         that.mo.customer_displayname = $$("#customername").val()
@@ -606,7 +654,7 @@ app.onPageInit("customerform", function(page) {
         that.mo.sex = $$("#customersex").val()
         that.mo.product_price = currentProduct.price
         that.mo.product_amount = currentProduct.course_count
-        that.mo.product_introduction = "氧气健身: 私教课 " +  currentProduct.course_count + "节"
+        that.mo.product_introduction = "氧气健身: 私教课 " + currentProduct.course_count + "节"
     }
 
     $$("#alipay-submit").on("click", function() {
@@ -677,8 +725,9 @@ app.onPageInit("alipayqr", function(page) {
             })
     })
 })
-app.onPageAfterAnimation("storemanage", function(page){
+app.onPageAfterAnimation("storemanage", function(page) {
     app.closePanel()
+        /*
     app.modalPassword('请再次输入密码', function(password) {
         svc_login.login(Cookies.get("user"), password, function() {
             notify("成功", "密码验证通过")
@@ -687,6 +736,7 @@ app.onPageAfterAnimation("storemanage", function(page){
             mainView.router.back()
         })
     });
+	*/
 })
 app.onPageInit("storemanage", function(page) {
     var currentdate = moment(new Date())
@@ -695,6 +745,61 @@ app.onPageInit("storemanage", function(page) {
         svc_gym.cancelFreeCourse(cid, function() {
             notify("成功", "免费课程已取消")
             refresh()
+        })
+    }
+
+    function refreshCustomers() {
+        var coach = Cookies.get("user")
+        svc_usr.getCustomer(coach, function(data) {
+            $$("#customerlist").html("")
+            $$("#customerlist").append(T.customers({
+                customers: data
+            }))
+            $$("#customerlist .customer-item").on("click", function() {
+                $$("#customertraindetail").html("")
+                var phone = $$(this).find(".item-title").attr("data-phone")
+                $$("#customerlist .customer-item").removeClass("active")
+                renderCustomerTrain(phone)
+                $$(this).addClass("active")
+            })
+        })
+    }
+
+    function renderCustomerTrain(customer) {
+        svc_usr.getCustomerTrain(customer, function(data) {
+            $$("#customertrain").html("")
+            $$("#customertrain").append(T.customer_train({
+                trains: data
+            }))
+            var tpl = '<li class="item-content"><div><a class="button" href="/static/storesale/newtrain.html">添加</a></div></li>'
+            $$("#customertrain ul").prepend(tpl)
+            $$("#customertrain .train-date").on("click", function() {
+                $$("#customertrain .train-date").removeClass("active")
+                var date = $$(this).find(".item-title").attr("data-date")
+                var phone = $$(".customer-item.active .item-title").attr("data-phone")
+                renderTrainDetail(phone, date)
+                $$(this).addClass("active")
+            })
+        })
+    }
+
+    function renderTrainDetail(customer, date) {
+        svc_usr.getTrainDetail(customer, date, function(data) {
+            $$("#customertraindetail").html("")
+            $$.each(data, function(i, v) {
+                var units = v.units.split("|")
+                v.strleft = v.weight + units[0]
+                v.strright = ""
+                if (units.length == 2) {
+                    v.strright = "*" + v.repeattimes + units[1]
+                }
+                if (i > 0 && v.groupid == data[i - 1].groupid) {
+                    v.action_name = ""
+                }
+            })
+            $$("#customertraindetail").append(T.train_detail({
+                trains: data
+            }))
         })
     }
 
@@ -713,10 +818,10 @@ app.onPageInit("storemanage", function(page) {
                 if (v.customer == null) {
                     v.nocustomer = true
                 }
-				v.sexstr = "男"
-				if(!v.sex){
-					v.sexstr = "女"
-				}
+                v.sexstr = "男"
+                if (!v.sex) {
+                    v.sexstr = "女"
+                }
                 $$("#day-free-course").append(T.freecourse(v))
             })
             $$(".cancel-course").on("click", function() {
@@ -737,6 +842,7 @@ app.onPageInit("storemanage", function(page) {
         }
     });
     refresh()
+    refreshCustomers()
 })
 
 app.onPageInit("freecourseform", function(page) {
@@ -776,17 +882,17 @@ app.onPageInit("freecourseform", function(page) {
         })
     }
     $$("#free-course-submit").on("click", function() {
-		svc_gym.newFreeCourse($$("#free_coach").val(),
-			moment($$("#free-course-date").val()), 
-			$$("#free_hour").val(),
-			function(){
-				notify("成功","添加免费课程成功")
-				/*
+        svc_gym.newFreeCourse($$("#free_coach").val(),
+            moment($$("#free-course-date").val()),
+            $$("#free_hour").val(),
+            function() {
+                notify("成功", "添加免费课程成功")
+                    /*
 				setTimeout(function(){
 		            mainView.router.back()
 				}, 2000)
 				*/
-			})
+            })
     })
 
     $$("#free_coach").on("change", function() {
@@ -795,4 +901,13 @@ app.onPageInit("freecourseform", function(page) {
 
     rendercoach()
 
+})
+
+app.onPageInit("newtrain", function(page) {
+    $$("#workout-cate .item-content").on("click", function() {
+        var ai = $$(this).attr("data-id")
+        $$("#workout-action").html("")
+        $$("#workout-action").append(T.workout_action({trains:Actions[ai]}))
+
+    })
 })
