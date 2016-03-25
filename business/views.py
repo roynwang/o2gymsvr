@@ -253,6 +253,7 @@ class TrainDateView(generics.ListAPIView):
 		month = month % 12 + 1
 		day = min(sourcedate.day,calendar.monthrange(year,month)[1])
 		return datetime.date(year,month,day)
+	'''
 	def list(self, request, *args, **kwargs):
 		#1. set start date
 		month = datetime.date.today()
@@ -270,9 +271,9 @@ class TrainDateView(generics.ListAPIView):
 			"previous": baseUrl + "?month="+prevstart,
 			"results": serializer.data
 			})
-
-		def get_queryset(self):
-			return Train.objects.filter(name=self.kwargs.get("name")).values('date').distinct().order_by('-date')
+	'''
+	def get_queryset(self):
+		return Train.objects.filter(name=self.kwargs.get("name")).values('date').distinct().order_by('-date')
 
 @permission_classes((AllowAny, ))
 class TrainByDateView(ListBulkCreateAPIView):
@@ -282,7 +283,7 @@ class TrainByDateView(ListBulkCreateAPIView):
 		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
 		date_str = datetime.datetime.strftime(date,"%Y-%m-%d")
 		name = self.kwargs.get("name")
-		return Train.objects.filter(date=date_str, name=name)
+		return Train.objects.filter(date=date_str, name=name).order_by("groupid")
 
 	def create(self, request, *args, **kwargs):
 		bulk = isinstance(request.DATA, list)
@@ -307,6 +308,11 @@ class TrainByScheduleView(generics.ListAPIView):
 		#date_str = datetime.datetime.strftime(date,"%Y-%m-%d")
 		name = self.kwargs.get("name")
 		return Train.objects.filter(name=name,  course=self.kwargs.get("schedule"))
+
+class TrainItemView(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Train.objects.all()
+	serializer_class = TrainSerializer
+
 
 #class NearByView(generics.ListAPIView):
 

@@ -31,6 +31,7 @@ urlpatterns = patterns('',
 		url(r'^api/e/$',AllEvalOptionsView.as_view()),
 
 		#train
+		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/t/(?P<date>[0-9]{8})/a/(?P<pk>[0-9]+)/$',TrainItemView.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/t/$',TrainDateView.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/t/(?P<date>[0-9]{8})/$',TrainByDateView.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/t/(?P<date>[0-9]{8})/(?P<schedule>[0-9]+)/$',TrainByScheduleView.as_view()),
