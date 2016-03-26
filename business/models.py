@@ -58,7 +58,9 @@ class Schedule(models.Model):
 	def __unicode__(self):
 		return str(self.date) + str(self.hour)
 	def sendSms(self):
-		return smsutils.sendBookNotification(self)
+		if self.order.gym.id != 20:
+			return smsutils.sendBookNotification(self)
+		return True
 	def doneBook(self):
 		self.done = True
 		self.coach.course_count += 1
