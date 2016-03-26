@@ -90,9 +90,11 @@ class OrderItemById(generics.RetrieveUpdateDestroyAPIView):
 		if "amount" in request.data:
 			order.product.price = request.data["amount"]
 			order.product.save()
+		'''
 		if "coach" in request. data:
 			order.product.coach = get_object_or_404(User, id=request.data["coach"])
 			order.product.save()
+		'''
 		return ret
 
 

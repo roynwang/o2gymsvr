@@ -120,6 +120,9 @@ class ScheduleList(generics.ListCreateAPIView):
 				date= datetime.datetime.strptime(request.data["date"],"%Y-%m-%d").date(),
 				hour=request.data["hour"],
 				order=order)
+		if "done" in request.data:
+			book.done = request.data["done"]
+			book.save()
 		sl = ScheduleSerializer(instance=book)
 		print sl.data
 		print request.data["order"]

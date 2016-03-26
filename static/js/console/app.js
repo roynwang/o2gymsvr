@@ -238,7 +238,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                         return
                     }
                     var pdata = {
-                        coach: coach.id
+                        coach: coach.name
                     }
                     Restangular.one("api", $stateParams.customername)
                         .one("o", c.id)
@@ -1025,6 +1025,9 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
 			if (that.mo.product_duration>60){
                 swal("", "请输入正确的有效时间单位(月)，如 12 ", "warning")
                 return false
+			}
+			if (that.mo.product_duration == ''){
+				that.mo.product_duration = 0
 			}
             if (that.birthday_str) {
                 that.mo.birthday = that.birthday_str

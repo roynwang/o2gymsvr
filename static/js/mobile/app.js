@@ -1652,9 +1652,12 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
                 .one("o")
                 .get()
                 .then(function(data) {
+						that.orderlist = data.results
+						/*
                         that.orderlist = _.where(data.results, {
                             coach: $.cookie("user")
                         })
+						*/
                     },
                     function(data) {})
         }
