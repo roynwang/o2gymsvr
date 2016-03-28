@@ -566,16 +566,17 @@ app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
 
                     that.endload()
                     $.cookie("token", data.token, {
-                        path: '/'
+                        path: '/',
+						expires: 365
                     })
                     $.cookie("user", that.user.name, {
-                        path: '/'
+                        path: '/',
+						expires: 365
                     })
                     $usersvc.getuser(that.user.name, false, trans)
                 },
                 function(data) {
                     that.loading = false
-
                     that.endload()
                     that.errmsg = "登录失败"
                 })
@@ -616,10 +617,12 @@ app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
                     that.loading = false
                     that.endload()
                     $.cookie("token", data.token, {
-                        path: '/'
+                        path: '/',
+						expires: 365
                     })
                     $.cookie("user", that.user.name, {
-                        path: '/'
+                        path: '/',
+						expires: 365
                     })
                     $usersvc.getuser(that.user.name, false, trans)
                 },
