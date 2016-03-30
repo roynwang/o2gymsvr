@@ -320,6 +320,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                         if (eval(item.complete_status) == 0) {
                             item["removable"] = true
                         }
+						item["price"] = Math.ceil(item.amount/item.course_count)
                     })
                     that.tableParams = new NgTableParams({
                         count: 100,

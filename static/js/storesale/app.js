@@ -77,7 +77,8 @@ var T = {
     customers: Template7.compile($$("#tpl-customers").html()),
     customer_train: Template7.compile($$("#tpl-customer-train").html()),
     train_detail: Template7.compile($$("#tpl-train-detail").html()),
-    workout_action: Template7.compile($$("#tpl-workout-action").html())
+    workout_action: Template7.compile($$("#tpl-workout-action").html()),
+	plan_detail: Template7.compile($$("#tpl-plan-detail").html())
 }
 var R = {
     login: "/api/lg/",
@@ -904,10 +905,19 @@ app.onPageInit("freecourseform", function(page) {
 })
 
 app.onPageInit("newtrain", function(page) {
+	var plan = []
+	function renderPlan(){
+		$$("#plan-detail").html("")
+		$$("#plan-detail").append(T.plan_detail({trains:plan}))
+	}
     $$("#workout-cate .item-content").on("click", function() {
         var ai = $$(this).attr("data-id")
         $$("#workout-action").html("")
-        $$("#workout-action").append(T.workout_action({trains:Actions[ai]}))
-
+        $$("#workout-action").append(T.workout_action({cate:ai, trains:Actions[ai]}))
+		$$("#workout-action .workout-action-item").on("click",function(){
+			var i = $$(this).attr("data-id")
+			plan.push(Actions[ai][i])
+			renderPlan()
+		})
     })
 })

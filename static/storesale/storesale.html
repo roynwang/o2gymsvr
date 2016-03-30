@@ -267,9 +267,9 @@
 <script id="tpl-workout-action" type="text/template7">
     <ul style="background:#f7f7f7">
         {{#each trains}}
-        <li class="item-content workout-action-item">
+        <li data-id="{{id}}" class="item-content workout-action-item">
             <div class="item-inner">
-                <div class="item-title" data-id="{{id}}">{{name}}</div>
+                <div class="item-title" >{{name}}</div>
             </div>
         </li>
         {{/each}}
@@ -278,9 +278,20 @@
 <script id="tpl-workout-set" type="text/template7">
     <ul style="background:#f7f7f7">
         {{#each trains}}
-        <li class="item-content workout-action-item">
+        <li data-id="{{id}}" class="item-content workout-action-item">
             <div class="item-inner">
-                <div class="item-title" data-id="{{id}}">{{name}}</div>
+                <div class="item-title" >{{name}}</div>
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+</script>
+<script id="tpl-plan-detail" type="text/template7">
+    <ul style="background:#f7f7f7">
+        {{#each trains}}
+		<li data-cate={{cate}} data-id="{{id}}" class="item-content plan-detail-item">
+            <div class="item-inner">
+                <div class="item-title" >{{name}}</div>
             </div>
         </li>
         {{/each}}

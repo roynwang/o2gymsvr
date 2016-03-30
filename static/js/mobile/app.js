@@ -1704,6 +1704,13 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
 
         function validate() {
             var data = that.mo
+			if (that.mo.product_duration>60){
+                swal("", "请输入正确的有效时间单位(月)，如 12 ", "warning")
+                return false
+			}
+			if(that.mo.product_duration == ""){
+				that.mo.product_duration = 0
+			}
             if (that.mo.customer_phone.toString().length != 11) {
                 swal("", "请输入正确的11位电话号码", "warning")
                 return false
