@@ -242,8 +242,8 @@ class InCome(APIView):
 			start = add_months(end, -1)
 		#end = end + datetime.timedelta(days=1)
 		print start
-		print end
-		orders = usr.income_orders.filter(paidtime__range=[start,end])
+		print end + datetime.timedelta(hours=24)
+		orders = usr.income_orders.filter(paidtime__range=[start,end+datetime.timedelta(hours=24)])
 
 		sold = 0
 		sold_count = 0
