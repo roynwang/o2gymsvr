@@ -55,18 +55,16 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 		#return get_object_or_404(Schedule,coach=coach,date=date_str, hour=hour)
 
 	def partial_update(self, request, *args, **kwargs):
-		print request.DATA
 		ret = super(ScheduleItem, self).partial_update(request, args,kwargs)
-		if 'rate' in request.DATA:
+		if 'rate' in request.data:
 			print "rating ... ..."
-			print request.DATA
 			coach = self.get_object().coach
 			print coach
 			#coach = get_object_or_404(User, order.coach.name)
 			coach.rate += request.DATA["rate"]
 			coach.save()
 			print "xxxxxxxxxxxxxxx"
-		if "order" in request.DATA:
+		if "order" in request.data:
 			self.get_object().doneBook()
 		return ret
 
