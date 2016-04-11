@@ -24,6 +24,8 @@ class FreeCourse(models.Model):
 		return budget > sealed
 
 	def sendCoachNoti(self):
+		if self.coach == 0:
+			return
 		tplid=21767
 		timestr = str(self.day)[5:] + " " + TimeMap[self.hour]
 		coach = User.objects.get(id=self.coach)
@@ -31,6 +33,8 @@ class FreeCourse(models.Model):
 		print "coach noti sent"
 
 	def sendCustomerNoti(self):
+		if self.coach == 0:
+			return
 		tplid=17152
 		coach = User.objects.get(id=self.coach)
 		timestr = str(self.day)[5:] + " " + TimeMap[self.hour]
