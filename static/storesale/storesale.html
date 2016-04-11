@@ -201,15 +201,14 @@
     </div>
 </script>
 <script id="tpl-free-course" type="text/template7">
-    {{#if coachdetail}}
     <div class="card">
         <div class="card-content">
             <div class="card-content-inner row">
                 <div class="col-20">
-                    <img src="{{coachdetail.avatar}}" style="width:100px;height:100px;">
+                    <img src="{{pic}}" style="width:100px;height:100px;">
                 </div>
                 <div class="col-20">
-                    <p>{{coachdetail.displayname}}</p>
+                    <p>{{title}}</p>
                     <p>{{hour_str}}</p>
                 </div>
                 <div class="col-60 theme-gray" style="text-align: right;">
@@ -225,7 +224,6 @@
             </div>
         </div>
     </div>
-    {{/if}}
 </script>
 <script id="tpl-customers" type="text/template7">
     <ul style="background:#f1f1f1">

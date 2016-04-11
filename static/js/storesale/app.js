@@ -829,6 +829,13 @@ app.onPageInit("storemanage", function(page) {
                 if (!v.sex) {
                     v.sexstr = "女"
                 }
+				if (v.coachdetail == 0){
+					v.title = "无教练锻炼"
+					v.pic = JSON.parse(svc_gym.gym().imgs)[0]
+				} else {
+					v.title = v.coachdetail.displayname
+					v.pic = v.coachdetail.avatar
+				}
                 $$("#day-free-course").append(T.freecourse(v))
             })
             $$(".cancel-course").on("click", function() {
