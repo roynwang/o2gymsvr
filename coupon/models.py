@@ -17,6 +17,8 @@ class FreeCourse(models.Model):
 	gym = models.IntegerField()
 	displayname = models.CharField(max_length=32,null=True, blank=True)
 	sex = models.BooleanField(default=False)
+	coupon = models.CharField(max_length=256, null=True, blank=True)
+	badge = models.CharField(max_length=256, null=True, blank=True)
 
 	def hasSeat(self):
 		return budget > sealed

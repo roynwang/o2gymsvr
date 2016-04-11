@@ -78,7 +78,7 @@ var T = {
     customer_train: Template7.compile($$("#tpl-customer-train").html()),
     train_detail: Template7.compile($$("#tpl-train-detail").html()),
     workout_action: Template7.compile($$("#tpl-workout-action").html()),
-	plan_detail: Template7.compile($$("#tpl-plan-detail").html())
+    plan_detail: Template7.compile($$("#tpl-plan-detail").html())
 }
 var R = {
     login: "/api/lg/",
@@ -145,8 +145,8 @@ var R = {
 var Actions = {}
 
 function initActions() {
-    $$.each([1,2,3,4,5], function(i,v){
-        $$.getJSON(R.workout_action(Cookies.get("user"),v), function(data) {
+    $$.each([1, 2, 3, 4, 5], function(i, v) {
+        $$.getJSON(R.workout_action(Cookies.get("user"), v), function(data) {
             Actions[v] = data
         })
     })
@@ -170,7 +170,7 @@ var svc_login = function() {
     function refreshToken(onsuccess, afteranimation) {
         var token = Cookies.get("token")
 
-			
+
         if (!token) {
             setTimeout(function() {
                 $$(".o2-login-form").addClass("o2-login-form-show")
@@ -235,7 +235,7 @@ var svc_usr = function() {
             url: R.user(phone.replace(/ /g, "")),
             success: function(data) {
 
-				initActions()
+                initActions()
                 usr = JSON.parse(data)
                 onsuccess(data)
             },
@@ -275,6 +275,7 @@ var svc_gym = function() {
         $$.getJSON(R.gym(gymid), function(data) {
             gym = data
             onsuccess(gym)
+            coaches = []
             $$.each(gym.coaches_set, function(i, v) {
                 coaches.push(v)
                 refreshPhoto(v.name, function(data) {
@@ -285,6 +286,9 @@ var svc_gym = function() {
     }
 
     function getCoachId(phone) {
+		if(phone == '0'){
+			return 0
+		}
         for (var i = 0; i < coaches.length; i++) {
             if (coaches[i].name == phone) {
                 return coaches[i].id
@@ -293,14 +297,16 @@ var svc_gym = function() {
         return false
     }
 
-    function newFreeCourse(coachphone, date, hour, onsuccess) {
+    function newFreeCourse(coachphone, date, hour, coupon, badge, onsuccess) {
         var pdata = {
             coach: getCoachId(coachphone),
             day: date.format("YYYY-MM-DD"),
             hour: hour,
             budget: 1,
             sealed: 0,
-            gym: gym.id
+            gym: gym.id,
+            coupon: coupon.toLowerCase(),
+            badge: badge
         }
         $$.ajax({
             url: R.gymfreecourse(gym.id, date.format("YYYYMMDD")),
@@ -403,7 +409,7 @@ app.onPageInit("home", function(page) {
             if (v.name == phone && v.album) {
                 draw(v.album)
                 found = true
-				$$("#coach-introduction-text").html(v.introduction)
+                $$("#coach-introduction-text").html(v.introduction)
             }
         })
         if (!found) {
@@ -846,6 +852,7 @@ app.onPageInit("storemanage", function(page) {
     refreshCustomers()
 })
 
+
 app.onPageInit("freecourseform", function(page) {
     var currentdate = moment(new Date())
     var calendarDefault = app.calendar({
@@ -858,8 +865,9 @@ app.onPageInit("freecourseform", function(page) {
     });
 
     function rendercoach() {
-        $$("#free_coach").html("")
+        $$(".free_coach").html("")
         var tmpl = '<option value="#phone#">#name#</option>'
+        $$("#free_coach").append('<option value=0>无教练</option>')
         $$.each(svc_gym.coaches(), function(i, v) {
             $$("#free_coach").append(tmpl.replace("#phone#", v.name).replace("#name#", v.displayname))
         })
@@ -874,18 +882,28 @@ app.onPageInit("freecourseform", function(page) {
             currentdate = date
         }
         var coach = $$("#free_coach").val()
-        $$.getJSON(R.coachSchedule(coach, date.format("YYYYMMDD")), function(resp) {
-            $$("#free_hour").html("")
+        if (coach == "0") {
             var tmpl = '<option value="#hour#">#hour_str#</option>'
-            $$.each(resp.availiable, function(i, v) {
-                $$("#free_hour").append(tmpl.replace("#hour#", v).replace("#hour_str#", TimeMap[v]))
+            $$("#free_hour").html("")
+            $$.each(TimeMap, function(i, v) {
+                $$("#free_hour").append(tmpl.replace("#hour#", i).replace("#hour_str#", v))
             })
-        })
+        } else {
+            $$.getJSON(R.coachSchedule(coach, date.format("YYYYMMDD")), function(resp) {
+                $$("#free_hour").html("")
+                var tmpl = '<option value="#hour#">#hour_str#</option>'
+                $$.each(resp.availiable, function(i, v) {
+                    $$("#free_hour").append(tmpl.replace("#hour#", v).replace("#hour_str#", TimeMap[v]))
+                })
+            })
+        }
     }
     $$("#free-course-submit").on("click", function() {
         svc_gym.newFreeCourse($$("#free_coach").val(),
             moment($$("#free-course-date").val()),
             $$("#free_hour").val(),
+            $$("#coupon").val(),
+            $$("#badge").val(),
             function() {
                 notify("成功", "添加免费课程成功")
                     /*
@@ -905,19 +923,25 @@ app.onPageInit("freecourseform", function(page) {
 })
 
 app.onPageInit("newtrain", function(page) {
-	var plan = []
-	function renderPlan(){
-		$$("#plan-detail").html("")
-		$$("#plan-detail").append(T.plan_detail({trains:plan}))
-	}
+    var plan = []
+
+    function renderPlan() {
+        $$("#plan-detail").html("")
+        $$("#plan-detail").append(T.plan_detail({
+            trains: plan
+        }))
+    }
     $$("#workout-cate .item-content").on("click", function() {
         var ai = $$(this).attr("data-id")
         $$("#workout-action").html("")
-        $$("#workout-action").append(T.workout_action({cate:ai, trains:Actions[ai]}))
-		$$("#workout-action .workout-action-item").on("click",function(){
-			var i = $$(this).attr("data-id")
-			plan.push(Actions[ai][i])
-			renderPlan()
-		})
+        $$("#workout-action").append(T.workout_action({
+            cate: ai,
+            trains: Actions[ai]
+        }))
+        $$("#workout-action .workout-action-item").on("click", function() {
+            var i = $$(this).attr("data-id")
+            plan.push(Actions[ai][i])
+            renderPlan()
+        })
     })
 })

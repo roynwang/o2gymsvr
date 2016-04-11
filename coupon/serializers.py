@@ -7,6 +7,8 @@ class FreeCourseSerializer(serializers.ModelSerializer):
 	coachdetail = serializers.SerializerMethodField()
 	#customerdetail = serializers.SerializerMethodField()
 	def get_coachdetail(self,obj):
+		if obj.coach == 0:
+			return 0
 		c = User.objects.get(id=obj.coach)
 		s = CoachSerializer(c)
 		return s.data

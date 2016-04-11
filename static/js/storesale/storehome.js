@@ -10,6 +10,7 @@ String.prototype.fixSize = function(w, h) {
 }
 
 var freecourse = ""
+var showcoupon = ""
 var currentCoach = ""
 
 var WeekDays = ["日", "一", "二", "三", "四", "五", "六"]
@@ -254,6 +255,16 @@ app.onPageInit("gymhome", function(page) {
 				if (moment(tar).format("YYYYMMDD") < moment().format("YYYYMMDD")) {
 					v.availiable = false
 				}
+				if (v.coupon){
+					v.coupon = true
+				}
+				if (v.coachdetail == 0){
+					v.title = "无教练锻炼"
+					v.pic = JSON.parse(svc_gym.gym().imgs)[0]
+				} else {
+					v.title = v.coachdetail.displayname
+					v.pic = v.coachdetail.avatar
+				}
                 $$(".free-date-detail").append(T.coachfree(v))
             })
             $$(".free-coachavatar").on("click", function() {
@@ -278,6 +289,7 @@ app.onPageInit("gymhome", function(page) {
                     return
                 }
                 freecourse = $$(this).attr("data-freeid")
+            	showcoupon = $$(this).attr("data-free-coupon")
                 if (freecourse == "-1") {
                     app.alert("请先选择时段")
                     return
@@ -392,6 +404,7 @@ app.onPageInit("gymhome", function(page) {
         $$('#book-free-' + coach.name).on("click", function() {
             //TODO
             freecourse = $$("#free-" + coach.name).attr("data-course")
+
             if (freecourse == "-1") {
                 app.alert("请先选择时段")
                 return
@@ -479,6 +492,10 @@ app.onPageInit("bookfree", function(page) {
     setTimeout(function() {
         app.alert("每个人只有一次免费体验的机会，并且你约了别人就不能约了。所以当你不能来的时候请及时在主页右上角菜单中取消预约。")
     }, 1000)
+	if(!showcoupon){
+		$$("#free-coupon-input").hide()
+	}
+
     $$("#book-free-submit").on("click", function() {
         var cid = freecourse
         var cp = $$("#customerphone").val()
@@ -498,7 +515,8 @@ app.onPageInit("bookfree", function(page) {
             data: {
                 customer: cp,
                 displayname: $$("#customerdisplayname").val(),
-                sex: $$("#customersex").val()
+                sex: $$("#customersex").val(),
+				coupon: $$("#customercoupon").val().toLowerCase()
             },
             success: function(data) {
                 app.hidePreloader()
@@ -511,6 +529,10 @@ app.onPageInit("bookfree", function(page) {
                     app.alert("已经被别人秒掉了，下次要手快哦!")
                     return
                 }
+				if (resp.error == "coupon") {
+                    app.alert("优惠码错误")
+                    return
+				}
                 app.alert("预约成功，请准时前来。如有变更请及时取消。", function() {
                     mainView.router.back()
                 })

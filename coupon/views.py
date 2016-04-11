@@ -49,6 +49,9 @@ class FreeCourseItemView(generics.RetrieveUpdateDestroyAPIView):
 		found = FreeCourse.objects.filter(customer=customer).count()
 		if found:
 			return Response({"error":"existed"})
+		if tar.coupon != None and tar.coupon != "" and tar.coupon != request.data["coupon"]:
+			return Response({"error":"coupon"})
+		
 		tar.customer = customer
 		tar.sealed = 1
 		tar.displayname = request.data["displayname"]

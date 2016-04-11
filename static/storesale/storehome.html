@@ -31,7 +31,7 @@
                     <div class="toolbar-inner">
                         <a href="#tab0" class="tab-link active">
                             <i class="ion-ios-play-outline" style="font-size: 19px;"></i>
-                            <span class="tabbar-label">0元抢课</span>
+                            <span class="tabbar-label">0元锻炼</span>
                         </a>
                         <a href="#tab1" class="tab-link">
                             <i class="ion-ios-bolt-outline" style="font-size: 19px;"></i>
@@ -122,15 +122,19 @@
         <div class="card-content" style="box-shadow: 0 1px 10px rgba(0, 0, 0, .1);margin-bottom:20px">
             <div class="card-content-inner row no-gutter" style="padding:10px 15px">
                 <div class="col-25">
-					<img class="free-coachavatar" data-coach="{{coachdetail.name}}"src="{{coachdetail.avatar}}" style="border-radius:6px; width:85px;height:85px;">
+					<img class="free-coachavatar" data-coach="{{coachdetail.name}}" src="{{pic}}" style="border-radius:6px; width:85px;height:85px;">
                 </div>
-                <div class="col-40">
-                    <p style="margin-top:0;color:#777;font-size:20px;margin-bottom:10px;">{{coachdetail.displayname}}</p>
+                <div class="col-50">
+                    <p style="margin-top:0;color:#777;font-size:20px;margin-bottom:10px;">{{title}}
+                    	{{#if badge}}
+						<span class="free-course-badge">{{badge}}</span>
+                    	{{/if}}
+					</p>
                     <p style="margin-top:5px;color:#999;font-size:16px">{{hour_str}} ~ {{endhour_str}}</p>
                 </div>
                 <div class="col-25">
                     {{#if availiable}}
-                    <a class="button book-free-round" data-freeid={{id}}>约</a>
+                    <a class="button book-free-round" data-free-coupon="{{coupon}}" data-freeid={{id}}>约</a>
                     {{else}}
                     <a class="button book-free-round disable">约</a>
                     {{/if}}
