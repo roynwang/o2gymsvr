@@ -147,7 +147,15 @@ var Actions = {}
 function initActions() {
     $$.each([1, 2, 3, 4, 5], function(i, v) {
         $$.getJSON(R.workout_action(Cookies.get("user"), v), function(data) {
-            Actions[v] = data
+			$$.each(data, function(i,v){
+				var units = v.units.split("|")
+				v.unit0 = units[0]
+				v.unit1 = ""
+				if(units.length>1){
+					v.unit1 = v.units[1] 
+				}
+			})
+	        Actions[v] = data
         })
     })
 }
@@ -286,9 +294,9 @@ var svc_gym = function() {
     }
 
     function getCoachId(phone) {
-		if(phone == '0'){
-			return 0
-		}
+        if (phone == '0') {
+            return 0
+        }
         for (var i = 0; i < coaches.length; i++) {
             if (coaches[i].name == phone) {
                 return coaches[i].id
@@ -829,13 +837,13 @@ app.onPageInit("storemanage", function(page) {
                 if (!v.sex) {
                     v.sexstr = "女"
                 }
-				if (v.coachdetail == 0){
-					v.title = "无教练锻炼"
-					v.pic = JSON.parse(svc_gym.gym().imgs)[0]
-				} else {
-					v.title = v.coachdetail.displayname
-					v.pic = v.coachdetail.avatar
-				}
+                if (v.coachdetail == 0) {
+                    v.title = "无教练锻炼"
+                    v.pic = JSON.parse(svc_gym.gym().imgs)[0]
+                } else {
+                    v.title = v.coachdetail.displayname
+                    v.pic = v.coachdetail.avatar
+                }
                 $$("#day-free-course").append(T.freecourse(v))
             })
             $$(".cancel-course").on("click", function() {
@@ -946,9 +954,16 @@ app.onPageInit("newtrain", function(page) {
             trains: Actions[ai]
         }))
         $$("#workout-action .workout-action-item").on("click", function() {
-            var i = $$(this).attr("data-id")
-            plan.push(Actions[ai][i])
-            renderPlan()
+            var actionid = $$(this).attr("data-id")
+            $$.each(Actions[ai], function(i, v) {
+                if (v.id.toString() == actionid) {
+                    plan.push(JSON.parse(JSON.stringify(v)))
+                    renderPlan()
+                }
+            })
         })
     })
+})
+app.onPageInit("payonline", function(page){
+	app.closePanel()
 })
