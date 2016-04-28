@@ -787,6 +787,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     var os = _.reject(data.results, function(item) {
                         return item.all_booked == true
                     })
+					os = _.sortBy(os, 'created')
 
                     if (os && os.length > 0) {
                         var o = os[0]

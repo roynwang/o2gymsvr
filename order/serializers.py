@@ -57,7 +57,7 @@ class OrderSerializer(serializers.ModelSerializer):
 	def get_all_booked(self, obj):
 		completed = Schedule.objects.filter(order=obj,deleted = False).count()
 		sum_amount = obj.product.amount
-		return completed == sum_amount
+		return completed >= sum_amount
 
 	def get_endtime(self, obj):
 		return obj.cal_endtime()
