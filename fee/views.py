@@ -70,7 +70,9 @@ class CoachSalaryView(APIView):
 
 
 	def getsale(self,coach,start, end, fee):
-		orders = coach.income_orders.filter(paidtime__range=[start,end])
+		order_end = end + datetime.timedelta(days=1)
+		print order_end
+		orders = coach.income_orders.filter(paidtime__range=[start,order_end])
 		for order in orders.all():
 			print order.paidtime
 		sold = orders.aggregate(Sum('amount'))["amount__sum"] or 0
