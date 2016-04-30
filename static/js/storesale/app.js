@@ -35,9 +35,20 @@ var pages = {
     "alipayqr": "/static/storesale/alipayqr.html"
 }
 
+var foodpic_prefix = "/static/images/food/"
+var foodpics = ['IMG_6846.JPG',
+    'IMG_6847.JPG',
+    'IMG_6848.JPG',
+    'IMG_6849.JPG',
+    'IMG_6850.JPG',
+    'IMG_6851.JPG',
+    'IMG_6852.JPG',
+    'IMG_6853.JPG'
+]
+
 var $$ = Dom7;
 var mainView = app.addView('.view-main');
-
+/*
 var P = [{
     id: 0,
     level: "改变",
@@ -63,8 +74,32 @@ var P = [{
     price: 9000,
     duration: 8
 }]
-
-
+*/
+var P = [{
+    id: 0,
+    level: "改变",
+    subtitle: "Change",
+    course_count: 10,
+    off: 9.1,
+    price: 3200,
+    duration: 2
+}, {
+    id: 1,
+    level: "习惯",
+    subtitle: "Habituate",
+    course_count: 20,
+    off: 8.3,
+    price: 5800,
+    duration: 4
+}, {
+    id: 2,
+    level: "乐享",
+    subtitle: "Enjoy",
+    course_count: 40,
+    off: 7.2,
+    price: 10000,
+    duration: 8
+}]
 
 var T = {
     coach_avatar: Template7.compile($$("#tpl-coach-avatar").html()),
@@ -147,15 +182,15 @@ var Actions = {}
 function initActions() {
     $$.each([1, 2, 3, 4, 5], function(i, v) {
         $$.getJSON(R.workout_action(Cookies.get("user"), v), function(data) {
-			$$.each(data, function(i,v){
-				var units = v.units.split("|")
-				v.unit0 = units[0]
-				v.unit1 = ""
-				if(units.length>1){
-					v.unit1 = v.units[1] 
-				}
-			})
-	        Actions[v] = data
+            $$.each(data, function(i, v) {
+                var units = v.units.split("|")
+                v.unit0 = units[0]
+                v.unit1 = ""
+                if (units.length > 1) {
+                    v.unit1 = v.units[1]
+                }
+            })
+            Actions[v] = data
         })
     })
 }
@@ -964,6 +999,20 @@ app.onPageInit("newtrain", function(page) {
         })
     })
 })
-app.onPageInit("payonline", function(page){
-	app.closePanel()
+app.onPageInit("payonline", function(page) {
+    app.closePanel()
+})
+
+app.onPageInit("food", function(page) {
+    app.closePanel()
+    var row = '<div class="row">#row#</div>'
+    var tmpl = '<div class="col-50" style="padding:20px"><img style="width:100%"src="#src#"></div>'
+    $$("#food-gallary").html("")
+    $$.each(foodpics, function(i, v) {
+        if ( i%2 == 0) {
+            var i0 = tmpl.replace("#src#", foodpic_prefix + v)
+            var i1 = tmpl.replace("#src#", foodpic_prefix + foodpics[i + 1])
+            $$("#food-gallary").append(row.replace("#row#", i0 + i1))
+        }
+    })
 })

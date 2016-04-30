@@ -190,6 +190,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/newgym",
             templateUrl: "/static/console/newgym.html",
         })
+		.state('settings', {
+			url: "/settings",
+			templateUrl: "/static/console/settings.html",
+		})
 })
 
 app.controller("GymCtrl", ["$stateParams", "$state",
@@ -1093,6 +1097,16 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
                 })
         }
     }
+])
+app.controller("SettingControl", ['$scope', 'Restangular',
+	function($scope, Restangular){
+		var that = this
+		Restangular.one("api", $.cookie("usr"))
+				.get()
+				.then(function(resp){
+					that.usr = resp
+				})
+	}
 ])
 
 app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "$login",
