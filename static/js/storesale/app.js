@@ -1006,13 +1006,29 @@ app.onPageInit("payonline", function(page) {
 app.onPageInit("food", function(page) {
     app.closePanel()
     var row = '<div class="row">#row#</div>'
-    var tmpl = '<div class="col-50" style="padding:20px"><img style="width:100%"src="#src#"></div>'
+    var tmpl = '<div class="col-50" style="padding:20px"><img style="width:100%" data-i=#i# src="#src#"></div>'
     $$("#food-gallary").html("")
     $$.each(foodpics, function(i, v) {
-        if ( i%2 == 0) {
-            var i0 = tmpl.replace("#src#", foodpic_prefix + v)
-            var i1 = tmpl.replace("#src#", foodpic_prefix + foodpics[i + 1])
+        if (i % 2 == 0) {
+            var i0 = tmpl.replace("#src#", foodpic_prefix + v).replace("#i#",i)
+            var i1 = tmpl.replace("#src#", foodpic_prefix + foodpics[i + 1]).replace("#i#",i+1)
             $$("#food-gallary").append(row.replace("#row#", i0 + i1))
         }
     })
+	var playerphotos = []
+	$$.each(foodpics, function(i,v){
+		playerphotos.push(foodpic_prefix + v)
+	})
+    $$("#food-gallary img").on("click", function() {
+		var i = this.dataset["i"]	
+        app.photoBrowser({
+            photos: playerphotos,
+            theme: 'dark',
+            ofText: "/",
+            backLinkText: "",
+            toolbar: false,
+            initialSlide: i
+        }).open();
+    })
+
 })
