@@ -1,0 +1,22 @@
+<div class="col-md-12" ng-controller="SettingsControl as ctrl">
+    <section class="panel">
+        <header class="panel-heading">
+            设置(测试版/Test Version)
+        </header>
+        <div class="panel-body">
+            <div class="form-horizontal bucket-form">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label col-lg-3" for="inputSuccess">共享客户列表</label>
+                    <div class="col-lg-6">
+                        <label ng-repeat="g in ctrl.gymlist" class="checkbox">
+                            <input type="checkbox" ng-checked="g.checked" ng-model="g.checked" value="{{g.k}}">{{g.v}}
+                        </label>
+                    </div>
+                </div>
+				<p style="text-align:center">
+				<a class="btn btn-primary" ng-click="ctrl.submit()">保存</a>
+				</p>
+            </div>
+        </div>
+    </section>
+</div>

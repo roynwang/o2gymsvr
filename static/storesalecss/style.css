@@ -723,3 +723,15 @@
     border-radius: 2px;
     margin-left: 4px;
 }
+
+.o2-menu-item >a{
+	color:rgb(79, 210, 194);
+}
+
+#food-gallary {
+	padding: 10px 40px;
+}
+
+#food-gallary img{
+	width: 100%;
+}

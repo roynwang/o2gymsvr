@@ -1,5 +1,6 @@
 from django.db import models
 from utils import smsutils
+import json
 
 # Create your models here.
 
@@ -32,9 +33,32 @@ class Gym(models.Model):
 	phone = models.CharField(max_length=32)
 	mapid = models.IntegerField()
 	distance = models.IntegerField(default=0)
+	sms_notification = models.BooleanField(default=True)
+	shared_gyms = models.CharField(max_length=512,blank=True,default="[]")
+	
 
 	def __unicode__(self):
 		return self.name
+
+	def get_shared_with(self):
+		if self.shared_gyms == None or self.shared_gyms == '':
+			return None
+		ret = []
+		for i in json.loads(self.shared_gyms):
+			ret.append(Gym.objects.get(id=i))
+		return ret
+	def get_customers(self):
+		ret = list(self.orders.values_list("custom", flat=True))
+		return ret
+	def get_all_customers(self):
+		customlist = self.get_customers()
+		if self.shared_gyms != None and self.shared_gyms != '':
+			for g in self.get_shared_with():
+				print g.id
+				customlist += g.get_customers()
+		customlist = list(set(customlist))
+		return customlist
+
 
 class Schedule(models.Model):
 	id = models.AutoField(primary_key=True)

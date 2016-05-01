@@ -322,8 +322,8 @@ class GymCustomers(generics.ListAPIView):
 	serializer_class = SimpleUserSerilaizer
 	def get_queryset(self):
 		gym = Gym.objects.get(id=self.kwargs["gymid"])
-		orders = gym.orders
-		customlist = gym.orders.values_list("custom", flat=True).distinct()
+		customlist = gym.get_all_customers()
+		customlist = list(set(customlist))
 		ret = User.objects.filter(name__in = customlist)
 		return ret
 

@@ -190,10 +190,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/newgym",
             templateUrl: "/static/console/newgym.html",
         })
-		.state('settings', {
-			url: "/settings",
-			templateUrl: "/static/console/settings.html",
-		})
+        .state('settings', {
+            url: "/settings",
+            templateUrl: "/static/console/settings.html",
+        })
 })
 
 app.controller("GymCtrl", ["$stateParams", "$state",
@@ -270,7 +270,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                 .get()
                 .then(function(data) {
                     c = data
-					that.customer_displayname = c.displayname
+                    that.customer_displayname = c.displayname
                 })
         } else {
             that.customer_displayname = c.displayname
@@ -283,9 +283,9 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
             if (direction == "prev") {
                 url = that.prevurl
             }
-			if(url == undefined || url == null){
-				return
-			}
+            if (url == undefined || url == null) {
+                return
+            }
             $.get(url, function(data) {
                 that.nexturl = data.next
                 that.prevurl = data.previous
@@ -305,7 +305,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                     counts: [],
                     dataset: data.results
                 });
-				that.tableParams.reload()
+                that.tableParams.reload()
             })
         }
 
@@ -324,7 +324,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                         if (eval(item.complete_status) == 0) {
                             item["removable"] = true
                         }
-						item["price"] = Math.ceil(item.amount/item.course_count)
+                        item["price"] = Math.ceil(item.amount / item.course_count)
                     })
                     that.tableParams = new NgTableParams({
                         count: 100,
@@ -499,7 +499,6 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAl
                 }
             });
         }
-
     }
 ])
 app.controller('NewCoachCtrl', function($scope, Restangular, $uibModalInstance, reload, test) {
@@ -522,6 +521,8 @@ app.controller('NewCoachCtrl', function($scope, Restangular, $uibModalInstance, 
                     .get()
                     //$state.transitionTo('coaches')
                 reload()
+            }, function(res) {
+                swal("", "保存失败，请重试", "warning")
             })
     }
     $scope.ok = function() {
@@ -1027,13 +1028,13 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
             if (that.mo.subsidy == undefined) {
                 that.mo.subsidy = 0
             }
-			if (that.mo.product_duration>60){
+            if (that.mo.product_duration > 60) {
                 swal("", "请输入正确的有效时间单位(月)，如 12 ", "warning")
                 return false
-			}
-			if (that.mo.product_duration == ''){
-				that.mo.product_duration = 0
-			}
+            }
+            if (that.mo.product_duration == '') {
+                that.mo.product_duration = 0
+            }
             if (that.birthday_str) {
                 that.mo.birthday = that.birthday_str
             }
@@ -1099,14 +1100,14 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
     }
 ])
 app.controller("SettingControl", ['$scope', 'Restangular',
-	function($scope, Restangular){
-		var that = this
-		Restangular.one("api", $.cookie("usr"))
-				.get()
-				.then(function(resp){
-					that.usr = resp
-				})
-	}
+    function($scope, Restangular) {
+        var that = this
+        Restangular.one("api", $.cookie("usr"))
+            .get()
+            .then(function(resp) {
+                that.usr = resp
+            })
+    }
 ])
 
 app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "$login",
@@ -1468,9 +1469,9 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
 
             $customersvc.getcustomers(function(data) {
                 that.customers = data
-				//refresh birthdays
-				getbirthdays(data)
-				
+                    //refresh birthdays
+                getbirthdays(data)
+
                 $('#customer-search').autocomplete({
                     lookup: function(query, done) {
                         // Do ajax call or lookup locally, when done,
@@ -1634,6 +1635,64 @@ app.controller("NewGymCtrl", ['$scope', "Restangular", "SweetAlert",
                                 }
                             })
                 })
+        }
+    }
+])
+
+app.controller("SettingsControl", ["$scope", "Restangular",
+    function($scope, Restangular) {
+        var that = this
+
+        that.refresh = function() {
+            that.gymlist = _.reject($gymlist, {
+                k: parseInt($.cookie("gym"))
+            })
+            _.map(that.gymlist, function(item) {
+                item.checked = false
+            })
+            Restangular.one("api")
+                .one("g", $.cookie("gym"))
+                .get()
+                .then(function(data) {
+                        if (data.shared_gyms) {
+                            var gyms = JSON.parse(data.shared_gyms)
+                            _.each(gyms, function(gi) {
+                                var found = _.find(that.gymlist, {
+                                    k: gi
+                                })
+                                found.checked = true
+                            })
+                        }
+                    },
+                    function(resp) {})
+        }
+        that.refresh()
+        that.submit = function() {
+            console.log("changed")
+            var shared_gyms = []
+            for (var i in that.gymlist) {
+                if (that.gymlist[i].checked) {
+                    shared_gyms.push(that.gymlist[i].k)
+                }
+            }
+            Restangular.one("api")
+                .one("g", $.cookie("gym"))
+                .patch({
+                    shared_gyms: shared_gyms
+                })
+                .then(function(data) {
+                        swal({
+                            title: "成功",
+                            text: "修改已保存",
+                            type: "success",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        that.refresh()
+                    },
+                    function(data) {
+                        swal("", "保存失败了", "warning")
+                    })
         }
     }
 ])

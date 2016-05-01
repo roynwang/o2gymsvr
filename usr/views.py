@@ -196,7 +196,7 @@ class CustomerList(generics.ListAPIView):
 		#customers =  usr.sealed_time.values_list("custom",flat=True)
 		gym =  usr.gym.first()
 		#print customers
-		customlist = gym.orders.values_list("custom", flat=True).distinct()
+		customlist = gym.get_all_customers()
 		ret = User.objects.filter(name__in = customlist)
 		if ret.count() == 0:
 			ret = User.objects.filter(name = usr.name)
@@ -205,8 +205,8 @@ class CustomerList(generics.ListAPIView):
 class ModifyGym(APIView):
 	def post(self, request, name):
 		usr = get_object_or_404(User, name=self.kwargs["name"])
-		if "gym" in request.DATA:
-			newgym = get_object_or_404(Gym,id=request.DATA['gym'])
+		if "gym" in request.data:
+			newgym = get_object_or_404(Gym,id=request.data['gym'])
 			usr.gym = [newgym]
 
 			#BUG: where creating new coach, the field iscoach is false
