@@ -79,24 +79,24 @@ var P = [{
     id: 0,
     level: "改变",
     subtitle: "Change",
-    course_count: 10,
-    off: 9.1,
-    price: 3200,
+    course_count: 12,
+    off: 9.0,
+    price: 3800,
     duration: 2
 }, {
     id: 1,
     level: "习惯",
     subtitle: "Habituate",
-    course_count: 20,
-    off: 8.3,
-    price: 5800,
+    course_count: 24,
+    off: 8.0,
+    price: 6700,
     duration: 4
 }, {
     id: 2,
     level: "乐享",
     subtitle: "Enjoy",
     course_count: 40,
-    off: 7.2,
+    off: 7.0,
     price: 10000,
     duration: 8
 }]
