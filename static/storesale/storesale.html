@@ -290,17 +290,17 @@
 <script id="tpl-plan-detail" type="text/template7">
     <ul style="background:#f7f7f7">
         {{#each trains}}
-		<li data-cate={{cate}} data-id="{{id}}" class="item-content plan-detail-item">
+		<li data-cate="{{categeory}}" data-id="{{id}}" class="item-content plan-detail-item">
             <div class="item-inner">
 				<div class="item-title row" style="width:100%;font-size:18px;">
 					<div class="col-10">
-						<span class="button ion-ios-close-empty" style="font-size:24px"></span>
+						<span class="button ion-ios-close-empty action-remove" style="font-size:24px" data-index={{@index}}></span>
 					</div>
 					<div class="col-50" style="padding-left:5px">
 						{{name}}
 					</div>
-					<div class="col-20">{{unit0}}</div>
-					<div class="col-20">{{unit1}}</div>
+					<div class="col-20">{{unit0}}<input data-v="v0"  value="{{v0}}" data-index={{@index}} id="u0_{{@index}}" data-unit="{{unit0}}"></div>
+					<div class="col-20">{{unit1}}<input data-v="v1" value="{{v1}}" data-index={{@index}}  id="u1_{{@index}}" data-unit="{{unit1}}"></div>
 				</div>
             </div>
         </li>

@@ -9,6 +9,20 @@ String.prototype.fixSize = function(w, h) {
     return str
 }
 
+function range(start, end, step) {
+    var ret = []
+    if (step == undefined) {
+        step = 1
+    }
+    var tmp = start
+    while (tmp <= end) {
+        ret.push(tmp)
+        tmp += step
+    }
+    return ret
+}
+
+
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
 
 var app = new Framework7({
@@ -975,11 +989,81 @@ app.onPageInit("freecourseform", function(page) {
 app.onPageInit("newtrain", function(page) {
     var plan = []
 
+
+	function actionToTrain(action, action_order, groupid){
+		var train = {}
+		train.action_name = action.name
+		train.weight = ''
+		if(action.v0){
+			train.weight = action.v0
+		}
+		train.repeattimes = ''
+		if(action.v1){
+			train.repeattimes = action.v1
+		}
+		train.units	= action.units
+		train.action_order = action_order
+		train.groupid = groupid
+		return train
+	}
+
+	function wrapPlan(){
+		var ai = 0;
+		var gi = 0;
+		var ret = []
+		for(var i in plan){
+			if(i != 0 && plan[i].name != plan[i-1].name){
+				ai ++
+				gi = 0
+			}
+			ret.push(actionToTrain(plan[i], ai, gi))
+			gi ++
+		}
+		return ret
+	}
+
+    function getrange(unit) {
+        if (unit.toLowerCase() == "kg") {
+            return range(0, 120, 0.5)
+        }
+		
+        return range(0, 120, 0.5)
+    }
+	function bindRemove(){
+		$$(".plan-detail-item .action-remove").on("click", function(){
+			var index = $$(this).attr("data-index")
+			plan.splice(index, 1)	
+			renderPlan()
+		})
+	}
+
+
+    function bindPicker() {
+        $$("#plan-detail input").on("click", function() {
+			var v = $$(this).attr("data-v")
+			var index = $$(this).attr("data-index")
+		
+            var picker = app.picker({
+                input: "#" + $$(this).attr("id"),
+                cols: [{
+					textAlign:"center",
+					values: getrange($$(this).attr("data-unit"))
+				}],
+				onClose: function(p){
+					plan[index][v] = p.value[0]
+				}
+            })
+			picker.open()
+        })
+    }
+
     function renderPlan() {
         $$("#plan-detail").html("")
         $$("#plan-detail").append(T.plan_detail({
             trains: plan
         }))
+		bindPicker()
+		bindRemove()
     }
     $$("#workout-cate .item-content").on("click", function() {
         var ai = $$(this).attr("data-id")
@@ -998,6 +1082,10 @@ app.onPageInit("newtrain", function(page) {
             })
         })
     })
+	$$("#plan-submit").on("click", function(){
+		var ret = wrapPlan() 
+		console.log(ret)
+	})
 })
 app.onPageInit("payonline", function(page) {
     app.closePanel()
@@ -1010,17 +1098,17 @@ app.onPageInit("food", function(page) {
     $$("#food-gallary").html("")
     $$.each(foodpics, function(i, v) {
         if (i % 2 == 0) {
-            var i0 = tmpl.replace("#src#", foodpic_prefix + v).replace("#i#",i)
-            var i1 = tmpl.replace("#src#", foodpic_prefix + foodpics[i + 1]).replace("#i#",i+1)
+            var i0 = tmpl.replace("#src#", foodpic_prefix + v).replace("#i#", i)
+            var i1 = tmpl.replace("#src#", foodpic_prefix + foodpics[i + 1]).replace("#i#", i + 1)
             $$("#food-gallary").append(row.replace("#row#", i0 + i1))
         }
     })
-	var playerphotos = []
-	$$.each(foodpics, function(i,v){
-		playerphotos.push(foodpic_prefix + v)
-	})
+    var playerphotos = []
+    $$.each(foodpics, function(i, v) {
+        playerphotos.push(foodpic_prefix + v)
+    })
     $$("#food-gallary img").on("click", function() {
-		var i = this.dataset["i"]	
+        var i = this.dataset["i"]
         app.photoBrowser({
             photos: playerphotos,
             theme: 'dark',
