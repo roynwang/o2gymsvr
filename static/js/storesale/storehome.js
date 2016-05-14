@@ -259,7 +259,7 @@ app.onPageInit("gymhome", function(page) {
 					v.coupon = true
 				}
 				if (v.coachdetail == 0){
-					v.title = "无教练锻炼"
+					v.title = "周末晨间锻炼"
 					v.pic = JSON.parse(svc_gym.gym().imgs)[0]
 				} else {
 					v.title = v.coachdetail.displayname
