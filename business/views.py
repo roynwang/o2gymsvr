@@ -284,18 +284,18 @@ class TrainByDateView(ListBulkCreateAPIView):
 		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
 		date_str = datetime.datetime.strftime(date,"%Y-%m-%d")
 		name = self.kwargs.get("name")
-		return Train.objects.filter(date=date_str, name=name).order_by("groupid")
+		return Train.objects.filter(date=date_str, name=name).order_by("action_order", "groupid")
 
 	def create(self, request, *args, **kwargs):
-		bulk = isinstance(request.DATA, list)
+		bulk = isinstance(request.data, list)
 		ret = super(TrainByDateView, self).create(request, *args, **kwargs)
-		print("xxxxxxxxxxxxxxxxxxxx")
 		scheduleid = -1
 
-		if bulk and "course" in request.DATA[0]:
-			scheduleid = request.DATA[0]["course"]
-		if not bulk and "course" in request.DATA:
-			scheduleid = request.DATA["course"]
+		if bulk and "course" in request.data[0]:
+			scheduleid = request.data[0]["course"]
+		if not bulk and "course" in request.data:
+			scheduleid = request.data["course"]
+
 		if scheduleid != -1:
 			schedule = get_object_or_404(Schedule,id=scheduleid)
 			schedule.done = True

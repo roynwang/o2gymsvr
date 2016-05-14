@@ -133,6 +133,9 @@ var R = {
     login: "/api/lg/",
     refreshToken: "/api/t/",
     wxinit: "/api/wx/signature/",
+	trainbydate: function(phone,date){
+		return "/api/" + phone + "/t/" + date + "/"
+	},
     gym: function(gymid) {
         return "/api/g/" + gymid + "/"
     },
@@ -187,7 +190,6 @@ var R = {
         return "/api/" + coach + "/workout/" + workout + "/"
     }
 }
-
 
 
 
@@ -422,6 +424,8 @@ var currentCoach = ""
 var currentProduct = null
 var currentQr = ""
 var currentOrderNo = ""
+var currentTrainCustomer = ""
+
 
 
 app.onPageInit("home", function(page) {
@@ -825,6 +829,7 @@ app.onPageInit("storemanage", function(page) {
                 $$("#customerlist .customer-item").removeClass("active")
                 renderCustomerTrain(phone)
                 $$(this).addClass("active")
+				currentCustomer = phone
             })
         })
     }
@@ -843,6 +848,7 @@ app.onPageInit("storemanage", function(page) {
                 var phone = $$(".customer-item.active .item-title").attr("data-phone")
                 renderTrainDetail(phone, date)
                 $$(this).addClass("active")
+
             })
         })
     }
@@ -857,7 +863,7 @@ app.onPageInit("storemanage", function(page) {
                 if (units.length == 2) {
                     v.strright = "*" + v.repeattimes + units[1]
                 }
-                if (i > 0 && v.groupid == data[i - 1].groupid) {
+                if (i > 0 && v.action_order == data[i-1].action_order) {
                     v.action_name = ""
                 }
             })
@@ -887,7 +893,7 @@ app.onPageInit("storemanage", function(page) {
                     v.sexstr = "女"
                 }
                 if (v.coachdetail == 0) {
-                    v.title = "无教练锻炼"
+                    v.title = "周末晨间锻炼"
                     v.pic = JSON.parse(svc_gym.gym().imgs)[0]
                 } else {
                     v.title = v.coachdetail.displayname
@@ -931,7 +937,7 @@ app.onPageInit("freecourseform", function(page) {
     function rendercoach() {
         $$(".free_coach").html("")
         var tmpl = '<option value="#phone#">#name#</option>'
-        $$("#free_coach").append('<option value=0>无教练</option>')
+        $$("#free_coach").append('<option value=0>周末晨间锻炼</option>')
         $$.each(svc_gym.coaches(), function(i, v) {
             $$("#free_coach").append(tmpl.replace("#phone#", v.name).replace("#name#", v.displayname))
         })
@@ -1004,6 +1010,8 @@ app.onPageInit("newtrain", function(page) {
 		train.units	= action.units
 		train.action_order = action_order
 		train.groupid = groupid
+		train.name = currentCustomer
+		train.date = $$("#train-date-input").val()
 		return train
 	}
 
@@ -1082,8 +1090,33 @@ app.onPageInit("newtrain", function(page) {
             })
         })
     })
+	function submitPlan(){
+		var datestr = $$("#train-date-input").val().replace(/-/g,"")
+		
+		var fullplan = wrapPlan() 
+        $$.ajax({
+            url: R.trainbydate(currentCustomer, datestr),
+            method: "POST",
+			contentType: "application/json",
+            data: JSON.stringify(fullplan),
+            success: function(resp){
+				console.log(resp)
+			},
+            error: function(resp){
+				console.log(resp)
+			}
+        })
+	}
+
+	var calendarDefault = app.calendar({
+	    input: '#train-date-input',
+		closeOnSelect: true
+	});          
+
+
 	$$("#plan-submit").on("click", function(){
 		var ret = wrapPlan() 
+		submitPlan()
 		console.log(ret)
 	})
 })

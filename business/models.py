@@ -122,7 +122,7 @@ class BodyEvalOptions(models.Model):
 class Train(models.Model):
 	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=64)
-	date = models.DateField(auto_now=True)
+	date = models.DateField()
 	weight = models.CharField(max_length=64, blank=True)
 	repeattimes = models.CharField(max_length=64, blank=True)
 	groupid = models.IntegerField()
