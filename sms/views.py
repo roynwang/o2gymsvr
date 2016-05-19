@@ -98,7 +98,7 @@ class SMSGet(generics.CreateAPIView):
 	serializer_class = SmsVcodeSerializer 
 	def create(self, request, *args, **kwargs):
 		vcode = randint(100000,999999)
-		num, _ =  Sms.objects.get_or_create(number=request.DATA["number"])
+		num, _ =  Sms.objects.get_or_create(number=request.data["number"])
 		num.vcode = vcode
 		num.save()
 		resp = smsutils.templateSMS(settings.UCPAASSID,
@@ -119,10 +119,10 @@ class SMSVerify(APIView):
 		print "xxxxxxxxxxxxx"
 		sms = get_object_or_404(Sms,number=number)
 		ret = None
-		print request.DATA
+		print request.data
 		print str(sms.vcode)
-		print request.DATA["vcode"]
-		if str(sms.vcode) == request.DATA["vcode"]:
+		print request.data["vcode"]
+		if str(sms.vcode) == request.data["vcode"]:
 			sms.vcode = randint(100000,999999)
 			sms.save()
 			pwd = None
