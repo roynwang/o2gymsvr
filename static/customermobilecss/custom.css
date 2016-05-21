@@ -1199,4 +1199,20 @@ body {
 	font-size: 16px !important;
 	color: rgba(79, 210, 194, 0.6) !important; 
 }
+.o2-plan-item {
+	margin-top: 20px;
+	margin-bottom: 0;
+}
+
+.o2-plan-item.no-name {
+	margin: 10px 0;
+}
+
+.o2-plan-item p {
+	margin: 0.1em 0;
+	color: #555;
+}
+.o2-plan-item p.action-name{
+}
+
 

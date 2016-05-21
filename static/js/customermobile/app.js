@@ -18,7 +18,8 @@ var $$ = Dom7;
 var mainView = app.addView('.view-main');
 
 var pages = {
-    "bookdetail": "/static/customermobile/book.html"
+    "bookdetail": "/static/customermobile/book.html",
+	"plandetail": "/static/customermobile/plandetail.html"
 }
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
     //init wx
@@ -52,12 +53,19 @@ function notify(title, message, keep) {
 
 }
 var T = {
-    timelineitem: Template7.compile($$("#tpl_timelineitem").html())
+    timelineitem: Template7.compile($$("#tpl_timelineitem").html()),
+    planitem: Template7.compile($$("#tpl_planitem").html())
 }
 var R = {
         login: "/api/lg/",
         refreshToken: "/api/t/",
         wxinit: "/api/wx/signature/",
+		trainDetail: function(phone, date){
+			return "/api/" + phone + "/t/" + date.replace(/-/g,'') + "/"
+		},
+		trainByDate: function(phone){
+            return "/api/" + phone + "/t/"
+		},
         changepwd: function(phone) {
             return "/api/sms/" + phone + "/"
         },
@@ -109,6 +117,7 @@ function notifyFetchPic(mediaid, onsuccess) {
 
 
 var current_train_weight = undefined
+var current_plan_date = undefined
 
 var weightPicker = app.picker({
     input: "#weight-picker",
@@ -198,6 +207,7 @@ var svc_usr = function() {
     that.onloaded = undefined
     var history = []
     var needReload = false
+	var plans = []
 
     function submitBook(coachname, datestr, book, onsuccess, onfail) {
         $$.ajax({
@@ -231,6 +241,56 @@ var svc_usr = function() {
             needReload = false
         }
     }
+	function loadTrainPlan(){
+		plan = []
+		$$.get(R.trainByDate(usr.name), function(data){
+			var t = JSON.parse(data)
+			$$.each(t, function(i,v){
+				v.getTimeLineCard = function(){
+                    var item = {
+                            booking: false,
+                            date: {
+                                day: "10",
+                                month: "十二月"
+                            },
+                            completed: true,
+                            showscale: false,
+							showplan: true,
+                            weight: 0,
+                            //photos: ["http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg"],
+                            photos: [],
+                            showcamera: false,
+                            id: this.id,
+                            fromnow: "",
+                            hourstr: ""
+                        }
+                        //set date
+                    item.id = -1
+                    var date = moment(this.date)
+					item.datestr = this.date
+                    item.date.day = date.format("DD")
+                    item.date.month = date.format("MMMM")
+
+                    var start = moment().subtract(2, "days")
+                    var end = moment()
+                    var delta = date.diff(moment(), "days")
+                    if (delta > 0) {
+                        item.fromnow = delta + "天后"
+                    }
+                    if (delta == 0) {
+                        item.fromnow = "今天"
+                    }
+                    return item
+				}
+				history.push(v)
+			})
+		})
+	}
+	function getTrainDetail(date, onsuccess){
+		$$.get(R.trainDetail(usr.name,date), function(data){
+			onsuccess(JSON.parse(data))
+		})
+	}
 
     function completeOrderLoad(skipcallback) {
         count_items--;
@@ -241,6 +301,9 @@ var svc_usr = function() {
                 }
                 return -1
             })
+			//merge
+
+
             if (skipcallback != true) {
                 that.onloaded(history)
             }
@@ -397,6 +460,7 @@ var svc_usr = function() {
                         item.fromnow = false
                     }
 
+
                     $$.each(details, function(i, v) {
                             if (v.contenttype == "image") {
                                 item.photos.push(v.content.fixSize())
@@ -430,9 +494,10 @@ var svc_usr = function() {
         $$.get(R.orders(usr.name), function(data) {
             usr.orders = JSON.parse(data).results
             usr.history = []
+			loadTrainPlan()
             count_items = usr.orders.length
             $$.each(usr.orders, function(i, v) {
-                loadOrderDetail(v)
+                loadOrderDetail(v, skipcallback)
             })
         })
     }
@@ -459,6 +524,10 @@ var svc_usr = function() {
         user: function() {
             return usr
         },
+		plan: function() {
+			return plan
+		},
+		getTrainDetail: getTrainDetail,
         init: init,
         getCurrentOrder: getCurrentOrder,
         submitBook: submitBook,
@@ -482,8 +551,12 @@ var home = app.onPageInit("home", function(page) {
         var today = moment()
         var tolasttrain = "?"
         for (var i = 0; i < history.length; i++) {
+
             var v = history[i]
-            var item = T.timelineitem(v.getTimeLineCard())
+			var timelineobj = v.getTimeLineCard()
+
+            var item = T.timelineitem(timelineobj)
+
             $$("#o2-timeline").prepend(item)
             if (v.done) {
                 var tmp = today.diff(moment(v.date), "days")
@@ -509,6 +582,12 @@ var home = app.onPageInit("home", function(page) {
                 }
             })
         })
+		$$(".showplan").on("click", function(e){
+			var tar = this
+			e.stopPropagation()
+			mainView.router.loadPage(pages.plandetail)
+			current_plan_date = $$(tar).attr("data-date")
+		})
         $$(".camera").on("click", function(e) {
                 var tar = this
                 e.stopPropagation()
@@ -674,8 +753,40 @@ var home = app.onPageInit("home", function(page) {
     })
 }).trigger()
 
+app.onPageInit("plandetail", function(page){
 
+    var date = moment(current_plan_date)
+	//$$("#train-month").html(date.format("MMMM"))
+	$$("#train-day").html(current_plan_date.replace(/-/g,"/"))
 
+	function build_plan_str(v){
+		var units = v.units.split("|")
+		var ret = v.weight + units[0]
+		if(units[1]){
+			ret += "*"
+			ret += v.repeattimes
+			ret += units[1]
+		}
+		return ret
+	}
+
+    $$(".back").on("click", function() {
+        mainView.router.back();
+    })
+	svc_usr.getTrainDetail(current_plan_date, function(resp){
+		$$.each(resp, function(i,v){
+			v.plan_str = build_plan_str(v)
+			v.action_cls = ''
+			if(i != 0 && resp[i-1].action_name == v.action_name){
+				v.action_name = ''
+				v.action_cls = "no-name"
+				
+			}
+			$$("#plan-detail").append(T.planitem(v))
+		})
+	})
+	
+})
 
 app.onPageInit('about', function(page) {
     //busy flat	

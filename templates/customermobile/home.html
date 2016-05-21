@@ -133,6 +133,20 @@
 <script src="//cdn.bootcss.com/moment.js/2.11.1/locale/zh-cn.js"></script>
 <script src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.min.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script id="tpl_planitem" type="text/template7">
+<div class="card o2-plan-item {{action_cls}}">
+        <div class="card-content row no-gutter">
+			<div class="col-10"></div>
+			<div class="col-40">
+				<p class="action-name">{{action_name}}</p>
+			</div>
+			<div class="col-40">
+				<p>{{plan_str}}</p>
+			</div>
+			<div class="col-10"></div>
+		</div>
+	</div>
+</script>
 <script id="tpl_timelineitem" type="text/template7">
     <div class="card o2-timeline {{#if booking}}booking{{/if}}">
         <div class="card-content row no-gutter">
@@ -193,12 +207,22 @@
                                 <div class="o2-timeline-item isimg" data-index="{{@index}}">
                                     <img src="{{this}}">
                                 </div>
-                                {{/each}} {{#if showcamera}}
+                                {{/each}}
+								{{#if showcamera}}
                                 <div data-id="{{id}}" class="o2-timeline-info o2-timeline-item camera unfilled"
                                 style="margin-left:5px">
                                     <p><i class="ion-ios-camera-outline"></i>
                                     </p>
                                     <p>拍照</p>
+                                </div>
+                                {{/if}}
+								{{#if showplan}}
+                                <div data-date="{{datestr}}" class="o2-timeline-info o2-timeline-item
+								showplan unfilled"
+                                style="margin-left:5px">
+                                    <p><i class="ion-ios-paper-outline"></i>
+                                    </p>
+                                    <p>计划</p>
                                 </div>
                                 {{/if}}
                             </div>
