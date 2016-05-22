@@ -15,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="/static/customermobilecss/custom.css">
     <link href="/static/mobilecss/ionicons.min.css" rel="stylesheet" type="text/css"
     />
-	<link rel="apple-touch-icon" href="/staic/images/favicon.jpg" />
+    <link rel="apple-touch-icon" href="/staic/images/favicon.jpg" />
     <link href="/static/css/animate.min.css" rel="stylesheet">
 </head>
 
@@ -100,16 +100,15 @@
                                 <li class="item-content pwdinit" style="display:none">
                                     <div class="item-inner">
                                         <div class="item-input">
-                                            <input id="newpwd" type="text"
-											placeholder="请设定您的8位密码">
+                                            <input id="newpwd" type="password" placeholder="请设定您的8位密码">
                                         </div>
                                     </div>
-                             </li>
+                                </li>
                             </ul>
                             <h4 id="o2-login-btn-touch" class="login-options"><a id="o2-login-btn" href="#">登录</a></h4>
-							<h4 style="text-align:center;display:none" class="pwdinit"><a id="btn-newpwd" style="color: rgba(0,0, 0, 0.8);">确认</a></h4>
-   
+                            <h4 style="text-align:center;display:none" class="pwdinit"><a id="btn-newpwd" style="color: rgba(0,0, 0, 0.8);">确认</a></h4>
                         </div>
+						<p style='text-align:center'><a id="reset-pwd" style="opacity:0">首次登录/重置密码</a></p>
                     </form>
                     <div class="o2-logo row">
                         <div class="o2-logo-title-container">
@@ -134,18 +133,18 @@
 <script src="//cdn.bootcss.com/js-cookie/2.1.0/js.cookie.min.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script id="tpl_planitem" type="text/template7">
-<div class="card o2-plan-item {{action_cls}}">
+    <div class="card o2-plan-item {{action_cls}}">
         <div class="card-content row no-gutter">
-			<div class="col-10"></div>
-			<div class="col-40">
-				<p class="action-name">{{action_name}}</p>
-			</div>
-			<div class="col-40">
-				<p>{{plan_str}}</p>
-			</div>
-			<div class="col-10"></div>
-		</div>
-	</div>
+            <div class="col-10"></div>
+            <div class="col-40">
+                <p class="action-name">{{action_name}}</p>
+            </div>
+            <div class="col-40">
+                <p>{{plan_str}}</p>
+            </div>
+            <div class="col-10"></div>
+        </div>
+    </div>
 </script>
 <script id="tpl_timelineitem" type="text/template7">
     <div class="card o2-timeline {{#if booking}}booking{{/if}}">
@@ -170,70 +169,62 @@
             <div class="col-75">
                 <div class="card">
                     <div class="card-content-inner">
-                        {{#if booking}}
                         <div>
+                            {{#if showplan}}
+                            <div data-date="{{datestr}}" class="o2-timeline-info o2-timeline-item
+								showplan filled" style="margin-left:5px">
+                                <p><i class="ion-clipboard"></i>
+                                </p>
+                                <p>计划</p>
+                            </div>
+                            {{/if}} {{#if booking}}
                             <div class="o2-timeline-info unfilled" id="booknow">
                                 <p><i class="ion-ios-plus-outline"></i>
                                 </p>
                                 <p>预约</p>
                             </div>
-                        </div>
-                        {{/if}} {{#if showscale}}
-                        <div>
+
+                            {{/if}} {{#if showscale}}
                             <div class="o2-timeline-info unfilled pickweight" data-id="{{id}}">
                                 <p><i class="ion-ios-help-outline" id="setweight"></i>
                                 </p>
                                 <p>体重</p>
                             </div>
-                        </div>
-                        {{/if}} {{#if weight}}
-                        <div>
+                            {{/if}} {{#if weight}}
                             <div class="o2-timeline-info pickweight" data-id="{{id}}">
                                 <p>{{weight}}</p>
                                 <p>KG</p>
                             </div>
-                        </div>
-						{{/if}}
-						{{#if fromnow}}
-                        <div>
-							<p class="o2-book-future-time">{{fromnow}} <span
-								class="o2-book-future-time-hour">{{hourstr}}</span></p>
-                        </div>
-						{{/if}}
-						{{#unless booking}}
-                        <div style="width:100%; overflow-x:scroll;height:65px">
-                            <div data-id="{{id}}" class="o2-timeline-images">
-                                {{#each photos}}
-                                <div class="o2-timeline-item isimg" data-index="{{@index}}">
-                                    <img src="{{this}}">
-                                </div>
-                                {{/each}}
-								{{#if showcamera}}
-                                <div data-id="{{id}}" class="o2-timeline-info o2-timeline-item camera unfilled"
-                                style="margin-left:5px">
-                                    <p><i class="ion-ios-camera-outline"></i>
-                                    </p>
-                                    <p>拍照</p>
-                                </div>
-                                {{/if}}
-								{{#if showplan}}
-                                <div data-date="{{datestr}}" class="o2-timeline-info o2-timeline-item
-								showplan unfilled"
-                                style="margin-left:5px">
-                                    <p><i class="ion-ios-paper-outline"></i>
-                                    </p>
-                                    <p>计划</p>
-                                </div>
-                                {{/if}}
+                            {{/if}} {{#if fromnow}}
+                            <div>
+                                <p class="o2-book-future-time">{{fromnow}} <span class="o2-book-future-time-hour">{{hourstr}}</span>
+                                </p>
                             </div>
+                            {{/if}} {{#unless booking}}
+                            <div style="width:100%; overflow-x:scroll;height:65px">
+                                <div data-id="{{id}}" class="o2-timeline-images">
+                                    {{#each photos}}
+                                    <div class="o2-timeline-item isimg" data-index="{{@index}}">
+                                        <img src="{{this}}">
+                                    </div>
+                                    {{/each}} {{#if showcamera}}
+                                    <div data-id="{{id}}" class="o2-timeline-info o2-timeline-item camera unfilled"
+                                    style="margin-left:5px;margin-top:5px">
+                                        <p><i class="ion-ios-camera-outline"></i>
+                                        </p>
+                                        <p>拍照</p>
+                                    </div>
+                                    {{/if}}
+                                </div>
+                            </div>
+                            {{/unless}}
                         </div>
-                        {{/unless}}
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </script>
 <script src="/static/js/customermobile/app.js"></script>
+
 </html>
 {%endverbatim%}

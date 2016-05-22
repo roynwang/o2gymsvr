@@ -153,6 +153,7 @@ body {
     height: 48px !important;
     background: rgba(79, 210, 194, 0.78);
 	margin-left: 5px;
+	display: inline-block;
 }
 .o2-timeline-info.unfilled {
     background: white;
@@ -1213,6 +1214,13 @@ body {
 	color: #555;
 }
 .o2-plan-item p.action-name{
+}
+.icon-weighter {
+	background: url("images/weighter.png");
+}
+
+#reset-pwd {
+	color: rgb(79, 210, 194); 
 }
 
 

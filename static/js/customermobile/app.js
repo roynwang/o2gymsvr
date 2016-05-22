@@ -19,7 +19,7 @@ var mainView = app.addView('.view-main');
 
 var pages = {
     "bookdetail": "/static/customermobile/book.html",
-	"plandetail": "/static/customermobile/plandetail.html"
+    "plandetail": "/static/customermobile/plandetail.html"
 }
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
     //init wx
@@ -60,12 +60,18 @@ var R = {
         login: "/api/lg/",
         refreshToken: "/api/t/",
         wxinit: "/api/wx/signature/",
-		trainDetail: function(phone, date){
-			return "/api/" + phone + "/t/" + date.replace(/-/g,'') + "/"
-		},
-		trainByDate: function(phone){
+        vcodeverify: function(phone) {
+            return "/api/sms/" + phone + "/"
+        },
+        vcodeget: function() {
+            return "/api/sms/"
+        },
+        trainDetail: function(phone, date) {
+            return "/api/" + phone + "/t/" + date.replace(/-/g, '') + "/"
+        },
+        trainByDate: function(phone) {
             return "/api/" + phone + "/t/"
-		},
+        },
         changepwd: function(phone) {
             return "/api/sms/" + phone + "/"
         },
@@ -141,6 +147,33 @@ var weightPicker = app.picker({
 });
 
 var svc_login = function() {
+    function vcodeverify(number, vcode, onsuccess, onfail) {
+        var pdata = {
+            number: number,
+            vocde: vcode
+        }
+        $$.ajax({
+            url: R.vcodeverify(number),
+            method: "POST",
+            data: pdata,
+            success: onsuccess,
+            error: onfail
+        })
+    }
+
+    function getvcode(number, onsuccess, onfail) {
+        var pdata = {
+            number: number,
+        }
+        $$.ajax({
+            url: R.vcodeget(),
+            method: "POST",
+            data: pdata,
+            success: onsuccess,
+            error: onfail
+        })
+    }
+
     function login(name, pwd, onsuccess, onfail) {
         var pdata = {
             username: name,
@@ -164,6 +197,9 @@ var svc_login = function() {
                 $$(".o2-logo").addClass("o2-logo-move-up")
                 $$(".o2-logo").css("top", "10%")
             }, 2000)
+            setTimeout(function() {
+                $$("#reset-pwd").css("opacity", 1)
+            }, 3000)
             return
         }
         var pdata = {
@@ -196,7 +232,9 @@ var svc_login = function() {
     }
     return {
         login: login,
-        refreshToken: refreshToken
+        refreshToken: refreshToken,
+        vcodeverify: vcodeverify,
+        getvcode: getvcode
     }
 }()
 
@@ -207,7 +245,27 @@ var svc_usr = function() {
     that.onloaded = undefined
     var history = []
     var needReload = false
-	var plans = []
+    var plans = []
+
+    function pushHistory(item) {
+        var notfound = true
+        for (var i in history) {
+            v = history[i]
+            if (v.date == item.date) {
+                if (v.showplan) {
+                    v.getTimeLineCard = item.getTimeLineCard
+                    v.setweight = item.setweight
+                    v.id = item.id
+                }
+                v.showplan = v.showplan || item.showplan
+                v.done = v.done || item.done
+                notfound = false
+            }
+        }
+        if (notfound) {
+            history.push(item)
+        }
+    }
 
     function submitBook(coachname, datestr, book, onsuccess, onfail) {
         $$.ajax({
@@ -241,12 +299,14 @@ var svc_usr = function() {
             needReload = false
         }
     }
-	function loadTrainPlan(){
-		plan = []
-		$$.get(R.trainByDate(usr.name), function(data){
-			var t = JSON.parse(data)
-			$$.each(t, function(i,v){
-				v.getTimeLineCard = function(){
+
+    function loadTrainPlan() {
+        plan = []
+        $$.get(R.trainByDate(usr.name), function(data) {
+            var t = JSON.parse(data)
+            $$.each(t, function(i, v) {
+                v.showplan = true
+                v.getTimeLineCard = function() {
                     var item = {
                             booking: false,
                             date: {
@@ -255,7 +315,7 @@ var svc_usr = function() {
                             },
                             completed: true,
                             showscale: false,
-							showplan: true,
+                            showplan: this.showplan,
                             weight: 0,
                             //photos: ["http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg"],
                             photos: [],
@@ -267,7 +327,7 @@ var svc_usr = function() {
                         //set date
                     item.id = -1
                     var date = moment(this.date)
-					item.datestr = this.date
+                    item.datestr = this.date
                     item.date.day = date.format("DD")
                     item.date.month = date.format("MMMM")
 
@@ -281,27 +341,29 @@ var svc_usr = function() {
                         item.fromnow = "今天"
                     }
                     return item
-				}
-				history.push(v)
-			})
-		})
-	}
-	function getTrainDetail(date, onsuccess){
-		$$.get(R.trainDetail(usr.name,date), function(data){
-			onsuccess(JSON.parse(data))
-		})
-	}
+                }
+                pushHistory(v)
+                    //history.push(v)
+            })
+        })
+    }
+
+    function getTrainDetail(date, onsuccess) {
+        $$.get(R.trainDetail(usr.name, date), function(data) {
+            onsuccess(JSON.parse(data))
+        })
+    }
 
     function completeOrderLoad(skipcallback) {
         count_items--;
         if (count_items == 0) {
             history.sort(function(a, b) {
-                if (moment(a.date).isAfter(moment(b.date))) {
-                    return 1
-                }
-                return -1
-            })
-			//merge
+                    if (moment(a.date).isAfter(moment(b.date))) {
+                        return 1
+                    }
+                    return -1
+                })
+                //merge
 
 
             if (skipcallback != true) {
@@ -318,6 +380,7 @@ var svc_usr = function() {
                 tmp.detail = "[]"
             }
             $$.each(tmp.booked, function(i, v) {
+                v.showplan = false
                 var submit = function(pdata, onsuccess, onfail) {
                     $$.ajax({
                         url: R.train(v),
@@ -426,6 +489,7 @@ var svc_usr = function() {
                             },
                             completed: false,
                             showscale: false,
+                            showplan: this.showplan,
                             weight: 0,
                             //photos: ["http://img3.imgtn.bdimg.com/it/u=1410273274,160173719&fm=21&gp=0.jpg"],
                             photos: [],
@@ -437,6 +501,7 @@ var svc_usr = function() {
                         //set date
                     item.id = this.id
                     var date = moment(this.date)
+                    item.datestr = this.date
                     item.date.day = date.format("DD")
                     item.date.month = date.format("MMMM")
                         //set photos weight
@@ -480,7 +545,8 @@ var svc_usr = function() {
 
                     return item
                 }
-                history.push(v)
+                pushHistory(v)
+                    //history.push(v)
             })
             if (!order.alltrains) {
                 order.alltrains = []
@@ -494,7 +560,7 @@ var svc_usr = function() {
         $$.get(R.orders(usr.name), function(data) {
             usr.orders = JSON.parse(data).results
             usr.history = []
-			loadTrainPlan()
+            loadTrainPlan()
             count_items = usr.orders.length
             $$.each(usr.orders, function(i, v) {
                 loadOrderDetail(v, skipcallback)
@@ -524,10 +590,10 @@ var svc_usr = function() {
         user: function() {
             return usr
         },
-		plan: function() {
-			return plan
-		},
-		getTrainDetail: getTrainDetail,
+        plan: function() {
+            return plan
+        },
+        getTrainDetail: getTrainDetail,
         init: init,
         getCurrentOrder: getCurrentOrder,
         submitBook: submitBook,
@@ -553,7 +619,7 @@ var home = app.onPageInit("home", function(page) {
         for (var i = 0; i < history.length; i++) {
 
             var v = history[i]
-			var timelineobj = v.getTimeLineCard()
+            var timelineobj = v.getTimeLineCard()
 
             var item = T.timelineitem(timelineobj)
 
@@ -582,12 +648,12 @@ var home = app.onPageInit("home", function(page) {
                 }
             })
         })
-		$$(".showplan").on("click", function(e){
-			var tar = this
-			e.stopPropagation()
-			mainView.router.loadPage(pages.plandetail)
-			current_plan_date = $$(tar).attr("data-date")
-		})
+        $$(".showplan").on("click", function(e) {
+            var tar = this
+            e.stopPropagation()
+            mainView.router.loadPage(pages.plandetail)
+            current_plan_date = $$(tar).attr("data-date")
+        })
         $$(".camera").on("click", function(e) {
                 var tar = this
                 e.stopPropagation()
@@ -684,18 +750,60 @@ var home = app.onPageInit("home", function(page) {
             error: onfail
         })
     }
-	$$("#btn-newpwd").on("click", function(){
-		if($$("#newpwd").val().length < 8){
-			notify("密码至少8位")
-			return 
-		}
+    $$("#reset-pwd").on("click", function() {
+        if ($$("#phone").val().length != 11) {
+            notify("请输入11位手机号码")
+            return
+        }
+        svc_login.getvcode($$("#phone").val(), function() {
+            notify("验证码已发送");
+            $$("#reset-pwd").hide();
+            $$("#pwd").attr("placeholder", "验证码");
+            $$("#o2-login-btn-touch").hide();
+            $$(".pwdinit").show()
+
+        })
+    })
+    $$("#btn-newpwd").on("click", function() {
+        if ($$("#newpwd").val().length < 8) {
+            notify("密码至少8位")
+            return
+        }
         initPwd($$("#phone").val(), $$("#pwd").val(), $$("#newpwd").val(), function(data) {
-			notify("密码设置成功")
+            notify("密码设置成功")
             app.closeModal()
+            Cookies.set("user", $$("#phone").val(), {
+                expires: 365
+            })
+            var t = JSON.parse(data).token
+            Cookies.set("token", t, {
+                expires: 365
+            })
+            svc_usr.init($$("#phone").val(), function() {
+                    isBusy = false
+                    $$(".o2-book-header-coach img").attr("src", svc_usr.user().avatar.fixSize())
+                    console.log(data);
+                    $$("#o2-login-btn").html("登录")
+                    if ($$("#pwd").val().length > 6) {
+                        app.closeModal()
+                    } else {
+                        $$(".login-options").hide()
+                        $$(".pwdinit").show()
+                    }
+                },
+                function() {
+                    var noti = app.addNotification({
+                        title: '读取信息失败',
+                        message: '获取用户信息失败，请稍后重试',
+                    });
+                    setTimeout(function() {
+                        app.closeNotification(noti)
+                    }, 3000);
+                }, renderTimeline)
         }, function(data) {
             notify("密码设置失败,请刷新后重试")
         })
-	})
+    })
 
 
 
@@ -722,7 +830,7 @@ var home = app.onPageInit("home", function(page) {
                         $$("#o2-login-btn").html("登录")
                         if ($$("#pwd").val().length > 6) {
                             app.closeModal()
-						} else {
+                        } else {
                             $$(".login-options").hide()
                             $$(".pwdinit").show()
                         }
@@ -753,39 +861,39 @@ var home = app.onPageInit("home", function(page) {
     })
 }).trigger()
 
-app.onPageInit("plandetail", function(page){
+app.onPageInit("plandetail", function(page) {
 
     var date = moment(current_plan_date)
-	//$$("#train-month").html(date.format("MMMM"))
-	$$("#train-day").html(current_plan_date.replace(/-/g,"/"))
+        //$$("#train-month").html(date.format("MMMM"))
+    $$("#train-day").html(current_plan_date.replace(/-/g, "/"))
 
-	function build_plan_str(v){
-		var units = v.units.split("|")
-		var ret = v.weight + units[0]
-		if(units[1]){
-			ret += "*"
-			ret += v.repeattimes
-			ret += units[1]
-		}
-		return ret
-	}
+    function build_plan_str(v) {
+        var units = v.units.split("|")
+        var ret = v.weight + units[0]
+        if (units[1]) {
+            ret += "*"
+            ret += v.repeattimes
+            ret += units[1]
+        }
+        return ret
+    }
 
     $$(".back").on("click", function() {
         mainView.router.back();
     })
-	svc_usr.getTrainDetail(current_plan_date, function(resp){
-		$$.each(resp, function(i,v){
-			v.plan_str = build_plan_str(v)
-			v.action_cls = ''
-			if(i != 0 && resp[i-1].action_name == v.action_name){
-				v.action_name = ''
-				v.action_cls = "no-name"
-				
-			}
-			$$("#plan-detail").append(T.planitem(v))
-		})
-	})
-	
+    svc_usr.getTrainDetail(current_plan_date, function(resp) {
+        $$.each(resp, function(i, v) {
+            v.plan_str = build_plan_str(v)
+            v.action_cls = ''
+            if (i != 0 && resp[i - 1].action_name == v.action_name) {
+                v.action_name = ''
+                v.action_cls = "no-name"
+
+            }
+            $$("#plan-detail").append(T.planitem(v))
+        })
+    })
+
 })
 
 app.onPageInit('about', function(page) {
