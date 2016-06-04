@@ -96,6 +96,12 @@ class OrderItemById(generics.RetrieveUpdateDestroyAPIView):
 			order.product.save()
 		'''
 		return ret
+	def delete(self, request, *args, **kwargs):
+            order = self.get_object()
+            Schedule.objects.filter(order=order).delete()
+	    return super(OrderItemById,self).delete(request,args, kwargs)
+            
+
 
 
 class OrderItemByBillid(generics.RetrieveAPIView):
