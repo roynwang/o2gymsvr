@@ -764,6 +764,7 @@ var home = app.onPageInit("home", function(page) {
 
         })
     })
+
     $$("#btn-newpwd").on("click", function() {
         if ($$("#newpwd").val().length < 8) {
             notify("密码至少8位")
@@ -804,8 +805,6 @@ var home = app.onPageInit("home", function(page) {
             notify("密码设置失败,请刷新后重试")
         })
     })
-
-
 
     $$("#o2-login-btn-touch").on("click", function() {
         if (isBusy) return
@@ -1096,8 +1095,6 @@ app.onPageInit('about', function(page) {
 
     function buildDayView() {
         //TODO get date status
-
-
         var rows = '<div class="list-block"><ul>##</ul></div>'
         var hour = '<li class="item-content" data-hour="#hour#">' +
             '<div class="item-media"><span class="hour">##</span><span class="min">00</span></div>' +

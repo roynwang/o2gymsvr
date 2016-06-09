@@ -133,9 +133,12 @@ var R = {
     login: "/api/lg/",
     refreshToken: "/api/t/",
     wxinit: "/api/wx/signature/",
-	trainbydate: function(phone,date){
-		return "/api/" + phone + "/t/" + date + "/"
-	},
+    newaction: function(phone, cate) {
+        return "/api/" + phone + "/workout/" + cate + "/"
+    },
+    trainbydate: function(phone, date) {
+        return "/api/" + phone + "/t/" + date + "/"
+    },
     gym: function(gymid) {
         return "/api/g/" + gymid + "/"
     },
@@ -196,6 +199,7 @@ var R = {
 var Actions = {}
 
 function initActions() {
+    Actions = {}
     $$.each([1, 2, 3, 4, 5], function(i, v) {
         $$.getJSON(R.workout_action(Cookies.get("user"), v), function(data) {
             $$.each(data, function(i, v) {
@@ -816,63 +820,6 @@ app.onPageInit("storemanage", function(page) {
         })
     }
 
-    function refreshCustomers() {
-        var coach = Cookies.get("user")
-        svc_usr.getCustomer(coach, function(data) {
-            $$("#customerlist").html("")
-            $$("#customerlist").append(T.customers({
-                customers: data
-            }))
-            $$("#customerlist .customer-item").on("click", function() {
-                $$("#customertraindetail").html("")
-                var phone = $$(this).find(".item-title").attr("data-phone")
-                $$("#customerlist .customer-item").removeClass("active")
-                renderCustomerTrain(phone)
-                $$(this).addClass("active")
-				currentCustomer = phone
-            })
-        })
-    }
-
-    function renderCustomerTrain(customer) {
-        svc_usr.getCustomerTrain(customer, function(data) {
-            $$("#customertrain").html("")
-            $$("#customertrain").append(T.customer_train({
-                trains: data
-            }))
-            var tpl = '<li class="item-content"><div><a class="button" href="/static/storesale/newtrain.html">添加</a></div></li>'
-            $$("#customertrain ul").prepend(tpl)
-            $$("#customertrain .train-date").on("click", function() {
-                $$("#customertrain .train-date").removeClass("active")
-                var date = $$(this).find(".item-title").attr("data-date")
-                var phone = $$(".customer-item.active .item-title").attr("data-phone")
-                renderTrainDetail(phone, date)
-                $$(this).addClass("active")
-
-            })
-        })
-    }
-
-    function renderTrainDetail(customer, date) {
-        svc_usr.getTrainDetail(customer, date, function(data) {
-            $$("#customertraindetail").html("")
-            $$.each(data, function(i, v) {
-                var units = v.units.split("|")
-                v.strleft = v.weight + units[0]
-                v.strright = ""
-                if (units.length == 2) {
-                    v.strright = "*" + v.repeattimes + units[1]
-                }
-                if (i > 0 && v.action_order == data[i-1].action_order) {
-                    v.action_name = ""
-                }
-            })
-            $$("#customertraindetail").append(T.train_detail({
-                trains: data
-            }))
-        })
-    }
-
     function refresh(date) {
         if (date == undefined) {
             date = currentdate
@@ -919,6 +866,74 @@ app.onPageInit("storemanage", function(page) {
         }
     });
     refresh()
+})
+
+app.onPageInit("managecourse", function(page) {
+    app.closePanel()
+    function refreshCustomers() {
+        var coach = Cookies.get("user")
+        svc_usr.getCustomer(coach, function(data) {
+            $$("#customerlist").html("")
+            $$("#customerlist").append(T.customers({
+                customers: data
+            }))
+            $$("#customerlist .customer-item").on("click", function() {
+                $$("#customertraindetail").html("")
+                var phone = $$(this).find(".item-title").attr("data-phone")
+                $$("#customerlist .customer-item").removeClass("active")
+                renderCustomerTrain(phone)
+                $$(this).addClass("active")
+                currentCustomer = phone
+            })
+        })
+    }
+
+    function renderCustomerTrain(customer) {
+        svc_usr.getCustomerTrain(customer, function(data) {
+            $$("#customertrain").html("")
+            $$("#customertrain").append(T.customer_train({
+                trains: data
+            }))
+            var tpl = '<li class="item-content"><div><a class="button" href="/static/storesale/newtrain.html">添加</a></div></li>'
+            $$("#customertrain ul").prepend(tpl)
+            $$("#customertrain .train-date").on("click", function() {
+                $$("#customertrain .train-date").removeClass("active")
+                var date = $$(this).find(".item-title").attr("data-date")
+                var phone = $$(".customer-item.active .item-title").attr("data-phone")
+                renderTrainDetail(phone, date)
+                $$(this).addClass("active")
+
+            })
+        })
+    }
+
+    function renderTrainDetail(customer, date) {
+        svc_usr.getTrainDetail(customer, date, function(data) {
+            $$("#customertraindetail").html("")
+            $$.each(data, function(i, v) {
+                var units = v.units.split("|")
+                v.strleft = v.weight + units[0]
+                v.strright = ""
+                if (units.length == 2) {
+                    v.strright = "*" + v.repeattimes + units[1]
+                }
+                if (i > 0 && v.action_order == data[i - 1].action_order) {
+                    v.action_name = ""
+                }
+            })
+            $$("#customertraindetail").append(T.train_detail({
+                trains: data
+            }))
+        })
+    }
+    var calendarDefault = app.calendar({
+        input: '#calendar-default',
+        closeOnSelect: true,
+        value: [new Date()],
+        onClose: function(p) {
+            refresh(p.input.val())
+        }
+    });
     refreshCustomers()
 })
 
@@ -992,76 +1007,145 @@ app.onPageInit("freecourseform", function(page) {
 
 })
 
+app.onPageInit("newaction", function(page) {
+    function cleanData() {
+        $$("#newaction-name").val("");
+        $$("#newaction-units").val("");
+        $$("#newaction-muscle").val("");
+    }
+
+    function buildAction() {
+        var data = {
+            "categeory": $$("#newaction-cate").val(),
+            "name": $$("#newaction-name").val(),
+            "units": $$("#newaction-units").val(),
+            "muscle": $$("#newaction-muscle").val(),
+            "workouttype": "力量",
+            "by": ""
+        }
+        for (var k in data) {
+            if (k != "by" && data[k] == "") {
+                notify("失败", "字段不能为空")
+                return false
+            }
+        }
+        return data
+
+    }
+    $$("#new-action-submit").on("click", function() {
+        var data = buildAction()
+        if (!data) {
+            return
+        }
+        $$.ajax({
+            url: R.newaction(svc_usr.user().name, data.categeory),
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function(resp) {
+                console.log(resp)
+                notify("成功", "添加新动作成功,您可以继续添加")
+                initActions()
+                cleanData()
+            },
+            error: function(resp) {
+                notify("失败", "请检查输入后重试")
+            }
+        })
+
+
+    })
+})
+
 app.onPageInit("newtrain", function(page) {
     var plan = []
 
+	$$("#train-date-input").on("change",function(){
+		if($$("#train-date-input").val() && $$("#train-date-input").val().length>5){
+			$$("#workout-cate").show();
+		} else {
+			$$("#workout-cate").hide();
+		}
+	})
 
-	function actionToTrain(action, action_order, groupid){
-		var train = {}
-		train.action_name = action.name
-		train.weight = ''
-		if(action.v0){
-			train.weight = action.v0
-		}
-		train.repeattimes = ''
-		if(action.v1){
-			train.repeattimes = action.v1
-		}
-		train.units	= action.units
-		train.action_order = action_order
-		train.groupid = groupid
-		train.name = currentCustomer
-		train.date = $$("#train-date-input").val()
-		return train
-	}
+    function actionToTrain(action, action_order, groupid) {
+        var train = {}
+        train.action_name = action.name
+        train.weight = ''
+        if (action.v0) {
+            train.weight = action.v0
+        }
+        train.repeattimes = ''
+        if (action.v1) {
+            train.repeattimes = action.v1
+        }
+        train.units = action.units
+        train.action_order = action_order
+        train.groupid = groupid
+        train.name = currentCustomer
+        train.date = $$("#train-date-input").val()
+        return train
+    }
 
-	function wrapPlan(){
-		var ai = 0;
-		var gi = 0;
-		var ret = []
-		for(var i in plan){
-			if(i != 0 && plan[i].name != plan[i-1].name){
-				ai ++
-				gi = 0
-			}
-			ret.push(actionToTrain(plan[i], ai, gi))
-			gi ++
-		}
-		return ret
-	}
+    function wrapPlan() {
+        var ai = 0;
+        var gi = 0;
+        var ret = []
+        for (var i in plan) {
+            if (i != 0 && plan[i].name != plan[i - 1].name) {
+                ai++
+                gi = 0
+            }
+            ret.push(actionToTrain(plan[i], ai, gi))
+            gi++
+        }
+        return ret
+    }
 
     function getrange(unit) {
         if (unit.toLowerCase() == "kg") {
             return range(0, 120, 0.5)
         }
-		
+
         return range(0, 120, 0.5)
     }
-	function bindRemove(){
-		$$(".plan-detail-item .action-remove").on("click", function(){
-			var index = $$(this).attr("data-index")
-			plan.splice(index, 1)	
-			renderPlan()
-		})
-	}
+
+    function bindRemove() {
+        $$(".plan-detail-item .action-remove").on("click", function() {
+            var index = $$(this).attr("data-index")
+            plan.splice(index, 1)
+            renderPlan()
+        })
+    }
+
+    function bindCopy() {
+        $$(".plan-detail-item .action-copy").on("click", function() {
+            var index = $$(this).attr("data-index")
+                //add here
+            var newitem = JSON.parse(JSON.stringify(plan[index]));
+            plan.splice(index, 0, newitem)
+            renderPlan()
+        })
+    }
 
 
     function bindPicker() {
         $$("#plan-detail input").on("click", function() {
-			var v = $$(this).attr("data-v")
-			var index = $$(this).attr("data-index")
-		
+            var v = $$(this).attr("data-v")
+            var index = $$(this).attr("data-index")
+
             var picker = app.picker({
                 input: "#" + $$(this).attr("id"),
+                value: [$$(this).val()],
                 cols: [{
-					textAlign:"center",
-					values: getrange($$(this).attr("data-unit"))
-				}],
-				onClose: function(p){
-					plan[index][v] = p.value[0]
-				}
+                    textAlign: "center",
+                    values: getrange($$(this).attr("data-unit"))
+                }],
+                onClose: function(p) {
+                    plan[index][v] = p.value[0]
+                }
             })
-			picker.open()
+            picker.open()
         })
     }
 
@@ -1070,8 +1154,9 @@ app.onPageInit("newtrain", function(page) {
         $$("#plan-detail").append(T.plan_detail({
             trains: plan
         }))
-		bindPicker()
-		bindRemove()
+        bindRemove()
+        bindCopy()
+        bindPicker()
     }
     $$("#workout-cate .item-content").on("click", function() {
         var ai = $$(this).attr("data-id")
@@ -1080,6 +1165,7 @@ app.onPageInit("newtrain", function(page) {
             cate: ai,
             trains: Actions[ai]
         }))
+
         $$("#workout-action .workout-action-item").on("click", function() {
             var actionid = $$(this).attr("data-id")
             $$.each(Actions[ai], function(i, v) {
@@ -1090,35 +1176,38 @@ app.onPageInit("newtrain", function(page) {
             })
         })
     })
-	function submitPlan(){
-		var datestr = $$("#train-date-input").val().replace(/-/g,"")
-		
-		var fullplan = wrapPlan() 
+
+    function submitPlan() {
+        var datestr = $$("#train-date-input").val().replace(/-/g, "")
+
+        var fullplan = wrapPlan()
         $$.ajax({
             url: R.trainbydate(currentCustomer, datestr),
             method: "POST",
-			contentType: "application/json",
+            contentType: "application/json",
             data: JSON.stringify(fullplan),
-            success: function(resp){
-				console.log(resp)
-			},
-            error: function(resp){
-				console.log(resp)
-			}
+            success: function(resp) {
+                console.log(resp)
+                notify("成功", "添加训练计划成功")
+                mainView.router.back()
+            },
+            error: function(resp) {
+                console.log(resp)
+            }
         })
-	}
+    }
 
-	var calendarDefault = app.calendar({
-	    input: '#train-date-input',
-		closeOnSelect: true
-	});          
+    var calendarDefault = app.calendar({
+        input: '#train-date-input',
+        closeOnSelect: true
+    });
 
 
-	$$("#plan-submit").on("click", function(){
-		var ret = wrapPlan() 
-		submitPlan()
-		console.log(ret)
-	})
+    $$("#plan-submit").on("click", function() {
+        var ret = wrapPlan()
+        submitPlan()
+        console.log(ret)
+    })
 })
 app.onPageInit("payonline", function(page) {
     app.closePanel()

@@ -21,6 +21,8 @@
             </p>
             <p class="o2-menu-item"><a href="/static/storesale/storemanage.html">店面管理</a>
             </p>
+            <p class="o2-menu-item"><a href="/static/storesale/managecourse.html">训练内容</a>
+            </p>
             <p class="o2-menu-item"><a href="/static/storesale/payonline.html">线上支付</a>
             </p>
             <p class="o2-menu-item"><a href="/static/storesale/food.html">FitNow/非闹</a></p>
@@ -294,13 +296,18 @@
             <div class="item-inner">
 				<div class="item-title row" style="width:100%;font-size:18px;">
 					<div class="col-10">
+						<span class="button ion-ios-copy-outline action-copy" style="font-size:24px" data-index={{@index}}></span>
+					</div>
+					<div class="col-10">
 						<span class="button ion-ios-close-empty action-remove" style="font-size:24px" data-index={{@index}}></span>
 					</div>
-					<div class="col-50" style="padding-left:5px">
+					<div class="col-40" style="padding-left:5px">
 						{{name}}
 					</div>
-					<div class="col-20">{{unit0}}<input data-v="v0"  value="{{v0}}" data-index={{@index}} id="u0_{{@index}}" data-unit="{{unit0}}"></div>
-					<div class="col-20">{{unit1}}<input data-v="v1" value="{{v1}}" data-index={{@index}}  id="u1_{{@index}}" data-unit="{{unit1}}"></div>
+					<div class="col-20"><input style="width:100%;font-size:14px" data-v="v0"  value="{{v0}}" data-index={{@index}}
+					id="u0_{{@index}}" data-unit="{{unit0}}" placeholder='{{unit0}}'></div>
+					<div class="col-20"><input style="width:100%;font-size:14px"  data-v="v1" value="{{v1}}" data-index={{@index}}
+					id="u1_{{@index}}" data-unit="{{unit1}}" placeholder='{{unit1}}'></div>
 				</div>
             </div>
         </li>

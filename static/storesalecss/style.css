@@ -735,3 +735,11 @@
 #food-gallary img{
 	width: 100%;
 }
+.button {
+	color: rgb(87, 193, 199);
+	border-color:rgb(87, 193, 199);
+	border-width: 1px;
+}
+.button.active{
+	background:rgb(87, 193, 199);
+}
