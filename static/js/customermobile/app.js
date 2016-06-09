@@ -862,6 +862,7 @@ var home = app.onPageInit("home", function(page) {
 
 app.onPageInit("plandetail", function(page) {
 
+    $$(".o2-book-header-coach img").attr("src", svc_usr.user().avatar.fixSize())
     var date = moment(current_plan_date)
         //$$("#train-month").html(date.format("MMMM"))
     $$("#train-day").html(current_plan_date.replace(/-/g, "/"))
