@@ -884,7 +884,8 @@ app.onPageInit("plandetail", function(page) {
         $$.each(resp, function(i, v) {
             v.plan_str = build_plan_str(v)
             v.action_cls = ''
-            if (i != 0 && resp[i - 1].action_name == v.action_name) {
+			v.action_name_str = v.action_name
+            if (i != 0 && resp[i - 1].action_name_str == v.action_name) {
                 v.action_name = ''
                 v.action_cls = "no-name"
 
