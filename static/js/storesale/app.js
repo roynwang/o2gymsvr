@@ -207,7 +207,7 @@ function initActions() {
                 v.unit0 = units[0]
                 v.unit1 = ""
                 if (units.length > 1) {
-                    v.unit1 = v.units[1]
+                    v.unit1 = units[1]
                 }
             })
             Actions[v] = data
