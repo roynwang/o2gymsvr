@@ -1104,10 +1104,15 @@ app.onPageInit("newtrain", function(page) {
 
     function getrange(unit) {
         if (unit.toLowerCase() == "kg") {
-            return range(0, 120, 0.5)
+            return range(0.5, 100, 0.5)
         }
-
-        return range(0, 120, 0.5)
+		if (unit == "个" || unit == '次'){
+	        return range(1, 30, 1)
+		}
+		if (unit == '分'){
+	        return range(0, 60, 5)
+		}
+		return range(0, 120, 0.5)
     }
 
     function bindRemove() {
