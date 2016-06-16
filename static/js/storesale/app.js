@@ -1107,7 +1107,7 @@ app.onPageInit("newtrain", function(page) {
             return range(0.5, 100, 0.5)
         }
 		if (unit == "个" || unit == '次'){
-	        return range(1, 30, 1)
+	        return range(1, 60, 1)
 		}
 		if (unit == '分'){
 	        return range(0, 60, 5)
