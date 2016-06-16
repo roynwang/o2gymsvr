@@ -22,6 +22,12 @@ function range(start, end, step) {
     return ret
 }
 
+function keysrt(key, desc) {
+    return function(a, b) {
+        return desc ? ~~(a[key] < b[key]) : ~~(a[key] > b[key]);
+    }
+}
+
 
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
 
@@ -210,7 +216,16 @@ function initActions() {
                     v.unit1 = units[1]
                 }
             })
-            Actions[v] = data
+            Actions[v] = data.sort(function(a, b) {
+                var nA = a.pinyin.toLowerCase().replace(/ /g, '');
+                var nB = b.pinyin.toLowerCase().replace(/ /g, '');
+                if (nA < nB)
+                    return -1;
+                else if (nA > nB)
+                    return 1;
+                return 0;
+            })
+
         })
     })
 }
@@ -870,6 +885,7 @@ app.onPageInit("storemanage", function(page) {
 
 app.onPageInit("managecourse", function(page) {
     app.closePanel()
+
     function refreshCustomers() {
         var coach = Cookies.get("user")
         svc_usr.getCustomer(coach, function(data) {
@@ -1060,13 +1076,13 @@ app.onPageInit("newaction", function(page) {
 app.onPageInit("newtrain", function(page) {
     var plan = []
 
-	$$("#train-date-input").on("change",function(){
-		if($$("#train-date-input").val() && $$("#train-date-input").val().length>5){
-			$$("#workout-cate").show();
-		} else {
-			$$("#workout-cate").hide();
-		}
-	})
+    $$("#train-date-input").on("change", function() {
+        if ($$("#train-date-input").val() && $$("#train-date-input").val().length > 5) {
+            $$("#workout-cate").show();
+        } else {
+            $$("#workout-cate").hide();
+        }
+    })
 
     function actionToTrain(action, action_order, groupid) {
         var train = {}
@@ -1106,13 +1122,13 @@ app.onPageInit("newtrain", function(page) {
         if (unit.toLowerCase() == "kg") {
             return range(0.5, 100, 0.5)
         }
-		if (unit == "个" || unit == '次'){
-	        return range(1, 60, 1)
-		}
-		if (unit == '分'){
-	        return range(0, 60, 5)
-		}
-		return range(0, 120, 0.5)
+        if (unit == "个" || unit == '次') {
+            return range(1, 60, 1)
+        }
+        if (unit == '分') {
+            return range(0, 60, 5)
+        }
+        return range(0, 120, 0.5)
     }
 
     function bindRemove() {
