@@ -38,8 +38,7 @@
 						margin-left:20px;min-height:50px;" class="w-clearfix w-inline-block"
                         ng-repeat="c in ctrl.selecting" ng-click="ctrl.selectcustomer(c)">
                             <div class="nav-menu-titles">{{c.displayname}}</div>
-                            <span ng-show="ctrl.selectedItem == c" class="icon-list-menu" style="float: right;width: 30px;padding-left:
-					10px;margin-right: 10px;">
+                            <span ng-show="ctrl.selectedItem == c" class="icon-list-menu" style="float: right;width: 30px;padding-left:10px;margin-right: 10px;">
 								<a style="color:#4fd2c2" class="ion-ios-checkmark-outline"></a>
 					     </span>
                         </li>
@@ -231,10 +230,29 @@
             <div class="md-toolbar-tools" layout="row" layout-align="center center">
                 <h4 style="text-align:center">客户列表</h4>
             </div>
+                    <div layout="row" flex style="margin-bottom: 0px;
+				    margin-top: -10px;
+					    padding-left: 10px;font-size:16px;">
+                        <md-input-container flex md-no-float class="md-block"
+						style="padding-right:15px;margin-bottom:0" ng-click="ctrl.searchText = undefined">
+                            <input ng-click="ctrl.searchText = undefined;
+							ctrl.querySearchCustomer()" ng-model="ctrl.searchText"
+							placeholder="请输入姓名/首字母" ng-change="ctrl.querySearchCustomer()"
+                            style="border-color:#4fd2c2">
+                        </md-input-container>
+
+						<div flex=10 layout="row" layout-align="center center">
+	                    <div flex class="ion-backspace" style="color:#4fd2c2;    font-size:
+							20px;margin-left: -8px;"
+							ng-click="ctrl.searchText=undefined;ctrl.querySearchCustomer()"></div>
+	                    </div>
+					</div>
+
         </md-toolbar>
         <md-content layout-padding>
             <div style="width:85%; border-bottom: solid 1px #eee;padding: 0px; margin-left:20px;"
-            ng-click="ctrl.showcustomer(c)" class="w-clearfix w-inline-block" ng-repeat="c in ctrl.customerlist">
+            ng-click="ctrl.showcustomer(c)" class="w-clearfix w-inline-block" ng-repeat="c in
+			ctrl.customershowing">
                 <!--
                 <a style="font-size: 25px;" href="sms:{{c.name}}" class="course-time icon-list highlighted">
                     <div class="ion-ios-chatbubble-outline"></div>

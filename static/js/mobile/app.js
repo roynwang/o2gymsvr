@@ -726,6 +726,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                             return a.pinyin.localeCompare(b.pinyin)
                         })
                         that.selecting = that.customerlist
+						that.customershowing = that.customerlist
                     },
                     function(data) {})
         }
@@ -868,6 +869,18 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 return item.displayname.indexOf(key) >= 0 || item.pinyin.replace(/ /g, "").indexOf(key) >= 0
             })
         }
+        that.querySearchCustomer = function() {
+            var key = that.searchText
+            if (key == undefined) {
+                that.customershowing = that.customerlist
+                return
+            }
+            that.customershowing = _.filter(that.customerlist, function(item) {
+                return item.displayname.indexOf(key) >= 0 || item.pinyin.replace(/ /g, "").indexOf(key) >= 0
+            })
+
+        }
+
 
         that.bookmap = []
         that.buildbookmap = function() {
@@ -1870,6 +1883,7 @@ app.controller("TrainDetailCtrl", ["Restangular", "$paramssvc", "$mdDialog", "$u
             $mdDialog.cancel();
         }
         that.uploading = false
+		that.notes = ""
         that.addphoto = function($files) {
             that.uploading = true
             $uploader.upload($files[0], function(data) {
