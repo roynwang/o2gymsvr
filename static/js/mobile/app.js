@@ -699,7 +699,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.toggleMenu = function(direction) {
             $mdSidenav(direction)
                 .toggle()
-                .then(function() {});
+                .then(function() {
+					that.searchText = undefined
+					that.querySearchCustomer();
+				});
         }
         that.cancelselect = function() {
             that.isSelecting = false
