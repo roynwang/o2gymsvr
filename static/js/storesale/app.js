@@ -115,9 +115,9 @@ var P = [{
     id: 2,
     level: "乐享",
     subtitle: "Enjoy",
-    course_count: 40,
+    course_count: 48,
     off: 7.0,
-    price: 10000,
+    price: 12000,
     duration: 8
 }]
 
