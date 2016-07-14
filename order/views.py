@@ -294,6 +294,8 @@ class GymChart(APIView):
 		else:
 		        start = end - datetime.timedelta(days=365)
 
+		end = end + datetime.timedelta(days=1)
+
 		orders = Order.objects.filter(gym=get_object_or_404(Gym,id=gymid),paidtime__range=[start,end]) \
 				.extra({'paidday': "date_format(date(CONVERT_TZ(`paidtime`,'+00:00','+08:00')),'%%Y%%m')"}) \
 				.values('paidday') \
