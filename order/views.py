@@ -282,6 +282,27 @@ class GymSoldRange(APIView):
 				.annotate(sold_count=Count('amount'))
 		return Response(orders)
 
+class GymChart(APIView):
+	def get(self,request,gymid):
+		if "end" in request.GET:
+			end = datetime.datetime.strptime(request.GET["end"], "%Y%m%d")
+		else:
+			end = datetime.date.today()
+
+		if "start" in request.GET:
+			start = datetime.datetime.strptime(request.GET["start"], "%Y%m%d")
+		else:
+		        start = end - datetime.timedelta(days=365)
+
+		orders = Order.objects.filter(gym=get_object_or_404(Gym,id=gymid),paidtime__range=[start,end]) \
+				.extra({'paidday': "date_format(date(CONVERT_TZ(`paidtime`,'+00:00','+08:00')),'%%Y%%m')"}) \
+				.values('paidday') \
+				.annotate(sold_pirce=Sum('amount')) \
+				.annotate(sold_count=Count('amount')) \
+				.annotate(sold_course=Sum('product__amount'))
+		return Response(orders)
+
+
 
 class GymSoldDay(APIView):
 	def cal_course_income(self,query):

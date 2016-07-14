@@ -158,6 +158,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/sale",
             templateUrl: "/static/console/sale.html",
         })
+        .state('history', {
+            url: "/history",
+            templateUrl: "/static/console/history.html",
+        })
         .state('salarysetting', {
             url: "/salarysetting",
             templateUrl: "/static/console/salarysetting.html",
@@ -1197,6 +1201,120 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
     }
 
 ])
+
+
+app.controller("HistoryCtrl", ['$scope', "Restangular", "NgTableParams", "$login",
+    function($scope, Restangular, NgTableParams, $login) {
+        var gymid = $.cookie("gym")
+        var that = this
+        that.startday = new Date().addMonths(-6)
+        that.endday = new Date();
+        that.startday_str = that.startday.Format("yyyy-MM-dd")
+        that.endday_str = that.endday.Format("yyyy-MM-dd")
+
+        that.is_admin = false
+        that.errmsg = ""
+        that.pwd = ""
+
+
+        that.refresh = function() {
+            that.startday = new Date(Date.parse(that.startday_str))
+            that.endday = new Date(Date.parse(that.endday_str))
+            Restangular.one("api/g", gymid)
+                .one("chart")
+                .get({
+                    start: that.startday.Format("yyyyMMdd"),
+                    end: that.endday.Format("yyyyMMdd")
+                })
+                .then(function(data) {
+                    that.salepricechart = {
+                        labels: [],
+                        series: ["总价"],
+                        data: [
+                            []
+                        ]
+                    }
+                    that.salecountchart = {
+                        labels: [],
+                        series: ["单数"],
+                        data: [
+                            []
+                        ]
+                    }
+                    that.coursecountchart = {
+                        labels: [],
+                        series: ["课数"],
+                        data: [
+                            []
+                        ]
+                    }
+
+                    that.coursepricechart = {
+                        labels: [],
+                        series: ["均价"],
+                        data: [
+                            []
+                        ]
+                    }
+
+                    that.monthdata = data
+                    _.each(that.monthdata, function(item) {
+                        that.salepricechart.labels.push(item.paidday)
+                        that.salecountchart.labels.push(item.paidday)
+                        that.coursecountchart.labels.push(item.paidday)
+                        that.coursepricechart.labels.push(item.paidday)
+                        item.course_price = parseInt(item.sold_pirce / item.sold_course)
+
+                        that.salepricechart.data[0].push(item.sold_pirce)
+                        that.salecountchart.data[0].push(item.sold_count)
+                        that.coursecountchart.data[0].push(item.sold_course)
+                        that.coursepricechart.data[0].push(parseInt(item.sold_pirce / item.sold_course))
+                    })
+                })
+        }
+
+
+        that.is_admin = $.cookie("admin_confirmed")
+        that.submit = function() {
+            if (that.pwd == undefined || that.pwd.length == 0) {
+                that.errmsg("请输入密码")
+                return
+            }
+            $login.login($.cookie("user"), that.pwd,
+                function(data) {
+                    $.cookie("token", data.token, {
+                        path: '/'
+                    })
+                    var date = new Date();
+                    date.setTime(date.getTime() + (2 * 60 * 1000));
+                    $.cookie("admin_confirmed", true, {
+                        path: '/',
+                        expires: date
+                    })
+                    that.is_admin = true
+                },
+                function(data) {
+                    $.cookie("admin_confirmed", false, {
+                        path: '/',
+                    })
+                    that.is_admin = false
+                    that.errmsg = "密码验证失败"
+                })
+        }
+
+        that.open = function($event) {
+            if ($event == "start") {
+                that.startopened = true
+            } else {
+                that.endopened = true
+            }
+        };
+        that.startopend = false
+        that.endopend = false
+        that.refresh()
+    }
+])
+
 
 app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$login",
     function($scope, Restangular, NgTableParams, $login) {
