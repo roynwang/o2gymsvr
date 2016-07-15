@@ -1483,7 +1483,7 @@ app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$cust
             document.body.appendChild(link);
             SweetAlert.swal({
                     title: "开始导出",
-                    text: "导出可能需要30秒时间，请耐心等待",
+                    text: "导出可能需要较长时间，请耐心等待",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#1fb5ad",
