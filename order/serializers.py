@@ -3,6 +3,7 @@ from order.models import *
 from business.models import *
 from business.serializers import *
 from usr.serializers import *
+import datetime
 
 
 
@@ -79,9 +80,13 @@ class GymBackupSerilaizer(serializers.ModelSerializer):
 	complete_count = serializers.SerializerMethodField()
 	course_count = serializers.SerializerMethodField()
         customer_name = serializers.SerializerMethodField()
+        paid_time = serializers.SerializerMethodField()
         class Meta:
             model = Order
-            fields = ['customer_name', 'custom', 'paidtime','amount', 'course_count','complete_count']
+            fields = ['customer_name', 'custom', 'paid_time','amount', 'course_count','complete_count']
+        def get_paid_time(self, obj):
+            d = obj.paidtime + datetime.timedelta(hours=8)
+            return datetime.datetime.strftime(d,"%Y-%m-%d %H:%M:%S")
 
 	def get_complete_count(self, obj):
 		return obj.schedule_set.filter(deleted = False, done = True).count()
