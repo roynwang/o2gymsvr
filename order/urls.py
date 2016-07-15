@@ -16,5 +16,6 @@ urlpatterns = patterns('',
 		url(r'^api/g/(?P<gymid>[0-9]+)/sold/(?P<day>[0-9]+)/$',GymSoldDay.as_view()),
 		url(r'^api/g/(?P<gymid>[0-9]+)/customers/$',GymCustomers.as_view()),
 		url(r'^pay/success/$',alipay_success),
-		url(r'^pay/cancel/$',TemplateView.as_view(template_name="paycancel.html"))
+		url(r'^pay/cancel/$',TemplateView.as_view(template_name="paycancel.html")),
+		url(r'^api/g/(?P<gymid>[0-9]+)/backup/$',GymBackup.as_view()),
 		)

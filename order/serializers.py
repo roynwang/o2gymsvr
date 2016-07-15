@@ -74,4 +74,21 @@ class ProductSerializer(serializers.ModelSerializer):
 	class Meta:
 		model =	Product
 
+class GymBackupSerilaizer(serializers.ModelSerializer):
+
+	complete_count = serializers.SerializerMethodField()
+	course_count = serializers.SerializerMethodField()
+        customer_name = serializers.SerializerMethodField()
+        class Meta:
+            model = Order
+            fields = ['customer_name', 'custom', 'paidtime','amount', 'course_count','complete_count']
+
+	def get_complete_count(self, obj):
+		return obj.schedule_set.filter(deleted = False, done = True).count()
+
+	def get_course_count(self, obj):
+                return obj.product.amount
+
+	def get_customer_name(self, obj):
+                return obj.custom.displayname
 

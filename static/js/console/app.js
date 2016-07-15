@@ -52,6 +52,25 @@ Date.prototype.addMonths = function(value) {
     return this;
 };
 
+function ConvertToCSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    var str = '';
+
+    for (var i = 0; i < array.length; i++) {
+        var line = '';
+        for (var index in array[i]) {
+            if (line != '') line += ','
+
+            line += array[i][index];
+        }
+
+        str += line + '\r\n';
+    }
+
+    return str;
+}
+
+
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
 
 var app = angular.module('JobApp', [
@@ -1442,10 +1461,11 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
 
     }
 ])
-app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$customersvc",
-    function($scope, Restangular, NgTableParams, $customersvc) {
+app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$customersvc",'SweetAlert',
+    function($scope, Restangular, NgTableParams, $customersvc, SweetAlert) {
         var gymid = $.cookie("gym")
         var that = this
+        that.backupstr = '导出'
         $customersvc.getcustomers(function(data) {
             that.tableParams = new NgTableParams({
                 sorting: {
@@ -1455,6 +1475,59 @@ app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$cust
                 dataset: data
             });
         })
+        that.export = function() {
+            var link = document.createElement("a");
+            link.id = "lnkDwnldLnk";
+
+            //this part will append the anchor tag and remove it after automatic click
+            document.body.appendChild(link);
+            SweetAlert.swal({
+                    title: "开始导出",
+                    text: "导出可能需要30秒时间，请耐心等待",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    showLoaderOnConfirm: true,
+                    closeOnConfirm: false
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+                    Restangular.one('api/g/', gymid)
+                        .one("backup/")
+                        .get()
+                        .then(function(data) {
+                            var csv = '姓名,电话,日期,价格,课数,已上\r\n' + ConvertToCSV(data);
+                            var blob = new Blob([csv], {
+                                type: 'text/csv'
+                            });
+                            var csvUrl = window.URL.createObjectURL(blob);
+                            var filename = '备份' + new Date().Format("yyyy-MM-dd") + ".csv"
+                            $("#lnkDwnldLnk")
+                                .attr({
+                                    'download': filename,
+                                    'href': csvUrl
+                                });
+
+                            $('#lnkDwnldLnk')[0].click();
+                            document.body.removeChild(link);
+                                swal({
+                                    title: "成功",
+                                    text: "文件已保存",
+                                    type: "success",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+
+
+                        })
+                })
+
+
+        }
     }
 ])
 app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "$login",

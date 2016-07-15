@@ -25,6 +25,7 @@ from random import randint
 from utils import smsutils
 from django.conf import settings
 from sms.models import *
+import os
 
 
 def create_pay(request, order,channel):
@@ -380,6 +381,50 @@ def alipay_success(request):
 	ret.set_cookie("user",auth_usr.username)
 	return ret
 
+class GymBackup(generics.ListAPIView):
+	pagination_class = None
+	serializer_class = GymBackupSerilaizer
+	def get_queryset(self):
+            orders = Order.objects.filter(gym=get_object_or_404(Gym,id=self.kwargs['gymid']))
+            return orders
+
+
+
+def sendmail(gymid, mails):
+        orders = Order.objects.filter(gym=get_object_or_404(Gym,id=gymid)).annotate(test=Sum('amount'))
+        return Response(orders)
+#                .extra({'paidday': "date_format(date(CONVERT_TZ(`paidtime`,'+00:00','+08:00')),'%%Y%%m%%d')"}) \
+                
+                
+
+        '''
+        rows = []
+        for order in orders:
+            row = []
+            row.append(str(order.custom.displayname))
+            row.append(str(order.custom.name))
+            row.append(str(order.paidtime))
+            row.append(str(order.amount))
+            coursecount = str(order.product.amount)
+            completed = str(order.schedule_set.filter(done=1).count())
+            row.append(str(coursecount) + '/' + str(completed))
+            rows.append("\t".join(row))
+            break
+        #send mail
+        body = "\n".join(rows)
+        command = 'echo "%s"| mail -s "Backup(o2-fit.com)" %s' % (body, ' '.join(mails))
+        print command
+        os.system(command)
+        '''
+
+
+            
+
+
+def backup_order(request):
+    #1.get
+    gid = 19
+    return sendmail(gid, ['1325990578@qq.com'])
 
 
 

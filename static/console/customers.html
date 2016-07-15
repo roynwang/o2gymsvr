@@ -2,10 +2,13 @@
 	<!--<h3>客户信息</h3>-->
 	<section class="panel">
 	<header class="panel-heading">
-	客户信息
+		客户信息 
+
+			<span class="tools pull-right">
+                                <a ng-click='demo.export()' class="fa fa-save">&nbsp;{{demo.backupstr}}</a>
+                             </span>
 	</header>
 	<div class="panel-body">
-
 		<table ng-table="demo.tableParams" class="table table-condensed table-striped">
 			<tr ng-repeat="row in $data" style="color:#333">
 				<td data-title="'姓名'" filter="{displayname: 'text'}" sortable="'displayname'">{{row.displayname}}</td>
