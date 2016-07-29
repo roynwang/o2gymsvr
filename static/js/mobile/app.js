@@ -127,35 +127,8 @@ var app = angular.module('o2m', [
         'oitozero.ngSweetAlert',
         'ngMaterial',
         'angularQFileUpload',
-        'LocalStorageModule',
-        //'ngAnimate', 
-        //'anim-in-out'
     ])
-    /*
-    app.directive("scroll", function($window) {
-        return function(scope, element, attrs) {
-            angular.element($window).bind("scroll", function() {
-                scope.$apply(scope.scrolled(this.pageXOffset, this.pageYOffset))
-            });
-        };
-    });
-    */
-    /*
-    app.directive('infiniteScroll', [ "$window", function ($window) {
-            return {
-                link:function (scope, element, attrs) {
-                    var offset = parseInt(attrs.threshold) || 0;
-                    var e = element[0];
 
-                    element.bind('scroll', function () {
-                        if (scope.$eval(attrs.canLoad) && e.scrollTop + e.offsetHeight >= e.scrollHeight - offset) {
-                            scope.$apply(attrs.infiniteScroll);
-                        }
-                    });
-                }
-            };
-        }]);
-    */
 app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider, $mdDateLocaleProvider, $compileProvider) {
     // For any unmatched url, send to /route1
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|local|data|tel|sms):/);
@@ -268,11 +241,6 @@ app.factory("$uploader", function($qupload) {
                 imgori.onload = function() {
                     var compressed = compress(imgori, 20)
                     var newf = b64toBlob(compressed, "image/jpeg")
-                        /*
-                var newf = new Blob([b64toBlob( compressed.src], {
-                    type: "image/jpeg"
-                });
-				*/
                     newf.upload = $qupload.upload({
                         key: key,
                         file: newf,
