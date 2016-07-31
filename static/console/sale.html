@@ -140,5 +140,27 @@
                 </div>
             </div>
         </section>
+	<section class="panel">
+	<header class="panel-heading">
+		新增客户
+			<span class="tools pull-right">
+                                <a ng-click='ctrl.export()' class="fa fa-save">&nbsp;{{demo.backupstr}}</a>
+                             </span>
+	</header>
+	<div class="panel-body">
+		<table ng-table="ctrl.newOrderTableParams" class="table table-condensed table-striped">
+			<tr ng-repeat="row in $data" style="color:#333">
+				<td data-title="'日期'" sortable="'paid_day'">{{row.paid_day}}</td>
+				<td data-title="'姓名'">{{row.customerdetail.displayname}}</td>
+				<td data-title="'电话'">{{row.customerdetail.name}}</td>
+				<td data-title="'性别'">{{row.customerdetail.sex?"男":"女"}}</td>
+				<td data-title="'节数'">{{row.course_count}}</td>
+				<td data-title="'总价'">{{row.amount}}</td>
+				<td data-title="'单价'">{{row.amount/row.course_count}}</td>
+				<td data-title="'续课'" sortable="'isfirst'">{{row.isfirst?"否":"是"}}</td>
+			</tr>
+		</table>
+	</div>
+	</section>
     </div>
 </div>

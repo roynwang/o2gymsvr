@@ -1335,14 +1335,15 @@ app.controller("HistoryCtrl", ['$scope', "Restangular", "NgTableParams", "$login
 ])
 
 
-app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$login",
-    function($scope, Restangular, NgTableParams, $login) {
+app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$login","SweetAlert",
+    function($scope, Restangular, NgTableParams, $login, SweetAlert) {
         var gymid = $.cookie("gym")
         var that = this
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
         that.startday_str = that.startday.Format("yyyy-MM-dd")
         that.endday_str = that.endday.Format("yyyy-MM-dd")
+        that.neworders = []
 
         that.is_admin = false
         that.errmsg = ""
@@ -1399,11 +1400,72 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
             return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100
 
         }
+        that.export = function() {
+            var link = document.createElement("a");
+            link.id = "lnkDwnldLnk";
+
+            //this part will append the anchor tag and remove it after automatic click
+            document.body.appendChild(link);
+            SweetAlert.swal({
+                    title: "开始导出",
+                    text: "导出可能需要较长时间，请耐心等待",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    showLoaderOnConfirm: true,
+                    closeOnConfirm: false
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+                    var csvdata = []
+                    _.each(that.neworders, function(item) {
+                        var tmp = [
+                            item.paid_day,
+                            item.customerdetail.displayname,
+                            item.customerdetail.name,
+                            item.customerdetail.sex ? '男' : '女',
+                            item.amount,
+                            item.course_count,
+                            item.amount / item.course_count,
+                            item.isfirst ? '否' : '是'
+                        ]
+                        csvdata.push(tmp);
+                    })
+
+                    var csv = '日期,姓名,电话,性别,总价,课数,单价,续课\r\n' + ConvertToCSV(csvdata);
+                    var blob = new Blob([csv], {
+                        type: 'text/csv'
+                    });
+                    var csvUrl = window.URL.createObjectURL(blob);
+                    var filename = '备份' + that.startday_str +"_" + that.endday_str + ".csv"
+                    $("#lnkDwnldLnk")
+                        .attr({
+                            'download': filename,
+                            'href': csvUrl
+                        });
+
+                    $('#lnkDwnldLnk')[0].click();
+                    document.body.removeChild(link);
+                    swal({
+                        title: "成功",
+                        text: "文件已保存",
+                        type: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                })
+        }
+
 
         function refresh() {
 
             that.startday = new Date(Date.parse(that.startday_str))
             that.endday = new Date(Date.parse(that.endday_str))
+
             that.sumstatus = {
                 salesum: 0,
                 salecount: 0,
@@ -1420,6 +1482,17 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                     []
                 ]
             }
+            Restangular.one('api/g', gymid)
+                .customGETLIST('saledetail', {
+                    start: that.startday.Format("yyyyMMdd"),
+                    end: that.endday.Format("yyyyMMdd")
+                })
+                .then(function(data) {
+                    that.neworders = data
+                    that.newOrderTableParams = new NgTableParams({}, {
+                        dataset: data
+                    });
+                })
 
             Restangular.one('api/g', gymid).get().then(function(gym) {
                 $scope.coaches = gym.coaches_set
@@ -1461,7 +1534,7 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
 
     }
 ])
-app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$customersvc",'SweetAlert',
+app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$customersvc", 'SweetAlert',
     function($scope, Restangular, NgTableParams, $customersvc, SweetAlert) {
         var gymid = $.cookie("gym")
         var that = this
@@ -1514,13 +1587,13 @@ app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$cust
 
                             $('#lnkDwnldLnk')[0].click();
                             document.body.removeChild(link);
-                                swal({
-                                    title: "成功",
-                                    text: "文件已保存",
-                                    type: "success",
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
+                            swal({
+                                title: "成功",
+                                text: "文件已保存",
+                                type: "success",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
 
 
                         })

@@ -427,4 +427,22 @@ def backup_order(request):
     return sendmail(gid, ['1325990578@qq.com'])
 
 
+class GymSaleDetail(generics.ListAPIView):
+	serializer_class = OrderSerializer
+	pagination_class = None
+	def get_queryset(self):
+		if "end" in self.request.GET:
+			end = datetime.datetime.strptime(self.request.GET["end"], "%Y%m%d")
+		else:
+			end = datetime.date.today()
 
+		if "start" in self.request.GET:
+			start = datetime.datetime.strptime(self.request.GET["start"], "%Y%m%d")
+		else:
+		        start = end - datetime.timedelta(days=365)
+
+		end = end + datetime.timedelta(days=1)
+
+		orders = Order.objects.filter(gym=get_object_or_404(Gym,id=self.kwargs.get('pk')),paidtime__range=[start,end]) \
+				.extra({'paidday': "date_format(date(CONVERT_TZ(`paidtime`,'+00:00','+08:00')),'%%Y%%m')"})
+		return orders

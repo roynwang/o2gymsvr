@@ -44,6 +44,7 @@ class OrderSerializer(serializers.ModelSerializer):
 	all_booked = serializers.SerializerMethodField()
 	endtime = serializers.SerializerMethodField()
 	course_count = serializers.SerializerMethodField()
+	paid_day = serializers.SerializerMethodField()
 
 	class Meta:
 		model =	Order 
@@ -62,6 +63,10 @@ class OrderSerializer(serializers.ModelSerializer):
 
 	def get_endtime(self, obj):
 		return obj.cal_endtime()
+
+        def get_paid_day(self, obj):
+            d = obj.paidtime + datetime.timedelta(hours=8)
+            return datetime.datetime.strftime(d,"%Y-%m-%d")
 		
 		
 

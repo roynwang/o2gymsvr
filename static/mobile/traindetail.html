@@ -13,8 +13,16 @@
             </div>
         </md-toolbar>
         <md-dialog-content style="padding:10px;min-height:500px" ng-click="ctrl.editing=false">
+			<md-input-container style="width:100%">
+				<label>训练记录</label>
+					<input ng-model="ctrl.notes"
+					md-placeholder="写一点训练记录吧">
+			</md-input-container>
+
             <div ng-show="ctrl.images.length==0" layout="row" layout-align="center center" style="min-height:300px">
                 <div>
+                    <div layout="row" layout-align="center center">
+					</div>
                     <div layout="row" layout-align="center center">
                         <p style="font-size:20px">拍几张训练照片吧</p>
 					</div>
