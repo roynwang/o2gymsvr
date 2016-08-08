@@ -136,6 +136,21 @@ class ScheduleList(generics.ListCreateAPIView):
 class ScheduleForReadPagination(pagination.CursorPagination):
 	ordering = 'date'
 
+class ScheduleForReadQuery(generics.ListAPIView):
+        pagination_class = None
+	serializer_class = ScheduleSerializer 
+	def get_queryset(self):
+		usr = get_object_or_404(User, name=self.kwargs.get("name"))
+	        startdate = datetime.datetime.strptime(self.request.GET["start"],"%Y%m%d")
+	        enddate = datetime.datetime.strptime(self.request.GET["end"],"%Y%m%d")
+		daterange = [startdate, enddate]
+                print startdate
+                print enddate
+		return usr.sealed_time.filter(date__range=daterange).order_by("date","hour")
+
+
+
+
 class ScheduleForRead(generics.ListAPIView):
 	serializer_class = ScheduleSerializer 
 	def list(self, request, *args, **kwargs):

@@ -979,41 +979,85 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.reload()
     }
 ])
-
 app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', '$http',
     function($scope, Restangular, NgTableParams, $stateParams, $state, $http) {
         var that = this
+        that.startday = new Date().addMonths(-1)
+        that.endday = new Date();
+
+        that.startday_str = that.startday.Format("yyyy-MM-dd")
+        that.endday_str = that.endday.Format("yyyy-MM-dd")
+
 
         $scope.timemap = TimeMap
-        var date = new Date()
         var coachid = $stateParams.coachid
+        that.coursedata = []
         that.load = function() {
-
-            that.title = date.Format("yyyy-MM-dd")
             Restangular.one("api", coachid)
-                .one("w", date.Format("yyyyMMdd"))
-                .get()
+                .one("w")
+                .get({
+                    start: that.startday.Format("yyyyMMdd"),
+                    end: that.endday.Format("yyyyMMdd")
+                })
                 .then(function(data) {
+                    that.coursedata = data
                     that.tableParams = new NgTableParams({
                         sorting: {
                             name: "asc"
                         }
                     }, {
-                        dataset: data.results
+                        dataset: data
                     });
                 }, function(data) {})
         }
-        that.loadprev = function() {
-            date = date.addDays(-7)
-            that.load()
-        }
-        that.loadnext = function() {
-            date = date.addDays(7)
-            that.load()
-        }
         that.load()
+
+        that.backupstr = '导出'
+        that.export = function() {
+            var link = document.createElement("a");
+            link.id = "lnkDwnldLnk";
+
+            //this part will append the anchor tag and remove it after automatic click
+            document.body.appendChild(link);
+            var csvdata = []
+            _.each(that.coursedata, function(item) {
+                var tmp = [
+                    item.customerprofile.displayname,
+                    item.customerprofile.name,
+                    item.date,
+                    TimeMap[item.hour]
+                ]
+                csvdata.push(tmp);
+            })
+
+            var csv = '姓名,电话,日期,时间\r\n' + ConvertToCSV(csvdata);
+            var blob = new Blob([csv], {
+                type: 'text/csv'
+            });
+            var csvUrl = window.URL.createObjectURL(blob);
+            var filename = that.startday_str + "-" + that.endday_str + ".csv"
+            $("#lnkDwnldLnk")
+                .attr({
+                    'download': filename,
+                    'href': csvUrl
+                });
+
+            $('#lnkDwnldLnk')[0].click();
+            document.body.removeChild(link);
+            swal({
+                title: "成功",
+                text: "文件已保存",
+                type: "success",
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+
+        }
     }
 ])
+
+
 
 app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', "SweetAlert", "$customersvc",
     function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $customersvc) {
