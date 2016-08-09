@@ -993,11 +993,14 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
         var coachid = $stateParams.coachid
         that.coursedata = []
         that.refresh = function() {
+
+            that.startday = new Date(Date.parse(that.startday_str))
+            that.endday = new Date(Date.parse(that.endday_str))
             Restangular.one("api", coachid)
                 .one("w")
                 .get({
-                    start: that.startday_str,
-                    end: that.endday_str
+                    start: that.startday.Format("yyyyMMdd"),
+                    end: that.endday_str.Format("yyyyMMdd")
                 })
                 .then(function(data) {
                     that.coursedata = data
