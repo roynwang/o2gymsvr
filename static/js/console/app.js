@@ -992,7 +992,7 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
         $scope.timemap = TimeMap
         var coachid = $stateParams.coachid
         that.coursedata = []
-        that.load = function() {
+        that.refresh = function() {
             Restangular.one("api", coachid)
                 .one("w")
                 .get({
@@ -1010,7 +1010,7 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
                     });
                 }, function(data) {})
         }
-        that.load()
+        that.refresh()
 
         that.backupstr = '导出'
         that.export = function() {
