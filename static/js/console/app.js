@@ -1000,7 +1000,7 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
                 .one("w")
                 .get({
                     start: that.startday.Format("yyyyMMdd"),
-                    end: that.endday_str.Format("yyyyMMdd")
+                    end: that.endday.Format("yyyyMMdd")
                 })
                 .then(function(data) {
                     that.coursedata = data
