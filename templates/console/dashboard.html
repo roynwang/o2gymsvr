@@ -311,6 +311,8 @@
 			}else {
 				$.cookie("gym", gymid, {path:"/"})
 			}
+			$.cookie("role", data.role, {path:"/"})
+
 			$("#username").html(data.displayname)
 			$("#useravatar").attr("src", data.avatar)
 			if(data.role == "admin"){
@@ -380,6 +382,7 @@
 		$("#logout").click(function(){
 			$.removeCookie("user", {path:"/"})
 			$.removeCookie("gym", {path:"/"})
+			$.removeCookie("role", {path:"/"})
 			$.removeCookie("autologin", {path:"/"})
 			window.location = "/console/login/"
 		})

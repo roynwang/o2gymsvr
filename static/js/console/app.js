@@ -235,6 +235,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
         var that = this
         that.coaches = []
         that.coach = {}
+		that.role = $.cookie('role')
 
         Restangular.one('api/g/', $.cookie("gym")).get().then(function(gym) {
             that.coaches = gym.coaches_set
@@ -587,6 +588,8 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         var that = this
         var coachname = $stateParams.coachname
         var orderid = $stateParams.orderid
+
+		that.role = $.cookie('role')
 
         that.showncoaches = false
         that.changecoach = function(c) {

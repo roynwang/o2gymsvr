@@ -12,12 +12,13 @@
             <table ng-table="demo.tableParams" class="table table-condensed table-striped">
                 <tr ng-repeat="row in $data">
                     <td data-title="'订单号'">{{row.billid}}</td>
-                    <td data-title="'金额'">{{row.amount}} <a style="margin-left:3px;font-size:12px;color:#1fb5ad;text-decoration: underline;"
+                    <td data-title="'金额'">{{row.amount}} <a ng-if="demo.role == 'admin'" style="margin-left:3px;font-size:12px;color:#1fb5ad;text-decoration: underline;"
                         ng-click="demo.modify(row,'price')">修改</a>
                     </td>
                     <td data-title="'状态'">{{demo.statusmap[row.status]}}</td>
 
-                    <td data-title="'有效期(月)'">{{row.duration}}<a style="margin-left:3px;font-size:12px;color:#1fb5ad;text-decoration: underline;"
+                    <td data-title="'有效期(月)'">{{row.duration}}
+						<a ng-if="demo.role =='admin'" style="margin-left:3px;font-size:12px;color:#1fb5ad;text-decoration: underline;"
                         ng-click="demo.modify(row,'duration')">修改</a>
                     </td>
                     <td data-title="'截至日期'">{{row.endtime}}</td>
@@ -40,12 +41,7 @@
                     <td><a ng-if="row.status!='unpaid'" class="btn {{row.status=='done'?'btn-success':'btn-primary'}}"
                         href="#order/{{row.coachdetail.name}}/{{row.id}}">{{row.status ==
 						"done"?"查看":"预约"}}</a>
-                        <!--<a ng-if="row.status =='unpaid' || (row.status != 'done' &&
-							row.removable)" class="btn btn-danger"
-							ng-click="demo.remove(row.id)">移除</a>-->
-                        <a class="btn btn-danger" ng-click="demo.remove(row.id)">移除</a>
-                        <!--<a ng-if="row.status != 'done'" class="btn btn-info"
-						style="margin-left:3px">修改</a>-->
+                        <a ng-if="demo.role == 'admin'" class="btn btn-danger" ng-click="demo.remove(row.id)">移除</a>
                     </td>
                 </tr>
             </table>
