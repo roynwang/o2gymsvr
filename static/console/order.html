@@ -12,6 +12,9 @@
                     <li class="panel-header-tab {{ctrl.activetab[1]?'active':''}}">
                         <a ng-click="ctrl.toggle(1)" aria-expanded="false">照片</a>
                     </li>
+                    <li class="panel-header-tab {{ctrl.activetab[1]?'active':''}}">
+                        <a ng-click="ctrl.toggle(2)" aria-expanded="false">数据</a>
+                    </li>
                     <!--
                     <li class="{{ctrl.activetab[2]?'active':''}}">
                         <a ng-click="ctrl.toggle(2)" aria-expanded="false">今日消费</a>
@@ -22,6 +25,52 @@
 </h4>
 
         </header>
+        <div class="panel-body" ng-show="ctrl.activetab[2]">
+            <div  ng-click="ctrl.showeval('new')" style="
+border: 5px dashed #1fb5ad;
+    width: 160px;
+    height: 80px;
+    line-height: 70px;
+    border-radius: 3px;
+    text-align: center;
+    text-transform: uppercase;
+	margin-right: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #7f858a;
+    display: inline-block;
+	position: relative;
+	margin-bottom: 10px;">
+                    +添加
+                </div>
+            <div ng-repeat="eval in ctrl.evals" style="
+	border: 5px dashed #7f858a;
+    width: 160px;
+    height: 80px;
+    line-height: 70px;
+    border-radius: 3px;
+    text-align: center;
+    text-transform: uppercase;
+	margin-right: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #7f858a;
+    display: inline-block;
+	position: relative;
+	margin-bottom: 10px;" ng-click="ctrl.showeval(eval.date)">
+				{{eval.date}}
+                </div>
+			<!--
+            <table ng-table="demo.tableParams" class="table table-condensed table-striped">
+                <tr ng-repeat="row in $data">
+                    <td data-title="'单价'">{{row.price}}</td>
+                </tr>
+            </table>
+			-->
+        </div>
+
         <div class="panel-body" ng-show="ctrl.activetab[1]">
 			<p>
             <div  ng-file-select="ctrl.addphoto($files)" style="
@@ -42,7 +91,7 @@ border: 5px dashed #1fb5ad;
 	margin-bottom: 10px;">
                     +添加
                 </div>
-			<img ng-repeat="img in ctrl.album" src="{{img}}?imageView2/1/w/200/h/200" style="margin-bottom:10px;margin-right:20px;width:180px">
+			<img ng-click="ctrl.openLightboxModal($index)" ng-repeat="img in ctrl.album" src="{{img}}?imageView2/1/w/200/h/200" style="margin-bottom:10px;margin-right:20px;width:180px">
             <div style="
 border: 5px dashed #1fb5ad;
     width: 190px;

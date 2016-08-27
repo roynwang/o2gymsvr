@@ -111,6 +111,7 @@ var app = angular.module('JobApp', [
     'chart.js',
     '720kb.datepicker',
     'angularQFileUpload',
+	'bootstrapLightbox'
 ])
 app.directive('backButton', function() {
     return {
@@ -159,7 +160,7 @@ app.factory("$uploader", function($qupload) {
             reader.onload = function(event) {
                 var imgori = new Image();
                 imgori.onload = function() {
-                    var compressed = compress(imgori, 20)
+                    var compressed = compress(imgori, 60)
                     var newf = b64toBlob(compressed, "image/jpeg")
                     newf.upload = $qupload.upload({
                         key: key,
@@ -306,7 +307,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/customer/:customername/history",
             templateUrl: "/static/console/customerhistory.html",
         })
-
+        .state('eval', {
+            url: "/eval/:customername/:date",
+            templateUrl: "/static/console/evaldetail.html",
+        })
 })
 
 app.controller("GymCtrl", ["$stateParams", "$state",
@@ -672,8 +676,8 @@ app.controller("FeedbackControl", ['$scope', "Restangular",
     }
 ])
 
-app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http","$uploader",
-    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader) {
+app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader","Lightbox",
+    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader, Lightbox) {
         console.log($stateParams)
         var that = this
         var coachname = $stateParams.coachname
@@ -1045,7 +1049,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     //that.coach = data.coachdetail
                     //get product
                     that.order = data
-					that.customername = that.order.customerdetail.name
+                    that.customername = that.order.customerdetail.name
                     Restangular.one("api/p", data.product)
                         .get()
                         .then(function(product) {
@@ -1071,15 +1075,29 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 })
         }
         that.toggle = function(tab) {
-            that.activetab = [0, 0]
+            that.activetab = [0, 0, 0]
             that.activetab[tab] = 1
-			if(tab == 1){
-				that.refreshPhoto()
-			}
+            if (tab == 1) {
+                that.refreshPhoto()
+            }
+            if (tab == 2) {
+                that.refreshEval()
+            }
         }
         that.loadmore = undefined;
         that.album = [];
-        that.refreshEval = function() {}
+        that.evals = []
+		that.openLightboxModal = function(i){
+			Lightbox.openModal(that.album, i);
+		}
+        that.refreshEval = function() {
+            Restangular.all("api")
+                .one(that.customername, "e")
+                .getList()
+                .then(function(resp) {
+                    that.evals = resp
+                })
+        }
         that.refreshPhoto = function() {
             Restangular.all("api")
                 .one(that.customername, "album")
@@ -1120,7 +1138,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     var imgurl = bukcet + "/" + data.key
                     if (that.images.indexOf(imgurl)) {
                         that.images.push(bukcet + "/" + data.key)
-						that.album.unshift(bukcet + "/" + data.key)
+                        that.album.unshift(bukcet + "/" + data.key)
                     }
                     that.finishupload()
                 }, function() {
@@ -1128,6 +1146,14 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 })
             })
         }
+
+        that.showeval = function(date) {
+            $state.transitionTo('eval', {
+                customername: that.customername,
+                date: date.replace(/-/g, "")
+            })
+        }
+
         that.saveimg = function() {
             var data = {
                 'title': "训练记录",
@@ -1138,7 +1164,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             Restangular.one("api", that.customername)
                 .post("weibo", data)
                 .then(function(resp) {
-					/*	
+                    /*	
                     swal({
                         title: "成功",
                         text: "图片已保存",
@@ -1147,11 +1173,11 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                         showConfirmButton: false
                     });
 					*/
-					that.loadmore = undefined
+                    that.loadmore = undefined
                     that.album = []
                     that.refreshPhoto()
                 }, function(resp) {
-					console.log(resp)
+                    console.log(resp)
                     swal("", "保存失败了", "warning")
                     that.album = []
                     that.refreshPhoto()
@@ -2192,3 +2218,66 @@ app.controller("SettingsControl", ["$scope", "Restangular",
     }
 ])
 
+app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
+    function($scope, Restangular, $stateParams) {
+        var that = this
+        that.options = []
+        that.day = undefined
+        that.refresh = function() {
+            that.day = $stateParams.date
+            var query = undefined
+            if (that.day != "new") {
+                Restangular.one("api", $stateParams.customername)
+                    .all("e")
+                    .get(that.day)
+                    .then(function(resp) {
+                        that.options = resp
+                    }, function() {})
+
+            } else {
+                Restangular.all("api")
+                    .all("e")
+                    .getList()
+                    .then(function(resp) {
+                        that.options = resp
+                    }, function() {})
+            }
+        }
+        that.submit = function() {
+
+            var daystr = that.day
+            if (that.day == "new") {
+                daystr = new Date().Format("yyyy-MM-dd")
+            }
+            daystr = daystr.replace(/-/g, "")
+            var data = []
+            _.each(that.options, function(item) {
+                if (item.value != undefined) {
+                    var p = {
+                        name: $stateParams.customername,
+                        option: item.option,
+                        value: item.value,
+                        unit: item.unit,
+                        group: item.group
+                    }
+                    data.push(p)
+                }
+            })
+            Restangular.one("api", $stateParams.customername)
+                .one("e")
+                .post(daystr, data)
+                .then(function() {
+                    swal({
+                        title: "成功",
+                        text: "已保存",
+                        type: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    history.back();
+                }, function() {})
+
+        }
+        that.refresh()
+    }
+])
