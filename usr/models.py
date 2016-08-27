@@ -45,6 +45,8 @@ class User(models.Model):
 
 	birthday = models.DateField(blank=True, null=True)
 
+	flag = models.IntegerField(default=0)
+
 	def __unicode__(self):
 		return self.name
 

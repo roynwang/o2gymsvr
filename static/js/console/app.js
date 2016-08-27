@@ -78,9 +78,9 @@ Date.prototype.addMonths = function(value) {
     this.setDate(Math.min(n, this.getDaysInMonth()));
     return this;
 };
-Date.prototype.addHours = function(h) {    
-	   this.setTime(this.getTime() + (h*60*60*1000)); 
-	      return this;   
+Date.prototype.addHours = function(h) {
+    this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+    return this;
 }
 
 function ConvertToCSV(objArray) {
@@ -115,7 +115,7 @@ var app = angular.module('JobApp', [
     'chart.js',
     '720kb.datepicker',
     'angularQFileUpload',
-	'bootstrapLightbox'
+    'bootstrapLightbox'
 ])
 app.directive('backButton', function() {
     return {
@@ -220,6 +220,17 @@ app.factory("$customersvc", function(Restangular) {
         }
     }
 
+    function flag(user) {
+        var v = (user.flag + 1) % 3;
+        Restangular.one('api', user.name)
+            .patch({
+                flag: v
+            })
+            .then(function(data) {
+				user.flag = v
+            })
+    }
+
     function getcustomer(key) {
         var c = _.find(customers, {
             name: key
@@ -229,7 +240,8 @@ app.factory("$customersvc", function(Restangular) {
     }
     return {
         getcustomers: getcustomers,
-        getcustomer: getcustomer
+        getcustomer: getcustomer,
+		flag:flag 
     }
 })
 
@@ -680,7 +692,7 @@ app.controller("FeedbackControl", ['$scope', "Restangular",
     }
 ])
 
-app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader","Lightbox",
+app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader", "Lightbox",
     function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader, Lightbox) {
         console.log($stateParams)
         var that = this
@@ -1091,9 +1103,9 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.loadmore = undefined;
         that.album = [];
         that.evals = []
-		that.openLightboxModal = function(i){
-			Lightbox.openModal(that.album, i);
-		}
+        that.openLightboxModal = function(i) {
+            Lightbox.openModal(that.album, i);
+        }
         that.refreshEval = function() {
             Restangular.all("api")
                 .one(that.customername, "e")
@@ -1108,7 +1120,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 .get(that.loadmore)
                 .then(function(resp) {
                     _.each(resp.results, function(item) {
-						item.caption = new Date(item.created).Format("yyyy-MM-dd hh:mm")
+                        item.caption = new Date(item.created).Format("yyyy-MM-dd hh:mm")
                         that.album.push(item)
                     })
                     if (resp.next != null) {
@@ -1810,6 +1822,10 @@ app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$cust
                 dataset: data
             });
         })
+        that.flag = function(usr) {
+			$customersvc.flag(usr)
+        }
+
         that.export = function() {
             var link = document.createElement("a");
             link.id = "lnkDwnldLnk";

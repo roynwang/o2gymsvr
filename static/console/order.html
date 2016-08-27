@@ -3,7 +3,10 @@
         <header class="panel-heading">
             <h4 class="text-center">
 <i ng-click="ctrl.gohome()" class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
-{{ctrl.order.customerdetail.displayname}}
+					<i ng-if="ctrl.order.customerdetail.flag==0"  style="color:#ccc" class="fa fa-circle-o"></i>
+					<i ng-if="ctrl.order.customerdetail.flag==1"  style="color:#1fb5ad" class="fa fa-circle"></i>
+					<i ng-if="ctrl.order.customerdetail.flag==2"  style="color:#FCB322" class="fa fa-circle"></i>
+				{{ctrl.order.customerdetail.displayname}}
                 <ul class="nav nav-tabs pull-right" style="position: relative;
 					    bottom: -21px;right: 20px;">
                     <li class="panel-header-tab {{ctrl.activetab[0]?'active':''}}">

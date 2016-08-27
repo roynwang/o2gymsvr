@@ -11,6 +11,11 @@
 	<div class="panel-body">
 		<table ng-table="demo.tableParams" class="table table-condensed table-striped">
 			<tr ng-repeat="row in $data" style="color:#333">
+				<td data-title="' '">
+					<i ng-if="row.flag==0" ng-click="demo.flag(row) " style="color:#ccc" class="fa fa-circle-o"></i>
+					<i ng-if="row.flag==1" ng-click="demo.flag(row) "  style="color:#1fb5ad" class="fa fa-circle"></i>
+					<i ng-if="row.flag==2" ng-click="demo.flag(row) " style="color:#FCB322" class="fa fa-circle"></i>
+				</td>
 				<td data-title="'姓名'" filter="{displayname: 'text'}" sortable="'displayname'">{{row.displayname}}</td>
 				<td data-title="'电话'" filter="{name: 'text'}" sortable="'number'">{{row.name}}</td>
 				<td data-title="'生日'">{{row.birthday}}</td>
