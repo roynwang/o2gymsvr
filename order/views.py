@@ -446,3 +446,22 @@ class GymSaleDetail(generics.ListAPIView):
 		orders = Order.objects.filter(gym=get_object_or_404(Gym,id=self.kwargs.get('pk')),paidtime__range=[start,end]) \
 				.extra({'paidday': "date_format(date(CONVERT_TZ(`paidtime`,'+00:00','+08:00')),'%%Y%%m')"})
 		return orders
+
+class DeadOrderList(generics.ListAPIView):
+	serializer_class = OrderSerializer 
+	pagination_class = None
+	def get_queryset(self):
+		gym = get_object_or_404(Gym, id=self.kwargs.get("pk"))
+		orders = gym.orders.exclude(status__in=["unpaid","done"])
+		today = datetime.datetime.today().date()
+		enddate = datetime.datetime.today().date() + datetime.timedelta(days=10)
+                ret = []
+                for order in orders:
+                    ed = order.cal_endtime()
+                    if ed == 'N/A':
+                        continue
+                    d = datetime.datetime.strptime(ed, "%Y-%m-%d").date()
+                    if d >= today and d <= enddate:
+                        ret.append(order)
+		return ret
+

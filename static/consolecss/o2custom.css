@@ -91,5 +91,10 @@ ul.sidebar-menu {
 	left: 90%
 }
 
-
+#deadorder.dropdown-menu:before {
+	left: 90%
+}
+#deadorder.dropdown-menu:after {
+	left: 90%
+}
 

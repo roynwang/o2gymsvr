@@ -92,7 +92,7 @@
                 </li>
                 <li>
                     <div class="alert alert-success clearfix">
-                        <span class="alert-icon"><i class="fa fa-bolt"></i></span>
+                        <span class="alert-icon"><i class="fa fa-clock-o"></i></span>
                         <div class="noti-info">
                             <a href="#"></a>
                         </div>
@@ -108,6 +108,25 @@
             <ul id="birthdays" class="dropdown-menu extended notification">
                 <li>
                     <p>生日提醒</p>
+                </li>
+                <li>
+                    <div class="alert alert-success clearfix">
+                        <span class="alert-icon"><i class="fa fa-bolt"></i></span>
+                        <div class="noti-info">
+                            <a href="#"></a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </li>
+	    <li id="dead-order-noti" class="dropdown" style="margin-top: 5px;">
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                <i class="fa fa-bolt" style="font-size: 22px;"></i>
+                <span class="badge bg-info" id="deadorder-count">0</span>
+            </a>
+            <ul id="deadorder" class="dropdown-menu extended notification">
+                <li>
+                    <p>临期提醒</p>
                 </li>
                 <li>
                     <div class="alert alert-success clearfix">
@@ -326,6 +345,7 @@
 				clearInterval(incompleteid)
 			}
 			incompleteid = setInterval(getincomplete,1800000)
+			getdeadorders()
 		}).fail(function(resp){
 			
 		})
@@ -377,6 +397,21 @@
 			}
 		})
 	}
+	function getdeadorders(){
+        var itemtemplate = '<li><div class="alert alert-success clearfix"><span class="alert-icon"><i class="fa fa-bolt"></i></span><div class="noti-info"><a href="#">__</a></div></div></li>'
+		$("#deadorder").html("")
+		$("#deadorder").append("<li><p>临期课程(10天)</p></li>")
+		$.get("/api/g/" + $.cookie("gym") + "/deadorder/", function(data){
+				$("#deadorder-count").html(data.length)
+				if(data.length == 0){
+					$("dead-order-noti").hide();
+				}
+				_.each(data, function(item){
+					$("#deadorder").append(itemtemplate.replace(/__/,'<a href="#/order/' + item.coachdetail.name + "/" + item.id + '">' + item.endtime + "&nbsp;&nbsp;&nbsp;" + item.complete_status + "&nbsp;&nbsp;&nbsp;" + item.customerdetail.displayname + "</a>"))
+				})
+		})
+	}
+
 
 	$(function(){
 		refreshuser(getusrauth())
