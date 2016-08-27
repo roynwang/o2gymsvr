@@ -26,9 +26,13 @@ ul.sidebar-menu li a{
 }
 a.logo {
 	margin-top: 10px;
+	position: absolute;
+	z-index: 1;
+	left:-20px;
 }
 .sidebar-toggle-box {
 	margin-top: 13px;
+	z-index: 1;
 }
 .top-nav {
 	margin-top: 13px;
