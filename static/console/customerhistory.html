@@ -1,0 +1,83 @@
+<div class="col-md-12" ng-controller="CustomerHistoryCtrl as ctrl">
+    <!--<h3>客户信息</h3>-->
+    <section class="panel">
+        <header class="panel-heading">
+            <h4 class="text-center">
+<i back-button class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
+{{demo.customer_displayname}}
+</h4>
+                <ul class="nav nav-tabs">
+                    <li class="panel-header-tab {{ctrl.activetab[0]?'active':''}}">
+                        <a ng-click="ctrl.toggle(0)" aria-expanded="true">记录</a>
+                    </li>
+                    <li class="panel-header-tab {{ctrl.activetab[1]?'active':''}}">
+                        <a ng-click="ctrl.toggle(1)" aria-expanded="false">新建活动</a>
+                    </li>
+                    <!--
+                    <li class="{{ctrl.activetab[2]?'active':''}}">
+                        <a ng-click="ctrl.toggle(2)" aria-expanded="false">今日消费</a>
+                    </li>
+					-->
+                </ul>
+
+        </header>
+        <div class="panel-body" ng-show="ctrl.activetab[0]">
+			<p>
+            <div  ng-file-select="ctrl.addphoto($files)" style="
+border: 5px dashed #1fb5ad;
+    width: 190px;
+    height: 190px;
+    line-height: 180px;
+    border-radius: 3px;
+    text-align: center;
+    text-transform: uppercase;
+	margin-right: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #7f858a;
+    display: inline-block;
+	position: relative;
+	margin-bottom: 10px;">
+                    +添加
+                </div>
+			<img ng-repeat="img in ctrl.album" src="{{img}}?imageView2/1/w/200/h/200" style="margin-bottom:10px;margin-right:20px;width:180px">
+            <div style="
+border: 5px dashed #1fb5ad;
+    width: 190px;
+    height: 190px;
+    line-height: 180px;
+    border-radius: 3px;
+    text-align: center;
+    text-transform: uppercase;
+	margin-right: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #7f858a;
+    display: inline-block;
+	position: relative;
+	margin-bottom: 10px;" ng-show="ctrl.loadmore" ng-click="ctrl.refreshPhoto()">
+                    加载更多
+                </div>
+
+			</p>
+			<!--
+            <table ng-table="demo.tableParams" class="table table-condensed table-striped">
+                <tr ng-repeat="row in $data">
+                    <td data-title="'单价'">{{row.price}}</td>
+                </tr>
+            </table>
+			-->
+        </div>
+        <div class="panel-body" ng-show="ctrl.activetab[1]">
+			<!--
+            <table ng-table="demo.tableParams" class="table table-condensed table-striped">
+                <tr ng-repeat="row in $data">
+                    <td data-title="'单价'">{{row.price}}</td>
+                </tr>
+            </table>
+			-->
+        </div>
+    </section>
+</div>

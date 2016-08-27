@@ -5751,3 +5751,13 @@ right: -1px;
 .sortable{
     min-height: 400px;;
 }
+
+.panel-header-tab.active {
+	border-width: 1px !important;
+}
+
+.panel-header-tab.active>a {
+	border-color: #eff2f7 !important;
+	border-width: 1px !important;
+	border-bottom-width: 0 !important;
+}

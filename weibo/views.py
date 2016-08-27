@@ -48,10 +48,14 @@ class WeiboList(generics.ListCreateAPIView):
 			dbimg = Images.objects.create(url=img, by=usr)
 
 	def create(self, request, *args, **kwargs):
-		pprint.pprint(request.data)
+		#pprint.pprint(request.data)
 		#by = TimeLine.objects.get(name=self.kwargs.get('by'))
-		by = get_object_or_404(TimeLine,name=self.kwargs.get('by'))
+
 		usr = get_object_or_404(User, name=self.kwargs.get('by'))
+		by, created = TimeLine.objects.get_or_create(name=usr)
+                if created:
+     		    by.followedby.add(by)
+    		    by.save()
 		#check whether the 'by' field is them same as url parameter 
 		#if  unicode(by.id) != request.data.get('by'):
 		#	return Response({"error":"author mismatch"}, status=status.HTTP_400_BAD_REQUEST)

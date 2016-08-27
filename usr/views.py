@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view
 import json
 from django.db.models import Sum
-
+from rest_framework.pagination import PageNumberPagination 
 from usr.models import *
 from order.models import *
 from usr.serializers import *
@@ -93,8 +93,10 @@ class Album(generics.ListAPIView):
 	lookup_field = "name"
 	serializer_class = ImageSerializer 
 	page_size = 20
+        pagination_class = PageNumberPagination
 	def get_queryset(self):
-		return User.objects.get(name=self.kwargs.get('name')).album.all()
+		return User.objects.get(name=self.kwargs.get('name')).album.all().order_by("-created")
+
 class AlbumUpdate(APIView):
 	def post(self, request, name):
 		usr = get_object_or_404(User, name=name)

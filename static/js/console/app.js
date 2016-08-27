@@ -1,10 +1,37 @@
 'use strict';
-// 对Date的扩展，将 Date 转化为指定格式的String 
-// 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符， 
-// 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字) 
-// 例子： 
-// (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423 
-// (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18 
+var bukcet = "https://dn-o2fit.qbox.me"
+
+function b64toBlob(b64Data, contentType, sliceSize) {
+        contentType = contentType || '';
+        sliceSize = sliceSize || 512;
+
+        var byteCharacters = atob(b64Data.split(',')[1]);
+        var byteArrays = [];
+
+        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+
+        var blob = new Blob(byteArrays, {
+            type: contentType
+        });
+        return blob;
+    }
+    // 对Date的扩展，将 Date 转化为指定格式的String 
+    // 月(M)、日(d)、小时(h)、分(m)、秒(s)、季度(q) 可以用 1-2 个占位符， 
+    // 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字) 
+    // 例子： 
+    // (new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423 
+    // (new Date()).Format("yyyy-M-d h:m:s.S")      ==> 2006-7-2 8:9:4.18 
 Date.prototype.Format = function(fmt) { //author: meizz 
     var o = {
         "M+": this.getMonth() + 1, //月份 
@@ -82,7 +109,8 @@ var app = angular.module('JobApp', [
     'angular-ladda',
     'ui.bootstrap',
     'chart.js',
-    '720kb.datepicker'
+    '720kb.datepicker',
+    'angularQFileUpload',
 ])
 app.directive('backButton', function() {
     return {
@@ -97,6 +125,63 @@ app.directive('backButton', function() {
         }
     }
 });
+app.factory("$uploader", function($qupload) {
+    var key = ""
+    var token = ""
+
+    function gettoken(onsuccess, onfail) {
+        $.get("/api/p/token/", function(data, status) {
+                key = data.key
+                token = data.token
+                onsuccess && onsuccess()
+            })
+            .error(onfail)
+    }
+
+    function upload(file, onsuccess, onfail) {
+
+        function compress(source_img_obj, quality) {
+            var mime_type = "image/jpeg";
+            var cvs = document.createElement('canvas');
+            cvs.width = source_img_obj.naturalWidth;
+            cvs.height = source_img_obj.naturalHeight;
+            var ctx = cvs.getContext("2d").drawImage(source_img_obj, 0, 0);
+            var newImageData = cvs.toDataURL(mime_type, quality / 100);
+            return newImageData
+        }
+
+        $.get("/api/p/token", function(data, status) {
+            key = data.key
+            token = data.token
+
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                var imgori = new Image();
+                imgori.onload = function() {
+                    var compressed = compress(imgori, 20)
+                    var newf = b64toBlob(compressed, "image/jpeg")
+                    newf.upload = $qupload.upload({
+                        key: key,
+                        file: newf,
+                        token: token
+                    });
+
+                    newf.upload.then(function(response) {
+                        onsuccess && onsuccess(response)
+                    }, function(response) {
+                        onfail && onfail(response)
+                    }, function(evt) {});
+                }
+                imgori.src = reader.result
+            }
+        })
+    }
+    return {
+        upload: upload
+    }
+})
+
 app.factory("$login", function(Restangular) {
     function login(username, pwd, onsuccess, onfail) {
         Restangular.one("api")
@@ -217,6 +302,11 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/settings",
             templateUrl: "/static/console/settings.html",
         })
+        .state('customerhistory', {
+            url: "/customer/:customername/history",
+            templateUrl: "/static/console/customerhistory.html",
+        })
+
 })
 
 app.controller("GymCtrl", ["$stateParams", "$state",
@@ -235,7 +325,7 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
         var that = this
         that.coaches = []
         that.coach = {}
-		that.role = $.cookie('role')
+        that.role = $.cookie('role')
 
         Restangular.one('api/g/', $.cookie("gym")).get().then(function(gym) {
             that.coaches = gym.coaches_set
@@ -582,14 +672,14 @@ app.controller("FeedbackControl", ['$scope', "Restangular",
     }
 ])
 
-app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http",
-    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http) {
+app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http","$uploader",
+    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader) {
         console.log($stateParams)
         var that = this
         var coachname = $stateParams.coachname
         var orderid = $stateParams.orderid
 
-		that.role = $.cookie('role')
+        that.role = $.cookie('role')
 
         that.showncoaches = false
         that.changecoach = function(c) {
@@ -955,6 +1045,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     //that.coach = data.coachdetail
                     //get product
                     that.order = data
+					that.customername = that.order.customerdetail.name
                     Restangular.one("api/p", data.product)
                         .get()
                         .then(function(product) {
@@ -979,6 +1070,96 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                         })
                 })
         }
+        that.toggle = function(tab) {
+            that.activetab = [0, 0]
+            that.activetab[tab] = 1
+			if(tab == 1){
+				that.refreshPhoto()
+			}
+        }
+        that.loadmore = undefined;
+        that.album = [];
+        that.refreshEval = function() {}
+        that.refreshPhoto = function() {
+            Restangular.all("api")
+                .one(that.customername, "album")
+                .get(that.loadmore)
+                .then(function(resp) {
+                    _.each(resp.results, function(item) {
+                        that.album.push(item.url)
+                    })
+                    if (resp.next != null) {
+                        that.loadmore = {
+                            page: resp.next.split("page=")[1]
+                        }
+                    } else {
+                        that.loadmore = undefined
+                    }
+                })
+        }
+        that.uploading = -1
+        that.images = []
+
+
+        that.finishupload = function() {
+            that.uploading--
+                if (that.uploading == 0) {
+                    that.uploading = -1
+                }
+            if (that.uploading == -1) {
+                that.saveimg()
+            }
+        }
+
+        that.addphoto = function($files) {
+            that.uploading = $files.length;
+            that.images = []
+            _.each($files, function(f) {
+                $uploader.upload(f, function(data) {
+                    console.log(data.key)
+                    var imgurl = bukcet + "/" + data.key
+                    if (that.images.indexOf(imgurl)) {
+                        that.images.push(bukcet + "/" + data.key)
+						that.album.unshift(bukcet + "/" + data.key)
+                    }
+                    that.finishupload()
+                }, function() {
+                    that.finishupload()
+                })
+            })
+        }
+        that.saveimg = function() {
+            var data = {
+                'title': "训练记录",
+                'brief': "训练记录",
+                'imgs': JSON.stringify(that.images),
+                'by': that.customername
+            }
+            Restangular.one("api", that.customername)
+                .post("weibo", data)
+                .then(function(resp) {
+					/*	
+                    swal({
+                        title: "成功",
+                        text: "图片已保存",
+                        type: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+					*/
+					that.loadmore = undefined
+                    that.album = []
+                    that.refreshPhoto()
+                }, function(resp) {
+					console.log(resp)
+                    swal("", "保存失败了", "warning")
+                    that.album = []
+                    that.refreshPhoto()
+                })
+        }
+
+
+        that.toggle(0);
         that.reload()
     }
 ])
@@ -1385,7 +1566,7 @@ app.controller("HistoryCtrl", ['$scope', "Restangular", "NgTableParams", "$login
 ])
 
 
-app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$login","SweetAlert",
+app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$login", "SweetAlert",
     function($scope, Restangular, NgTableParams, $login, SweetAlert) {
         var gymid = $.cookie("gym")
         var that = this
@@ -1491,7 +1672,7 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                         type: 'text/csv'
                     });
                     var csvUrl = window.URL.createObjectURL(blob);
-                    var filename = '备份' + that.startday_str +"_" + that.endday_str + ".csv"
+                    var filename = '备份' + that.startday_str + "_" + that.endday_str + ".csv"
                     $("#lnkDwnldLnk")
                         .attr({
                             'download': filename,
@@ -2010,3 +2191,4 @@ app.controller("SettingsControl", ["$scope", "Restangular",
         }
     }
 ])
+
