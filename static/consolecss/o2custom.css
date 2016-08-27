@@ -4,6 +4,7 @@ body {
 }
 .event-calendar {
 	min-height: 320px;
+	margin-bottom: 10px;
 }
 tr {
 	text-align: left;
