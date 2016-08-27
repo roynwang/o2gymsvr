@@ -190,7 +190,7 @@
 }
 @media (max-width: 479px) {
     body{
-        margin-top:80px !important;
+        margin-top:60px !important;
     }
     .header{
         position: relative !important;
@@ -224,7 +224,7 @@
     #sidebar{
         position: fixed !important;
         z-index: 1002;
-        top: 80px;
+        top: 60px;
     }
     #main-content{
         margin-left: 0px;

@@ -79,6 +79,12 @@ ul.sidebar-menu {
 	 background-color: #fafafa;
 	 color: #777
 }
+
+.noti.badge {
+	position: absolute;
+	top: -12px;
+	right: -8px;
+}
 #incomplete.dropdown-menu:before {
 	left: 90%
 }
