@@ -78,6 +78,10 @@ Date.prototype.addMonths = function(value) {
     this.setDate(Math.min(n, this.getDaysInMonth()));
     return this;
 };
+Date.prototype.addHours = function(h) {    
+	   this.setTime(this.getTime() + (h*60*60*1000)); 
+	      return this;   
+}
 
 function ConvertToCSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
@@ -1104,7 +1108,8 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 .get(that.loadmore)
                 .then(function(resp) {
                     _.each(resp.results, function(item) {
-                        that.album.push(item.url)
+						item.caption = new Date(item.created).Format("yyyy-MM-dd hh:mm")
+                        that.album.push(item)
                     })
                     if (resp.next != null) {
                         that.loadmore = {
