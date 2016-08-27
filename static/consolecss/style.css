@@ -598,11 +598,11 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
 }
 .top-nav ul.top-menu>li>a {
     border-radius:100px;
+    border:1px solid #fff;
     -webkit-border-radius:100px;
     padding:0px;
     background:none;
     margin-right:0;
-    border:1px solid #F6F6F6;
 }
 .top-nav ul.top-menu>li.language>a {
     margin-top:-2px;
@@ -623,8 +623,9 @@ ul.top-menu>li>a:hover,ul.top-menu>li>a:focus {
     margin-left:10px;
 }
 .top-nav ul.top-menu>li>a:hover,.top-nav ul.top-menu>li>a:focus {
-    border:1px solid #f6f6f6;
-    background:#f6f6f6 !important;
+    border:1px solid #fff;
+	color:#1fb5ac !important;
+	background-color: #fff;
     border-radius:100px;
     -webkit-border-radius:100px;
 }
