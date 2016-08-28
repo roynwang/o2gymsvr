@@ -124,7 +124,7 @@ class HealthQues(models.Model):
 	date = models.DateField(auto_now=True)
 	option = models.CharField(max_length=64)
         valuetype = models.CharField(max_length=64)
-	value = models.CharField(max_length=512)
+	value = models.TextField()
 	group = models.CharField(max_length=64)
 
 class HealthQuesOptions(models.Model):

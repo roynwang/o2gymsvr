@@ -117,6 +117,82 @@ var app = angular.module('JobApp', [
     'angularQFileUpload',
     'bootstrapLightbox'
 ])
+app.directive(
+    'ngSignaturePad',
+    [
+      '$window',
+      '$timeout',
+      function ($window, $timeout) {
+        return {
+          scope: {
+            ngSignaturePad: '='
+          },
+          link: function ($scope, $element, $attrs) {
+            $timeout(function () {
+              if ($attrs.ngSignaturePadBefore) {
+                $scope.$parent.$apply(function (self) {
+                  self[$attrs.ngSignaturePadBefore]($element, $attrs);
+                });
+              }
+
+              if (!$attrs.ngSignaturePadDotSize) {
+                $attrs.$set('ngSignaturePadDotSize', null);
+              }
+
+              if (!$attrs.ngSignaturePadMinWidth) {
+                $attrs.$set('ngSignaturePadMinWidth', null);
+              }
+
+              if (!$attrs.ngSignaturePadBackgroundColor) {
+                $attrs.$set('ngSignaturePadBackgroundColor', null);
+              }
+
+              if (!$attrs.ngSignaturePadPenColor) {
+                $attrs.$set('ngSignaturePadPenColor', null);
+              }
+
+              if (!$attrs.ngSignaturePadVelocityFilterWeight) {
+                $attrs.$set('ngSignaturePadVelocityFilterWeight', null);
+              }
+
+              if (!$attrs.ngSignaturePadOnBegin) {
+                $attrs.$set('ngSignaturePadOnBegin', null);
+              }
+
+              if (!$attrs.ngSignaturePadOnEnd) {
+                $attrs.$set('ngSignaturePadOnEnd', null);
+              }
+
+              $scope.ngSignaturePad = new $window.SignaturePad($element[0], {
+                dotSize: $attrs.ngSignaturePadDotSize,
+                minWidth: $attrs.ngSignaturePadMinWidth,
+                backgroundColor: $attrs.ngSignaturePadBackgroundColor,
+                penColor: $attrs.ngSignaturePadPenColor,
+                velocityFilterWeight: $attrs.ngSignaturePadVelocityFilterWeight,
+                onBegin: $attrs.ngSignaturePadOnBegin,
+                onEnd: $attrs.ngSignaturePadOnEnd
+              });
+
+              var oldAddPoint = $scope.ngSignaturePad._addPoint;
+
+              $scope.ngSignaturePad._addPoint = function (point) {
+                oldAddPoint.call(this, point);
+
+                $scope.$apply();
+              };
+
+              if ($attrs.ngSignaturePadAfter) {
+                $scope.$parent.$apply(function (self) {
+                  self[$attrs.ngSignaturePadAfter]($element, $attrs, $scope.ngSignaturePad);
+                });
+              }
+            });
+          }
+        };
+      }
+    ]
+  );
+
 app.directive('backButton', function() {
     return {
         restrict: 'A',
@@ -2374,6 +2450,7 @@ app.controller("HealthQuesCtrl", ["$scope", "Restangular", "$stateParams",
             that.day = $stateParams.date
             var query = undefined
             if (that.day != "new") {
+				that.showSignature = false
                 Restangular.one("api", $stateParams.customername)
                     .all("h")
                     .get(that.day)
@@ -2388,6 +2465,7 @@ app.controller("HealthQuesCtrl", ["$scope", "Restangular", "$stateParams",
                     }, function() {})
 
             } else {
+				that.showSignature = true
                 Restangular.all("api")
                     .all("h")
                     .getList()
@@ -2423,6 +2501,13 @@ app.controller("HealthQuesCtrl", ["$scope", "Restangular", "$stateParams",
                     data.push(p)
                 }
             })
+			data.push({
+                name: $stateParams.customername,
+                option: "签名",
+                value: that.signature.toDataURL(),
+                valuetype: 'signature',
+                group: "签名"
+			})
             Restangular.one("api", $stateParams.customername)
                 .one("h")
                 .post(daystr, data)
