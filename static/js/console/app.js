@@ -1111,7 +1111,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 .one(that.customername, "e")
                 .getList()
                 .then(function(resp) {
-                    that.evals = resp
+                    that.evals = resp.reverse()
                 })
         }
         that.refreshPhoto = function() {
@@ -2244,6 +2244,19 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
         var that = this
         that.options = []
         that.day = undefined
+		that.currentgroup = undefined
+		that.groups = []
+		that.alloptions = []
+		that.switchgroup =  function(g){
+			that.currentgroup = g
+			that.options = []
+			_.each(that.alloptions, function(item){
+				if(item.group == g){
+					that.options.push(item)
+				}
+			})
+			
+		}
         that.refresh = function() {
             that.day = $stateParams.date
             var query = undefined
@@ -2252,7 +2265,13 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
                     .all("e")
                     .get(that.day)
                     .then(function(resp) {
-                        that.options = resp
+                        that.alloptions = resp
+						_.each(that.alloptions, function(item){
+							if(that.groups.indexOf(item.group)==-1){
+								that.groups.push(item.group)
+							}
+						})
+						that.switchgroup(that.groups[0])
                     }, function() {})
 
             } else {
@@ -2260,10 +2279,17 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
                     .all("e")
                     .getList()
                     .then(function(resp) {
-                        that.options = resp
+                        that.alloptions = resp
+						_.each(that.alloptions, function(item){
+							if(that.groups.indexOf(item.group)==-1){
+								that.groups.push(item.group)
+							}
+						})
+						that.switchgroup(that.groups[0])
                     }, function() {})
             }
         }
+
         that.submit = function() {
 
             var daystr = that.day
@@ -2272,7 +2298,7 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
             }
             daystr = daystr.replace(/-/g, "")
             var data = []
-            _.each(that.options, function(item) {
+            _.each(that.alloptions, function(item) {
                 if (item.value != undefined) {
                     var p = {
                         name: $stateParams.customername,
