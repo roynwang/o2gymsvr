@@ -1,0 +1,41 @@
+<div class="col-md-12" ng-controller="HealthQuesCtrl as ctrl">
+	<section class="panel">
+		<header class="panel-heading">
+			<h4 class="text-center">
+				<i back-button class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
+				健康问卷
+			</h4>
+		</header>
+		<div class="panel-body">
+			<div class="row text-center" style="padding-left:20px;margin-bottom:20px">
+				<span ng-repeat="g in ctrl.groups" ng-click="ctrl.switchgroup(g)" class="salary-span"
+					ng-class="{'active': ctrl.currentgroup == g }">{{g}}</span>
+			</div>
+			<div class="form-horizental bucket-form">
+				<div class="form-group col-sm-6" ng-repeat="option in ctrl.options">
+					<label class="col-sm-4 control-label">
+						{{option.option}}
+					</label>
+					<div class="col-sm-8" ng-if="option.valuetype=='text'">
+						<input ng-model="option.value" type="text" class="form-control">
+					</div>
+					<div class="col-sm-8" ng-if="option.valuetype=='bool'">
+						<label>
+							<input type="radio" ng-model="option.value" value="1">
+							是
+						</label>
+						<a>&nbsp;&nbsp;&nbsp;</a>
+						<label>
+							<input type="radio" ng-model="option.value" value="0">
+							否
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+		<p ng-show="ctrl.day =='new'" class="text-center"><a class="btn btn-primary btn-lg text-center"
+			style="margin-top:20px;margin-bottom:20px"
+			ng-click="ctrl.submit()">保存</a>
+		</p>
+	</section>
+</div>

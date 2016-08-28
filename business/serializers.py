@@ -46,13 +46,28 @@ class BodyEvalDateSerializer(serializers.ModelSerializer):
 		model = BodyEval
 		fields = ["date"]
 
+class BodyEvalOptionsSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = BodyEvalOptions
+
+class HealthQuesSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = HealthQues
+
+class HealthQuesDateSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = HealthQues 
+		fields = ["date"]
+
+class HealthQuesOptionsSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = HealthQuesOptions
+
 class TrainSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Train
 
-class BodyEvalOptionsSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = BodyEvalOptions
+
 
 class TrainDateSerializer(serializers.ModelSerializer):
 	class Meta:

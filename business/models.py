@@ -118,6 +118,21 @@ class BodyEvalOptions(models.Model):
 	unit = models.CharField(max_length=64)
 	group = models.CharField(max_length=64)
 
+class HealthQues(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=64)
+	date = models.DateField(auto_now=True)
+	option = models.CharField(max_length=64)
+        valuetype = models.CharField(max_length=64)
+	value = models.CharField(max_length=512)
+	group = models.CharField(max_length=64)
+
+class HealthQuesOptions(models.Model):
+	id = models.AutoField(primary_key=True)
+	option = models.CharField(max_length=64)
+        valuetype = models.CharField(max_length=64)
+	group = models.CharField(max_length=64)
+
 
 class Train(models.Model):
 	id = models.AutoField(primary_key=True)

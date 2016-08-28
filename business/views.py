@@ -260,6 +260,31 @@ class BodyEvalByDateView(ListBulkCreateAPIView):
 		name = self.kwargs.get("name")
 		return BodyEval.objects.filter(date=date_str, name=name)
 
+@permission_classes((AllowAny, ))
+class AllHealthQuesOptionsView(generics.ListCreateAPIView):
+	queryset = HealthQuesOptions.objects.all()
+	serializer_class = HealthQuesOptionsSerializer
+	pagination_class = None
+
+
+class HealthQuesDateView(generics.ListAPIView):
+	pagination_class = None
+	serializer_class = HealthQuesDateSerializer 
+	def get_queryset(self):
+		return HealthQues.objects.filter(name=self.kwargs.get("name")).values('date').distinct()
+
+
+class HealthQuesByDateView(ListBulkCreateAPIView):
+	pagination_class = None
+	serializer_class = HealthQuesSerializer
+	def get_queryset(self):
+		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+		date_str = datetime.datetime.strftime(date,"%Y-%m-%d")
+		name = self.kwargs.get("name")
+		return HealthQues.objects.filter(date=date_str, name=name)
+
+
+
 class TrainDateView(generics.ListAPIView):
 	pagination_class = None
 	serializer_class = TrainDateSerializer 

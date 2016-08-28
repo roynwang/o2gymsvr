@@ -327,6 +327,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/eval/:customername/:date",
             templateUrl: "/static/console/evaldetail.html",
         })
+        .state('healthques', {
+            url: "/healthques/:customername/:date",
+            templateUrl: "/static/console/healthques.html",
+        })
 })
 
 app.controller("GymCtrl", ["$stateParams", "$state",
@@ -1091,13 +1095,17 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 })
         }
         that.toggle = function(tab) {
-            that.activetab = [0, 0, 0]
+            that.activetab = [0, 0, 0,0]
             that.activetab[tab] = 1
             if (tab == 1) {
                 that.refreshPhoto()
             }
             if (tab == 2) {
                 that.refreshEval()
+            }
+
+            if (tab == 3) {
+                that.refreshQues()
             }
         }
         that.loadmore = undefined;
@@ -1114,6 +1122,15 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     that.evals = resp.reverse()
                 })
         }
+        that.refreshQues = function() {
+            Restangular.all("api")
+                .one(that.customername, "h")
+                .getList()
+                .then(function(resp) {
+                    that.ques = resp.reverse()
+                })
+        }
+
         that.refreshPhoto = function() {
             Restangular.all("api")
                 .one(that.customername, "album")
@@ -1170,6 +1187,13 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 date: date.replace(/-/g, "")
             })
         }
+        that.showques = function(date) {
+            $state.transitionTo('healthques', {
+                customername: that.customername,
+                date: date.replace(/-/g, "")
+            })
+        }
+
 
         that.saveimg = function() {
             var data = {
@@ -2312,6 +2336,95 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
             })
             Restangular.one("api", $stateParams.customername)
                 .one("e")
+                .post(daystr, data)
+                .then(function() {
+                    swal({
+                        title: "成功",
+                        text: "已保存",
+                        type: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    history.back();
+                }, function() {})
+
+        }
+        that.refresh()
+    }
+])
+app.controller("HealthQuesCtrl", ["$scope", "Restangular", "$stateParams",
+    function($scope, Restangular, $stateParams) {
+        var that = this
+        that.options = []
+        that.day = undefined
+		that.currentgroup = undefined
+		that.groups = []
+		that.alloptions = []
+		that.switchgroup =  function(g){
+			that.currentgroup = g
+			that.options = []
+			_.each(that.alloptions, function(item){
+				if(item.group == g){
+					that.options.push(item)
+				}
+			})
+			
+		}
+        that.refresh = function() {
+            that.day = $stateParams.date
+            var query = undefined
+            if (that.day != "new") {
+                Restangular.one("api", $stateParams.customername)
+                    .all("h")
+                    .get(that.day)
+                    .then(function(resp) {
+                        that.alloptions = resp
+						_.each(that.alloptions, function(item){
+							if(that.groups.indexOf(item.group)==-1){
+								that.groups.push(item.group)
+							}
+						})
+						that.switchgroup(that.groups[0])
+                    }, function() {})
+
+            } else {
+                Restangular.all("api")
+                    .all("h")
+                    .getList()
+                    .then(function(resp) {
+                        that.alloptions = resp
+						_.each(that.alloptions, function(item){
+							if(that.groups.indexOf(item.group)==-1){
+								that.groups.push(item.group)
+							}
+						})
+						that.switchgroup(that.groups[0])
+                    }, function() {})
+            }
+        }
+
+        that.submit = function() {
+
+            var daystr = that.day
+            if (that.day == "new") {
+                daystr = new Date().Format("yyyy-MM-dd")
+            }
+            daystr = daystr.replace(/-/g, "")
+            var data = []
+            _.each(that.alloptions, function(item) {
+                if (item.value != undefined) {
+                    var p = {
+                        name: $stateParams.customername,
+                        option: item.option,
+                        value: item.value,
+                        valuetype: item.valuetype,
+                        group: item.group
+                    }
+                    data.push(p)
+                }
+            })
+            Restangular.one("api", $stateParams.customername)
+                .one("h")
                 .post(daystr, data)
                 .then(function() {
                     swal({

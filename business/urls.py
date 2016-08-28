@@ -29,7 +29,10 @@ urlpatterns = patterns('',
 		#body eval
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/e/$',BodyEvalDateView.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/e/(?P<date>[0-9]{8})/$',BodyEvalByDateView.as_view()),
+		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/h/$',HealthQuesDateView.as_view()),
+		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/h/(?P<date>[0-9]{8})/$', HealthQuesByDateView.as_view()),
 		url(r'^api/e/$',AllEvalOptionsView.as_view()),
+		url(r'^api/h/$',AllHealthQuesOptionsView.as_view()),
 
 		#train
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/t/(?P<date>[0-9]{8})/a/(?P<pk>[0-9]+)/$',TrainItemView.as_view()),
