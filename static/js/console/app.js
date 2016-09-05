@@ -118,80 +118,79 @@ var app = angular.module('JobApp', [
     'bootstrapLightbox'
 ])
 app.directive(
-    'ngSignaturePad',
-    [
-      '$window',
-      '$timeout',
-      function ($window, $timeout) {
-        return {
-          scope: {
-            ngSignaturePad: '='
-          },
-          link: function ($scope, $element, $attrs) {
-            $timeout(function () {
-              if ($attrs.ngSignaturePadBefore) {
-                $scope.$parent.$apply(function (self) {
-                  self[$attrs.ngSignaturePadBefore]($element, $attrs);
-                });
-              }
+    'ngSignaturePad', [
+        '$window',
+        '$timeout',
+        function($window, $timeout) {
+            return {
+                scope: {
+                    ngSignaturePad: '='
+                },
+                link: function($scope, $element, $attrs) {
+                    $timeout(function() {
+                        if ($attrs.ngSignaturePadBefore) {
+                            $scope.$parent.$apply(function(self) {
+                                self[$attrs.ngSignaturePadBefore]($element, $attrs);
+                            });
+                        }
 
-              if (!$attrs.ngSignaturePadDotSize) {
-                $attrs.$set('ngSignaturePadDotSize', null);
-              }
+                        if (!$attrs.ngSignaturePadDotSize) {
+                            $attrs.$set('ngSignaturePadDotSize', null);
+                        }
 
-              if (!$attrs.ngSignaturePadMinWidth) {
-                $attrs.$set('ngSignaturePadMinWidth', null);
-              }
+                        if (!$attrs.ngSignaturePadMinWidth) {
+                            $attrs.$set('ngSignaturePadMinWidth', null);
+                        }
 
-              if (!$attrs.ngSignaturePadBackgroundColor) {
-                $attrs.$set('ngSignaturePadBackgroundColor', null);
-              }
+                        if (!$attrs.ngSignaturePadBackgroundColor) {
+                            $attrs.$set('ngSignaturePadBackgroundColor', null);
+                        }
 
-              if (!$attrs.ngSignaturePadPenColor) {
-                $attrs.$set('ngSignaturePadPenColor', null);
-              }
+                        if (!$attrs.ngSignaturePadPenColor) {
+                            $attrs.$set('ngSignaturePadPenColor', null);
+                        }
 
-              if (!$attrs.ngSignaturePadVelocityFilterWeight) {
-                $attrs.$set('ngSignaturePadVelocityFilterWeight', null);
-              }
+                        if (!$attrs.ngSignaturePadVelocityFilterWeight) {
+                            $attrs.$set('ngSignaturePadVelocityFilterWeight', null);
+                        }
 
-              if (!$attrs.ngSignaturePadOnBegin) {
-                $attrs.$set('ngSignaturePadOnBegin', null);
-              }
+                        if (!$attrs.ngSignaturePadOnBegin) {
+                            $attrs.$set('ngSignaturePadOnBegin', null);
+                        }
 
-              if (!$attrs.ngSignaturePadOnEnd) {
-                $attrs.$set('ngSignaturePadOnEnd', null);
-              }
+                        if (!$attrs.ngSignaturePadOnEnd) {
+                            $attrs.$set('ngSignaturePadOnEnd', null);
+                        }
 
-              $scope.ngSignaturePad = new $window.SignaturePad($element[0], {
-                dotSize: $attrs.ngSignaturePadDotSize,
-                minWidth: $attrs.ngSignaturePadMinWidth,
-                backgroundColor: $attrs.ngSignaturePadBackgroundColor,
-                penColor: $attrs.ngSignaturePadPenColor,
-                velocityFilterWeight: $attrs.ngSignaturePadVelocityFilterWeight,
-                onBegin: $attrs.ngSignaturePadOnBegin,
-                onEnd: $attrs.ngSignaturePadOnEnd
-              });
+                        $scope.ngSignaturePad = new $window.SignaturePad($element[0], {
+                            dotSize: $attrs.ngSignaturePadDotSize,
+                            minWidth: $attrs.ngSignaturePadMinWidth,
+                            backgroundColor: $attrs.ngSignaturePadBackgroundColor,
+                            penColor: $attrs.ngSignaturePadPenColor,
+                            velocityFilterWeight: $attrs.ngSignaturePadVelocityFilterWeight,
+                            onBegin: $attrs.ngSignaturePadOnBegin,
+                            onEnd: $attrs.ngSignaturePadOnEnd
+                        });
 
-              var oldAddPoint = $scope.ngSignaturePad._addPoint;
+                        var oldAddPoint = $scope.ngSignaturePad._addPoint;
 
-              $scope.ngSignaturePad._addPoint = function (point) {
-                oldAddPoint.call(this, point);
+                        $scope.ngSignaturePad._addPoint = function(point) {
+                            oldAddPoint.call(this, point);
 
-                $scope.$apply();
-              };
+                            $scope.$apply();
+                        };
 
-              if ($attrs.ngSignaturePadAfter) {
-                $scope.$parent.$apply(function (self) {
-                  self[$attrs.ngSignaturePadAfter]($element, $attrs, $scope.ngSignaturePad);
-                });
-              }
-            });
-          }
-        };
-      }
+                        if ($attrs.ngSignaturePadAfter) {
+                            $scope.$parent.$apply(function(self) {
+                                self[$attrs.ngSignaturePadAfter]($element, $attrs, $scope.ngSignaturePad);
+                            });
+                        }
+                    });
+                }
+            };
+        }
     ]
-  );
+);
 
 app.directive('backButton', function() {
     return {
@@ -296,6 +295,18 @@ app.factory("$customersvc", function(Restangular) {
         }
     }
 
+    function gettrialcustomers(onsuccess, force) {
+        var gymid = $.cookie("gym")
+        var that = this
+        Restangular.one('api/g/', gymid)
+            .one("trialcustomers/")
+            .get()
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+    }
+
+
     function flag(user) {
         var v = (user.flag + 1) % 3;
         Restangular.one('api', user.name)
@@ -303,7 +314,7 @@ app.factory("$customersvc", function(Restangular) {
                 flag: v
             })
             .then(function(data) {
-				user.flag = v
+                user.flag = v
             })
     }
 
@@ -317,7 +328,8 @@ app.factory("$customersvc", function(Restangular) {
     return {
         getcustomers: getcustomers,
         getcustomer: getcustomer,
-		flag:flag 
+		gettrialcustomers: gettrialcustomers,
+        flag: flag
     }
 })
 
@@ -338,7 +350,19 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             templateUrl: "/static/console/mainpage.html",
             controller: "MainPageCtrl"
         })
-        .state('gym', {
+        .state('expcustomer', {
+            url: "/expcustomer",
+            templateUrl: "/static/console/expcustomer.html",
+        })
+        .state('trialcustomers', {
+            url: "/trialcustomers",
+            templateUrl: "/static/console/trialcustomers.html",
+        })
+        .state('trialcustomer', {
+			url: "/trialcustomer/:customername",
+            templateUrl: "/static/console/trialcustomerdetail.html",
+        })
+	    .state('gym', {
             url: "/gym/:gymid",
             controller: "GymCtrl"
                 //templateUrl: "/static/console/customers.html",
@@ -1171,7 +1195,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 })
         }
         that.toggle = function(tab) {
-            that.activetab = [0, 0, 0,0]
+            that.activetab = [0, 0, 0, 0]
             that.activetab[tab] = 1
             if (tab == 1) {
                 that.refreshPhoto()
@@ -1923,7 +1947,7 @@ app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$cust
             });
         })
         that.flag = function(usr) {
-			$customersvc.flag(usr)
+            $customersvc.flag(usr)
         }
 
         that.export = function() {
@@ -2344,19 +2368,19 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
         var that = this
         that.options = []
         that.day = undefined
-		that.currentgroup = undefined
-		that.groups = []
-		that.alloptions = []
-		that.switchgroup =  function(g){
-			that.currentgroup = g
-			that.options = []
-			_.each(that.alloptions, function(item){
-				if(item.group == g){
-					that.options.push(item)
-				}
-			})
-			
-		}
+        that.currentgroup = undefined
+        that.groups = []
+        that.alloptions = []
+        that.switchgroup = function(g) {
+            that.currentgroup = g
+            that.options = []
+            _.each(that.alloptions, function(item) {
+                if (item.group == g) {
+                    that.options.push(item)
+                }
+            })
+
+        }
         that.refresh = function() {
             that.day = $stateParams.date
             var query = undefined
@@ -2366,12 +2390,12 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
                     .get(that.day)
                     .then(function(resp) {
                         that.alloptions = resp
-						_.each(that.alloptions, function(item){
-							if(that.groups.indexOf(item.group)==-1){
-								that.groups.push(item.group)
-							}
-						})
-						that.switchgroup(that.groups[0])
+                        _.each(that.alloptions, function(item) {
+                            if (that.groups.indexOf(item.group) == -1) {
+                                that.groups.push(item.group)
+                            }
+                        })
+                        that.switchgroup(that.groups[0])
                     }, function() {})
 
             } else {
@@ -2380,12 +2404,12 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
                     .getList()
                     .then(function(resp) {
                         that.alloptions = resp
-						_.each(that.alloptions, function(item){
-							if(that.groups.indexOf(item.group)==-1){
-								that.groups.push(item.group)
-							}
-						})
-						that.switchgroup(that.groups[0])
+                        _.each(that.alloptions, function(item) {
+                            if (that.groups.indexOf(item.group) == -1) {
+                                that.groups.push(item.group)
+                            }
+                        })
+                        that.switchgroup(that.groups[0])
                     }, function() {})
             }
         }
@@ -2433,50 +2457,50 @@ app.controller("HealthQuesCtrl", ["$scope", "Restangular", "$stateParams",
         var that = this
         that.options = []
         that.day = undefined
-		that.currentgroup = undefined
-		that.groups = []
-		that.alloptions = []
-		that.switchgroup =  function(g){
-			that.currentgroup = g
-			that.options = []
-			_.each(that.alloptions, function(item){
-				if(item.group == g){
-					that.options.push(item)
-				}
-			})
-			
-		}
+        that.currentgroup = undefined
+        that.groups = []
+        that.alloptions = []
+        that.switchgroup = function(g) {
+            that.currentgroup = g
+            that.options = []
+            _.each(that.alloptions, function(item) {
+                if (item.group == g) {
+                    that.options.push(item)
+                }
+            })
+
+        }
         that.refresh = function() {
             that.day = $stateParams.date
             var query = undefined
             if (that.day != "new") {
-				that.showSignature = false
+                that.showSignature = false
                 Restangular.one("api", $stateParams.customername)
                     .all("h")
                     .get(that.day)
                     .then(function(resp) {
                         that.alloptions = resp
-						_.each(that.alloptions, function(item){
-							if(that.groups.indexOf(item.group)==-1){
-								that.groups.push(item.group)
-							}
-						})
-						that.switchgroup(that.groups[0])
+                        _.each(that.alloptions, function(item) {
+                            if (that.groups.indexOf(item.group) == -1) {
+                                that.groups.push(item.group)
+                            }
+                        })
+                        that.switchgroup(that.groups[0])
                     }, function() {})
 
             } else {
-				that.showSignature = true
+                that.showSignature = true
                 Restangular.all("api")
                     .all("h")
                     .getList()
                     .then(function(resp) {
                         that.alloptions = resp
-						_.each(that.alloptions, function(item){
-							if(that.groups.indexOf(item.group)==-1){
-								that.groups.push(item.group)
-							}
-						})
-						that.switchgroup(that.groups[0])
+                        _.each(that.alloptions, function(item) {
+                            if (that.groups.indexOf(item.group) == -1) {
+                                that.groups.push(item.group)
+                            }
+                        })
+                        that.switchgroup(that.groups[0])
                     }, function() {})
             }
         }
@@ -2501,13 +2525,13 @@ app.controller("HealthQuesCtrl", ["$scope", "Restangular", "$stateParams",
                     data.push(p)
                 }
             })
-			data.push({
+            data.push({
                 name: $stateParams.customername,
                 option: "签名",
                 value: that.signature.toDataURL(),
                 valuetype: 'signature',
                 group: "签名"
-			})
+            })
             Restangular.one("api", $stateParams.customername)
                 .one("h")
                 .post(daystr, data)
@@ -2524,5 +2548,255 @@ app.controller("HealthQuesCtrl", ["$scope", "Restangular", "$stateParams",
 
         }
         that.refresh()
+    }
+])
+app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams",
+    function($scope, Restangular, $stateParams) {
+        var that = this
+        that.day = new Date()
+        that.groups = []
+        that.newcustomer = {
+            sex: '0',
+            trial: $.cookie("gym")
+        }
+        that.showstep = function(tab) {
+            that.activetab = [0, 0, 0, 0]
+            that.activetab[tab] = 1
+        }
+        that.switchgroup = function(g) {
+            that.currentgroup = g
+            that.options = []
+            _.each(that.alloptions, function(item) {
+                if (item.group == g) {
+                    that.options.push(item)
+                }
+            })
+
+        }
+        that.savecustomer = function() {
+            Restangular.one("api")
+                .post("u", that.newcustomer)
+                .then(function(resp) {
+                    //refresh health ques
+                    that.showSignature = true
+                    Restangular.all("api")
+                        .all("h")
+                        .getList()
+                        .then(function(resp) {
+                            that.showstep(1);
+                            that.alloptions = resp
+                            _.each(that.alloptions, function(item) {
+                                if (that.groups.indexOf(item.group) == -1) {
+                                    that.groups.push(item.group)
+                                }
+                            })
+                            that.switchgroup(that.groups[0])
+                        }, function() {})
+                }, function() {
+                    swal("", "保存失败了",
+                        "warning")
+                });
+
+        }
+        that.savehealthques = function() {
+            var daystr = new Date().Format("yyyy-MM-dd")
+            daystr = daystr.replace(/-/g, "")
+            var data = []
+            _.each(that.alloptions, function(item) {
+                if (item.value != undefined) {
+                    var p = {
+                        name: that.newcustomer.name,
+                        option: item.option,
+                        value: item.value,
+                        valuetype: item.valuetype,
+                        group: item.group
+                    }
+                    data.push(p)
+                }
+            })
+            data.push({
+                name: that.newcustomer.name,
+                option: "签名",
+                value: that.signature.toDataURL(),
+                valuetype: 'signature',
+                group: "签名"
+            })
+            Restangular.one("api", that.newcustomer.name)
+                .one("h")
+                .post(daystr, data)
+                .then(function() {
+                    swal({
+                        title: "成功",
+                        text: "已保存",
+                        type: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }, function() {})
+        }
+
+        that.showstep(0);
+    }
+])
+app.controller("TrailCustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$customersvc", 'SweetAlert',
+    function($scope, Restangular, NgTableParams, $customersvc, SweetAlert) {
+		var that = this;
+        $customersvc.gettrialcustomers(function(data) {
+            that.tableParams = new NgTableParams({
+                sorting: {
+                    name: "asc"
+                }
+            }, {
+                dataset: data
+            });
+        })
+        that.flag = function(usr) {
+            $customersvc.flag(usr)
+        }
+    }
+])
+app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader", "Lightbox","$customersvc",
+    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader, Lightbox, $customersvc) {
+        console.log($stateParams)
+        var that = this
+        that.customername = $stateParams.customername
+		that.customerdetail = {}
+		that.reload = function(){
+			Restangular.all("api")
+				.one(that.customername)
+				.get()
+	            .then(function(data){
+				that.customerdetail = data
+			})
+		}
+
+
+        that.gohome = function() {
+            $state.transitionTo('index')
+        }
+        that.toggle = function(tab) {
+            that.activetab = [0, 0, 0, 0]
+            that.activetab[tab] = 1
+            if (tab == 1) {
+                that.refreshPhoto()
+            }
+            if (tab == 2) {
+                that.refreshEval()
+            }
+
+            if (tab == 3) {
+                that.refreshQues()
+            }
+        }
+        that.loadmore = undefined;
+        that.album = [];
+        that.evals = []
+        that.openLightboxModal = function(i) {
+            Lightbox.openModal(that.album, i);
+        }
+        that.refreshEval = function() {
+            Restangular.all("api")
+                .one(that.customername, "e")
+                .getList()
+                .then(function(resp) {
+                    that.evals = resp.reverse()
+                })
+        }
+        that.refreshQues = function() {
+            Restangular.all("api")
+                .one(that.customername, "h")
+                .getList()
+                .then(function(resp) {
+                    that.ques = resp.reverse()
+                })
+        }
+
+        that.refreshPhoto = function() {
+            Restangular.all("api")
+                .one(that.customername, "album")
+                .get(that.loadmore)
+                .then(function(resp) {
+                    _.each(resp.results, function(item) {
+                        item.caption = new Date(item.created).Format("yyyy-MM-dd hh:mm")
+                        that.album.push(item)
+                    })
+                    if (resp.next != null) {
+                        that.loadmore = {
+                            page: resp.next.split("page=")[1]
+                        }
+                    } else {
+                        that.loadmore = undefined
+                    }
+                })
+        }
+        that.uploading = -1
+        that.images = []
+
+
+        that.finishupload = function() {
+            that.uploading--
+                if (that.uploading == 0) {
+                    that.uploading = -1
+                }
+            if (that.uploading == -1) {
+                that.saveimg()
+            }
+        }
+
+        that.addphoto = function($files) {
+            that.uploading = $files.length;
+            that.images = []
+            _.each($files, function(f) {
+                $uploader.upload(f, function(data) {
+                    console.log(data.key)
+                    var imgurl = bukcet + "/" + data.key
+                    if (that.images.indexOf(imgurl)) {
+                        that.images.push(bukcet + "/" + data.key)
+                        that.album.unshift(bukcet + "/" + data.key)
+                    }
+                    that.finishupload()
+                }, function() {
+                    that.finishupload()
+                })
+            })
+        }
+
+        that.showeval = function(date) {
+            $state.transitionTo('eval', {
+                customername: that.customername,
+                date: date.replace(/-/g, "")
+            })
+        }
+        that.showques = function(date) {
+            $state.transitionTo('healthques', {
+                customername: that.customername,
+                date: date.replace(/-/g, "")
+            })
+        }
+
+
+
+        that.saveimg = function() {
+            var data = {
+                'title': "训练记录",
+                'brief': "训练记录",
+                'imgs': JSON.stringify(that.images),
+                'by': that.customername
+            }
+            Restangular.one("api", that.customername)
+                .post("weibo", data)
+                .then(function(resp) {
+                    that.loadmore = undefined
+                    that.album = []
+                    that.refreshPhoto()
+                }, function(resp) {
+                    console.log(resp)
+                    swal("", "保存失败了", "warning")
+                    that.album = []
+                    that.refreshPhoto()
+                })
+        }
+        that.toggle(1);
+		that.reload();
     }
 ])

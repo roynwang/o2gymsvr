@@ -47,6 +47,8 @@ class User(models.Model):
 
 	flag = models.IntegerField(default=0)
 
+	trial = models.IntegerField(blank=True, null=True)
+
 	def __unicode__(self):
 		return self.name
 

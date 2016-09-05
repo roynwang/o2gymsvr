@@ -346,6 +346,13 @@ class GymSoldDay(APIView):
 		course_count, course_price = self.sum_price_course(gymid, day)
 		return Response({"sold_price": sold_price, "sold_count":sold_count, "course_price":course_price, "course_count": course_count})
 
+class GymTrialCustomerList(generics.ListAPIView):
+	serializer_class = SimpleUserSerilaizer
+	pagination_class = None
+	def get_queryset(self):
+		ret = User.objects.filter(trial = self.kwargs['gymid'])
+		return ret
+
 
 class GymCustomers(generics.ListAPIView):
 	pagination_class = None

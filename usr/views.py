@@ -53,6 +53,7 @@ class UserList(generics.CreateAPIView):
 		tl = TimeLine.objects.create(name=get_object_or_404(User, name=request.data["name"]))
 		tl.followedby.add(tl)
 		wh = WorkingDays.objects.create(name=request.data["name"])
+                return resp
 		#return Response({"result": 0})
 		
 
@@ -203,6 +204,7 @@ class CustomerList(generics.ListAPIView):
 		if ret.count() == 0:
 			ret = User.objects.filter(name = usr.name)
 		return ret
+
 
 class ModifyGym(APIView):
 	def post(self, request, name):

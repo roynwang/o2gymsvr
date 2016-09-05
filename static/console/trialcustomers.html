@@ -1,0 +1,25 @@
+<div class="col-md-12" ng-controller="TrailCustomerCtrl as demo">
+	<!--<h3>客户信息</h3>-->
+	<section class="panel">
+	<header class="panel-heading">
+		体验客户信息
+            <a href="#/expcustomer" class="pull-right btn btn-sm btn-primary">添加</a>
+	</header>
+	<div class="panel-body">
+		<table ng-table="demo.tableParams" class="table table-condensed table-striped">
+			<tr ng-repeat="row in $data" style="color:#333">
+				<td data-title="' '">
+					<i ng-if="row.flag==0" ng-click="demo.flag(row) " style="color:#ccc" class="fa fa-circle-o"></i>
+					<i ng-if="row.flag==1" ng-click="demo.flag(row) "  style="color:#a9d86e" class="fa fa-circle"></i>
+					<i ng-if="row.flag==2" ng-click="demo.flag(row) " style="color:#FCB322" class="fa fa-circle"></i>
+				</td>
+				<td data-title="'姓名'" filter="{displayname: 'text'}" sortable="'displayname'">{{row.displayname}}</td>
+				<td data-title="'电话'" filter="{name: 'text'}" sortable="'number'">{{row.name}}</td>
+				<td data-title="'生日'">{{row.birthday}}</td>
+				<td data-title="'性别'">{{row.sex?"男":"女"}}</td>
+				<td><a style="color:#1fb5ad" href="#trialcustomer/{{row.name}}">查看</a></td>
+			</tr>
+		</table>
+	</div>
+	</section>
+</div>
