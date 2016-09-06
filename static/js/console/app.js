@@ -2550,8 +2550,8 @@ app.controller("HealthQuesCtrl", ["$scope", "Restangular", "$stateParams",
         that.refresh()
     }
 ])
-app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams",
-    function($scope, Restangular, $stateParams) {
+app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams","$state",
+    function($scope, Restangular, $stateParams,$state) {
         var that = this
         that.day = new Date()
         that.groups = []
@@ -2578,6 +2578,12 @@ app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams",
                 .post("u", that.newcustomer)
                 .then(function(resp) {
                     //refresh health ques
+					//url: "/trialcustomer/:customername",
+					$state.transitionTo("trialcustomer", {
+                            customername: that.newcustomer.name,
+                    })
+
+					/*
                     that.showSignature = true
                     Restangular.all("api")
                         .all("h")
@@ -2592,8 +2598,12 @@ app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams",
                             })
                             that.switchgroup(that.groups[0])
                         }, function() {})
+					*/
                 }, function() {
-                    swal("", "保存失败了",
+					$state.transitionTo("trialcustomer", {
+                            customername: that.newcustomer.name,
+                    })
+                    swal("", "用户已存在",
                         "warning")
                 });
 
