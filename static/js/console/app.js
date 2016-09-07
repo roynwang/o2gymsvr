@@ -328,7 +328,7 @@ app.factory("$customersvc", function(Restangular) {
     return {
         getcustomers: getcustomers,
         getcustomer: getcustomer,
-		gettrialcustomers: gettrialcustomers,
+        gettrialcustomers: gettrialcustomers,
         flag: flag
     }
 })
@@ -359,10 +359,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             templateUrl: "/static/console/trialcustomers.html",
         })
         .state('trialcustomer', {
-			url: "/trialcustomer/:customername",
+            url: "/trialcustomer/:customername",
             templateUrl: "/static/console/trialcustomerdetail.html",
         })
-	    .state('gym', {
+        .state('gym', {
             url: "/gym/:gymid",
             controller: "GymCtrl"
                 //templateUrl: "/static/console/customers.html",
@@ -810,6 +810,30 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             that.coach = c
             coachname = c.name
             that.refreshtimetable()
+        }
+        that.changeavatar = function($files) {
+            $uploader.upload($files[0], function(data) {
+                console.log(data.key)
+                var imgurl = bukcet + "/" + data.key
+                    //update avatar
+                Restangular.one("api",that.order.customerdetail.name)
+                    .patch({
+                        avatar: imgurl
+                    })
+                    .then(function(data) {
+                        swal({
+                            type: "success",
+                            title: "提交成功",
+                            text: "",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+
+                        that.reload();
+                    })
+            }, function() {
+                swal("", "保存失败，请重试", "warning")
+            })
         }
         Restangular.all("api")
             .one("g", $.cookie("gym"))
@@ -2550,8 +2574,8 @@ app.controller("HealthQuesCtrl", ["$scope", "Restangular", "$stateParams",
         that.refresh()
     }
 ])
-app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams","$state",
-    function($scope, Restangular, $stateParams,$state) {
+app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams", "$state",
+    function($scope, Restangular, $stateParams, $state) {
         var that = this
         that.day = new Date()
         that.groups = []
@@ -2578,12 +2602,12 @@ app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams","$sta
                 .post("u", that.newcustomer)
                 .then(function(resp) {
                     //refresh health ques
-					//url: "/trialcustomer/:customername",
-					$state.transitionTo("trialcustomer", {
-                            customername: that.newcustomer.name,
+                    //url: "/trialcustomer/:customername",
+                    $state.transitionTo("trialcustomer", {
+                        customername: that.newcustomer.name,
                     })
 
-					/*
+                    /*
                     that.showSignature = true
                     Restangular.all("api")
                         .all("h")
@@ -2600,8 +2624,8 @@ app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams","$sta
                         }, function() {})
 					*/
                 }, function() {
-					$state.transitionTo("trialcustomer", {
-                            customername: that.newcustomer.name,
+                    $state.transitionTo("trialcustomer", {
+                        customername: that.newcustomer.name,
                     })
                     swal("", "用户已存在",
                         "warning")
@@ -2650,7 +2674,7 @@ app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams","$sta
 ])
 app.controller("TrailCustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$customersvc", 'SweetAlert',
     function($scope, Restangular, NgTableParams, $customersvc, SweetAlert) {
-		var that = this;
+        var that = this;
         $customersvc.gettrialcustomers(function(data) {
             that.tableParams = new NgTableParams({
                 sorting: {
@@ -2665,20 +2689,20 @@ app.controller("TrailCustomerCtrl", ['$scope', "Restangular", "NgTableParams", "
         }
     }
 ])
-app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader", "Lightbox","$customersvc",
+app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader", "Lightbox", "$customersvc",
     function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader, Lightbox, $customersvc) {
         console.log($stateParams)
         var that = this
         that.customername = $stateParams.customername
-		that.customerdetail = {}
-		that.reload = function(){
-			Restangular.all("api")
-				.one(that.customername)
-				.get()
-	            .then(function(data){
-				that.customerdetail = data
-			})
-		}
+        that.customerdetail = {}
+        that.reload = function() {
+            Restangular.all("api")
+                .one(that.customername)
+                .get()
+                .then(function(data) {
+                    that.customerdetail = data
+                })
+        }
 
 
         that.gohome = function() {
@@ -2807,6 +2831,6 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 })
         }
         that.toggle(1);
-		that.reload();
+        that.reload();
     }
 ])
