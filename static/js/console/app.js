@@ -2719,6 +2719,10 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.toggle = function(tab) {
             that.activetab = [0, 0, 0, 0]
             that.activetab[tab] = 1
+
+            if (tab == 0) {
+                that.refreshBook()
+            }
             if (tab == 1) {
                 that.refreshPhoto()
             }
@@ -2736,6 +2740,18 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.openLightboxModal = function(i) {
             Lightbox.openModal(that.album, i);
         }
+		that.refreshBook = function(){
+            Restangular.one("api/", that.customername)
+                .all("trial")
+                .getList()
+                .then(function(data) {
+                    that.tableParams = new NgTableParams({
+                        sorting: {},
+                    }, {
+                        dataset: data,
+                    });
+                })
+		}
         that.refreshEval = function() {
             Restangular.all("api")
                 .one(that.customername, "e")
@@ -2815,51 +2831,6 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 date: date.replace(/-/g, "")
             })
         }
-
-
-
-        that.saveimg = function() {
-            var data = {
-                'title': "训练记录",
-                'brief': "训练记录",
-                'imgs': JSON.stringify(that.images),
-                'by': that.customername
-            }
-            Restangular.one("api", that.customername)
-                .post("weibo", data)
-                .then(function(resp) {
-                    that.loadmore = undefined
-                    that.album = []
-                    that.refreshPhoto()
-                }, function(resp) {
-                    console.log(resp)
-                    swal("", "保存失败了", "warning")
-                    that.album = []
-                    that.refreshPhoto()
-                })
-        }
-        that.toggle(1);
-        that.reload();
-    }
-])
-
-app.controller("TrialBookCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader", "Lightbox", "$customersvc",
-    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader, Lightbox, $customersvc) {
-        var that = this
-        that.customername = $stateParams.customername
-        that.timemap = TimeMap
-        that.reload = function() {
-            Restangular.one("api/", that.customername)
-                .all("trial")
-                .getList()
-                .then(function(data) {
-                    that.tableParams = new NgTableParams({
-                        sorting: {},
-                    }, {
-                        dataset: data,
-                    });
-                })
-        }
         that.cancel = function(item) {
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
@@ -2889,7 +2860,7 @@ app.controller("TrialBookCtrl", ['$scope', "Restangular", "NgTableParams", '$sta
                                 timer: 1500,
                                 showConfirmButton: false
                             });
-							that.reload()
+                            that.refreshBook();
                             console.log("remove success")
                         }, function(data) {
                             swal({
@@ -2897,7 +2868,7 @@ app.controller("TrialBookCtrl", ['$scope', "Restangular", "NgTableParams", '$sta
                                 title: "",
                                 text: "课程取消失败，请重试",
                             });
-							that.reload()
+                            that.refreshBook();
                         })
                 })
         }
@@ -2934,7 +2905,7 @@ app.controller("TrialBookCtrl", ['$scope', "Restangular", "NgTableParams", '$sta
                                 timer: 1500,
                                 showConfirmButton: false
                             });
-                            that.reload()
+                            that.refreshPhoto()
                                 //refresh notification !!!!
                         }, function(data) {
                             swal({
@@ -2945,9 +2916,36 @@ app.controller("TrialBookCtrl", ['$scope', "Restangular", "NgTableParams", '$sta
                         })
                 });
         }
+
+
+
+
+        that.saveimg = function() {
+            var data = {
+                'title': "训练记录",
+                'brief': "训练记录",
+                'imgs': JSON.stringify(that.images),
+                'by': that.customername
+            }
+            Restangular.one("api", that.customername)
+                .post("weibo", data)
+                .then(function(resp) {
+                    that.loadmore = undefined
+                    that.album = []
+                    that.refreshPhoto()
+                }, function(resp) {
+                    console.log(resp)
+                    swal("", "保存失败了", "warning")
+                    that.album = []
+                    that.refreshPhoto()
+                })
+        }
+        that.toggle(0);
         that.reload();
     }
 ])
+
+
 app.controller("NewTrialBookCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader", "Lightbox", "$customersvc",
     function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader, Lightbox, $customersvc) {
         var that = this

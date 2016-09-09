@@ -101,6 +101,8 @@ class Schedule(models.Model):
 		if o.subsidy != 0:
 			return o.subsidy
 		'''
+                if self.order is None:
+                    return 0
 		p = self.order.product
 		price  = p.price/p.amount
 		return price

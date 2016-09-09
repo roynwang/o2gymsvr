@@ -10,6 +10,9 @@
 								{{ctrl.customerdetail.displayname}}
                 <ul class="nav nav-tabs pull-right" style="position: relative;
 					    bottom: -21px;right: 20px;">
+                    <li class="panel-header-tab {{ctrl.activetab[0]?'active':''}}">
+                        <a ng-click="ctrl.toggle(0)" aria-expanded="false">预约</a>
+                    </li>
                     <li class="panel-header-tab {{ctrl.activetab[1]?'active':''}}">
                         <a ng-click="ctrl.toggle(1)" aria-expanded="false">照片</a>
                     </li>
@@ -29,6 +32,26 @@
 </h4>
 
         </header>
+		<div class="panel-body" ng-show="ctrl.activetab[0]">
+		<table ng-table="ctrl.tableParams" class="table table-condensed table-striped">
+			<tr ng-repeat="row in $data" style="color:#333">
+				<td data-title="'时间'">
+					{{row.date}}&nbsp;{{ctrl.timemap[row.hour]}}
+				</td>
+				<td data-title="'时间'">{{row.customerprofile.displayname}}</td>
+				<td data-title="'教练'">{{row.coachprofile.displayname}}</td>
+				<td data-title="'状态'">
+					{{row.done?"已完成":"待完成"}}
+				</td>
+				<td data-title="'操作'">
+					<a ng-show="!row.done" ng-click="ctrl.complete(row)" class="btn btn-sm btn-success">完成</a>
+					<a class="btn btn-sm btn-danger" ng-click="ctrl.cancel(row)">取消</a>
+				</td>
+			</tr>
+		</table>
+
+		</div>
+
         <div class="panel-body" ng-show="ctrl.activetab[3]">
             <div  ng-click="ctrl.showques('new')" style="
 border: 5px dashed #1fb5ad;
