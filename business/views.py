@@ -49,7 +49,6 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
 		date_str = datetime.datetime.strftime(date,"%Y-%m-%d")
 		hour  = self.kwargs.get("hour")
-		print date_str
 		ret = Schedule.objects.filter(coach=coach,date=date_str, hour=hour).first()
 		return ret
 		#return get_object_or_404(Schedule,coach=coach,date=date_str, hour=hour)
@@ -63,9 +62,9 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 			#coach = get_object_or_404(User, order.coach.name)
 			coach.rate += request.DATA["rate"]
 			coach.save()
-			print "xxxxxxxxxxxxxxx"
-		if "order" in request.data:
-			self.get_object().doneBook()
+
+                if request.data["done"] or "order" in request.data:
+                        self.get_object().doneBook()
 		return ret
 
 class GymScheduleList(generics.ListAPIView):
@@ -112,10 +111,12 @@ class ScheduleList(generics.ListCreateAPIView):
 		#ret = super(ScheduleList, self).create(request, args,kwargs)
 		customer = User.objects.get(id=request.data["custom"])
 		coach = User.objects.get(id=request.data["coach"])
-		order = Order.objects.get(id=request.data["order"])
+                order = None
+                if "order" in request.data:
+         		order = Order.objects.get(id=request.data["order"])
 		book = Schedule.objects.create(coach=coach,
 				custom=customer,
-				date= datetime.datetime.strptime(request.data["date"],"%Y-%m-%d").date(),
+				date= datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d").date(),
 				hour=request.data["hour"],
 				order=order)
 		if "done" in request.data:
@@ -123,12 +124,13 @@ class ScheduleList(generics.ListCreateAPIView):
 			book.save()
 		sl = ScheduleSerializer(instance=book)
 		print sl.data
-		print request.data["order"]
-		ordered_count = Schedule.objects.filter(order=request.data["order"],deleted=False).count()
-		order_count = order.product.amount
-		if order.status == "paid" and ordered_count == order_count:
-			order.status = "inprogress" 
-			order.save()
+                #if is an order book
+                if "order" in request.data:
+     		        ordered_count = Schedule.objects.filter(order=request.data["order"],deleted=False).count()
+		        order_count = order.product.amount
+		        if order.status == "paid" and ordered_count == order_count:
+		                order.status = "inprogress" 
+		                order.save()
 		#send sms
 		print book.sendSms()
 		return Response(sl.data)
@@ -236,6 +238,13 @@ class DayAvaiableTime(APIView):
 		else :
 			ret = self.getDayAva(name,curdate)
 		return Response(ret, status=status.HTTP_200_OK)
+
+class TrialBookView(generics.ListCreateAPIView):
+	pagination_class = None
+	serializer_class = ScheduleSerializer 
+        def get_queryset(self):
+		customer = User.objects.get(name=self.kwargs.get("name"))
+                return customer.booked_time.filter(order=None)
 
 @permission_classes((AllowAny, ))
 class AllEvalOptionsView(generics.ListCreateAPIView):

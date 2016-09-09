@@ -82,6 +82,9 @@ class Schedule(models.Model):
 	def __unicode__(self):
 		return str(self.date) + str(self.hour)
 	def sendSms(self):
+                
+                if self.order is None:
+                        return True
 		if self.order.gym.id != 20:
 			return smsutils.sendBookNotification(self)
 		return True
@@ -90,7 +93,8 @@ class Schedule(models.Model):
 		self.coach.course_count += 1
 		self.save()
 		self.coach.save()
-		self.order.done()
+                if not self.order is None:
+		        self.order.done()
 	def getprice(self):
 		o = self.order
 		'''

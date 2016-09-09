@@ -431,6 +431,14 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/healthques/:customername/:date",
             templateUrl: "/static/console/healthques.html",
         })
+        .state('trialbook', {
+            url: "/trialbook/:customername",
+            templateUrl: "/static/console/trialbook.html",
+        })
+        .state('newtrialbook', {
+            url: "/newtrialbook/:customername",
+            templateUrl: "/static/console/newtrialbook.html",
+        })
 })
 
 app.controller("GymCtrl", ["$stateParams", "$state",
@@ -816,7 +824,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 console.log(data.key)
                 var imgurl = bukcet + "/" + data.key
                     //update avatar
-                Restangular.one("api",that.order.customerdetail.name)
+                Restangular.one("api", that.order.customerdetail.name)
                     .patch({
                         avatar: imgurl
                     })
@@ -2832,5 +2840,235 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         }
         that.toggle(1);
         that.reload();
+    }
+])
+
+app.controller("TrialBookCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader", "Lightbox", "$customersvc",
+    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader, Lightbox, $customersvc) {
+        var that = this
+        that.customername = $stateParams.customername
+        that.timemap = TimeMap
+        that.reload = function() {
+            Restangular.one("api/", that.customername)
+                .all("trial")
+                .getList()
+                .then(function(data) {
+                    that.tableParams = new NgTableParams({
+                        sorting: {},
+                    }, {
+                        dataset: data,
+                    });
+                })
+        }
+        that.cancel = function(item) {
+            SweetAlert.swal({
+                    //title: "确定移除该教练吗?",
+                    title: "确认",
+                    text: "是否要移除这次预约?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "确订",
+                    cancelButtonText: "取消",
+                    showLoaderOnConfirm: true,
+                    closeOnConfirm: false
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+                    var datestr = item.date.replace(/-/g, "")
+                    Restangular.one("api/", item.coachprofile.name)
+                        .one("b/" + datestr, item.hour)
+                        .remove()
+                        .then(function(data) {
+                            swal({
+                                type: "success",
+                                title: "取消成功",
+                                text: "",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+							that.reload()
+                            console.log("remove success")
+                        }, function(data) {
+                            swal({
+                                type: "warning",
+                                title: "",
+                                text: "课程取消失败，请重试",
+                            });
+							that.reload()
+                        })
+                })
+        }
+
+        that.complete = function(row) {
+            SweetAlert.swal({
+                    //title: "确定移除该教练吗?",
+                    title: "确认",
+                    text: "这节课已经上完了吗?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "完成",
+                    cancelButtonText: "取消",
+                    showLoaderOnConfirm: true,
+                    closeOnConfirm: false
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+                    var url = "/api/" + row.coachprofile.name + "/b/" + row.date.replace(/-/g, "") + "/" + row.hour + "/";
+                    var bookdone = Restangular.one("api", row.coachprofile.name)
+                        .one("b", row.date.replace(/-/g, ""))
+                        .all(row.hour)
+                    bookdone.patch({
+                            done: true
+                        })
+                        .then(function(data) {
+                            swal({
+                                type: "success",
+                                title: "课程已完成",
+                                text: "",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            that.reload()
+                                //refresh notification !!!!
+                        }, function(data) {
+                            swal({
+                                type: "warning",
+                                title: "",
+                                text: "课程完成失败，请重试",
+                            });
+                        })
+                });
+        }
+        that.reload();
+    }
+])
+app.controller("NewTrialBookCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader", "Lightbox", "$customersvc",
+    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader, Lightbox, $customersvc) {
+        var that = this
+        that.day = new Date();
+        that.day_str = that.day.Format("yyyy-MM-dd")
+        that.coach = false;
+        that.customername = $stateParams.customername
+        Restangular.one('api/g/', $.cookie("gym")).get().then(function(gym) {
+            that.coaches = gym.coaches_set
+        })
+        that.selectcoach = function(c) {
+            that.coach = c
+            that.bookhour = -5
+            that.refreshtimetable()
+        }
+        that.bookhour = -5
+        that.bookhourstr = ''
+
+        function isAva(h, ava) {
+            if (h == undefined || (h + 1) > TimeMap.length) {
+                return false
+            }
+            if (h == that.bookhour || h == that.bookhour + 1) {
+                return false
+            }
+            /*
+            for (var i = 0; i < that.tableParams.data.length; i++) {
+                var item = that.tableParams.data[i]
+                if (that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction == "remove" && (item.hour == h || item.hour + 1 == h)) {
+                    return true
+                }
+                if (
+                    item.coachprofile.name == that.coach.name &&
+                    that.day.Format("yyyy-MM-dd") == item.date && item.pendingaction != "remove" && (item.hour == h || item.hour + 1 == h)) {
+                    return false
+                }
+            }
+			*/
+            if (ava.indexOf(h) >= 0) {
+                return true
+            }
+            if (h == TimeMap.length - 1) {
+                return true
+            }
+            return false
+        }
+
+
+        that.timemap = TimeMap
+        that.refreshtimetable = function(norefresh) {
+            function t(ava) {
+                that.timemapgroup = []
+                for (var i = 0; i < TimeMap.length; i++) {
+                    if (i % 5 == 0) {
+                        that.timemapgroup.push([])
+                    }
+                    var g = Math.floor(i / 5)
+                    if (isAva(i, ava)) {
+                        that.timemapgroup[g].push({
+                            id: i,
+                            status: false
+                        })
+                    } else {
+                        that.timemapgroup[g].push({
+                            id: i,
+                            status: true
+                        })
+                    }
+
+                }
+                console.log(that.timemapgroup)
+            }
+
+            if (norefresh) {
+                t(that.availiable)
+            } else {
+                that.bookhour = -5
+                Restangular.one("api/", that.coach.name)
+                    .one("d/", that.day_str.replace(/-/g, ""))
+                    .get()
+                    .then(function(data) {
+                        that.availiable = data.availiable
+                        t(that.availiable)
+                    })
+            }
+        }
+        that.book = function(i) {
+            if (!isAva(i, that.availiable) || !isAva(i + 1, that.availiable)) {
+                return
+            }
+            that.bookhour = i
+                //
+            that.refreshtimetable(true)
+        }
+        that.submit = function() {
+            var datestr = that.day_str.replace(/-/g, "")
+            var item = {}
+            item.coach = that.coach.id
+            item.hour = that.bookhour
+            Restangular.one("api", that.customername)
+                .get()
+                .then(function(data) {
+                    item.custom = data['id']
+                        //item.order = that.order.id
+                    Restangular.one("api/", that.coach.name)
+                        .post("b/" + datestr, item)
+                        .then(function(data) {
+                            swal({
+                                title: "成功",
+                                text: "修改已保存",
+                                type: "success",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            history.back();
+                        }, function(data) {
+                            swal("", "保存失败了",
+                                "warning")
+
+                        })
+                })
+        }
     }
 ])

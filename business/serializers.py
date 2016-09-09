@@ -1,3 +1,4 @@
+# coding=utf-8
 from rest_framework import serializers
 from business.models import *
 from usr.serializers import *
@@ -26,6 +27,8 @@ class ScheduleSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Schedule
 	def get_complete_status(self, obj):
+                if obj.order is None:
+                        return "体验课"
 		completed = obj.order.schedule_set.filter(deleted = False, done = True).count()
 		sum_amount = obj.order.product.amount
 		return str(completed) + "/" + str(sum_amount)

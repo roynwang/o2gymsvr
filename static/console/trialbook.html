@@ -1,0 +1,30 @@
+<div class="col-md-12" ng-controller="TrialBookCtrl as ctrl">
+	<section class="panel">
+		<header class="panel-heading">
+			<h4 class="text-center">
+				<i back-button class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
+				体验预约
+				<a href="#/newtrialbook/{{ctrl.customername}}" class="pull-right btn btn-sm btn-primary">添加</a>
+			</h4>
+		</header>
+		<div class="panel-body">
+		<table ng-table="ctrl.tableParams" class="table table-condensed table-striped">
+			<tr ng-repeat="row in $data" style="color:#333">
+				<td data-title="'时间'">
+					{{row.date}}&nbsp;{{ctrl.timemap[row.hour]}}
+				</td>
+				<td data-title="'时间'">{{row.customerprofile.displayname}}</td>
+				<td data-title="'教练'">{{row.coachprofile.displayname}}</td>
+				<td data-title="'状态'">
+					{{row.done?"已完成":"待完成"}}
+				</td>
+				<td data-title="'操作'">
+					<a ng-show="!row.done" ng-click="ctrl.complete(row)" class="btn btn-sm btn-success">完成</a>
+					<a class="btn btn-sm btn-danger" ng-click="ctrl.cancel(row)">取消</a>
+				</td>
+			</tr>
+		</table>
+
+		</div>
+	</section>
+</div>
