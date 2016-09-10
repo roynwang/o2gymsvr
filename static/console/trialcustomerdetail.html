@@ -33,6 +33,11 @@
 
         </header>
 		<div class="panel-body" ng-show="ctrl.activetab[0]">
+		<div class="row">
+			<a class="btn btn-sm btn-primary pull-right" style="margin-right:10px"
+				href="#/newtrialbook/{{ctrl.customerdetail.name}}">添加</a>
+		</div>
+		
 		<table ng-table="ctrl.tableParams" class="table table-condensed table-striped">
 			<tr ng-repeat="row in $data" style="color:#333">
 				<td data-title="'时间'">
