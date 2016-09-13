@@ -48,6 +48,12 @@ class UserList(generics.CreateAPIView):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 	def create(self, request, *args, **kwargs):
+                if 'trial' in request.data:
+                        usr =  User.objects.get(name=request.data["name"])
+                        if usr != False:
+                            usr.trial = request.data['trial']
+                            usr.save()
+
 		resp = super(UserList, self).create(request, args, kwargs)
 
 		tl = TimeLine.objects.create(name=get_object_or_404(User, name=request.data["name"]))
