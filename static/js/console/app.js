@@ -819,6 +819,43 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             coachname = c.name
             that.refreshtimetable()
         }
+		that.removephoto = function(pic){
+            SweetAlert.swal({
+                    //title: "确定移除该教练吗?",
+                    title: "确认",
+                    text: "是否要移除照片吗?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "确认",
+                    cancelButtonText: "取消",
+                    showLoaderOnConfirm: true,
+                    closeOnConfirm: false
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+					Restangular.one("api",that.customerid)
+						.one("i",pic)
+						.remove()
+						.then(function(resp){
+                            swal({
+                                type: "success",
+                                title: "移除成功",
+                                text: "",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+							that.refreshPhoto()
+						}, function(){
+							swal("", "保存失败了", "warning")
+							that.refreshPhoto()
+						})
+				})
+		}
+
+   
         that.changeavatar = function($files) {
             $uploader.upload($files[0], function(data) {
                 console.log(data.key)
@@ -1202,6 +1239,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     //get product
                     that.order = data
                     that.customername = that.order.customerdetail.name
+					that.customerid = that.order.customerdetail.id
                     Restangular.one("api/p", data.product)
                         .get()
                         .then(function(product) {
@@ -2774,6 +2812,7 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 .one(that.customername, "album")
                 .get(that.loadmore)
                 .then(function(resp) {
+					that.album = []
                     _.each(resp.results, function(item) {
                         item.caption = new Date(item.created).Format("yyyy-MM-dd hh:mm")
                         that.album.push(item)
@@ -2801,7 +2840,7 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             }
         }
 
-        that.addphoto = function($files) {
+     that.addphoto = function($files) {
             that.uploading = $files.length;
             that.images = []
             _.each($files, function(f) {

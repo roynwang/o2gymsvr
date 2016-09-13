@@ -143,8 +143,15 @@
 				margin-bottom: 10px;">
 				+添加
 			</div>
-			<img ng-click="ctrl.openLightboxModal($index)" ng-repeat="img in ctrl.album"
+			<div ng-repeat="img in ctrl.album" style="display: inline-block">
+			<span ng-click="ctrl.removephoto(img.id)" class="fa fa-times-circle"style="position: absolute;
+				    font-size: 30px;
+					    margin-top: 10px;
+				color: #1fb5ad;
+						    margin-left: 10px;"></span>
+			<img ng-click="ctrl.openLightboxModal($index)" 
 			src="{{img.url}}?imageView2/1/w/200/h/200" style="margin-bottom:10px;margin-right:20px;width:180px">
+		</div>
 			<div style="
 				border: 5px dashed #1fb5ad;
 				width: 190px;
