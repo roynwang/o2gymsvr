@@ -48,11 +48,10 @@ class UserList(generics.CreateAPIView):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 	def create(self, request, *args, **kwargs):
-                if 'trial' in request.data:
+                if 'trial' in request.data and  User.objects.filter(name=request.data['name']):
                         usr =  User.objects.get(name=request.data["name"])
-                        if usr != False:
-                            usr.trial = request.data['trial']
-                            usr.save()
+                        usr.trial = request.data['trial']
+                        usr.save()
 
 		resp = super(UserList, self).create(request, args, kwargs)
 
