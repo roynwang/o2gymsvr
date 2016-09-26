@@ -1627,14 +1627,38 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
 
     }
 ])
-app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdDialog", "$ordersvc", "$stateParams",
-    function($state, $usersvc, Restangular, $mdDialog, $ordersvc, $stateParams) {
+app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdDialog", "$ordersvc", "$stateParams","$uploader",
+    function($state, $usersvc, Restangular, $mdDialog, $ordersvc, $stateParams, $uploader) {
         var that = this
         that.customer = {}
         that.orderlist = {}
         that.cancel = function() {
             $mdDialog.cancel();
         }
+        that.changeavatar = function($files) {
+            $uploader.upload($files[0], function(data) {
+                console.log(data.key)
+                var imgurl = bukcet + "/" + data.key
+                    //update avatar
+                Restangular.one("api", that.customer.name)
+                    .patch({
+                        avatar: imgurl
+                    })
+                    .then(function(data) {
+                        swal({
+                            type: "success",
+                            title: "提交成功",
+                            text: "",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        that.customer.avatar = imgurl
+                    })
+            }, function() {
+                swal("", "保存失败，请重试", "warning")
+            })
+        }
+
         that.getorderlist = function() {
             Restangular.one("api", that.customer.name)
                 .one("o")

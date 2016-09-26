@@ -2,8 +2,13 @@
     <form>
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>{{ctrl.customer.name }}</h2>
+				<h2><img style="height:30px;margin-right:5px" src="{{ctrl.customer.avatar}}">{{ctrl.customer.name }}</h2>
                 <span flex></span>
+                <md-button style="padding-left: 0" class="md-icon-button">
+                 <span style="color: #1fb5ad;font-size:25px" 
+					 class="navbar-button-icon icon ion-ios-camera-outline"
+					 ng-file-select="ctrl.changeavatar($files)"></span>
+                </md-button>
                 <md-button style="padding-left: 0" class="md-icon-button">
                     <a href="tel:{{ctrl.customer.name}}" style="color:#1fb5ad;font-size: 25px;" class="navbar-button-icon icon ion-ios-telephone-outline"></a>
                 </md-button>
