@@ -228,7 +228,7 @@ app.factory("$uploader", function($qupload) {
             cvs.height = source_img_obj.naturalHeight;
             var ctx = cvs.getContext("2d").drawImage(source_img_obj, 0, 0);
             var newImageData = cvs.toDataURL(mime_type, quality / 100);
-			msg += 'compressed'
+			msg += 'img compressed/'
             return newImageData
         }
 
@@ -236,7 +236,7 @@ app.factory("$uploader", function($qupload) {
             key = data.key
             token = data.token
 
-			msg += 'token getted'
+			msg += 'got token/'
             var reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = function(event) {
@@ -253,10 +253,10 @@ app.factory("$uploader", function($qupload) {
                     });
 
                     newf.upload.then(function(response) {
-						msg += 'file upload success'
+						msg += 'file uploaded/'
                         onsuccess && onsuccess(response)
                     }, function(response) {
-						msg += 'file upload fail'
+						msg += 'file upload fail/'
                         onfail && onfail(msg)
                     }, function(evt) {});
                 }
