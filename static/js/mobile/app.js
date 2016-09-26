@@ -220,6 +220,7 @@ app.factory("$uploader", function($qupload) {
 
     function upload(file, onsuccess, onfail) {
 
+		var msg = ""
         function compress(source_img_obj, quality) {
             var mime_type = "image/jpeg";
             var cvs = document.createElement('canvas');
@@ -227,6 +228,7 @@ app.factory("$uploader", function($qupload) {
             cvs.height = source_img_obj.naturalHeight;
             var ctx = cvs.getContext("2d").drawImage(source_img_obj, 0, 0);
             var newImageData = cvs.toDataURL(mime_type, quality / 100);
+			msg += 'compressed'
             return newImageData
         }
 
@@ -234,9 +236,12 @@ app.factory("$uploader", function($qupload) {
             key = data.key
             token = data.token
 
+			msg += 'token getted'
             var reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = function(event) {
+
+				msg += 'file loaded'
                 var imgori = new Image();
                 imgori.onload = function() {
                     var compressed = compress(imgori, 20)
@@ -248,9 +253,11 @@ app.factory("$uploader", function($qupload) {
                     });
 
                     newf.upload.then(function(response) {
+						msg += 'file upload success'
                         onsuccess && onsuccess(response)
                     }, function(response) {
-                        onfail && onfail(response)
+						msg += 'file upload fail'
+                        onfail && onfail(msg)
                     }, function(evt) {});
                 }
                 imgori.src = reader.result
@@ -1655,7 +1662,7 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
                         that.customer.avatar = imgurl
                     })
             }, function(resp) {
-                swal("",resp.data, "warning")
+                swal("",resp, "warning")
             })
         }
 
