@@ -1654,8 +1654,8 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
                         });
                         that.customer.avatar = imgurl
                     })
-            }, function() {
-                swal("", "保存失败，请重试", "warning")
+            }, function(resp) {
+                swal("",resp.data, "warning")
             })
         }
 
