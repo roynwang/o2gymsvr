@@ -847,9 +847,11 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                                 timer: 1500,
                                 showConfirmButton: false
                             });
+							that.album = []
 							that.refreshPhoto()
 						}, function(){
 							swal("", "保存失败了", "warning")
+							that.album = []
 							that.refreshPhoto()
 						})
 				})
