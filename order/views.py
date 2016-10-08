@@ -26,6 +26,7 @@ from utils import smsutils
 from django.conf import settings
 from sms.models import *
 import os
+from django.http import Http404
 
 
 def create_pay(request, order,channel):
@@ -63,9 +64,7 @@ class OrderList(generics.ListCreateAPIView):
 
 		cname = self.request.GET.get("coach")
 		if cname:
-			print "xxxxxxxxxxxxx"
 			c = get_object_or_404(User, name = cname)
-			print c
 			ret = ret.filter(coach = c)
 		return ret
 	def create(self,request, *args, **kwargs):
@@ -73,6 +72,23 @@ class OrderList(generics.ListCreateAPIView):
 		obj = create_order(request.data["custom"],request.data["coach"], request.data["product"])
 		return Response(OrderSerializer(instance=obj).data, status=status.HTTP_201_CREATED) 
 
+
+class AvailableOrderItem(generics.RetrieveAPIView):
+	serializer_class = OrderSerializer
+	def get_object(self):
+                #get
+		usr = get_object_or_404(User, name=self.kwargs["name"])
+                #gymid = self.request.data['gym']
+                #ret = usr.orders.exclude(gym=get_object_or_404(Gym,id=gymid), status__in=["unpaid","done"]).order_by('paidtime')[:1]
+                ret = usr.orders.exclude(status__in=["unpaid","done"]).order_by('paidtime')
+            
+                for item in ret:
+                    item.done()
+                    return item
+                raise Http404
+
+
+        
 
 class OrderItemById(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = OrderDetailSerializer

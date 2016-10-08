@@ -30,6 +30,8 @@ urlpatterns = patterns('',
 
                 url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/trial/$', TrialBookView.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/e/$',BodyEvalDateView.as_view()),
+		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/e/all/$',BodyEvalAllView.as_view()),
+		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/e/option/(?P<option>.+)/$',BodyEvalByOptionView.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/e/(?P<date>[0-9]{8})/$',BodyEvalByDateView.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/h/$',HealthQuesDateView.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/h/(?P<date>[0-9]{8})/$', HealthQuesByDateView.as_view()),

@@ -1,8 +1,11 @@
+# coding=utf-8
 from rest_framework import serializers
 from weibo.models import *
 from usr.serializers import *
 from django.shortcuts import render,get_object_or_404
+import datetime
 import pprint
+import pytz
 
 
 class LongWeiboSerializer(serializers.ModelSerializer):
@@ -36,5 +39,11 @@ class ReadWeiboSerializer(serializers.ModelSerializer):
 
 
 class ImageSerializer(serializers.ModelSerializer):
+	date = serializers.SerializerMethodField()
 	class Meta:
 		model = Images
+        def get_date(self, obj):
+		tz = pytz.timezone('Asia/Chongqing')
+                t = obj.created.astimezone(tz)
+		return datetime.date.strftime(t,"%Y年%m月%d") 
+                 

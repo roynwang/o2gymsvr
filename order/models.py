@@ -38,7 +38,7 @@ class Order(models.Model):
 	subsidy = models.IntegerField(default=0)
 
 	def done(self):
-		if self.schedule_set.count() == self.product.amount:
+		if self.status != 'done' and self.schedule_set.count() == self.product.amount:
 			self.status = "done"
 			self.coach.order_count += 1
 			self.save()

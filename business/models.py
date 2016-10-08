@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 from utils import smsutils
 import json
 
@@ -54,7 +55,6 @@ class Gym(models.Model):
 		customlist = self.get_customers()
 		if self.shared_gyms != None and self.shared_gyms != '':
 			for g in self.get_shared_with():
-				print g.id
 				customlist += g.get_customers()
 		customlist = list(set(customlist))
 		return customlist
@@ -112,7 +112,7 @@ class Schedule(models.Model):
 class BodyEval(models.Model):
 	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=64)
-	date = models.DateField(auto_now=True)
+	date = models.DateField(default=datetime.date.today)
 	option = models.CharField(max_length=64)
 	value = models.CharField(max_length=64)
 	unit = models.CharField(max_length=64)

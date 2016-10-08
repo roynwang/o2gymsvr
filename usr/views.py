@@ -26,6 +26,46 @@ def add_months(sourcedate,months):
 	day = min(sourcedate.day,calendar.monthrange(year,month)[1])
 	return datetime.date(year,month,day)
 
+class TrainSummary(APIView):
+        def get(self, request, name):
+            usr = get_object_or_404(User,name=name)
+            all_done = usr.booked_time.filter(done=True).order_by("-date")
+            # done count
+            done_count = len(all_done)
+            # last train
+            last_train = -1
+	    today = datetime.date.today()
+            for item in all_done:
+                last_train_date = item.date
+                last_train = (today - last_train_date).days
+                break
+            # calculate rest
+            coursecount = 0
+            orders = Order.objects.filter(custom=usr)
+            for order in orders:
+                coursecount += order.product.amount
+
+            # calculate avarage
+            average = -1
+            if done_count > 0:
+                first_train = all_done.last()
+                first_train_date = first_train.date
+                endday = today
+                if coursecount == done_count:
+                    endday = all_done.first().date
+                days = (today - first_train_date).days
+                average = float(days)/float(done_count)
+                average = int(10 * average)/float(10)
+
+            
+            return Response({"done": done_count, \
+                    "last_train":last_train, \
+                    "average":average, \
+                    "allcourse": coursecount, \
+                    "rest": coursecount - done_count, \
+                    }, status=status.HTTP_200_OK)
+
+
 
 
 @api_view(['POST'])

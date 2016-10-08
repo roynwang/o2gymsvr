@@ -170,4 +170,4 @@ class ImageItem(generics.RetrieveDestroyAPIView):
 	serializer_class = ImageSerializer 
 	def get_queryset(self):
 		usr = get_object_or_404(User, id=self.kwargs.get("by"))
-		return Images.objects.all().filter(by=usr)
+		return Images.objects.all().filter(by=usr).order_by("-created")

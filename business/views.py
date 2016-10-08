@@ -259,6 +259,21 @@ class BodyEvalDateView(generics.ListAPIView):
 	def get_queryset(self):
 		return BodyEval.objects.filter(name=self.kwargs.get("name")).values('date').distinct()
 
+class BodyEvalAllView(generics.ListAPIView):
+	pagination_class = None
+	serializer_class = BodyEvalSerializer
+	def get_queryset(self):
+		return BodyEval.objects.filter(name=self.kwargs.get("name")).order_by("date")
+
+
+class BodyEvalByOptionView(generics.ListAPIView):
+	pagination_class = None
+	serializer_class = BodyEvalSerializer
+	def get_queryset(self):
+                option = self.kwargs.get("option")
+		return BodyEval.objects.filter(name=self.kwargs.get("name"),option=option).order_by("-date")
+
+
 
 class BodyEvalByDateView(ListBulkCreateAPIView):
 	pagination_class = None

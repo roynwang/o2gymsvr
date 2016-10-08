@@ -3,6 +3,7 @@ from order.views import *
 from django.views.generic import TemplateView
 
 urlpatterns = patterns('',
+		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/o/available/$',AvailableOrderItem.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/o/$',OrderList.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/b/(?P<billid>[0-9]+)/$',OrderItemByBillid.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/o/(?P<orderid>[0-9]+)/$',OrderItemById.as_view()),
