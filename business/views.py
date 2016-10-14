@@ -46,6 +46,7 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = ScheduleSerializer 
 	def get_object(self):
 		coach = get_object_or_404(User, name=self.kwargs.get("name"))
+
 		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
 		date_str = datetime.datetime.strftime(date,"%Y-%m-%d")
 		hour  = self.kwargs.get("hour")
@@ -446,6 +447,19 @@ class GymIncompleteList(generics.ListAPIView):
 		today = datetime.datetime.today().date()
 		ret = Schedule.objects.filter(date__lt=today,done=False,order__in=orders).order_by("date","hour")
 		return ret
+
+class CoachIncompleteList(generics.ListAPIView):
+	serializer_class = ScheduleSerializer
+	pagination_class = None
+	def get_queryset(self):
+		usr = get_object_or_404(User, name=self.kwargs.get("name"))
+		orders = usr.income_orders.exclude(status__in=["unpaid","done"]).values_list("id", flat=True)
+		today = datetime.datetime.today().date()
+                print today
+		ret = Schedule.objects.filter(date__lt=today,done=False,order__in=orders).order_by("date","hour")
+                print ret.query
+		return ret
+
 		
 		
 class GymSumSale(APIView):	
