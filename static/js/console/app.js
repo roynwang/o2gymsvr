@@ -322,14 +322,27 @@ app.factory("$customersvc", function(Restangular) {
         var c = _.find(customers, {
             name: key
         })
-        if (c == undefined)
-            return c
+        return c
+    }
+
+    function saveBasic(user, onsuccess) {
+        Restangular.one("api", user.name)
+            .patch({
+                displayname: user.displayname,
+                birthday: user.birthday,
+                comments: user.comments
+            })
+            .then(function(data) {
+                onsuccess && onsuccess()
+                self.getcustomers(null, 1)
+            })
     }
     return {
         getcustomers: getcustomers,
         getcustomer: getcustomer,
         gettrialcustomers: gettrialcustomers,
-        flag: flag
+        flag: flag,
+        saveBasic: saveBasic
     }
 })
 
@@ -438,6 +451,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
         .state('newtrialbook', {
             url: "/newtrialbook/:customername",
             templateUrl: "/static/console/newtrialbook.html",
+        })
+        .state('customerdetail', {
+            url: "/customer/:customername",
+            templateUrl: "/static/console/customerdetail.html",
         })
 })
 
@@ -819,7 +836,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             coachname = c.name
             that.refreshtimetable()
         }
-		that.removephoto = function(pic){
+        that.removephoto = function(pic) {
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
                     title: "确认",
@@ -836,10 +853,10 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     if (!yes) {
                         return
                     }
-					Restangular.one("api",that.customerid)
-						.one("i",pic)
-						.remove()
-						.then(function(resp){
+                    Restangular.one("api", that.customerid)
+                        .one("i", pic)
+                        .remove()
+                        .then(function(resp) {
                             swal({
                                 type: "success",
                                 title: "移除成功",
@@ -847,17 +864,17 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                                 timer: 1500,
                                 showConfirmButton: false
                             });
-							that.album = []
-							that.refreshPhoto()
-						}, function(){
-							swal("", "保存失败了", "warning")
-							that.album = []
-							that.refreshPhoto()
-						})
-				})
-		}
+                            that.album = []
+                            that.refreshPhoto()
+                        }, function() {
+                            swal("", "保存失败了", "warning")
+                            that.album = []
+                            that.refreshPhoto()
+                        })
+                })
+        }
 
-   
+
         that.changeavatar = function($files) {
             $uploader.upload($files[0], function(data) {
                 console.log(data.key)
@@ -1241,7 +1258,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     //get product
                     that.order = data
                     that.customername = that.order.customerdetail.name
-					that.customerid = that.order.customerdetail.id
+                    that.customerid = that.order.customerdetail.id
                     Restangular.one("api/p", data.product)
                         .get()
                         .then(function(product) {
@@ -2780,7 +2797,7 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.openLightboxModal = function(i) {
             Lightbox.openModal(that.album, i);
         }
-		that.refreshBook = function(){
+        that.refreshBook = function() {
             Restangular.one("api/", that.customername)
                 .all("trial")
                 .getList()
@@ -2791,7 +2808,7 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                         dataset: data,
                     });
                 })
-		}
+        }
         that.refreshEval = function() {
             Restangular.all("api")
                 .one(that.customername, "e")
@@ -2814,7 +2831,7 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 .one(that.customername, "album")
                 .get(that.loadmore)
                 .then(function(resp) {
-					that.album = []
+                    that.album = []
                     _.each(resp.results, function(item) {
                         item.caption = new Date(item.created).Format("yyyy-MM-dd hh:mm")
                         that.album.push(item)
@@ -2842,7 +2859,7 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             }
         }
 
-     that.addphoto = function($files) {
+        that.addphoto = function($files) {
             that.uploading = $files.length;
             that.images = []
             _.each($files, function(f) {
@@ -3108,6 +3125,28 @@ app.controller("NewTrialBookCtrl", ['$scope', "Restangular", "NgTableParams", '$
 
                         })
                 })
+        }
+    }
+])
+
+app.controller("CustomerDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader", "Lightbox", "$customersvc",
+    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader, Lightbox, $customersvc) {
+        var that = this
+        that.aa = "text";
+        that.customer = $customersvc.getcustomer($stateParams.customername);
+        that.save = function() {
+            $customersvc.saveBasic(that.customer,function(data) {
+                swal({
+                    title: "成功",
+                    text: "修改已保存",
+                    type: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                history.back();
+                scope.$apply();
+            })
         }
     }
 ])

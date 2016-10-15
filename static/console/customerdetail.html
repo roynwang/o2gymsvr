@@ -1,0 +1,50 @@
+<div class="col-md-12" ng-controller="CustomerDetailCtrl as ctrl">
+    <section class="panel">
+        <header class="panel-heading">
+            <h4 class="text-center">
+				{{ctrl.aa}}
+<i back-button class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
+		</h4>
+        </header>
+        <div class="form-group panel-body">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="input-group input-group-lg m-bot15">
+                        <span class="input-group-addon btn-primary"><i class="fa fa-user"></i></span>
+                        <input type="text" class="form-control" placeholder="姓名"
+						ng-model="ctrl.customer.displayname">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="input-group input-group-lg m-bot15">
+                        <span class="input-group-addon btn-primary"><i class="fa fa-user"></i></span>
+                        <input type="text" class="form-control" placeholder="备注"
+						ng-model="ctrl.customer.comments">
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="input-group input-group-lg m-bot15">
+                        <span class="input-group-addon btn-primary"><i class="fa  fa-leaf"></i></span>
+                        <newdatepicker date-set-hidden="true" date-set="1990-01-01" button-prev="<i class='fa fa-arrow-left'></i>" button-next="<i
+						class='fa fa-arrow-right'></i>" date-format="yyyy-MM-dd" selector="form-control" style="margin-bottom:10px;">
+                            <div class="col-lg-12 input-group">
+                                <input class="form-control" style="background:
+								rgba(0,0,0,0);height:46px;font-size:18px;"
+								ng-model="ctrl.customer.birthday" placeholder="生日"
+                                />
+                            </div>
+                            <span style="cursor: pointer;position: absolute;top: 10px;right: 20px;" style="cursor: pointer">
+							<i class="fa fa-lg fa-calendar"></i>
+						</span>
+                        </newdatepicker>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center"><a class="btn btn-primary btn-lg text-center" style="margin-top:20px"
+                ng-click="ctrl.save()">保存</a>
+            </p>
+        </div>
+</div>
