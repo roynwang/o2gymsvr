@@ -1518,6 +1518,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         that.mo.sex = '0'
         that.mo.age = undefined
         that.mo.subsidy = undefined
+        that.mo.emergency_contact = ''
 
         that.ordertype = "normal"
 

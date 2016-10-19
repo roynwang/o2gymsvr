@@ -17,7 +17,7 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
-                        <span class="input-group-addon btn-primary"><i class="fa fa-user"></i></span>
+                        <span class="input-group-addon btn-primary"><i class="fa fa-bookmark-o"></i></span>
                         <input type="text" class="form-control" placeholder="备注"
 						ng-model="ctrl.customer.comments">
                     </div>
@@ -42,6 +42,14 @@
                         </newdatepicker>
                     </div>
                 </div>
+                <div class="col-lg-6">
+                    <div class="input-group input-group-lg m-bot15">
+                        <span class="input-group-addon btn-primary"><i class="fa 紧急联系人"></i></span>
+                        <input type="text" class="form-control" placeholder="紧急联系人"
+						ng-model="ctrl.customer.emergency_contact">
+                    </div>
+                </div>
+
             </div>
             <p class="text-center"><a class="btn btn-primary btn-lg text-center" style="margin-top:20px"
                 ng-click="ctrl.save()">保存</a>

@@ -50,6 +50,7 @@ class User(models.Model):
 	trial = models.IntegerField(blank=True, null=True)
 
 	comments = models.CharField(max_length=64, blank=True)
+	emergency_contact = models.CharField(max_length=64, blank=True)
 
 	def __unicode__(self):
 		return self.name
