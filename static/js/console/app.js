@@ -1579,6 +1579,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
 				that.mo.customer_phone = customer.name
 				that.birthday_str =  customer.birthday
 				that.mo.sex = customer.sex?'1':'0'
+				that.mo.emergency_contact = customer.emergency_contact
 			}
 		}
 
@@ -1588,6 +1589,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
 				that.mo.customer_displayname = customer.displayname
 				that.birthday_str =  customer.birthday
 				that.mo.sex = customer.sex?'1':'0'
+				that.mo.emergency_contact = customer.emergency_contact
 			}
 		}
 
