@@ -324,6 +324,13 @@ app.factory("$customersvc", function(Restangular) {
         })
         return c
     }
+    function getcustomerbydisplayname(key) {
+        var c = _.find(customers, {
+			displayname: key 
+        })
+        return c
+    }
+
 
     function saveBasic(user, onsuccess) {
         Restangular.one("api", user.name)
@@ -341,6 +348,7 @@ app.factory("$customersvc", function(Restangular) {
         getcustomers: getcustomers,
         getcustomer: getcustomer,
         gettrialcustomers: gettrialcustomers,
+		getcustomerbydisplayname: getcustomerbydisplayname,
         flag: flag,
         saveBasic: saveBasic
     }
@@ -1565,6 +1573,19 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
             }
             return true
         }
+		that.querycustomerbydisplayname = function(){
+			var customer = $customersvc.getcustomerbydisplayname(that.mo.customer_displayname);
+			if(customer != null ){
+				that.mo.customer_phone = customer.name
+			}
+		}
+
+		that.querycustomerbyphone = function(){
+			var customer = $customersvc.getcustomer(that.mo.customer_phone);
+			if(customer != null ){
+				that.mo.customer_displayname = customer.displayname
+			}
+		}
 
         that.submitorder = function() {
             if (!validate()) {

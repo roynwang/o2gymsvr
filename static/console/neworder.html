@@ -29,13 +29,13 @@
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
                         <span class="input-group-addon btn-primary"><i class="fa fa-user"></i></span>
-                        <input type="text" class="form-control" placeholder="客户姓名" ng-model="ctrl.mo.customer_displayname">
+                        <input ng-change="ctrl.querycustomerbydisplayname()" type="text" class="form-control" placeholder="客户姓名" ng-model="ctrl.mo.customer_displayname">
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
                         <span class="input-group-addon btn-primary"><i class="fa fa-phone"></i></span>
-                        <input type="text" class="form-control" placeholder="客户电话" ng-model="ctrl.mo.customer_phone">
+                        <input ng-change="ctrl.querycustomerbyphone()" type="text" class="form-control" placeholder="客户电话" ng-model="ctrl.mo.customer_phone">
                     </div>
                 </div>
             </div>
@@ -88,15 +88,6 @@
                         </newdatepicker>
                     </div>
                 </div>
-                <div class="col-lg-6" ng-show="ctrl.ordertype=='groupon'">
-                    <div class="input-group input-group-lg m-bot15">
-                        <span class="input-group-addon btn-primary"><i class="fa fa-clock-o"></i></span>
-                        <input type="number" class="form-control" placeholder="教练提成(元/节)" ng-model="ctrl.mo.subsidy">
-
-                    </div>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-lg-6">
                     <div class="input-group input-group-lg m-bot15">
                         <span class="input-group-addon btn-primary"><i class="fa  fa-bolt"></i></span>
@@ -105,7 +96,15 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-6" ng-show="ctrl.ordertype=='groupon'">
+                    <div class="input-group input-group-lg m-bot15">
+                        <span class="input-group-addon btn-primary"><i class="fa fa-clock-o"></i></span>
+                        <input type="number" class="form-control" placeholder="教练提成(元/节)" ng-model="ctrl.mo.subsidy">
+                    </div>
+                </div>
 
+            </div>
             <p class="text-center"><a class="btn btn-primary btn-lg text-center" style="margin-top:20px"
                 ng-click="ctrl.submitorder()">提交订单</a>
             </p>
