@@ -1577,6 +1577,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
 			var customer = $customersvc.getcustomerbydisplayname(that.mo.customer_displayname);
 			if(customer != null ){
 				that.mo.customer_phone = customer.name
+				that.birthday_str =  customer.birthday
 			}
 		}
 
@@ -1584,6 +1585,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
 			var customer = $customersvc.getcustomer(that.mo.customer_phone);
 			if(customer != null ){
 				that.mo.customer_displayname = customer.displayname
+				that.birthday_str =  customer.birthday
 			}
 		}
 
