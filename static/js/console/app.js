@@ -2548,7 +2548,8 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
                         option: item.option,
                         value: item.value,
                         unit: item.unit,
-                        group: item.group
+                        group: item.group,
+						date: that.selectedday
                     }
                     data.push(p)
                 }
