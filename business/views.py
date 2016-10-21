@@ -253,6 +253,10 @@ class AllEvalOptionsView(generics.ListCreateAPIView):
 	serializer_class = BodyEvalOptionsSerializer
 	pagination_class = None
 
+class BodyEvalItemView(generics.RetrieveDestroyAPIView):
+	queryset = BodyEval.objects.all()
+	serializer_class = BodyEvalDateSerializer
+
 
 class BodyEvalDateView(generics.ListAPIView):
 	pagination_class = None
