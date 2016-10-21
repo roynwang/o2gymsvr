@@ -2496,8 +2496,8 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
                     that.options.push(item)
                 }
             })
-
         }
+		that.showdatepicker = false
         that.refresh = function() {
             that.day = $stateParams.date
             var query = undefined
@@ -2516,6 +2516,8 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
                     }, function() {})
 
             } else {
+				that.showdatepicker = true
+				that.selectedday = new Date().Format("yyyy-MM-dd")
                 Restangular.all("api")
                     .all("e")
                     .getList()
@@ -2535,7 +2537,7 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
 
             var daystr = that.day
             if (that.day == "new") {
-                daystr = new Date().Format("yyyy-MM-dd")
+                daystr = that.selectedday
             }
             daystr = daystr.replace(/-/g, "")
             var data = []
