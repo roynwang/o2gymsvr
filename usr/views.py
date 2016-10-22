@@ -315,3 +315,15 @@ class FeedbackList(generics.ListCreateAPIView):
 	serializer_class = FeedBackSerializer 
 
 
+class MessageList(generics.ListCreateAPIView):
+        pagination_class = None
+	serializer_class = MessageSerializer
+	def get_queryset(self):
+	    return Message.objects.all().filter(done=False,name=self.kwargs["name"])
+
+class MessageItem(generics.RetrieveUpdateDestroyAPIView):
+	lookup_field = "id"
+        queryset = Message.objects.all().filter(done=False)
+	serializer_class = MessageSerializer
+
+

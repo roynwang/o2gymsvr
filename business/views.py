@@ -77,6 +77,24 @@ class GymScheduleList(generics.ListAPIView):
 		queryset = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True), date=date).order_by("hour")
 		return queryset
 
+class GymLoadList(APIView):
+        def get(self, request, pk, date):
+	    gym = get_object_or_404(Gym, id=self.kwargs.get("pk"))
+	    date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+	    queryset = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True), date=date).order_by("hour")
+            #init
+            ret = []
+            for i in range(0,26):
+                ret.append({'hour':i,'course_count':0})
+
+            for hour in queryset:
+                ret[hour.hour]['course_count'] += 1
+                ret[hour.hour+1]['course_count'] += 1
+
+	    return Response(ret, status=status.HTTP_200_OK)
+
+               
+        
 
 
 class ScheduleList(generics.ListCreateAPIView):
@@ -133,7 +151,8 @@ class ScheduleList(generics.ListCreateAPIView):
 		                order.status = "inprogress" 
 		                order.save()
 		#send sms
-		print book.sendSms()
+                customer.trySendEvalNotification(book)
+		#print book.sendSms()
 		return Response(sl.data)
 
 class ScheduleForReadPagination(pagination.CursorPagination):

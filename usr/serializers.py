@@ -103,3 +103,8 @@ class WorkingDaysSerializer(serializers.ModelSerializer):
 class FeedBackSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = FeedBack
+
+class MessageSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Message 
+
