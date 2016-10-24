@@ -57,6 +57,10 @@ class User(models.Model):
         def get_coach_gym(self):
             return self.gym.all()[0]
 
+        def get_frequency(self, days):
+            startday = datetime.datetime.today().date() + datetime.timedelta(days=-days)
+            return self.booked_time.filter(date__gt=startday).count()
+
         def trySendEvalNotification(self, schedule):
             #1 should after 30 day after last eval
             evals = BodyEval.objects.filter(name=self.name).order_by("-date")

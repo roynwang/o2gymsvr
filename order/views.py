@@ -386,6 +386,21 @@ class GymCustomers(generics.ListAPIView):
 		ret = User.objects.filter(name__in = customlist)
 		return ret
 
+class GymCustomersFreuently(APIView):
+    def get(self, request, gymid):
+	gym = Gym.objects.get(id=self.kwargs["gymid"])
+	customlist = gym.get_all_customers()
+        ret = []
+        duration = int(request.GET['duration'])
+        limit = int(request.GET['limit'])
+        for c in customlist:
+            u = get_object_or_404(User,name=c)
+            if u.get_frequency(duration) >= limit:
+                ret.append(u.displayname)
+	return Response(ret, status=status.HTTP_200_OK)
+
+
+
 def alipay_success(request):
 	#http://182.92.203.171/pay/success/?result=success&out_trade_no=1457523599263297
 	if request.GET["result"] != "success":
