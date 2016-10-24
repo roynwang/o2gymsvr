@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<title>氧气健身</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body style="margin:0">
+<div style="width: 100%;
+	height: 100%;
+	position: absolute;
+	background: rgb(249,251,254)">
+	<div style="width:100%;
+		height:80px;
+		background:rgb(242,242,242);
+		position:fixed;
+		box-shadow: 0 0 16px 0 rgba(242,242,242,0.2),0 0 20px 0 rgba(0,0,0,0.19)">
+		<p style="line-height:45px;margin: 0 20px;font-size:20px;color:rgb(66,70,74);">最近30天训练<span
+			style="font-size:30px;margin:15px">{{ times }}</span>次</p>
+		<p style="margin:0 20px;font-size:14px;color:rgb(104,113, 121)">记录时间<span
+			style="padding-left:5px">{{ lastevalday }}</span></p>
+		<img style="width: 60px;height: 60px;position: absolute;top: 10px;right: 10px;border-radius:
+		50%;" src="{{ avatar }}?imageView2/1/w/100/h/100">
+	</div>
+	<div style="width:100%;height:80px"></div>
+	{% for o in deltas %}
+	<div style="width:100%;padding: 10px 0; border-bottom: 1px solid #ececec">
+		<a style="position: absolute;left: 10px; color:#aaa"> {{ o.option }} </a>
+		<div style="display:inline-block;width:48%">
+			<p style="text-align:center;color:rgb(66,70,74);font-size:24px;margin-bottom: 0;">{{ o.prev }}
+			<span style="font-size:20px"><span></span></span></p>
+			<p style="text-align:center;color:rgb(160,156,141);font-size:16px;margin-top: 5px;">
+			{{ o.unit }} </p>
+		</div>
+		<div style="display:inline-block; width:20%;position: relative;top: -10px;">
+			{% if o.delta <= 0 %}
+			<img style="height:26px" src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjY0cHgiIGhlaWdodD0iNjRweCIgdmlld0JveD0iMCAwIDI2OC44MzIgMjY4LjgzMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMjY4LjgzMiAyNjguODMyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTIyMy4yNTUsMTY3LjQ5M2MtNC44ODEtNC44ODItMTIuNzk3LTQuODgyLTE3LjY3OCwwbC01OC42NjEsNTguNjYxVjEyLjVjMC02LjkwMy01LjU5OC0xMi41LTEyLjUtMTIuNSAgIGMtNi45MDQsMC0xMi41LDUuNTk3LTEyLjUsMTIuNXYyMTMuNjU0bC01OC42NjEtNTguNjU5Yy00Ljg4My00Ljg4MS0xMi43OTctNC44ODEtMTcuNjc4LDBjLTQuODgzLDQuODgyLTQuODgzLDEyLjc5NiwwLDE3LjY3OCAgIGw4MCw3OS45OThjMi40MzksMi40NCw1LjY0LDMuNjYxLDguODM5LDMuNjYxczYuMzk3LTEuMjIxLDguODM5LTMuNjYxbDgwLTgwQzIyOC4xMzcsMTgwLjI4OSwyMjguMTM3LDE3Mi4zNzUsMjIzLjI1NSwxNjcuNDkzeiIgZmlsbD0iIzBlYjU3OCIvPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=" />
+			<span style="font-size: 20px;color: rgb(14,181,120);">{{ o.delta }}</span>
+			{% else %}
+			<img style="height:26px" src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTYuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjY0cHgiIGhlaWdodD0iNjRweCIgdmlld0JveD0iMCAwIDI2OC44MzEgMjY4LjgzMiIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMjY4LjgzMSAyNjguODMyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxnPgoJPHBhdGggZD0iTTIyMy4yNTUsODMuNjU5bC04MC03OS45OThjLTQuODgxLTQuODgxLTEyLjc5Ny00Ljg4MS0xNy42NzgsMGwtODAsODBjLTQuODgzLDQuODgyLTQuODgzLDEyLjc5NiwwLDE3LjY3OCAgIGMyLjQzOSwyLjQ0LDUuNjQsMy42NjEsOC44MzksMy42NjFzNi4zOTctMS4yMjEsOC44MzktMy42NjFsNTguNjYxLTU4LjY2MXYyMTMuNjU0YzAsNi45MDMsNS41OTcsMTIuNSwxMi41LDEyLjUgICBjNi45MDEsMCwxMi41LTUuNTk3LDEyLjUtMTIuNVY0Mi42NzdsNTguNjYxLDU4LjY1OWM0Ljg4Myw0Ljg4MSwxMi43OTcsNC44ODEsMTcuNjc4LDAgICBDMjI4LjEzNyw5Ni40NTUsMjI4LjEzNyw4OC41NDEsMjIzLjI1NSw4My42NTl6IiBmaWxsPSIjRDgwMDI3Ii8+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==">
+			<span style="font-size: 20px;color: rgb(216,0,39);">{{ o.delta }}</span>
+			{% endif %}
+		</div>
+		<div style="display:inline-block;width:30%">
+			<p style="text-align:center;color:rgb(66,70,74);font-size:24px;margin-bottom: 0;">
+			{{ o.current }}<span style="font-size:20px"><span></span></span></p>
+			<p style="text-align:center;color:rgb(160,156,141);font-size:16px;margin-top: 5px;">
+			{{ o.unit }}</p>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+</body>
+
+</html>

@@ -499,6 +499,28 @@ class GymSumSale(APIView):
 		
 
 
+def show_customer_eval(request, name):
+        opts = {}
+        print name
+        user = get_object_or_404(User,name=name)
+        startday = datetime.datetime.today() + datetime.timedelta(days=-30)
+        times = user.booked_time.filter(date__gt=startday).count()
+        lastevalday = BodyEval.objects.filter(name=name).order_by('-date')[0].date
+        lastevalday_str = datetime.datetime.strftime(lastevalday,"%Y-%m-%d")
+
+        evals = BodyEval.objects.filter(name=name, date = lastevalday)
+        deltas = []
+        for ev in evals:
+            evs = BodyEval.objects.filter(name=name,option=ev.option).order_by('-date')
+            if evs.count() < 2:
+                continue
+            delta = float(evs[0].value) - float(evs[1].value)
+            deltas.append({'delta': delta, 'option':ev.option,'prev':evs[1].value,'current':evs[0].value,'unit':ev.unit})
+        ret = render(request, "evalresult/report.html",{'avatar': user.avatar, "deltas":deltas, "lastevalday":lastevalday_str,"name":name, "times":times})
+        return ret
+
+
+
 
 
 

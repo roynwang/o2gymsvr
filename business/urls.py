@@ -49,4 +49,5 @@ urlpatterns = patterns('',
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/t/(?P<date>[0-9]{8})/(?P<schedule>[0-9]+)/$',TrainByScheduleView.as_view()),
 		url(r'^api/a/$',NearByView.as_view()),
 		url(r'^api/a/(?P<pk>[0-9]+)/$', GymMap.as_view()),
+                url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/evalresult/$',show_customer_eval),
 		)
