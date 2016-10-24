@@ -2,7 +2,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-#from datetime import datetime
+from datetime import datetime
 from business.models import *
 
 
@@ -53,6 +53,9 @@ class User(models.Model):
 
 	comments = models.CharField(max_length=64, blank=True)
 	emergency_contact = models.CharField(max_length=64, blank=True)
+
+        def get_coach_gym(self):
+            return self.gym.all()[0]
 
         def trySendEvalNotification(self, schedule):
             #1 should after 30 day after last eval
@@ -116,15 +119,6 @@ class FeedBack(models.Model):
 	created = models.DateTimeField(default=datetime.datetime.now())
 
 
-class Message(models.Model):
-	id = models.AutoField(primary_key=True)
-	name = models.CharField(max_length=64, db_index=True)
-        done = models.BooleanField(default=False)
-        link = models.CharField(max_length=512, default="")
-        content = models.CharField(max_length=1024, default="")
-        by = models.CharField(max_length=64, default="")
-	created = models.DateTimeField(default=datetime.datetime.now())
-	dismiss_date = models.DateField(default=datetime.date.today)
 
 
 

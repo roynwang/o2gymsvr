@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.db import models
 import datetime
 from utils import smsutils
@@ -59,6 +60,13 @@ class Gym(models.Model):
 		customlist = list(set(customlist))
 		return customlist
 
+        def get_admin(self):
+            ret = []
+            for c in self.coaches.all():
+                if c.role == "admin" :
+                    ret.append(c)
+            return ret
+
 
 class Schedule(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -107,6 +115,23 @@ class Schedule(models.Model):
 		price  = p.price/p.amount
 		return price
 		
+        def send_launch_notification(self):
+            if not self.order is None and self.order.amount != 0 and self.order.subsidy != 0:
+                #1 send to coach
+                message = Message.objects.create(name=self.coach.name, \
+                        by=self.custom.name, \
+                        content= self.custom.displayname +"需要订餐", \
+                        link="", \
+                        dismiss_date=self.date)
+                #2 send to admin
+                for admin in self.coach.get_coach_gym().get_admin():
+                    if admin.name == self.coach.name:
+                        continue
+                    message = Message.objects.create(name=admin.name, \
+                        by=self.custom.name, \
+                        content= self.custom.displayname +"需要订餐", \
+                        link="", \
+                        dismiss_date=self.date)
 		
 
 class BodyEval(models.Model):
@@ -151,3 +176,14 @@ class Train(models.Model):
 	action_order = models.IntegerField()
 	units = models.CharField(max_length=32)
 	course = models.ForeignKey('Schedule', related_name="record", null=True)
+
+class Message(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=64, db_index=True)
+        done = models.BooleanField(default=False)
+        link = models.CharField(max_length=512, default="")
+        content = models.CharField(max_length=1024, default="")
+        by = models.CharField(max_length=64, default="")
+	created = models.DateTimeField(default=datetime.datetime.now())
+	dismiss_date = models.DateField(default=datetime.date.today)
+

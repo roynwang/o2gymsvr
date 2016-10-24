@@ -152,6 +152,7 @@ class ScheduleList(generics.ListCreateAPIView):
 		                order.save()
 		#send sms
                 customer.trySendEvalNotification(book)
+                book.send_launch_notification()
 		#print book.sendSms()
 		return Response(sl.data)
 
