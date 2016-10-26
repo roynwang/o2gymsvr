@@ -508,14 +508,16 @@ def show_customer_eval(request, name):
         lastevalday = BodyEval.objects.filter(name=name).order_by('-date')[0].date
         lastevalday_str = datetime.datetime.strftime(lastevalday,"%Y-%m-%d")
 
-        evals = BodyEval.objects.filter(name=name, date = lastevalday)
+        evals = BodyEval.objects.filter(name=name).values_list('option', flat=True).distinct()
         deltas = []
         for ev in evals:
-            evs = BodyEval.objects.filter(name=name,option=ev.option).order_by('-date')
+            evs = BodyEval.objects.filter(name=name,option=ev).order_by('-date')
             if evs.count() < 2:
                 continue
             delta = float(evs[0].value) - float(evs[1].value)
-            deltas.append({'delta': delta, 'option':ev.option,'prev':evs[1].value,'current':evs[0].value,'unit':ev.unit})
+            d0 = datetime.datetime.strftime(evs[0].date, "%m/%d")
+            d1 = datetime.datetime.strftime(evs[1].date, "%m/%d")
+            deltas.append({'d0':d0, 'd1':d1,'delta': delta,'option':ev,'prev':evs[1].value,'current':evs[0].value,'unit':evs[0].unit})
         ret = render(request, "evalresult/report.html",{'avatar': user.avatar, "deltas":deltas, "lastevalday":lastevalday_str,"name":name, "times":times})
         return ret
 
