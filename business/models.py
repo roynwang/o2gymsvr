@@ -140,7 +140,7 @@ class BodyEval(models.Model):
 	date = models.DateField(default=datetime.date.today)
 	option = models.CharField(max_length=64)
 	value = models.CharField(max_length=64)
-	unit = models.CharField(max_length=64)
+	unit = models.CharField(max_length=64, blank=True)
 	group = models.CharField(max_length=64)
 
 class BodyEvalOptions(models.Model):
