@@ -3165,6 +3165,31 @@ app.controller("CustomerDetailCtrl", ['$scope', "Restangular", "NgTableParams", 
         var that = this
         that.aa = "text";
         that.customer = $customersvc.getcustomer($stateParams.customername);
+
+        that.changeavatar = function($files) {
+            $uploader.upload($files[0], function(data) {
+                console.log(data.key)
+                var imgurl = bukcet + "/" + data.key
+                    //update avatar
+                Restangular.one("api", that.customer.name)
+                    .patch({
+                        avatar: imgurl
+                    })
+                    .then(function(data) {
+                        swal({
+                            type: "success",
+                            title: "提交成功",
+                            text: "",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        that.customer = data
+                    })
+            }, function() {
+                swal("", "保存失败，请重试", "warning")
+            })
+        }
+
         that.save = function() {
             $customersvc.saveBasic(that.customer,function(data) {
                 swal({

@@ -4,8 +4,17 @@
             <h4 class="text-center">
 				{{ctrl.customer.displayname}}
 <i back-button class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
+
 		</h4>
         </header>
+		<p style="text-align:center;padding-top:10px">
+
+			<img ng-src="{{ctrl.customer.avatar}}" style="height:80px">
+			<div style="text-align:center;width:100%;height:20px" ng-file-select="ctrl.changeavatar($files)">
+					<a style="font-size: 12px;color: white;position: absolute;background: #41cac0;padding: 2px 6px;border-radius: 4px;">更换</a>
+			</div>
+
+		</p>
         <div class="form-group panel-body">
             <div class="row">
                 <div class="col-lg-6">
