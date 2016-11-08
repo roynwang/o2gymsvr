@@ -108,3 +108,7 @@ class MessageSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Message 
 
+class ThresholdMsgSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = ThresholdMsg
+

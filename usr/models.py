@@ -61,6 +61,7 @@ class User(models.Model):
             startday = datetime.datetime.today().date() + datetime.timedelta(days=-days)
             return self.booked_time.filter(date__gt=startday).count()
 
+
         def trySendEvalNotification(self, schedule):
             #1 should after 30 day after last eval
             evals = BodyEval.objects.filter(name=self.name).order_by("-date")

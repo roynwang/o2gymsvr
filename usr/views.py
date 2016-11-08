@@ -326,4 +326,20 @@ class MessageItem(generics.RetrieveUpdateDestroyAPIView):
         queryset = Message.objects.all().filter(done=False)
 	serializer_class = MessageSerializer
 
+class ThresholdMsgList(generics.ListCreateAPIView):
+        pagination_class = None
+	serializer_class = ThresholdMsgSerializer
+	def get_queryset(self):
+	    return ThresholdMsg.objects.all().filter(name=self.kwargs["name"]).exclude(status="dismissed")
+
+class ThresholdMsgItem(generics.RetrieveUpdateDestroyAPIView):
+	lookup_field = "id"
+	serializer_class = ThresholdMsgSerializer 
+        queryset = ThresholdMsg.objects.all()
+
+	def partial_update(self, request, *args, **kwargs):
+		ret = super(ThresholdMsgItem, self).partial_update(request, args,kwargs)
+                if request.data['status'] == 'sent':
+                    self.get_object().send_msg()
+                return ret
 

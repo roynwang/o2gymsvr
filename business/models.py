@@ -2,6 +2,8 @@
 from django.db import models
 import datetime
 from utils import smsutils
+from django.shortcuts import get_object_or_404
+#from usr.models import *
 import json
 
 # Create your models here.
@@ -132,6 +134,10 @@ class Schedule(models.Model):
                         content= self.custom.displayname +"需要订餐", \
                         link="", \
                         dismiss_date=self.date)
+
+        def create_threshold_msg(self):
+            ThresholdMsg.try_create_msg_by_frequency(self,\
+                    2, 30, 111,"4次奖励")
 		
 
 class BodyEval(models.Model):
@@ -186,4 +192,34 @@ class Message(models.Model):
         by = models.CharField(max_length=64, default="")
 	created = models.DateTimeField(default=datetime.datetime.now())
 	dismiss_date = models.DateField(default=datetime.date.today)
+
+
+class ThresholdMsg(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=64, db_index=True)
+        templateid = models.IntegerField()
+        status = models.CharField(max_length=64,default="pending")
+	created = models.DateTimeField(default=datetime.datetime.now())
+        date = models.DateField()
+        desc = models.CharField(max_length=1024,default="")
+
+        @staticmethod
+        def try_create_msg_by_frequency(schedule, frequncy, deltadays, templateid, desc):
+            #check wthether existed
+            customer = schedule.custom
+            startday = datetime.datetime.today().date() + datetime.timedelta(days= -deltadays)
+
+            times = customer.booked_time.filter(date__gt=startday).count()
+            if times != frequncy:
+                return
+            #create if not existed
+            c = ThresholdMsg.objects.filter(name=customer.name,templateid=templateid).count()
+            if c == 0:
+                ThresholdMsg.objects.create(name=customer.name,templateid=templateid,desc=desc, date=schedule.date)
+
+
+        def send_msg(self):
+            print "sending ... "
+            pass
+            
 

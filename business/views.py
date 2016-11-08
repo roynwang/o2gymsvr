@@ -66,6 +66,7 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 
                 if request.data["done"] or "order" in request.data:
                         self.get_object().doneBook()
+                        self.get_object().create_threshold_msg()
 		return ret
 
 class GymScheduleList(generics.ListAPIView):
@@ -141,6 +142,7 @@ class ScheduleList(generics.ListCreateAPIView):
 		if "done" in request.data:
 			book.done = request.data["done"]
 			book.save()
+                        # threshold mesg
 		sl = ScheduleSerializer(instance=book)
 		print sl.data
                 #if is an order book
