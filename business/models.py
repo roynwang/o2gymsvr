@@ -137,7 +137,7 @@ class Schedule(models.Model):
 
         def create_threshold_msg(self):
             ThresholdMsg.try_create_msg_by_frequency(self,\
-                    2, 30, 111,"4次奖励")
+                    2, 30, 31798,"4次奖励")
 		
 
 class BodyEval(models.Model):
@@ -203,6 +203,7 @@ class ThresholdMsg(models.Model):
         date = models.DateField()
         desc = models.CharField(max_length=1024,default="")
 
+
         @staticmethod
         def try_create_msg_by_frequency(schedule, frequncy, deltadays, templateid, desc):
             #check wthether existed
@@ -219,7 +220,6 @@ class ThresholdMsg(models.Model):
 
 
         def send_msg(self):
-            print "sending ... "
-            pass
+	    return smsutils.sendSMS(self.name, self.templateid, ','.join(["30","4"]))
             
 
