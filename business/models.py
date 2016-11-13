@@ -137,7 +137,7 @@ class Schedule(models.Model):
 
         def create_threshold_msg(self):
             ThresholdMsg.try_create_msg_by_frequency(self,\
-                    2, 30, 31798,"4次奖励")
+                    4, 30, 31798,"4次奖励")
 		
 
 class BodyEval(models.Model):
