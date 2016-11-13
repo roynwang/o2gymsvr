@@ -138,6 +138,14 @@ class Schedule(models.Model):
         def create_threshold_msg(self):
             ThresholdMsg.try_create_msg_by_frequency(self,\
                     4, 30, 31798,"4次奖励")
+            ThresholdMsg.try_create_msg_by_frequency(self,\
+                    5, 30, 31798,"5次奖励")
+            ThresholdMsg.try_create_msg_by_frequency(self,\
+                    6, 30, 31798,"6次奖励")
+            ThresholdMsg.try_create_msg_by_frequency(self,\
+                    7, 30, 31798,"7次奖励")
+
+
 		
 
 class BodyEval(models.Model):
@@ -218,8 +226,13 @@ class ThresholdMsg(models.Model):
             if c == 0:
                 ThresholdMsg.objects.create(name=customer.name,templateid=templateid,desc=desc, date=schedule.date)
 
-
         def send_msg(self):
-	    return smsutils.sendSMS(self.name, self.templateid, ','.join(["30","4"]))
-            
+            if self.desc == '4次奖励':
+    	        return smsutils.sendSMS(self.name, self.templateid, ','.join(["30","4"]))
+            if self.desc == '5次奖励':
+    	        return smsutils.sendSMS(self.name, self.templateid, ','.join(["30","5"]))
+            if self.desc == '6次奖励':
+    	        return smsutils.sendSMS(self.name, self.templateid, ','.join(["30","6"]))
+            if self.desc == '7次奖励':
+    	        return smsutils.sendSMS(self.name, self.templateid, ','.join(["30","7"]))
 
