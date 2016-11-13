@@ -51,7 +51,7 @@ class User(models.Model):
 
 	trial = models.IntegerField(blank=True, null=True)
 
-	comments = models.CharField(max_length=64, blank=True)
+	comments = models.CharField(max_length=64, blank=True, null=True)
 	emergency_contact = models.CharField(max_length=64, blank=True)
 
         def get_coach_gym(self):
