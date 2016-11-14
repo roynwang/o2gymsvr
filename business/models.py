@@ -226,6 +226,17 @@ class ThresholdMsg(models.Model):
             if c == 0:
                 ThresholdMsg.objects.create(name=customer.name,templateid=templateid,desc=desc, date=schedule.date)
 
+            gym = schedule.order.gym
+            for coach in gym.coaches.all():
+                if coach.role != 'admin':
+                    continue
+                message = Message.objects.create(name=schedule.coach.name, \
+                        by=schedule.custom.name, \
+                        content=schedule.custom.displayname +"触发了奖励", \
+                        link="", \
+                        dismiss_date=schedule.date)
+
+
         def send_msg(self):
             if self.desc == '4次奖励':
     	        return smsutils.sendSMS(self.name, self.templateid, ','.join(["30","4"]))
