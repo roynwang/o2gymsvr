@@ -24,11 +24,15 @@ body {
 .span.light {
 	color: #faa755;
 	font-weight: bolder;
+	margin-left: 0;
+	font-size: 1.2em
 }
 
 .span.serious {
 	color: #d93a49;
 	font-weight: bolder;
+	margin-left: 0;
+	font-size: 1.2em
 }
 .primary-color {
 	color:#1FB5AD;
@@ -69,25 +73,27 @@ body {
 		<p> 动态评估：通过对具体的动作进行测试，动态练习能指出不正确的动作模式，由此来确定适合您的运动模式以及在后续锻炼中需要注意的问题</p>
 		<p>无论您最终是否选择氧气健身的教练和课程，我们都希望这次评估能够增进您对自己身体的了解，并在日常生活以及运动中加以注意和调整。</p>
 	</div>
-
+	{% for item in issues %}
 	<div style="padding:1em;">
 		 <hr> 
-	  <p class="option-title"><span class="option-name">胫骨外旋</span><span class="span light">轻微</span></p>
+	  <p class="option-title">
+	  {% if item.value == "5" %}
+			<span class="span light">轻微</span>
+       {% endif %}
+	  {% if item.value == "0" %}
+			<span class="span serious">严重</span>
+       {% endif %}
+	  <span class="option-name">{{ item.option }}</span>
+ 	  </p>
 	  <p class="option-title">建议</p>
 	  <div class="suggestion">
-	  <p>双脚并拢立正时，膝盖可以合拢，小腿不能并拢， 以前一直以为是O型腿。后来才知道有个名词叫膝下O，也就是髌骨	的上半部分相对正常，髌骨的下半部分和胫骨都外旋了。不知各位达人有什么高招？</p>
+		  <p>{{ item.comments }}</p>
 	 </div>	 
-	 <img class="option-img" src="https://dn-o2fit.qbox.me/769dfa2a8e1e11e6bb5a00163e00701b.jpg?imageView2/1/w/200/h/200">
-
+	  {% if item.img != ""  %}
+	  <img class="option-img" src="{{ item.img }}">
+       {% endif %}
 	</div>
-		 <hr> 
-		<div style="padding:1em;">
-	  <p class="option-title"><span class="option-name">胫骨外旋</span><span class="span serious">严重</span></p>
-	  <p class="option-title">建议</p>
-	  <div class="suggestion">
-	  <p>双脚并拢立正时，膝盖可以合拢，小腿不能并拢， 以前一直以为是O型腿。后来才知道有个名词叫膝下O，也就是髌骨	的上半部分相对正常，髌骨的下半部分和胫骨都外旋了。不知各位达人有什么高招？</p>
-	  </div>	  
-	</div>
+	{% endfor %}
 </body>
 
 </html>

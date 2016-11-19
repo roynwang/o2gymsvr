@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.shortcuts import render
 from business.models import *
 from business.serializers import *
@@ -526,7 +527,21 @@ def show_customer_eval(request, name):
 
 
 def show_gesture_eval(request, name):
-        ret = render(request, "evalresult/gesture.html",{})
+        user = get_object_or_404(User,name=name)
+        lastevalday = BodyEval.objects.filter(name=name).order_by('-date')[0].date
+        evals = BodyEval.objects.filter(name=name, date=lastevalday).order_by("value")
+
+        issues = []
+        for item in evals:
+            if item.group.startswith("3.") or item.group.startswith("4.") or item.group.startswith("5."):
+                if int(item.value) < 10:
+                    if item.img is None:
+                        item.img = ""
+                    if item.comments is None or item.comments == '':
+                        item.comments = "暂无建议"
+                    issues.append(item)
+        
+        ret = render(request, "evalresult/gesture.html",{"issues":issues})
         return ret
 
 
