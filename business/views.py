@@ -525,6 +525,8 @@ def show_customer_eval(request, name):
 
 
 
-
+def show_gesture_eval(request, name):
+        ret = render(request, "evalresult/gesture.html",{})
+        return ret
 
 
