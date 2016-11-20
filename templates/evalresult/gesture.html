@@ -46,6 +46,7 @@ body {
 }
 .option-title{
 	font-weight: bolder;
+	color: #333
 }
 .option-name{
 	color:#888;
@@ -60,15 +61,20 @@ body {
 	background-color: #ececec;
 	padding: 0.4em 1em;
 	border-radius: 12px;
-
 }
-
+.risk {
+	border-radius: 4px;
+	border: 1px solid #1fb5ad;
+	color: #1fb5ad;
+	padding: 3px 6px;
+	margin-right: 6px;
+}
 
 </style>
 </head>
 <body>
 	<div class="introduction suggestion">
-		<p><span class="optiontitle primary-color">氧气健身</span>感谢您的光临并配合完成一系列评估测试</p>
+		<p><span class="option-title primary-color">氧气健身</span>感谢您的光临并配合完成一系列评估测试</p>
 		<p> 静态评估：能显示肌肉失衡或肌肉长度的改变（变长，变弱，变短或变紧）。静态姿势能显示出可能需要注意的区域，由此来改善动作质量和完成动作的能力</p>
 		<p> 动态评估：通过对具体的动作进行测试，动态练习能指出不正确的动作模式，由此来确定适合您的运动模式以及在后续锻炼中需要注意的问题</p>
 		<p>无论您最终是否选择氧气健身的教练和课程，我们都希望这次评估能够增进您对自己身体的了解，并在日常生活以及运动中加以注意和调整。</p>
@@ -82,9 +88,22 @@ body {
        {% endif %}
 	  {% if item.value == "0" %}
 			<span class="span serious">严重</span>
-       {% endif %}
+     {% endif %}
 	  <span class="option-name">{{ item.option }}</span>
  	  </p>
+
+	  {% if item.risks != "" %}
+	  <p class="option-title">健康风险</p>
+
+	  <div class="suggestion">
+	  <p> 
+		{% for risk in item.risks %}
+		  <span class="risk">{{ risk }}</span>
+	    {% endfor %}	
+	  </p>
+	 </div>	 
+	  {% endif %}
+
 	  <p class="option-title">建议</p>
 	  <div class="suggestion">
 		  <p>{{ item.comments }}</p>

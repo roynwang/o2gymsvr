@@ -158,6 +158,7 @@ class BodyEval(models.Model):
 	group = models.CharField(max_length=64)
 	comments = models.CharField(max_length=1024,blank=True,default="", null=True)
 	img = models.CharField(max_length=512,blank=True,default="", null=True)
+	risks = models.CharField(max_length=1024,blank=True,default="", null=True)
 
 class BodyEvalOptions(models.Model):
 	id = models.AutoField(primary_key=True)

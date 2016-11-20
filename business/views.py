@@ -19,6 +19,7 @@ import requests
 import calendar
 from django.conf import settings
 import json
+from django.http import JsonResponse
 
 
 # Create your views here.
@@ -539,9 +540,18 @@ def show_gesture_eval(request, name):
                         item.img = ""
                     if item.comments is None or item.comments == '':
                         item.comments = "暂无建议"
+
+                    if item.risks is None or item.risks == '':
+                        item.risks = ""
+                    else:
+                        item.risks = item.risks.split(",")
+
                     issues.append(item)
         
         ret = render(request, "evalresult/gesture.html",{"issues":issues})
         return ret
 
+def get_health_risk(request):
+        risk = ["腰痛", "肩膀疼痛"]
+        return JsonResponse(dict(risks=list(risk)))
 
