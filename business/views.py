@@ -552,6 +552,6 @@ def show_gesture_eval(request, name):
         return ret
 
 def get_health_risk(request):
-        risk = ["腰痛", "肩膀疼痛"]
+        risk = ["腰痛","背痛","颈肩痛","便秘","手脚麻","头晕","头痛","骨刺","颈椎退化","耳鸣","身体疲倦","眼睛干涩","脊柱变型","失眠","膝关节痛","腰椎间盘突出"]
         return JsonResponse(dict(risks=list(risk)))
 
