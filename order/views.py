@@ -404,8 +404,8 @@ class GymCustomersFreuently(APIView):
                 u = get_object_or_404(User,name=c)
                 if u.get_frequency(duration) == limit:
                     ret.append(u.displayname)
-
-	return Response(ret, status=status.HTTP_200_OK)
+        html = render(request, "private/customerlist.html",{'customers': ret})
+	return html
 
 
 
