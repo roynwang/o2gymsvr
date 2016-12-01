@@ -392,11 +392,19 @@ class GymCustomersFreuently(APIView):
 	customlist = gym.get_all_customers()
         ret = []
         duration = int(request.GET['duration'])
-        limit = int(request.GET['limit'])
-        for c in customlist:
-            u = get_object_or_404(User,name=c)
-            if u.get_frequency(duration) >= limit:
-                ret.append(u.displayname)
+        if 'greaterthan' in request.GET:
+            limit = int(request.GET['greaterthan'])
+            for c in customlist:
+                u = get_object_or_404(User,name=c)
+                if u.get_frequency(duration) >= limit:
+                    ret.append(u.displayname)
+        if 'equal' in request.GET:
+            limit = int(request.GET['equal'])
+            for c in customlist:
+                u = get_object_or_404(User,name=c)
+                if u.get_frequency(duration) == limit:
+                    ret.append(u.displayname)
+
 	return Response(ret, status=status.HTTP_200_OK)
 
 

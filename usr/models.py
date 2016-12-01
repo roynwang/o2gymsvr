@@ -59,7 +59,7 @@ class User(models.Model):
 
         def get_frequency(self, days):
             startday = datetime.datetime.today().date() + datetime.timedelta(days=-days)
-            return self.booked_time.filter(date__gt=startday).count()
+            return self.booked_time.filter(date__gt=startday, done=True).count()
 
 
         def trySendEvalNotification(self, schedule):
