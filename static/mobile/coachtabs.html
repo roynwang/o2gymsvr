@@ -134,7 +134,7 @@
                         flex layout="row" ng-show="c.extend">
                             <span flex="5"></span>
                             <div style="font-size:14px" layout="row" layout-align="end center">
-                                <span>完成度:{{c.book.complete_status}}</span>
+                                <span>{{c.book.complete_status}}</span>
                             </div>
                             <span flex></span>
                             <div flex=20 ng-click="ctrl.logtrain(c.book); $event.stopPropagation();" class="course-time icon-list event-action-btn">

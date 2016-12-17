@@ -58,7 +58,7 @@ class OrderList(generics.ListCreateAPIView):
 			role = "coach"
 		ret = None
 		if role == "coach":
-			ret = Order.objects.filter(coach = usr)
+			ret = Order.objects.filter(coach = usr).exclude(paidtime = None)
 		else:
 			ret = Order.objects.filter(custom = usr)
 
