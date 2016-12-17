@@ -122,12 +122,12 @@ String.prototype.fixSize = function(w, h) {
 var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"]
 
 var app = angular.module('o2m', [
-        'ui.router',
-        'restangular',
-        'oitozero.ngSweetAlert',
-        'ngMaterial',
-        'angularQFileUpload',
-    ])
+    'ui.router',
+    'restangular',
+    'oitozero.ngSweetAlert',
+    'ngMaterial',
+    'angularQFileUpload',
+])
 
 app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider, $mdDateLocaleProvider, $compileProvider) {
     // For any unmatched url, send to /route1
@@ -220,7 +220,8 @@ app.factory("$uploader", function($qupload) {
 
     function upload(file, onsuccess, onfail) {
 
-		var msg = ""
+        var msg = ""
+
         function compress(source_img_obj, quality) {
             var mime_type = "image/jpeg";
             var cvs = document.createElement('canvas');
@@ -228,7 +229,7 @@ app.factory("$uploader", function($qupload) {
             cvs.height = source_img_obj.naturalHeight;
             var ctx = cvs.getContext("2d").drawImage(source_img_obj, 0, 0);
             var newImageData = cvs.toDataURL(mime_type, quality / 100);
-			msg += 'img compressed/'
+            msg += 'img compressed/'
             return newImageData
         }
 
@@ -236,12 +237,12 @@ app.factory("$uploader", function($qupload) {
             key = data.key
             token = data.token
 
-			msg += 'got token/'
+            msg += 'got token/'
             var reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = function(event) {
 
-				msg += 'file loaded'
+                msg += 'file loaded'
                 var imgori = new Image();
                 imgori.onload = function() {
                     var compressed = compress(imgori, 20)
@@ -253,10 +254,10 @@ app.factory("$uploader", function($qupload) {
                     });
 
                     newf.upload.then(function(response) {
-						msg += 'file uploaded/'
+                        msg += 'file uploaded/'
                         onsuccess && onsuccess(response)
                     }, function(response) {
-						msg += 'file upload fail/'
+                        msg += 'file upload fail/'
                         onfail && onfail(msg)
                     }, function(evt) {});
                 }
@@ -542,11 +543,11 @@ app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
                     that.endload()
                     $.cookie("token", data.token, {
                         path: '/',
-						expires: 365
+                        expires: 365
                     })
                     $.cookie("user", that.user.name, {
                         path: '/',
-						expires: 365
+                        expires: 365
                     })
                     $usersvc.getuser(that.user.name, false, trans)
                 },
@@ -593,11 +594,11 @@ app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
                     that.endload()
                     $.cookie("token", data.token, {
                         path: '/',
-						expires: 365
+                        expires: 365
                     })
                     $.cookie("user", that.user.name, {
                         path: '/',
-						expires: 365
+                        expires: 365
                     })
                     $usersvc.getuser(that.user.name, false, trans)
                 },
@@ -675,9 +676,9 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             $mdSidenav(direction)
                 .toggle()
                 .then(function() {
-					that.searchText = undefined
-					that.querySearchCustomer();
-				});
+                    that.searchText = undefined
+                    that.querySearchCustomer();
+                });
         }
         that.cancelselect = function() {
             that.isSelecting = false
@@ -704,7 +705,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                             return a.pinyin.localeCompare(b.pinyin)
                         })
                         that.selecting = that.customerlist
-						that.customershowing = that.customerlist
+                        that.customershowing = that.customerlist
                     },
                     function(data) {})
         }
@@ -766,7 +767,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     var os = _.reject(data.results, function(item) {
                         return item.all_booked == true
                     })
-					os = _.sortBy(os, 'created')
+                    os = _.sortBy(os, 'created')
 
                     if (os && os.length > 0) {
                         var o = os[0]
@@ -780,18 +781,50 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                         that.querystatus = "pending"
                         console.log(that.pendingbook)
                     } else {
-                        that.showtoast = true
-                        $mdToast.show(
-                            $mdToast.simple()
-                            .textContent('没有匹配的订单')
-                            .parent(angular.element(document.querySelector("#toast-placeholder")))
-                            .hideDelay(3000)
-                        ).then(function() {
+                        var showunmatch = function() {
+                            that.showtoast = true
+                            $mdToast.show(
+                                $mdToast.simple()
+                                .textContent('没有匹配的订单')
+                                .parent(angular.element(document.querySelector("#toast-placeholder")))
+                                .hideDelay(3000)
+                            ).then(function() {
+                                $timeout(function() {
+                                    that.showtoast = false
+                                }, 500)
+                            });
+                            that.querystatus = "unmatch"
+                        }
+
+                        if (customer.trial == null) {
+                            return
+                        }
+
+                        swal({
+                            title: "体验预约",
+                            text: "无匹配订单，确认是体验预约吗?",
+                            type: "info",
+                            showCancelButton: true,
+                            closeOnConfirm: false,
+                            confirmButtonText: "是",
+                            cancelButtonText: "否",
+                            closeOnConfirm: true
+                        }, function(yes) {
+                            if (!yes) {
+                                showunmatch()
+                                return
+                            }
+                            that.pendingbook = {
+                                date: that.selected.Format("yyyy-MM-dd"),
+                                hour: c.index,
+                                coach: that.user.id,
+                                custom: customer.id,
+                            }
                             $timeout(function() {
-                                that.showtoast = false
-                            }, 500)
+                                that.querystatus = "pending"
+                            }, 1000)
+                            console.log(that.pendingbook)
                         });
-                        that.querystatus = "unmatch"
                     }
                 },
                 function(data) {
@@ -926,10 +959,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }
         that.select = function(td) {
             that.selected = td
-			that.animatingright = true
-			$timeout( function(){
-				that.animatingright = false
-			}, 700)
+            that.animatingright = true
+            $timeout(function() {
+                that.animatingright = false
+            }, 700)
             that.refresh()
         }
         that.complete = function(book) {
@@ -1014,20 +1047,20 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 //that.selected == that.currentdate
             that.refreshdates()
 
-			that.animatingright = true
-			$timeout( function(){
-				that.animatingright = false
-			},700)
+            that.animatingright = true
+            $timeout(function() {
+                that.animatingright = false
+            }, 700)
         }
         that.prevday = function() {
             that.currentdate = that.currentdate.addDays(-1)
                 //that.selected == that.currentdate
             that.refreshdates()
-			that.animatingleft = true
-			$timeout( function(){
-				that.animatingleft = false
-			}, 700)
-			
+            that.animatingleft = true
+            $timeout(function() {
+                that.animatingleft = false
+            }, 700)
+
         }
         that.refreshdates = function() {
             var curweekday = that.currentdate.getDay()
@@ -1634,7 +1667,7 @@ app.controller("OrderDetailCtrl", ['$scope', 'Restangular', '$mdDialog', '$order
 
     }
 ])
-app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdDialog", "$ordersvc", "$stateParams","$uploader",
+app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdDialog", "$ordersvc", "$stateParams", "$uploader",
     function($state, $usersvc, Restangular, $mdDialog, $ordersvc, $stateParams, $uploader) {
         var that = this
         that.customer = {}
@@ -1662,7 +1695,7 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
                         that.customer.avatar = imgurl
                     })
             }, function(resp) {
-                swal("",resp, "warning")
+                swal("", resp, "warning")
             })
         }
 
@@ -1671,8 +1704,8 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
                 .one("o")
                 .get()
                 .then(function(data) {
-						that.orderlist = data.results
-						/*
+                        that.orderlist = data.results
+                            /*
                         that.orderlist = _.where(data.results, {
                             coach: $.cookie("user")
                         })
@@ -1720,13 +1753,13 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
 
         function validate() {
             var data = that.mo
-			if (that.mo.product_duration>60){
+            if (that.mo.product_duration > 60) {
                 swal("", "请输入正确的有效时间单位(月)，如 12 ", "warning")
                 return false
-			}
-			if(that.mo.product_duration == ""){
-				that.mo.product_duration = 0
-			}
+            }
+            if (that.mo.product_duration == "") {
+                that.mo.product_duration = 0
+            }
             if (that.mo.customer_phone.toString().length != 11) {
                 swal("", "请输入正确的11位电话号码", "warning")
                 return false
@@ -1885,7 +1918,7 @@ app.controller("TrainDetailCtrl", ["Restangular", "$paramssvc", "$mdDialog", "$u
             $mdDialog.cancel();
         }
         that.uploading = false
-		that.notes = ""
+        that.notes = ""
         that.addphoto = function($files) {
             that.uploading = true
             $uploader.upload($files[0], function(data) {
