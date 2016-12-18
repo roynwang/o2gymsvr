@@ -340,12 +340,20 @@ class GymSoldDay(APIView):
 			print str(course.order.amount) + ":" + str(product.amount) + ": " + str(tmpprice)
 		return price
 
+        def cal_exp_course_count(self, query):
+                c = 0
+		for course in query:
+                        if course.order is None:
+                                c += 1
+		return c
+                
+
 	def sum_price_course(self,gymid,day):
 		day_obj = datetime.datetime.strptime(day,"%Y%m%d")
 		coaches = Gym.objects.get(id=gymid).coaches.values_list("id", flat=True)
 		books = Schedule.objects.filter(date = day_obj,coach__in = coaches)
 		#print books.query
-		return (books.count(),self.cal_course_income(books))
+		return (books.count(),self.cal_course_income(books), self.cal_exp_course_count)
 
 
 	def get(self,request,gymid, day):
@@ -365,8 +373,8 @@ class GymSoldDay(APIView):
 		'''
 		sold_price = orders.aggregate(Sum("amount"))["amount__sum"]
 		sold_count = orders.count()  
-		course_count, course_price = self.sum_price_course(gymid, day)
-		return Response({"sold_price": sold_price, "sold_count":sold_count, "course_price":course_price, "course_count": course_count})
+		course_count, course_price, exp_course_count = self.sum_price_course(gymid, day)
+		return Response({"sold_price": sold_price, "sold_count":sold_count, "course_price":course_price, "course_count": course_count, "exp_course_count":exp_course_count})
 
 class GymTrialCustomerList(generics.ListAPIView):
 	serializer_class = SimpleUserSerilaizer

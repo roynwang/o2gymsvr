@@ -307,12 +307,14 @@ class InCome(APIView):
 
 		sold_xu = orders.filter(isfirst=False).aggregate(Sum('amount'))["amount__sum"] or 0
 
-		courses = usr.sealed_time.filter(date__range=[start,end],done=True)
+		courses = usr.sealed_time.filter(date__range=[start,end],done=True).exclude(order=None)
+
+		exp_courses = usr.sealed_time.filter(date__range=[start,end],done=True, order=None)
 
 
 		#courses = orders.value_list("schedule")
 		return Response({"sold_xu":sold_xu, "sold_price": sold, "sold_count": sold_count, "completed_course":courses.count()
-			or 0, "completed_course_price":self.cal_course_income(courses)})
+			or 0, "completed_course_price":self.cal_course_income(courses), "exp_courses": exp_courses.count()})
 
 
 class FeedbackList(generics.ListCreateAPIView):
