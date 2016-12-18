@@ -353,7 +353,7 @@ class GymSoldDay(APIView):
 		coaches = Gym.objects.get(id=gymid).coaches.values_list("id", flat=True)
 		books = Schedule.objects.filter(date = day_obj,coach__in = coaches)
 		#print books.query
-		return (books.count(),self.cal_course_income(books), self.cal_exp_course_count)
+		return (books.count(),self.cal_course_income(books),self.cal_exp_course_count(books))
 
 
 	def get(self,request,gymid, day):
