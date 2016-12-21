@@ -245,10 +245,9 @@ class CustomerList(generics.ListAPIView):
 		gym =  usr.gym.first()
 		#print customers
 		customlist = gym.get_all_customers()
-                triallist= User.objects.filter(trial=gym.id).values_list('name')
+                triallist= list(set(User.objects.filter(trial=gym.id).values_list('name', flat=True)))
 
-                customlist += triallist
-	        customlist = list(set(customlist))
+                customlist = list(set(customlist + triallist))
 
 		ret = User.objects.filter(name__in = customlist)
 		if ret.count() == 0:
