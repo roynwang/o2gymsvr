@@ -208,6 +208,20 @@ class ScheduleForRead(generics.ListAPIView):
 			nextstart = None
 		serializer = self.get_serializer(queryset, many=True)
 		return Response({"next":nextstart,"previous":prevstart, "results":serializer.data})
+class CustomerMonthAverageView(APIView):
+	def get(self,request,pk,date):
+            #1 get date range
+            date += "01"
+            startday = datetime.datetime.strptime(date,"%Y%m%d")
+	    endday = startday + datetime.timedelta(days=30)
+            
+            #2 get all schedule
+	    gym = get_object_or_404(Gym, id=pk)
+            allschedule = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True),done=True,date__range=[ startday, endday])
+            #3 cal
+            customer_count = allschedule.values("custom").distinct().count()
+            return Response({"count":float(allschedule.count())/float(customer_count)})
+            
 
 class DayAvaiableTime(APIView):
 
