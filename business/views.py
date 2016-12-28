@@ -220,7 +220,7 @@ class CustomerMonthAverageView(APIView):
             allschedule = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True),done=True,date__range=[ startday, endday])
             #3 cal
             customer_count = allschedule.values("custom").distinct().count()
-            return Response({"count":float(allschedule.count())/float(customer_count)})
+            return Response({"course_count":allschedule.count(), "customer_count":customer_count, "average":float(allschedule.count())/float(customer_count)})
             
 
 class DayAvaiableTime(APIView):
