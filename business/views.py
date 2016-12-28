@@ -221,6 +221,31 @@ class CustomerMonthAverageView(APIView):
             #3 cal
             customer_count = allschedule.values("custom").distinct().count()
             return Response({"course_count":allschedule.count(), "customer_count":customer_count, "average":float(allschedule.count())/float(customer_count)})
+
+class CustomerMonthDetailView(generics.ListAPIView):
+	serializer_class = ScheduleCustomerBriefSerializer
+        pagination_class = None
+	def add_months(self, sourcedate,months):
+		month = sourcedate.month - 1 + months
+		year = int(sourcedate.year + month / 12 )
+		month = month % 12 + 1
+		day = min(sourcedate.day,calendar.monthrange(year,month)[1])
+		return datetime.date(year,month,day)
+
+        def get_queryset(self):
+            #1 get date range
+            date = self.kwargs.get("date")
+            pk = self.kwargs.get("pk")
+            date += "01"
+            startday = datetime.datetime.strptime(date,"%Y%m%d")
+	    endday = self.add_months(startday,1) - datetime.timedelta(days=1)
+            
+            #2 get all schedule
+	    gym = get_object_or_404(Gym, id=pk)
+            allschedule = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True),done=True,date__range=[ startday, endday])
+            #3 cal
+            return allschedule
+
             
 
 class DayAvaiableTime(APIView):

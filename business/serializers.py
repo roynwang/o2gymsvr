@@ -20,6 +20,15 @@ class GymWithDisSerializer(serializers.ModelSerializer):
 '''
 
 
+class ScheduleCustomerBriefSerializer(serializers.ModelSerializer):
+        customername = serializers.SerializerMethodField()
+	class Meta:
+		model = Schedule
+		fields = ["date","customername"]
+        def get_customername(self, obj):
+            return obj.custom.displayname
+
+
 class ScheduleSerializer(serializers.ModelSerializer):
 	customerprofile = SimpleUserSerilaizer(source='custom', read_only=True)
 	coachprofile = CoachSerializer(source='coach', read_only=True)
