@@ -321,6 +321,19 @@ class FeedbackList(generics.ListCreateAPIView):
 	serializer_class = FeedBackSerializer 
 
 
+class ChargeHistoryList(generics.ListCreateAPIView):
+        serializer_class = ChargeHistorySerializer
+        def get_queryset(self):
+	    return ChargeHistory.objects.all().filter(name=self.kwargs['name'])
+
+	def create(self, request, *args, **kwargs):
+            #...
+	    resp = super(ChargeHistoryList, self).create(request, args, kwargs)
+            #chage  to user
+            balance,_ = Balance.objects.get_or_create(name=kwargs['name'], gym=int(kwargs['gym']))
+            balance.charge(request.data['amount'])
+            return resp
+
 class MessageList(generics.ListCreateAPIView):
         pagination_class = None
 	serializer_class = MessageSerializer

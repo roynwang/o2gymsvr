@@ -12,10 +12,9 @@
 						style="color:#999;margin-left:5px">{{ctrl.coach.displayname}}</a></h4>
 				<div style="padding-top:10px;min-width:80px" class="col-sm-1 {{c.name==ctrl.coach.name?'coach-selected':''}}"
 					ng-repeat="c in ctrl.coaches" ng-click="ctrl.selectcoach(c)">
-					<img ng-src="{{c.avatar}}" style="-webkit-border-radius: 50%;height: 50px;">
+					<img ng-src="{{c.avatar}}?imageView2/1/w/128/h/128/format/jpg" style="-webkit-border-radius: 50%;height: 50px;">
 					<p>{{c.displayname}}</p>
 				</div>
-
 			</div>
 			<div class="row" ng-show="ctrl.coach">
 
@@ -53,7 +52,6 @@
 			<p ng-show="ctrl.bookhour>=0" class="text-center"><a class="btn btn-primary btn-lg text-center" style="margin-top:20px;margin-bottom:20px"
             ng-click="ctrl.submit()">保存</a>
         </p>
-
 		</div>
 	</section>
 </div>

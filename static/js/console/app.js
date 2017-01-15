@@ -262,6 +262,96 @@ app.factory("$uploader", function($qupload) {
     }
 })
 
+app.factory("$groupcoursesvc", function(Restangular) {
+    function courselist(onsuccess) {
+        var gymid = $.cookie("gym")
+        Restangular.one('api/g/', gymid)
+            .one("groupcourse/")
+            .get()
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+
+    }
+
+    function cancelcourse(course, onsuccess) {
+        Restangular.one('api/groupcourseinstance/', course.id)
+            .remove()
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+    }
+
+    function cancel(book, onsuccess) {
+        Restangular.one('api/groupcoursebook/', book.id)
+            .remove()
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+    }
+
+    function book(customer, course, onsuccess) {
+        var gymid = $.cookie("gym")
+        Restangular.one('api/g/', gymid)
+            .one("groupcoursebook/")
+            .post(course.date.replace(/-/g, ''), {
+                gym: gymid,
+                date: course.date,
+                customer: customer,
+                course: course.id
+            })
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+
+    }
+
+    function dayschedule(day, onsuccess) {
+        var gymid = $.cookie("gym")
+        Restangular.one('api/g/', gymid)
+            .one("groupcourseinstance", day)
+            .get()
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+    }
+
+    function create(onsuccess) {
+        var gymid = $.cookie("gym")
+        Restangular.one('api/g/', gymid)
+            .post("groupcourse/", {
+                title: "请编辑",
+                brief: "请编辑",
+                serial: "请编辑",
+                step: "请编辑",
+                gym: gymid
+            })
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+    }
+
+    function createcourseinstance(course, onsuccess) {
+        var gymid = $.cookie("gym")
+		course.gym = gymid
+        Restangular.one('api/g/', gymid)
+            .post("groupcourseinstance/", course)
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+
+    }
+    return {
+        courselist: courselist,
+        create: create,
+        dayschedule: dayschedule,
+		createcourseinstance: createcourseinstance,
+        book: book,
+        cancel: cancel,
+        cancelcourse: cancelcourse
+    }
+})
+
 app.factory("$login", function(Restangular) {
     function login(username, pwd, onsuccess, onfail) {
         Restangular.one("api")
@@ -324,9 +414,10 @@ app.factory("$customersvc", function(Restangular) {
         })
         return c
     }
+
     function getcustomerbydisplayname(key) {
         var c = _.find(customers, {
-			displayname: key 
+            displayname: key
         })
         return c
     }
@@ -348,7 +439,7 @@ app.factory("$customersvc", function(Restangular) {
         getcustomers: getcustomers,
         getcustomer: getcustomer,
         gettrialcustomers: gettrialcustomers,
-		getcustomerbydisplayname: getcustomerbydisplayname,
+        getcustomerbydisplayname: getcustomerbydisplayname,
         flag: flag,
         saveBasic: saveBasic
     }
@@ -463,6 +554,14 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
         .state('customerdetail', {
             url: "/customer/:customername",
             templateUrl: "/static/console/customerdetail.html",
+        })
+        .state('groupcourse', {
+            url: "/groupcourse",
+            templateUrl: "/static/console/groupcourse.html",
+        })
+        .state('newgroupcourse', {
+            url: "/groupcourse/newschedule",
+            templateUrl: "/static/console/newgroupcourse.html",
         })
 })
 
@@ -1573,25 +1672,25 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
             }
             return true
         }
-		that.querycustomerbydisplayname = function(){
-			var customer = $customersvc.getcustomerbydisplayname(that.mo.customer_displayname);
-			if(customer != null ){
-				that.mo.customer_phone = customer.name
-				that.birthday_str =  customer.birthday
-				that.mo.sex = customer.sex?'1':'0'
-				that.mo.emergency_contact = customer.emergency_contact
-			}
-		}
+        that.querycustomerbydisplayname = function() {
+            var customer = $customersvc.getcustomerbydisplayname(that.mo.customer_displayname);
+            if (customer != null) {
+                that.mo.customer_phone = customer.name
+                that.birthday_str = customer.birthday
+                that.mo.sex = customer.sex ? '1' : '0'
+                that.mo.emergency_contact = customer.emergency_contact
+            }
+        }
 
-		that.querycustomerbyphone = function(){
-			var customer = $customersvc.getcustomer(that.mo.customer_phone);
-			if(customer != null ){
-				that.mo.customer_displayname = customer.displayname
-				that.birthday_str =  customer.birthday
-				that.mo.sex = customer.sex?'1':'0'
-				that.mo.emergency_contact = customer.emergency_contact
-			}
-		}
+        that.querycustomerbyphone = function() {
+            var customer = $customersvc.getcustomer(that.mo.customer_phone);
+            if (customer != null) {
+                that.mo.customer_displayname = customer.displayname
+                that.birthday_str = customer.birthday
+                that.mo.sex = customer.sex ? '1' : '0'
+                that.mo.emergency_contact = customer.emergency_contact
+            }
+        }
 
         that.submitorder = function() {
             if (!validate()) {
@@ -2497,7 +2596,7 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
                 }
             })
         }
-		that.showdatepicker = false
+        that.showdatepicker = false
         that.refresh = function() {
             that.day = $stateParams.date
             var query = undefined
@@ -2516,8 +2615,8 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
                     }, function() {})
 
             } else {
-				that.showdatepicker = true
-				that.selectedday = new Date().Format("yyyy-MM-dd")
+                that.showdatepicker = true
+                that.selectedday = new Date().Format("yyyy-MM-dd")
                 Restangular.all("api")
                     .all("e")
                     .getList()
@@ -2549,7 +2648,7 @@ app.controller("EvalDetailCtrl", ["$scope", "Restangular", "$stateParams",
                         value: item.value,
                         unit: item.unit,
                         group: item.group,
-						date: that.selectedday
+                        date: that.selectedday
                     }
                     data.push(p)
                 }
@@ -3191,7 +3290,7 @@ app.controller("CustomerDetailCtrl", ['$scope', "Restangular", "NgTableParams", 
         }
 
         that.save = function() {
-            $customersvc.saveBasic(that.customer,function(data) {
+            $customersvc.saveBasic(that.customer, function(data) {
                 swal({
                     title: "成功",
                     text: "修改已保存",
@@ -3199,9 +3298,339 @@ app.controller("CustomerDetailCtrl", ['$scope', "Restangular", "NgTableParams", 
                     timer: 1500,
                     showConfirmButton: false
                 });
-
                 history.back();
                 scope.$apply();
+            })
+        }
+    }
+])
+app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert", "$groupcoursesvc", "$customersvc",
+    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $groupcoursesvc, $customersvc) {
+        var that = this
+        that.tab = "schedule"
+        var originalData = []
+        that.groupcourselist = []
+
+        that.day = new Date();
+        that.day_str = that.day.Format("yyyy-MM-dd")
+        that.dayschedule = []
+
+        that.refresh = function() {
+            $groupcoursesvc.courselist(function(data) {
+                originalData = data
+                that.groupcourselist = data
+                if (that.groupcourselist.length == 0) {
+                    that.tab = 'course'
+                }
+                that.tableParams = new NgTableParams({
+                    count: 100,
+                    sorting: {}
+                }, {
+                    counts: [],
+                    dataset: angular.copy(originalData)
+                });
+            })
+        }
+        that.addcourse = function() {
+            $groupcoursesvc.create(function() {
+                swal({
+                    title: "成功",
+                    text: "已创建",
+                    type: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                that.refresh()
+            })
+        }
+
+        function cancel(row, rowForm) {
+            var originalRow = resetRow(row, rowForm);
+            angular.extend(row, originalRow);
+        }
+
+        function resetRow(row, rowForm) {
+            row.isEditing = false;
+            rowForm.$setPristine();
+            //self.tableTracker.untrack(row);
+            for (var i in originalData) {
+                if (originalData[i].id === row.id) {
+                    return originalData[i]
+                }
+            }
+            /*
+            return _.findWhere(originalData, function(r) {
+                return r.id === row.id;
+            });
+			*/
+        }
+
+        function del(row) {
+            _.remove(self.tableParams.settings().dataset, function(item) {
+                return row === item;
+            });
+            self.tableParams.reload().then(function(data) {
+                if (data.length === 0 && self.tableParams.total > 0) {
+                    self.tableParams.page(self.tableParams.page() - 1);
+                    self.tableParams.reload();
+                }
+            });
+        }
+
+        function save(row, rowForm) {
+            var originalRow = resetRow(row, rowForm);
+            angular.extend(originalRow, row);
+
+            //save the row
+            console.log(row)
+            var cs = {}
+            cs.title = row.title
+            cs.brief = row.brief
+
+            cs.serial = row.serial
+            cs.step = row.step
+
+            Restangular.one('api/groupcourse/', row.id)
+                .patch(cs)
+                .then(function(data) {})
+        }
+
+        that.book = function(c) {
+
+            $groupcoursesvc.book(c.newbookcustomer, c, function() {
+                swal({
+                    title: "成功",
+                    text: "预约已经保存",
+                    type: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                that.refreshdayschedule()
+            })
+        }
+
+        that.selectingcustomer = function(course) {
+            course.hideadd = true
+            that.showselecting = true;
+            $customersvc.getcustomers(function(data) {
+                that.customers = data
+                $('#customer-selecting-' + course.id).autocomplete({
+                    lookup: function(query, done) {
+                        $("#customer-add-" + course.id).hide();
+                        // Do ajax call or lookup locally, when done,
+                        // call the callback and pass your results:
+                        var filtered = _.filter(that.customers, function(p) {
+                            var pinyin = p.pinyin.replace(/ /g, "")
+                            if (pinyin.indexOf(query) >= 0 || p.displayname.indexOf(query) >= 0) {
+                                return true
+                            }
+                            return false
+                        })
+                        var sug = _.map(filtered, function(p) {
+                            return {
+                                "value": p.displayname,
+                                "data": p
+                            }
+                        })
+
+                        var result = {
+                            suggestions: sug
+                        };
+                        done(result);
+                    },
+                    onSelect: function(suggestion) {
+                        $("#customer-add-" + course.id).show();
+                        course.newbookcustomer = suggestion.data.name
+                    }
+                });
+            })
+        }
+
+        that.refreshdayschedule = function() {
+            $groupcoursesvc.dayschedule(that.day_str.replace(/-/g, ""), function(data) {
+                that.dayschedule = data
+            })
+        }
+        that.cancelcourse = function(course) {
+            if (course.booked.length != 0) {
+                swal("失败", "请先取消所有客户的预约再移除课程", "warning")
+            }
+            swal({
+                    title: "取消团课",
+                    text: "确认取消该团课吗",
+                    type: "warning",
+                    showLoaderOnConfirm: true,
+                    showCancelButton: true,
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    closeOnConfirm: false,
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+                    $groupcoursesvc.cancelcourse(course, function() {
+                        swal({
+                            title: "成功",
+                            text: "修改已保存",
+                            type: "success",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        that.refreshdayschedule();
+                    })
+                });
+        }
+        that.cancelbook = function(book) {
+            swal({
+                    title: "取消预约",
+                    text: "确认取消预约吗",
+                    type: "warning",
+                    showLoaderOnConfirm: true,
+                    showCancelButton: true,
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    closeOnConfirm: false,
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+                    $groupcoursesvc.cancel(book, function() {
+                        swal({
+                            title: "成功",
+                            text: "修改已保存",
+                            type: "success",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        that.refreshdayschedule()
+                    })
+                })
+        }
+
+        that.cancel = cancel;
+        that.save = save;
+
+        that.timemap = TimeMap
+
+        that.refresh();
+        that.refreshdayschedule()
+    }
+])
+
+app.controller("NewGroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader", "Lightbox", "$customersvc", "$groupcoursesvc",
+    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader, Lightbox, $customersvc, $groupcoursesvc) {
+        var that = this
+        that.day = new Date();
+        that.day_str = that.day.Format("yyyy-MM-dd")
+        that.newcourse = {
+            coach: false,
+            price: 100
+        }
+
+
+        Restangular.one('api/g/', $.cookie("gym")).get().then(function(gym) {
+            that.coaches = gym.coaches_set
+        })
+        that.coach = false
+        $groupcoursesvc.courselist(function(data) {
+            if (data.length == 0) {
+                swal("没有可选择的课程", "请先前往课程页面创建至少一个团体课程",
+                    "warning")
+
+            }
+            that.groupcourselist = data
+        })
+
+        that.selectcoach = function(c) {
+            that.coach = c
+            that.newcourse.hour = -5
+            that.refreshtimetable()
+        }
+        that.selectgroupcourse = function(c) {
+            that.groupcourse = c
+        }
+        that.newcourse.hour = -5
+        that.newcourse.bookhourstr = ''
+
+        function isAva(h, ava) {
+            if (h == undefined || (h + 1) > TimeMap.length) {
+                return false
+            }
+            if (h == that.newcourse.hour || h == that.newcourse.hour + 1) {
+                return false
+            }
+            if (ava.indexOf(h) >= 0) {
+                return true
+            }
+            if (h == TimeMap.length - 1) {
+                return true
+            }
+            return false
+        }
+
+
+        that.timemap = TimeMap
+        that.refreshtimetable = function(norefresh) {
+            function t(ava) {
+                that.timemapgroup = []
+                for (var i = 0; i < TimeMap.length; i++) {
+                    if (i % 5 == 0) {
+                        that.timemapgroup.push([])
+                    }
+                    var g = Math.floor(i / 5)
+                    if (isAva(i, ava)) {
+                        that.timemapgroup[g].push({
+                            id: i,
+                            status: false
+                        })
+                    } else {
+                        that.timemapgroup[g].push({
+                            id: i,
+                            status: true
+                        })
+                    }
+
+                }
+                console.log(that.timemapgroup)
+            }
+
+            if (norefresh) {
+                t(that.availiable)
+            } else {
+                that.hour = -5
+                Restangular.one("api/", that.coach.name)
+                    .one("d/", that.day_str.replace(/-/g, ''))
+                    .get()
+                    .then(function(data) {
+                        that.availiable = data.availiable
+                        t(that.availiable)
+                    })
+            }
+        }
+        that.book = function(i) {
+            if (!isAva(i, that.availiable) || !isAva(i + 1, that.availiable)) {
+                return
+            }
+            that.newcourse.hour = i
+            that.refreshtimetable(true)
+        }
+        that.submit = function() {
+            that.newcourse.coach = that.coach.name
+            that.newcourse.course = that.groupcourse.id
+            that.newcourse.date = that.day_str
+            $groupcoursesvc.createcourseinstance(that.newcourse, function() {
+                swal({
+                    title: "成功",
+                    text: "修改已保存",
+                    type: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+
+                });
+                history.back();
             })
         }
     }

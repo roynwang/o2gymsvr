@@ -1,0 +1,119 @@
+<div class="col-md-12" ng-controller="GroupCourseCtrl as ctrl">
+    <!--<h3>客户信息</h3>-->
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="row">
+                <h4 class="col-sm-4">团课(测试中，请勿实际使用)</h4>
+            </div>
+        </header>
+        <div class="panel-body">
+            <div class="row" style="padding-left:20px;margin-bottom:20px">
+                <a ng-show="ctrl.tab =='schedule'" class="pull-right btn btn-danger btn-sm pull-right"
+                style="margin-right:10px" href="#/groupcourse/newschedule">添加</a>
+
+                <div class="col-md-3 pull-right" ng-show="ctrl.tab=='schedule'">
+                    <newdatepicker button-prev="<i class='fa fa-arrow-left'></i>" button-next="<i
+						class='fa fa-arrow-right'></i>" date-format="yyyy-MM-dd" selector="form-control"
+                    style="margin-bottom:10px;">
+                        <div class="col-lg-12 input-group">
+                            <input class="form-control" style="background: rgba(0,0,0,0);" ng-model="ctrl.day_str"
+                            ng-change="ctrl.refreshdayschedule()" placeholder="Choose a date"
+                            />
+                        </div>
+                        <span style="cursor: pointer;position: absolute;top: 6px;right: 20px;" style="cursor: pointer">
+								<i class="fa fa-lg fa-calendar"></i>
+							</span>
+                    </newdatepicker>
+                </div>
+
+                <span ng-click="ctrl.tab = 'schedule'" class="salary-span" ng-class="{'active': ctrl.tab == 'schedule'}">日程</span>
+                <span ng-click="ctrl.tab = 'course'" class="salary-span" ng-class="{'active':ctrl.tab == 'course'}">课程</span>
+                <a ng-show="ctrl.tab =='course'" class="btn btn-primary btn-sm pull-right" style="margin-right:10px"
+                ng-click="ctrl.addcourse()">添加</a>
+            </div>
+            <div class="row" style="padding: 20px" ng-show="ctrl.tab == 'course'">
+				<h3 class="text-center" ng-show="ctrl.groupcourselist.length==0">暂无课程,请先<a ng-click="ctrl.addcourse()" style="color:#1FB5AD">添加</a>一个课程</h3>
+                <table ng-show="ctrl.groupcourselist.length != 0 " ng-table="ctrl.tableParams" class="table table-hover editable-table demoTable"
+                ng-form="ctrl.tableForm" disable-filter="ctrl.isAdding" demo-tracked-table="ctrl.tableTracker">
+                    <tr ng-repeat="row in $data" ng-form="rowForm" demo-tracked-table-row="row">
+                        <td data-title="'分类'" ng-switch="row.isEditing" ng-class="serial.$dirty ? 'bg-warning' : ''"
+                        ng-form="serial" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.serial}}</span>
+                            <div class="controls" ng-class="serial.$invalid && brief.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="text" name="serial" ng-model="row.serial" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
+                        <td data-title="'标题'" ng-switch="row.isEditing" ng-class="title.$dirty ? 'bg-warning' : ''"
+                        ng-form="title" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.title}}</span>
+                            <div class="controls" ng-class="title.$invalid && title.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="text" name="title" ng-model="row.title" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
+                        <td data-title="'序号'" ng-switch="row.isEditing" ng-class="step.$dirty ? 'bg-warning' : ''"
+                        ng-form="step" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.step}}</span>
+                            <div class="controls" ng-class="step.$invalid && step.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="text" name="step" ng-model="row.step" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
+                        <td data-title="'简介'" ng-switch="row.isEditing" ng-class="yanglao.$dirty ? 'bg-warning' : ''"
+                        ng-form="brief" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.brief}}</span>
+                            <div class="controls" ng-class="brief.$invalid && brief.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="text" name="brief" ng-model="row.brief" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
+
+                        <td>
+                            <button class="btn btn-primary btn-sm" ng-click="ctrl.save(row, rowForm)" ng-if="row.isEditing"
+                            ng-disabled="rowForm.$pristine || rowForm.$invalid"><span class="glyphicon glyphicon-ok"></span>
+                            </button>
+                            <button class="btn btn-default btn-sm" ng-click="ctrl.cancel(row, rowForm)" ng-if="row.isEditing"><span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                            <button class="btn btn-default btn-sm" ng-click="row.isEditing = true" ng-if="!row.isEditing"><span class="glyphicon glyphicon-pencil"></span>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="row" style="padding:20px" ng-show="ctrl.tab=='schedule'">
+				<h3 class="text-center" ng-show="ctrl.dayschedule.length==0">今日暂无课程,请先<a href="#/groupcourse/newschedule" style="color:#1FB5AD">添加</a>一节团体课日程</h3>
+                <div ng-repeat="c in ctrl.dayschedule" class="col-xs-3">
+					<i class="ico-close2" ng-click="ctrl.cancelcourse(c)"
+						style="position:absolute;top:-5px;right:25px;font-size:22px;z-index:100"></i>
+                    <div class="row" style="height:80px">
+                        <div class="col-xs-6" style="padding:5px 40px">
+                            <img ng-src="{{c.coach_detail.avatar}}?imageView2/1/w/128/h/128/format/jpg" style="border-radius: 50%; width:60px">
+                        </div>
+                        <div class="col-xs-6" style="padding:12px 10px">
+                            <p>{{c.course_detail.title}}/{{c.course_detail.step}}</p>
+                            <p>{{ctrl.timemap[c.hour]}} </p>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <!--
+						<div class="btn-group btn-group-justified">
+                            <a class="btn btn-danger" href="#">-&nbsp;移除</a>
+                            <a ng-click="ctrl.book(c)" class="btn btn-primary" href="#">＋&nbsp;预约</a>
+                        </div>
+						-->
+                        <input id="customer-selecting-{{c.id}}" class="form-control underline-input" ng-focus="ctrl.selectingcustomer(c)"
+                        type="text" placeholder="预约:请输入姓名/首字母">
+                        <a ng-click="ctrl.book(c)" class="btn btn-primary" style="display:none;position:absolute;top:0;right:0"
+                        id="customer-add-{{c.id}}">添加</a>
+                        <div ng-repeat="p in c.booked" style="padding: 5px 8px"><p style="display:inline">{{p.customer_detail.displayname}}</p> <a class="text-danger pull-right" ng-click="ctrl.cancelbook(p)">取消</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

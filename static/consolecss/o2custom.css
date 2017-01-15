@@ -54,13 +54,12 @@ ul.sidebar-menu {
 	font-size: 22px;
 }
 .salary-span {
-	margin: 10px;
+	margin: 10px 0;
 	padding: 4px 8px;
-	border-radius: 4px;
 }
 .salary-span.active{
-	color: white;
-	background-color: #1fb5ad;
+	color: #1fb5ad;
+	border-bottom: 2px solid #1fb5ad;
 }
 .bg-lightgrey {
 	background-color: #f1f1f1;
@@ -109,3 +108,9 @@ ul.sidebar-menu {
 	left: 90%
 }
 
+.underline-input {
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-radius: 0;
+}

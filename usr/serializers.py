@@ -7,6 +7,10 @@ import json
 import pinyin
 
 
+class ChargeHistorySerializer(serializers.ModelSerializer):
+        class Meta:
+                model = ChargeHistory
+
 class FakeWeiboSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Weibo

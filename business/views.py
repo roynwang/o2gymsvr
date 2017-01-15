@@ -30,6 +30,7 @@ class CourseList(generics.ListCreateAPIView):
 	serializer_class = CourseSerializer
 	pagination_class = None
 
+
 class CourseItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Course.objects.all()
 	serializer_class = CourseSerializer
@@ -617,4 +618,54 @@ def show_gesture_eval(request, name):
 def get_health_risk(request):
         risk = ["腰痛","背痛","颈肩痛","便秘","手脚麻","头晕","头痛","骨刺","颈椎退化","耳鸣","身体疲倦","眼睛干涩","脊柱变型","失眠","膝关节痛","腰椎间盘突出"]
         return JsonResponse(dict(risks=list(risk)))
+
+class GymGroupCourseList(generics.ListCreateAPIView):
+	serializer_class = GroupCourseSerializer
+	pagination_class = None
+        lookup_field = "gym"
+	def get_queryset(self):
+		ret = GroupCourse.objects.filter(gym=self.kwargs.get("pk"))
+		return ret
+
+#TODO
+class GymGroupCourseDayList(generics.ListCreateAPIView):
+	serializer_class = GroupCourseInstanceSerializer
+	pagination_class = None
+	def get_queryset(self):
+		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+		ret = GroupCourseInstance.objects.filter(gym=self.kwargs.get("pk"),date=date.date())
+		return ret
+
+class GroupCourseItem(generics.RetrieveUpdateDestroyAPIView):
+	queryset = GroupCourse.objects.all()
+	serializer_class = GroupCourseSerializer
+
+class GroupCourseBookItem(generics.RetrieveUpdateDestroyAPIView):
+	queryset = GroupCourseInstanceBook.objects.all()
+	serializer_class = GroupCourseInstanceBookSerializer
+
+class GroupCourseInstanceItem(generics.RetrieveUpdateDestroyAPIView):
+	queryset = GroupCourseInstance.objects.all()
+	serializer_class = GroupCourseInstanceSerializer
+
+
+class GroupCourseInstanceList(generics.ListCreateAPIView):
+	serializer_class = GroupCourseInstanceSerializer
+	pagination_class = None
+	def get_queryset(self):
+                ret = GroupCourseInstance.objects.filter(gym=self.kwargs.get("pk"))
+                return ret
+
+
+class GymGroupCourseDayBookList(generics.ListCreateAPIView):
+	serializer_class = GroupCourseInstanceBookSerializer
+	pagination_class = None
+	def get_queryset(self):
+		gym = get_object_or_404(Gym, id=self.kwargs.get("pk"))
+		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+		ret = GroupCourseInstanceBook.objects.filter(date=date.date(), gym=self.kwargs.get("pk"))
+		return ret
+
+
+            
 

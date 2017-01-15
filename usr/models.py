@@ -54,6 +54,8 @@ class User(models.Model):
 	comments = models.CharField(max_length=64, blank=True, null=True)
 	emergency_contact = models.CharField(max_length=64, blank=True)
 
+        balance = models.IntegerField(default=0)
+
         def get_coach_gym(self):
             return self.gym.all()[0]
 
@@ -97,6 +99,30 @@ class User(models.Model):
 
 	def __unicode__(self):
 		return self.name
+
+
+
+class Balance(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=64, db_index=True)
+        gym = models.IntegerField()
+        balance = models.IntegerField(default=0)
+
+        def charge(self, amount):
+            self.balance += int(amount)
+            print self.balance
+            self.save()
+
+        
+
+class ChargeHistory(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=64, db_index=True)
+	price = models.IntegerField(default=0)
+	amount = models.IntegerField(default=0)
+	gym = models.IntegerField(default=0)
+	created = models.DateTimeField(default=datetime.datetime.now())
+
 
 class TimeLine(models.Model):
 	id = models.AutoField(primary_key=True)

@@ -8,10 +8,18 @@ s: schedule
 r: read
 '''
 urlpatterns = patterns('',
-		url(r'^api/c/$', CourseList.as_view()),
-		url(r'^api/c/(?P<pk>[0-9]+)/$', CourseItem.as_view()),
+		#url(r'^api/c/$', CourseList.as_view()),
+		#url(r'^api/c/(?P<pk>[0-9]+)/$', CourseItem.as_view()),
+		url(r'^api/groupcourse/(?P<pk>[0-9]{0,8})/$', GroupCourseItem.as_view()),
+		url(r'^api/groupcoursebook/(?P<pk>[0-9]{0,8})/$', GroupCourseBookItem.as_view()),
+		url(r'^api/groupcourseinstance/(?P<pk>[0-9]{0,8})/$', GroupCourseInstanceItem.as_view()),
+
 		url(r'^api/g/$', GymList.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/$', GymItem.as_view()),
+		url(r'^api/g/(?P<pk>[0-9]+)/groupcourse/$', GymGroupCourseList.as_view()),
+		url(r'^api/g/(?P<pk>[0-9]+)/groupcourseinstance/$', GroupCourseInstanceList.as_view()),
+		url(r'^api/g/(?P<pk>[0-9]+)/groupcourseinstance/(?P<date>[0-9]{8})/$', GymGroupCourseDayList.as_view()),
+		url(r'^api/g/(?P<pk>[0-9]+)/groupcoursebook/(?P<date>[0-9]{8})/$', GymGroupCourseDayBookList.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/salesum/$', GymSumSale.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/customermonthaverage/(?P<date>[0-9]{6})/$', CustomerMonthAverageView.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/customermonthdetail/(?P<date>[0-9]{6})/$', customer_month_detail_view),

@@ -1,0 +1,78 @@
+<div class="col-md-12" ng-controller="NewGroupCourseCtrl as ctrl">
+    <section class="panel">
+        <header class="panel-heading">
+            <h4 class="text-center">
+<i back-button class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
+新团课日程
+		</h4>
+        </header>
+        <div class="form-group panel-body">
+			<div class="row" style="padding:15px">
+				<h4 style="margin-bottom:30px">1.选择课程<a
+						style="color:#999;margin-left:5px">{{ctrl.groupcourse.title}}/{{ctrl.groupcourse.step}}</a></h4>
+				<div style="padding-top:10px;min-width:80px" class="col-xs-2 {{c.id==ctrl.groupcourse.id?'coach-selected':''}}"
+					ng-repeat="c in ctrl.groupcourselist" ng-click="ctrl.selectgroupcourse(c)">
+					<p>
+						{{c.serial}}<br>
+						{{c.title}}<br>
+					{{c.step}}</p>
+				</div>
+			</div>
+			<div class="row" style="padding:15px" ng-show="ctrl.groupcourse">
+				<hr>
+				<h4 style="margin-bottom:30px">2.选择教练<a style="color:#999;margin-left:5px">{{ctrl.coach.displayname}}</a></h4>
+				<div style="padding-top:10px;min-width:80px" class="col-xs-1 {{c.name==ctrl.coach.name?'coach-selected':''}}"
+					ng-repeat="c in ctrl.coaches" ng-click="ctrl.selectcoach(c)">
+					<img ng-src="{{c.avatar}}?imageView2/1/w/128/h/128/format/jpg" style="-webkit-border-radius: 50%;height: 50px;">
+					<p>{{c.displayname}}</p>
+				</div>
+			</div>
+			<div class="row" style="padding:15px"ng-show="ctrl.coach">
+				<hr>
+				<h4 style="margin-left:15px;margin-bottom:30px">3.选择日期 <a style="color:#999;margin-left:5px">{{ctrl.day_str}}</a></h4>
+				<div class="col-md-3">
+					<newdatepicker button-prev="<i class='fa fa-arrow-left'></i>" button-next="<i
+						class='fa fa-arrow-right'></i>" date-format="yyyy-MM-dd" selector="form-control" style="margin-bottom:10px;">
+					<div class="col-lg-12 input-group">
+						<input class="form-control" style="background: rgba(0,0,0,0);"
+						ng-model="ctrl.day_str" ng-change="ctrl.refreshtimetable()" placeholder="Choose a date"/>
+					</div>
+					<span style="cursor: pointer;position: absolute;top: 6px;right: 20px;" style="cursor: pointer">
+						<i class="fa fa-lg fa-calendar"></i>
+					</span>
+					</newdatepicker>
+				</div>
+			</div>
+			<div class="row" style="padding:15px" ng-show="ctrl.coach">
+				<hr>
+				<h4 style="margin-left:15px;margin-bottom:30px">4.选择时间<a
+						style="color:#999;margin-left:5px">{{ctrl.timemap[ctrl.newcourse.hour]}} ~
+				{{ctrl.timemap[ctrl.newcourse.hour+2]}}</a></h4>
+				<table class="table table-bordered" ng-model="ctrl.day" style="margin-top:10px">
+					<tr ng-repeat="row in ctrl.timemapgroup">
+						<td ng-repeat-start="i in [0,1,2,3,4]"
+							ng-repeat-end class="{{row[i]['status']?'bg-lightgrey':''}}"
+							style="border-color: #f1f1f1;"
+							ng-click="ctrl.book(row[i]['id'])">
+							<a style="color:#1fb5ad" ng-show="ctrl.newcourse.hour === row[i]['id'] ||
+								ctrl.newcourse.hour === row[i]['id'] - 1">{{ctrl.timemap[row[i]["id"]]}}</a>
+							<a ng-hide="ctrl.newcourse.hour === row[i]['id'] || ctrl.newcourse.hour === row[i]['id'] - 1">{{ctrl.timemap[row[i]["id"]]}}</a>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="row" style="padding:15px" ng-show="ctrl.coach">
+				<hr>
+				<h4 style="margin-left:15px;margin-bottom:30px">5.设置价格 <a
+						style="color:#999;margin-left:5px"><i class="fa fa-cny"></i>{{ctrl.newcourse.price}}</a></h4>
+				<div class="col-md-3">
+					<div class="col-lg-12 input-group">
+						<input class="form-control underline-input" style="background: rgba(0,0,0,0);"
+						ng-model="ctrl.newcourse.price" placeholder="单位：元"/>
+					</div>
+				</div>
+			</div>
+			<p ng-show="ctrl.newcourse.hour>=0" class="text-center"><a class="btn btn-primary btn-lg text-center" style="margin-top:20px;margin-bottom:20px"
+            ng-click="ctrl.submit()">保存</a>
+		</div>
+</div>

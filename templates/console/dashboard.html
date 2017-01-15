@@ -179,6 +179,12 @@
                     </a>
                 </li>
 	            <li>
+                    <a href="#groupcourse">
+                        <i class="fa fa-align-center"></i>
+                        <span>团课(开发中请勿使用)</span>
+                    </a>
+                </li>
+	            <li>
                     <a href="#customers">
                         <i class="fa fa-group"></i>
                         <span>客户信息</span>
@@ -348,7 +354,7 @@
 			$.cookie("role", data.role, {path:"/"})
 
 			$("#username").html(data.displayname)
-			$("#useravatar").attr("src", data.avatar)
+			$("#useravatar").attr("src", data.avatar + "?imageView2/1/w/128/h/128/format/jpg")
 			if(data.role == "admin"){
 				$(".admin-show").show()
 			}

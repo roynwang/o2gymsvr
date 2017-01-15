@@ -7,6 +7,33 @@ from django.shortcuts import get_object_or_404
 import json
 
 # Create your models here.
+class GroupCourse(models.Model):
+	id = models.AutoField(primary_key=True)
+	title = models.CharField(max_length=32)
+	brief = models.CharField(max_length=1024, blank=True)
+	pic = models.CharField(max_length=1024, default="[]")
+        serial = models.CharField(max_length=128)
+        step = models.CharField(max_length=128)
+        gym = models.IntegerField() 
+
+
+class GroupCourseInstance(models.Model):
+	id = models.AutoField(primary_key=True)
+        course = models.IntegerField(null=True,blank=True)
+        budget = models.IntegerField(default=6)
+        coach = models.CharField(max_length=32)
+        gym = models.IntegerField() 
+	date = models.DateField()
+        hour = models.IntegerField(default=0)
+        price = models.IntegerField(default=90)
+
+class GroupCourseInstanceBook(models.Model):
+	id = models.AutoField(primary_key=True)
+        customer = models.CharField(max_length=32)
+        course = models.IntegerField()
+	date = models.DateField()
+        gym = models.IntegerField() 
+
 
 class Course(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -87,6 +114,9 @@ class Schedule(models.Model):
 	rate = models.IntegerField(blank=True)
 
 	detail =  models.TextField(blank=True, default="[]")
+
+        group_course = models.IntegerField(default = 0)
+        price = models.IntegerField(default = 0)
 
 
 	def __unicode__(self):

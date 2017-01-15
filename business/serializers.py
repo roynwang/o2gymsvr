@@ -3,6 +3,45 @@ from rest_framework import serializers
 from business.models import *
 from usr.serializers import *
 
+class GroupCourseSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = GroupCourse
+
+class GroupCourseInstanceBookSerializer(serializers.ModelSerializer):
+        customer_detail = serializers.SerializerMethodField()
+
+	class Meta:
+		model = GroupCourseInstanceBook
+
+        def get_customer_detail(self,obj):
+            c = User.objects.get(name=obj.customer)
+	    serializer = SimpleUserSerilaizer(c)
+            return serializer.data
+
+
+class GroupCourseInstanceSerializer(serializers.ModelSerializer):
+        course_detail = serializers.SerializerMethodField()
+        coach_detail = serializers.SerializerMethodField()
+        booked = serializers.SerializerMethodField()
+
+	class Meta:
+		model = GroupCourseInstance
+
+        def get_course_detail(self, obj):
+            c = GroupCourse.objects.get(id=obj.course)
+	    serializer = GroupCourseSerializer(c)
+            return serializer.data
+
+        def get_coach_detail(self,obj):
+            c = User.objects.get(name=obj.coach)
+	    serializer = SimpleUserSerilaizer(c)
+            return serializer.data
+
+        def get_booked(self, obj):
+            booked = GroupCourseInstanceBook.objects.filter(course=obj.id)
+	    serializer = GroupCourseInstanceBookSerializer(booked, many=True)
+            return serializer.data
+                
 
 class CourseSerializer(serializers.ModelSerializer):
 	class Meta:
