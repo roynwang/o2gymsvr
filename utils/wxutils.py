@@ -3,7 +3,7 @@ from django.conf import settings
 import json
 
 def get_accesstoken():
-	f = open("../crontab/wxtoken","r")
+	f = open("/root/o2gymsvr/crontab/wxtoken","r")
 	line = f.read()
 	f.close()
 	return json.loads(line)["access_token"]
