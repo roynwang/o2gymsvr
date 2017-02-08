@@ -207,6 +207,10 @@ class WechatSignature(APIView):
 		url=request.data["url"]
 		return Response(self.jsapiSign(wxutils.get_accesstoken(), url))
 
+        def get(self, request):
+                code = request.data["code"]
+                return Response({"openid": wxutils.get_openid(code)})
+
 class Wechat(APIView):
 	def get(self,request):
 		token = "roynwang"
