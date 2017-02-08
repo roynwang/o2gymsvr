@@ -16,6 +16,7 @@ from business.models import *
 import random
 import hashlib
 import string
+import pprint
 
 import base64
 import datetime
@@ -208,8 +209,13 @@ class WechatSignature(APIView):
 		return Response(self.jsapiSign(wxutils.get_accesstoken(), url))
 
         def get(self, request):
-                code = request.data["code"]
-                return Response({"openid": wxutils.get_openid(code)})
+                pprint.pprint(request.GET)
+                code = request.GET.get("code");
+                openid = wxutils.get_openid(code)
+                if openid:
+                    return Response({"openid": openid})
+		return Response({"result":"failed"}, status=status.HTTP_404_NOT_FOUND)
+
 
 class Wechat(APIView):
 	def get(self,request):
