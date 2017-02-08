@@ -17,10 +17,15 @@ def get_accesstoken():
 	'''
 
 def get_openid(code):
-	params = {"grant_type":"authorization_code",\
-			"appid":"wxf1aacfc6230603e8",\
-                        "js_code":code,\
-			"secret": "194968558f73dd78750095ad5ec69796"}
-        resp = requests.get("https://api.weixin.qq.com/sns/jscode2session",params)
-	return resp.json()["openid"]
+	params = {"appid":"wxf1aacfc6230603e8",\
+		"secret": "194968558f73dd78750095ad5ec69796",\
+                "js_code":code,\
+                "grant_type":"authorization_code"}
+        url = "https://api.weixin.qq.com/sns/jscode2session?appid=wxf1aacfc6230603e8&secret=194968558f73dd78750095ad5ec69796&js_code="+code+"&grant_type=authorization_code"
+        resp = requests.get(url)
+        res = resp.json()
+
+        if "openid" in res:
+    	    return resp.json()["openid"]
+        return False
 
