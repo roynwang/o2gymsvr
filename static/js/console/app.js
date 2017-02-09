@@ -816,6 +816,9 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAl
                     that.rowcount = Math.ceil((data.coaches_set.length + 1) / 3)
                     that.coaches = data.coaches_set
                     that.rows = _.range(0, that.rowcount)
+					_.each(that.coaches, function(item){
+	                    item.avatar += "?imageView2/1/w/150/h/150"
+					})
                 })
         }
         that.remove = function(c) {
