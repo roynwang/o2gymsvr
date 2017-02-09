@@ -333,7 +333,7 @@ app.factory("$groupcoursesvc", function(Restangular) {
 
     function createcourseinstance(course, onsuccess) {
         var gymid = $.cookie("gym")
-		course.gym = gymid
+        course.gym = gymid
         Restangular.one('api/g/', gymid)
             .post("groupcourseinstance/", course)
             .then(function(data) {
@@ -345,7 +345,7 @@ app.factory("$groupcoursesvc", function(Restangular) {
         courselist: courselist,
         create: create,
         dayschedule: dayschedule,
-		createcourseinstance: createcourseinstance,
+        createcourseinstance: createcourseinstance,
         book: book,
         cancel: cancel,
         cancelcourse: cancelcourse
@@ -461,6 +461,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/",
             templateUrl: "/static/console/mainpage.html",
             controller: "MainPageCtrl"
+        })
+        .state('finance', {
+            url: "/finance",
+            templateUrl: "/static/console/finance.html",
         })
         .state('expcustomer', {
             url: "/expcustomer",
@@ -1746,6 +1750,99 @@ app.controller("SettingControl", ['$scope', 'Restangular',
             })
     }
 ])
+app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login", "SweetAlert",
+    function($scope, Restangular, NgTableParams, $login, SweetAlert) {
+        var gymid = $.cookie("gym")
+        var that = this
+        that.adding = false;
+        that.startday = new Date().addMonths(-1)
+        that.endday = new Date();
+
+        that.startday_str = that.startday.Format("yyyy-MM-dd")
+        that.endday_str = that.endday.Format("yyyy-MM-dd")
+
+        function refresh() {
+            that.startday = new Date(Date.parse(that.startday_str))
+            that.endday = new Date(Date.parse(that.endday_str))
+            Restangular.one('api/g/', gymid)
+                .one("finance/")
+                .get({
+                    start: that.startday.Format("yyyyMMdd"),
+                    end: that.endday.Format("yyyyMMdd")
+                })
+                .then(function(data) {
+                    that.tableParams = new NgTableParams({
+                        sorting: {
+                            created: "desc"
+                        }
+                    }, {
+                        dataset: data
+                    });
+                })
+        }
+
+        refresh()
+        that.refresh = refresh
+
+        that.addrow = function() {
+            that.adding = true;
+        }
+
+        that.open = function($event) {
+            if ($event == "start") {
+                that.startopened = true
+            } else {
+                that.endopened = true
+            }
+        };
+        that.startopened = false
+        that.endopened = false
+
+
+		that.newrow = {
+			date: new Date().Format("yyyy-MM-dd"),
+			by: $.cookie("displayname"),
+			op: $.cookie("displayname"),
+			gym: gymid
+		}
+
+        that.submit = function() {
+			if(that.newrow.cate != "资金注入"){
+				that.newrow.amount *= -1
+			}
+            SweetAlert.swal({
+                    title: "提交",
+                    text: "为保证数据准确，提交后不能更改，确认提交吗?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    showLoaderOnConfirm: true,
+                    closeOnConfirm: false
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+                    Restangular.one('api/g/', gymid)
+                        .post("finance/", that.newrow)
+                        .then(function(data) {
+                            swal({
+                                title: "成功",
+                                text: "提交成功",
+                                type: "success",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+							that.adding = false
+							that.refresh()
+                        });
+                })
+        }
+    }
+])
+
 
 app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "$login",
     function($scope, Restangular, NgTableParams, $login) {

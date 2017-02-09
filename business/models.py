@@ -7,6 +7,19 @@ from django.shortcuts import get_object_or_404
 import json
 
 # Create your models here.
+class Finance(models.Model):
+	id = models.AutoField(primary_key=True)
+        gym = models.IntegerField()
+	date = models.DateField()
+	brief = models.CharField(max_length=512)
+	by = models.CharField(max_length=128)
+	op = models.CharField(max_length=128)
+        cate = models.CharField(max_length=128)
+        amount = models.IntegerField()
+        channel = models.CharField(max_length=128)
+        memo = models.CharField(max_length=512, blank=True, default="")
+	created = models.DateTimeField(auto_now=True)
+
 class GroupCourse(models.Model):
 	id = models.AutoField(primary_key=True)
 	title = models.CharField(max_length=32)
@@ -33,6 +46,9 @@ class GroupCourseInstanceBook(models.Model):
         course = models.IntegerField()
 	date = models.DateField()
         gym = models.IntegerField() 
+        
+        def consume(self):
+            pass
 
 
 class Course(models.Model):

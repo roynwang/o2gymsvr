@@ -3,6 +3,10 @@ from rest_framework import serializers
 from business.models import *
 from usr.serializers import *
 
+class FinanceSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Finance
+
 class GroupCourseSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = GroupCourse
