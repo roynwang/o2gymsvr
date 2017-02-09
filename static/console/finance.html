@@ -37,6 +37,7 @@
             </header>
             <div class="panel-body" ng-hide="ctrl.adding">
                 <p>*本功能仅用于销售之外的收支记录</p>
+                <p>*个人为公司购买物品请先添加一笔资金注入记录，再添加一条资产购买记录</p>
                 <table class="table table-invoice" ng-table="ctrl.tableParams">
                     <tr ng-repeat="row in $data" style="color:#333">
                         <td data-title="'日期'">{{row.date}}</td>
@@ -80,7 +81,7 @@
                     <div class="col-lg-6">
                         <div class="input-group input-group-lg m-bot15">
                             <span class="input-group-addon btn-primary">金额</span>
-                            <input type="number" class="form-control" placeholder="请输入整数" ng-model="ctrl.newrow.amount">
+                            <input type="number" class="form-control" placeholder="请输入正整数" ng-model="ctrl.newrow.amount">
                         </div>
                     </div>
                     <div class="col-lg-6">
