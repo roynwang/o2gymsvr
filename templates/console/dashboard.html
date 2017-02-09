@@ -206,11 +206,12 @@
 	            <li class="admin-show">
                     <a href="javascript:;" >
                         <i class="fa fa-bar-chart-o"></i>
-                        <span>销售统计</span>
+                        <span>数据统计</span>
                     </a>
                     <ul class="sub">
                         <li><a href="#sale">销售详情</a></li>
                         <li><a href="#history">历史数据</a></li>
+                        <li><a href="#finance">收支记录(beta)</a></li>
 					</ul>
 				</li>
 	            <li class="sub-menu admin-show">
@@ -346,6 +347,7 @@
 		$.get("/api/" + authinfo.username + "/", function(data){
 			USER = data
 			$.cookie("user", USER.name, {path:"/"})
+			$.cookie("displayname", USER.displayname, {path:"/"})
 			if(gymid == undefined){
 				$.cookie("gym", USER.gym_id[0], {path:"/"})
 			}else {

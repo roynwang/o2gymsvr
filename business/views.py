@@ -24,6 +24,29 @@ from django.http import JsonResponse
 
 # Create your views here.
 
+class FinanceList(generics.ListCreateAPIView):
+	serializer_class = FinanceSerializer
+	pagination_class = None
+
+        def get_queryset(self):
+            #1 get date range
+            startdate = self.request.GET["start"]
+            enddate = self.request.GET["end"]
+            pk = self.kwargs.get("pk")
+
+            startday = datetime.datetime.strptime(startdate,"%Y%m%d")
+            endday = datetime.datetime.strptime(enddate,"%Y%m%d")
+            
+            #2 get all schedule
+            allitems = Finance.objects.filter(gym=int(pk), date__range=[ startday, endday])
+            #3 cal
+            return allitems
+
+
+class FinanceItem(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Finance.objects.all()
+	serializer_class = CourseSerializer
+
 
 class CourseList(generics.ListCreateAPIView):
 	queryset = Course.objects.all()
@@ -666,6 +689,9 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
 		ret = GroupCourseInstanceBook.objects.filter(date=date.date(), gym=self.kwargs.get("pk"))
 		return ret
 
+	def create(self, request, *args, **kwargs):
+		ret = super(GymGroupCourseDayBookList, self).create(request, args,kwargs)
+                #create consumption log
 
             
 

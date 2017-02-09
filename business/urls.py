@@ -16,6 +16,7 @@ urlpatterns = patterns('',
 
 		url(r'^api/g/$', GymList.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/$', GymItem.as_view()),
+		url(r'^api/g/(?P<pk>[0-9]+)/finance/$', FinanceList.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/groupcourse/$', GymGroupCourseList.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/groupcourseinstance/$', GroupCourseInstanceList.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/groupcourseinstance/(?P<date>[0-9]{8})/$', GymGroupCourseDayList.as_view()),
