@@ -42,10 +42,33 @@ class FinanceList(generics.ListCreateAPIView):
             #3 cal
             return allitems
 
+class FlowList(generics.ListCreateAPIView):
+	serializer_class = FlowSerializer
+	pagination_class = None
+
+        def get_queryset(self):
+            #1 get date range
+            startdate = self.request.GET["start"]
+            enddate = self.request.GET["end"]
+            pk = self.kwargs.get("pk")
+
+            startday = datetime.datetime.strptime(startdate,"%Y%m%d")
+            endday = datetime.datetime.strptime(enddate,"%Y%m%d")
+            
+            #2 get all schedule
+            allitems = Flow.objects.filter(gym=int(pk), date__range=[ startday, endday])
+            #3 cal
+            return allitems
+
+
 
 class FinanceItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Finance.objects.all()
-	serializer_class = CourseSerializer
+	serializer_class = FinanceSerializer
+
+class FlowItem(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Flow.objects.all()
+	serializer_class = FlowSerializer
 
 
 class CourseList(generics.ListCreateAPIView):

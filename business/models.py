@@ -20,6 +20,16 @@ class Finance(models.Model):
         memo = models.CharField(max_length=512, blank=True, default="")
 	created = models.DateTimeField(auto_now=True)
 
+class Flow(models.Model):
+	id = models.AutoField(primary_key=True)
+        gym = models.IntegerField()
+	date = models.DateField()
+        phone_call = models.IntegerField(default=0)
+        direct = models.IntegerField(default=0)
+        groupon = models.IntegerField(default=0)
+        by_customer = models.IntegerField(default=0)
+
+
 class GroupCourse(models.Model):
 	id = models.AutoField(primary_key=True)
 	title = models.CharField(max_length=32)

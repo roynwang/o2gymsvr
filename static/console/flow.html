@@ -1,0 +1,110 @@
+<div class="row" ng-controller="FlowCtrl as ctrl">
+    <div class="col-sm-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="row">
+                    <h4 class="col-sm-4">流量统计</h4>
+                    <div class="col-md-1 pull-right">
+                        <a ng-hide="ctrl.adding" class="btn btn-primary" ng-click="ctrl.addrow()">添加</a>
+                        <a ng-show="ctrl.adding" class="btn btn-info" ng-click="ctrl.canceladd()">返回</a>
+                    </div>
+                    <div class="col-md-3 pull-right">
+                        <newdatepicker button-prev="<i class='fa fa-arrow-left'></i>" button-next="<i
+						class='fa fa-arrow-right'></i>" date-format="yyyy-MM-dd" selector="form-control"
+                        style="margin-bottom:10px;">
+                            <div class="col-lg-12 input-group">
+                                <input class="form-control" style="background: rgba(0,0,0,0);" ng-model="ctrl.endday_str"
+                                ng-change="ctrl.refresh()" placeholder="Choose a date"
+                                />
+                            </div>
+                            <span style="cursor: pointer;position: absolute;top: 6px;right: 20px;" style="cursor: pointer">
+							<i class="fa fa-lg fa-calendar"></i>
+						</span>
+                        </newdatepicker>
+                    </div>
+                    <div class="col-md-3 pull-right">
+                        <newdatepicker date-format="yyyy-MM-dd" selector="form-control" style="margin-bottom:10px;">
+                            <div class="col-lg-12 input-group">
+                                <input class="form-control" style="background: rgba(0,0,0,0);" ng-model="ctrl.startday_str"
+                                ng-change="ctrl.refresh()" placeholder="Choose a date"
+                                />
+                            </div>
+                            <span style="cursor: pointer;position: absolute;top: 6px;right: 20px;" style="cursor: pointer">
+							<i class="fa fa-lg fa-calendar"></i>
+						</span>
+                        </newdatepicker>
+                    </div>
+            </header>
+            <div class="panel-body" ng-hide="ctrl.adding">
+                <table class="table table-invoice" ng-table="ctrl.tableParams">
+                    <tr ng-repeat="row in $data" style="color:#333">
+                        <td data-title="'日期'">{{row.date}}</td>
+                        <td data-title="'到店'">{{row.direct}}</td>
+                        <td data-title="'来电'">{{row.phone_call}}</td>
+                        <td data-title="'团购'">{{row.groupon}}</td>
+                        <td data-title="'转介'">{{row.by_customer}}</td>
+						<td data-title="'操作'"><a class="btn btn-danger"
+						ng-click="ctrl.edit(row)">编辑</a></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group panel-body" ng-show="ctrl.adding">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group input-group-lg m-bot15">
+                            <span class="input-group-addon btn-primary">日期</span>
+                            <newdatepicker date-set-hidden="true" button-prev="<i class='fa fa-arrow-left'></i>"
+                            button-next="<i
+						class='fa fa-arrow-right'></i>" date-format="yyyy-MM-dd" selector="form-control"
+                            style="margin-bottom:10px;">
+                                <div class="col-lg-12 input-group">
+                                    <input class="form-control" style="background:
+								rgba(0,0,0,0);height:46px;font-size:18px;"
+								ng-model="ctrl.newrow.date" />
+                                </div>
+                                <span style="cursor: pointer;position: absolute;top: 10px;right: 20px;" style="cursor: pointer">
+							<i class="fa fa-lg fa-calendar"></i>
+						</span>
+                            </newdatepicker>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group input-group-lg m-bot15">
+                            <span class="input-group-addon btn-primary">来电</span>
+                            <input type="number" class="form-control" placeholder="请输入正整数"
+							ng-model="ctrl.newrow.phone_call">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="input-group input-group-lg m-bot15">
+                            <span class="input-group-addon btn-primary">团购</span>
+                            <input type="number" class="form-control" placeholder="请输入正整数"
+							ng-model="ctrl.newrow.groupon">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group input-group-lg m-bot15">
+                            <span class="input-group-addon btn-primary">到店</span>
+                            <input type="number" class="form-control" placeholder="请输入正整数"
+							ng-model="ctrl.newrow.direct">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="input-group input-group-lg m-bot15">
+                            <span class="input-group-addon btn-primary">转介</span>
+                            <input type="number" class="form-control" placeholder="请输入正整数"
+							ng-model="ctrl.newrow.by_customer">
+                        </div>
+                    </div>
+                </div>
+	            <p class="text-center"><a class="btn btn-danger btn-lg text-center" style="margin-top:20px"
+				    ng-click="ctrl.submit()">提交</a>
+		        </p>
+            </div>
+        </section>
+    </div>
+</div>
