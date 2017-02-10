@@ -7,6 +7,11 @@ class FinanceSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Finance
 
+class FlowSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Flow
+
+
 class GroupCourseSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = GroupCourse
