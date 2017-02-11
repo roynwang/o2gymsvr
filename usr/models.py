@@ -7,6 +7,12 @@ from business.models import *
 
 
 # Create your models here.
+class CurrentVersion(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=64)
+	client = models.CharField(max_length=64)
+        version = models.IntegerField()
+
 
 class User(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -110,9 +116,20 @@ class Balance(models.Model):
 
         def charge(self, amount):
             self.balance += int(amount)
-            print self.balance
             self.save()
 
+        def consume(self, amount):
+            self.balance -= int(amount)
+            self.save()
+
+        def cancelconsume(self, amount):
+            self.balance += int(amount)
+            self.save()
+
+        def precheck(self, amount):
+            if self.balance >= amount:
+                return True
+            return False
         
 
 class ChargeHistory(models.Model):

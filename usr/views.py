@@ -19,12 +19,24 @@ import pprint
 import datetime 
 
 
+VERSION = 1
+
 def add_months(sourcedate,months):
 	month = sourcedate.month - 1 + months
 	year = int(sourcedate.year + month / 12 )
 	month = month % 12 + 1
 	day = min(sourcedate.day,calendar.monthrange(year,month)[1])
 	return datetime.date(year,month,day)
+
+class CurrentVersionItem(generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = CurrentVersionSerializer
+        def get_object(self):
+            ret, created = CurrentVersion.objects.get_or_create(name=self.kwargs['name'],client=self.kwargs['client'], version=VERSION)
+            print created
+            if created:
+                ret.version = 0
+            return ret
+
 
 class TrainSummary(APIView):
         def get(self, request, name):
