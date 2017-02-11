@@ -673,6 +673,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
 
         that.toggleMenu = function(direction) {
+			if(direction == "right"){
+				that.init()
+			}
+			
             $mdSidenav(direction)
                 .toggle()
                 .then(function() {
@@ -769,6 +773,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     })
                     os = _.sortBy(os, 'created')
 
+					//订单预定
                     if (os && os.length > 0) {
                         var o = os[0]
                         that.pendingbook = {
@@ -781,6 +786,9 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                         that.querystatus = "pending"
                         console.log(that.pendingbook)
                     } else {
+
+						//余额预定
+
                         var showunmatch = function() {
                             that.showtoast = true
                             $mdToast.show(
@@ -1736,31 +1744,29 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
         that.cancel = function() {
             $mdDialog.hide()
         }
+		
+	
+        that.init = function() {
+            user = $.cookie("user")
+            $usersvc.getuser(undefined, false, function(data) {
+                    that.user = data
+                    that.gymid = that.user.gym_id[0]
+                },
+                function(data) {})
+
+        }
+
         that.mo = {}
-        that.mo.customer_displayname = ""
-        that.mo.customer_phone = ""
-        that.mo.product_introduction = "dummy"
-        that.mo.product_price = ""
-        that.mo.product_promotion = -1
-        that.mo.product_amount = ""
-        that.mo.product_duration = ""
+        that.mo.displayname = ""
+        that.mo.name = ""
         that.mo.sex = '0'
-        that.mo.subsidy = 0
-        that.mo.age = undefined
         that.changesex = function(i) {
             that.mo.sex = i
         }
 
         function validate() {
             var data = that.mo
-            if (that.mo.product_duration > 60) {
-                swal("", "请输入正确的有效时间单位(月)，如 12 ", "warning")
-                return false
-            }
-            if (that.mo.product_duration == "") {
-                that.mo.product_duration = 0
-            }
-            if (that.mo.customer_phone.toString().length != 11) {
+            if (that.mo.name.toString().length != 11) {
                 swal("", "请输入正确的11位电话号码", "warning")
                 return false
             }
@@ -1772,6 +1778,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
             }
             return true
         }
+		that.init()
 
         that.submitorder = function() {
             if (!validate()) {
@@ -1780,7 +1787,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
             SweetAlert.swal({
                     //title: "确定移除该教练吗?",
                     title: "提交",
-                    text: "确认提交订单吗？",
+                    text: "确认提交吗？",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#1fb5ad",
@@ -1793,34 +1800,21 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
                     if (!yes) {
                         return
                     }
-                    that.mo.customer_phone = that.mo.customer_phone.toString()
-                    Restangular.one("api/", $.cookie("user"))
-                        .post("manualorder", that.mo)
+					that.mo.trial = that.gymid
+                    Restangular.one("api")
+                        .post("u", that.mo)
                         .then(function(data) {
                             console.log(data)
                             swal({
                                 title: "成功",
-                                text: "订单提交成功",
+                                text: "客户已保存",
                                 type: "success",
                                 timer: 1500,
                                 showConfirmButton: false
                             });
-
-                            $ordersvc.setorder(data.id)
-                            $mdDialog.show({
-                                    controller: 'OrderDetailCtrl',
-                                    templateUrl: '/static/mobile/orderdetail.html',
-                                    parent: angular.element(document.body),
-                                    clickOutsideToClose: true,
-                                    fullscreen: true
-                                })
-                                .then(function(answer) {
-                                    console.log('You said the information was "' + answer + '".');
-                                }, function() {
-                                    console.log('You cancelled the dialog.')
-                                });
+							$mdDialog.hide();
                         }, function(data) {
-                            swal("", "订单保存失败，请检查输入后重试", "warning")
+                            swal("", "客户保存失败，请检查输入后重试", "warning")
                         })
                 })
         }
