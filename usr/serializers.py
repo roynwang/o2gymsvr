@@ -7,6 +7,10 @@ import json
 import pinyin
 
 
+class CurrentVersionSerializer(serializers.ModelSerializer):
+        class Meta:
+                model = CurrentVersion
+
 class ChargeHistorySerializer(serializers.ModelSerializer):
         class Meta:
                 model = ChargeHistory

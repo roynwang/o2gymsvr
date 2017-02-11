@@ -2556,6 +2556,16 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
             var g = 0
 
             $scope.coursecount = 0
+			// check update
+			Restangular.one("api/",$.cookie('user'))
+				.one("version","web")
+				.get()
+				.then(function(data){
+					if(data.version == 0){
+						window.location.href="/whatsnew/"
+						data.version = 1
+					}
+				});
 
 
             $customersvc.getcustomers(function(data) {

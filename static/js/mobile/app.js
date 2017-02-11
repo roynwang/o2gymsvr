@@ -652,6 +652,17 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             that.inited = true
         }, 2000)
 
+        // check update
+        Restangular.one("api/", $.cookie('user'))
+            .one("version", "mobile")
+            .get()
+            .then(function(data) {
+                if (data.version == 0) {
+                    window.location.href = "/whatsnew/"
+                }
+            });
+
+
         that.showneworder = function() {
             $mdDialog.show({
                     controller: "NewOrderDialgCtrl",
@@ -673,10 +684,10 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
 
         that.toggleMenu = function(direction) {
-			if(direction == "right"){
-				that.init()
-			}
-			
+            if (direction == "right") {
+                that.init()
+            }
+
             $mdSidenav(direction)
                 .toggle()
                 .then(function() {
@@ -773,7 +784,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     })
                     os = _.sortBy(os, 'created')
 
-					//订单预定
+                    //订单预定
                     if (os && os.length > 0) {
                         var o = os[0]
                         that.pendingbook = {
@@ -787,7 +798,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                         console.log(that.pendingbook)
                     } else {
 
-						//余额预定
+                        //余额预定
 
                         var showunmatch = function() {
                             that.showtoast = true
@@ -1744,8 +1755,8 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
         that.cancel = function() {
             $mdDialog.hide()
         }
-		
-	
+
+
         that.init = function() {
             user = $.cookie("user")
             $usersvc.getuser(undefined, false, function(data) {
@@ -1778,7 +1789,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
             }
             return true
         }
-		that.init()
+        that.init()
 
         that.submitorder = function() {
             if (!validate()) {
@@ -1800,7 +1811,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
                     if (!yes) {
                         return
                     }
-					that.mo.trial = that.gymid
+                    that.mo.trial = that.gymid
                     Restangular.one("api")
                         .post("u", that.mo)
                         .then(function(data) {
@@ -1812,7 +1823,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
                                 timer: 1500,
                                 showConfirmButton: false
                             });
-							$mdDialog.hide();
+                            $mdDialog.hide();
                         }, function(data) {
                             swal("", "客户保存失败，请检查输入后重试", "warning")
                         })
