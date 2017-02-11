@@ -466,7 +466,12 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/finance",
             templateUrl: "/static/console/finance.html",
         })
-        .state('expcustomer', {
+        .state('flow', {
+            url: "/flow",
+            templateUrl: "/static/console/flow.html",
+        })
+
+    .state('expcustomer', {
             url: "/expcustomer",
             templateUrl: "/static/console/expcustomer.html",
         })
@@ -816,9 +821,9 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAl
                     that.rowcount = Math.ceil((data.coaches_set.length + 1) / 3)
                     that.coaches = data.coaches_set
                     that.rows = _.range(0, that.rowcount)
-					_.each(that.coaches, function(item){
-	                    item.avatar += "?imageView2/1/w/150/h/150"
-					})
+                    _.each(that.coaches, function(item) {
+                        item.avatar += "?imageView2/1/w/150/h/150"
+                    })
                 })
         }
         that.remove = function(c) {
@@ -1753,6 +1758,110 @@ app.controller("SettingControl", ['$scope', 'Restangular',
             })
     }
 ])
+app.controller("FlowCtrl", ['$scope', "Restangular", "NgTableParams", "$login", "SweetAlert",
+    function($scope, Restangular, NgTableParams, $login, SweetAlert) {
+        var gymid = $.cookie("gym")
+        var that = this
+        that.adding = false;
+        that.startday = new Date().addMonths(-1)
+        that.endday = new Date();
+
+        that.startday_str = that.startday.Format("yyyy-MM-dd")
+        that.endday_str = that.endday.Format("yyyy-MM-dd")
+
+        function refresh() {
+            that.startday = new Date(Date.parse(that.startday_str))
+            that.endday = new Date(Date.parse(that.endday_str))
+            Restangular.one('api/g/', gymid)
+                .one("flow/")
+                .get({
+                    start: that.startday.Format("yyyyMMdd"),
+                    end: that.endday.Format("yyyyMMdd")
+                })
+                .then(function(data) {
+                    that.tableParams = new NgTableParams({
+                        sorting: {
+                            date: "desc"
+                        }
+                    }, {
+                        dataset: data
+                    });
+                })
+        }
+
+        refresh()
+        that.refresh = refresh
+
+        that.addrow = function() {
+            that.adding = true;
+            that.editing = false;
+            that.newrow = {
+                date: new Date().Format("yyyy-MM-dd"),
+                phone_call: 0,
+                direct: 0,
+                groupon: 0,
+                by_customer: 0,
+                gym: gymid
+            }
+
+        }
+        that.canceladd = function() {
+            that.adding = false
+            that.editing = false
+        }
+
+        that.open = function($event) {
+            if ($event == "start") {
+                that.startopened = true
+            } else {
+                that.endopened = true
+            }
+        };
+        that.startopened = false
+        that.endopened = false
+
+        that.editing = false
+        that.edit = function(row) {
+            that.newrow = {
+                id: row.id,
+                date: row.date,
+                phone_call: row.phone_call,
+                direct: row.direct,
+                groupon: row.groupon,
+                by_customer: row.by_customer,
+                gym: gymid
+            }
+
+            that.editing = true;
+            that.adding = true
+        }
+
+        that.submit = function() {
+            var req;
+            if (that.editing) {
+                req = Restangular.one('api/g/', gymid)
+                    .one("flow/", that.newrow.id)
+                    .patch(that.newrow)
+            } else {
+                req = Restangular.one('api/g/', gymid)
+                    .post("flow/", that.newrow)
+            }
+
+            req.then(function(data) {
+                swal({
+                    title: "成功",
+                    text: "提交成功",
+                    type: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                that.adding = false
+                that.refresh()
+            });
+        }
+    }
+])
+
 app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login", "SweetAlert",
     function($scope, Restangular, NgTableParams, $login, SweetAlert) {
         var gymid = $.cookie("gym")
@@ -1802,17 +1911,17 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
         that.endopened = false
 
 
-		that.newrow = {
-			date: new Date().Format("yyyy-MM-dd"),
-			by: $.cookie("displayname"),
-			op: $.cookie("displayname"),
-			gym: gymid
-		}
+        that.newrow = {
+            date: new Date().Format("yyyy-MM-dd"),
+            by: $.cookie("displayname"),
+            op: $.cookie("displayname"),
+            gym: gymid
+        }
 
         that.submit = function() {
-			if(that.newrow.cate != "资金注入"){
-				that.newrow.amount *= -1
-			}
+            if (that.newrow.cate != "资金注入") {
+                that.newrow.amount *= -1
+            }
             SweetAlert.swal({
                     title: "提交",
                     text: "为保证数据准确，提交后不能更改，确认提交吗?",
@@ -1838,8 +1947,8 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
                                 timer: 1500,
                                 showConfirmButton: false
                             });
-							that.adding = false
-							that.refresh()
+                            that.adding = false
+                            that.refresh()
                         });
                 })
         }
