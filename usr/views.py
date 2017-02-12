@@ -19,6 +19,9 @@ import pprint
 import datetime 
 
 
+
+WEBVERSION = 1
+MOBILEVERSION = 1
 VERSION = 1
 
 def add_months(sourcedate,months):
@@ -31,8 +34,12 @@ def add_months(sourcedate,months):
 class CurrentVersionItem(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = CurrentVersionSerializer
         def get_object(self):
-            ret, created = CurrentVersion.objects.get_or_create(name=self.kwargs['name'],client=self.kwargs['client'], version=VERSION)
-            print created
+            version = 0
+            if self.kwargs['client'] == "web":
+                version = WEBVERSION
+            if self.kwargs['client'] == "mobile":
+                version = MOBILEVERSION
+            ret, created = CurrentVersion.objects.get_or_create(name=self.kwargs['name'],client=self.kwargs['client'],version=version)
             if created:
                 ret.version = 0
             return ret
