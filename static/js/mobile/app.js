@@ -1749,12 +1749,13 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
     }
 ])
 
-app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog", "$ordersvc", "SweetAlert", "Restangular",
-    function($scope, $state, $usersvc, $mdDialog, $ordersvc, SweetAlert, Restangular) {
+app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog", "$ordersvc", "SweetAlert", "Restangular","$usersvc",
+    function($scope, $state, $usersvc, $mdDialog, $ordersvc, SweetAlert, Restangular, $usersvc) {
         var that = this
         that.cancel = function() {
             $mdDialog.hide()
         }
+		that.coach = {}
 
 
         that.init = function() {
@@ -1812,6 +1813,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
                         return
                     }
                     that.mo.trial = that.gymid
+					that.mo.trial_coach = that.user.displayname
                     Restangular.one("api")
                         .post("u", that.mo)
                         .then(function(data) {

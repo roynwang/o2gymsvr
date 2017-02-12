@@ -4679,7 +4679,7 @@ div.tagsinput span.tag {
 }
 .side-mini-graph {
     float:right;
-    width:70px;
+    width:90px;
     margin-right:10px;
     text-align:center;
 }
@@ -5763,3 +5763,10 @@ right: -1px;
 	border-width: 1px !important;
 	border-bottom-width: 0 !important;
 }
+
+.right-sidebar-action {
+	color:white;
+	font-size: 18px;
+	position: relative;
+    top: -4px;
+} 
