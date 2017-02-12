@@ -62,6 +62,8 @@ class User(models.Model):
 
         balance = models.IntegerField(default=0)
 
+	trial_coach = models.CharField(max_length=64, blank=True, default="")
+
         def get_coach_gym(self):
             return self.gym.all()[0]
 
