@@ -70,6 +70,14 @@ class FlowItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Flow.objects.all()
 	serializer_class = FlowSerializer
 
+class FlowItemByDate(generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = FlowSerializer
+        def get_object(self):
+            d = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+            gymid = self.kwargs.get("gymid")
+            ret, _ = Flow.objects.get_or_create(gym=gymid, date = d)
+            return ret
+
 
 class CourseList(generics.ListCreateAPIView):
 	queryset = Course.objects.all()

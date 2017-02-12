@@ -160,6 +160,11 @@
                 <li><a id="logout"><i class="fa fa-key"></i>注销</a></li>
             </ul>
         </li>
+		<li>
+            <div class="toggle-right-box">
+                <div class="fa fa-bars"></div>
+            </div>
+        </li>
 
     </ul>
     <!--search & user info end-->
@@ -232,19 +237,6 @@
                     </a>
                 </li>
 
-   <!-- 
-                <li class="sub-menu">
-                    <a href="javascript:;">
-                        <i class="fa fa-laptop"></i>
-                        <span>付费与支持</span>
-                    </a>
-                    <ul class="sub">
-                        <li><a href="boxed_page.html">技术支持</a></li>
-                        <li><a href="horizontal_menu.html">付费信息</a></li>
-                        <li><a href="#feedback">意见和建议</a></li>
-                    </ul>
-                </li>
-	-->
             </ul>            </div>
         <!-- sidebar menu end-->
     </div>
@@ -255,6 +247,81 @@
 	 <div ui-view> 载入中... ...</div>
 </section>
 </section>
+<div class="right-sidebar">
+<div class="search-row">
+	<p style="color:white">快捷记录</p>
+    <!--<input type="text" placeholder="Search" class="form-control">-->
+</div>
+<div class="right-stat-bar" tabindex="5001" style="overflow: hidden; outline: none;">
+<ul class="right-side-accordion">
+<li class="widget-collapsible">
+    <a href="#" class="head widget-head terques-bg active clearfix">
+        <span class="pull-left">流量统计</span>
+        <span class="pull-right widget-collapse"><i class="ico-minus"></i></span>
+    </a>
+    <ul class="widget-container">
+        <li>
+            <div class="prog-row side-mini-stat clearfix">
+                <div class="side-graph-info">
+                    <h4>团购</h4>
+                    <p>
+                        团购消费数量
+                    </p>
+                </div>
+                <div class="side-mini-graph">
+                    <div class="target-sell" style="padding: 0px; position: relative;">
+						<p style="line-height:40px;font-size:24px;color:#fa8564" class="red"><span class="right-sidebar-action" data-action="add" data-option="groupon">+</span> <span id="flow-groupon">10</span> <span class="right-sidebar-action" data-action="minus" data-option="groupon">-</span></p>
+					</div>
+                </div>
+            </div>
+            <div class="prog-row side-mini-stat clearfix">
+                <div class="side-graph-info">
+                    <h4>到店</h4>
+                    <p>
+                    	到店客户数量
+                    </p>
+                </div>
+                <div class="side-mini-graph">
+                    <div class="target-sell" style="padding: 0px; position: relative;">
+						<p style="line-height:40px;font-size:24px;color:#fa8564"><span class="right-sidebar-action" data-action="add" data-option="direct">+</span> <span id="flow-direct">10</span> <span class="right-sidebar-action" data-action="minus" data-option="direct">-</span></p>
+					</div>
+                </div>
+            </div>
+            <div class="prog-row side-mini-stat clearfix">
+                <div class="side-graph-info">
+                    <h4>电话</h4>
+                    <p>
+                    	电话咨询数量
+                    </p>
+                </div>
+                <div class="side-mini-graph">
+                    <div class="target-sell" style="padding: 0px; position: relative;">
+						<p style="line-height:40px;font-size:24px;color:#fa8564"><span class="right-sidebar-action" data-action="add" data-option="phone_call">+</span> <span id="flow-phone_call">10</span> <span class="right-sidebar-action" data-action="minus" data-option="phone_call">-</span></p>
+					</div>
+                </div>
+            </div>
+            <div class="prog-row side-mini-stat clearfix">
+                <div class="side-graph-info">
+                    <h4>转介</h4>
+                    <p>
+                    	客户介绍数量
+                    </p>
+                </div>
+                <div class="side-mini-graph">
+                    <div class="target-sell" style="padding: 0px; position: relative;">
+						<p style="line-height:40px;font-size:24px;color:#fa8564"><span class="right-sidebar-action" data-action="add" data-option="by_customer">+</span> <span id="flow-by_customer">10</span> <span class="right-sidebar-action" data-action="minus" data-option="by_customer">-</span></p>
+					</div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</li>
+</ul>
+
+</div>
+
+<div id="ascrail2001" class="nicescroll-rails" style="width: 3px; z-index: 1000; cursor: default; position: absolute; top: 74px; left: 237px; height: 703px; opacity: 0;"><div style="position: relative; top: 0px; float: right; width: 3px; height: 322px; background-color: rgb(31, 181, 173); border: 0px solid rgb(255, 255, 255); background-clip: padding-box; border-radius: 0px;"></div></div><div id="ascrail2001-hr" class="nicescroll-rails" style="height: 3px; z-index: 1000; top: 774px; left: 0px; position: absolute; cursor: default; display: none; width: 237px; opacity: 0;"><div style="position: relative; top: 0px; height: 3px; width: 240px; background-color: rgb(31, 181, 173); border: 0px solid rgb(255, 255, 255); background-clip: padding-box; border-radius: 0px;"></div></div></div>
+
 	 <script src="//cdn.bootcss.com/angular.js/1.4.7/angular.min.js"></script>
      <script src="//cdn.bootcss.com/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
 	 <script src="//cdn.bootcss.com/angular-ui-bootstrap/0.14.3/ui-bootstrap.min.js"></script>
@@ -369,6 +436,8 @@
 			}
 			incompleteid = setInterval(getincomplete,1800000)
 			getdeadorders()
+			
+			initflow()
 		}).fail(function(resp){
 			
 		})
@@ -435,6 +504,34 @@
 		})
 	}
 
+	function initflow(){
+
+		var date = new Date().Format("yyyyMMdd")
+		$.get("/api/g/" + $.cookie("gym") + "/flow/" + date + "/", function(data){
+			$("#flow-direct").html(data.direct)
+			$("#flow-groupon").html(data.groupon)
+			$("#flow-phone_call").html(data.phone_call)
+			$("#flow-by_customer").html(data.by_customer)
+		})
+
+	}
+	function refreshflowcount(item,value){
+		 $("#flow-"+item).html(value)
+	}
+	function saveflowcount(item,value){
+		var date = new Date().Format("yyyyMMdd")
+		var data = {
+		}
+		data[item] = value
+
+		var url = "/api/g/" + $.cookie("gym") + "/flow/" + date + "/"
+		$.ajax({ 
+		    url: url,
+		    type: 'PATCH',
+		    data: data 
+		});
+	}
+
 
 	$(function(){
 		refreshuser(getusrauth())
@@ -444,6 +541,18 @@
 			$.removeCookie("role", {path:"/"})
 			$.removeCookie("autologin", {path:"/"})
 			window.location = "/console/login/"
+		})
+		$(".right-sidebar-action").click(function(){
+			var node = $(this)
+			var item = node.attr("data-option")
+			var v = parseInt($("#flow-"+item).html())
+			if(node.attr("data-action") == "add"){
+				v += 1
+			} else {
+				v -= 1
+			}
+			refreshflowcount(item,v)
+			saveflowcount(item, v)
 		})
 	})
 
