@@ -2,7 +2,7 @@
     <form>
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>新建订单</h2>
+                <h2>添加体验客户</h2>
                 <span flex></span>
                 <md-button style="padding:0" class="md-icon-button" ng-click="ctrl.cancel()">
                     <div style="color:#ccc" class="navbar-button-icon icon ion-ios-close-empty"></div>
@@ -21,7 +21,8 @@
                     <div>
                         <label class="label-form" for="email-field">电话</label>
                         <input ng-model="ctrl.mo.name" class="w-input input-form" id="email-field"
-                        type="number" name="email" data-name="number" required="required">
+                        type="number" name="email" data-name="number" required="required"
+						placeholder="无电话号码请留空">
                         <div class="separator-fields"></div>
                     </div>
                     <div>
