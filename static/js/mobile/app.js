@@ -129,6 +129,10 @@ var app = angular.module('o2m', [
     'angularQFileUpload',
 ])
 
+
+
+
+
 app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $httpProvider, $mdDateLocaleProvider, $compileProvider) {
     // For any unmatched url, send to /route1
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|local|data|tel|sms):/);
@@ -1777,17 +1781,29 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
         }
 
         function validate() {
+
             var data = that.mo
-            if (that.mo.name.toString().length != 11) {
-                swal("", "请输入正确的11位电话号码", "warning")
+			if (that.mo.name == undefined){
+				that.mo.name = ""
+			}
+
+            if (that.mo.displayname.toString().length == 0 ) {
+                swal("", "请输入客户姓名", "warning")
                 return false
             }
+
+            if (that.mo.name && that.mo.name.toString().length != 0 && that.mo.name.toString().length != 11) {
+                swal("", "请输入正确的11位电话号码或留空", "warning")
+                return false
+            }
+			/*
             for (var k in data) {
                 if (data[k] == undefined || data[k].length == 0) {
                     swal("", "请填完所有选项", "warning")
                     return false
                 }
             }
+			*/
             return true
         }
         that.init()
