@@ -17,6 +17,7 @@ from business.serializers import *
 import calendar
 import pprint
 import datetime 
+import time
 
 
 
@@ -107,7 +108,13 @@ class UserList(generics.CreateAPIView):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 	def create(self, request, *args, **kwargs):
-                if 'trial' in request.data and  User.objects.filter(name=request.data['name']):
+                if 'trial' in request.data:
+                    #fix default name for trial
+                    if request.data['name'] == "":
+                        ts = int(time.time())
+                        request.data['name'] = "0"+str(ts)
+
+                    if User.objects.filter(name=request.data['name']):
                         usr =  User.objects.get(name=request.data["name"])
                         usr.trial = request.data['trial']
                         usr.save()
