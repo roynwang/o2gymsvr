@@ -84,7 +84,7 @@ class UserSerializer(serializers.ModelSerializer):
 			return []
 		corps = json.loads(obj.corps)
 		ret = []
-		print("xxxxxxxxxxx")
+		print(obj.name)
 		print corps
 		for corp in corps:
 			ret.append({"k":corp, "v":unicode(Gym.objects.get(id=corp))})

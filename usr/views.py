@@ -133,6 +133,12 @@ class UserItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
 
+class UserItemByOpenId(generics.RetrieveUpdateDestroyAPIView):
+	lookup_field = "openid"
+	queryset = User.objects.all()
+	serializer_class = SimpleUserSerilaizer
+
+
 class TimeLineList(generics.ListCreateAPIView):
 	queryset = TimeLine.objects.all()
 	serializer_class = TimeLineSerializer
