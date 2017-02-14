@@ -51,6 +51,8 @@ class CoachSalaryView(APIView):
 	def cal_course_income(self,query):
 		price = 0
 		for course in query:
+                        if course.order is None:
+                            continue
 			product = course.order.product
 			#tmpprice = float(course.order.amount)/float(product.amount)
 			tmpprice = course.order.amount/product.amount
@@ -61,6 +63,8 @@ class CoachSalaryView(APIView):
 		income = 0
 		price = 0
 		for course in query:
+                        if course.order is None:
+                            continue
 			if course.order.subsidy == 0:
 				income = income + course.getprice()*shangke/100 + fixed_shangke
 			else:
