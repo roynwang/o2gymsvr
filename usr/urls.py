@@ -7,6 +7,8 @@ urlpatterns = patterns('',
 		url(r'^api/v/$','rest_framework_jwt.views.obtain_jwt_token'),
 		url(r'^api/t/', 'rest_framework_jwt.views.refresh_jwt_token'),
 		url(r'^api/u/$', UserList.as_view()),
+
+        url(r'^api/(?P<openid>[a-zA-Z0-9_]{28})/$', UserItemByOpenId.as_view()),
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/$', UserItem.as_view()),
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/version/(?P<client>[a-z]{3,10})/$', CurrentVersionItem.as_view()),
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/timeline/$', TimeLineItem.as_view()),
