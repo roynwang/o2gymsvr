@@ -722,6 +722,7 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
 
 	def create(self, request, *args, **kwargs):
 		ret = super(GymGroupCourseDayBookList, self).create(request, args,kwargs)
+                return ret
                 #create consumption log
 
             
