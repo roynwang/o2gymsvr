@@ -27,6 +27,22 @@ class GroupCourseInstanceBookSerializer(serializers.ModelSerializer):
 	    serializer = SimpleUserSerilaizer(c)
             return serializer.data
 
+class GroupCourseInstanceBookDetailSerializer(serializers.ModelSerializer):
+        #customer_detail = serializers.SerializerMethodField()
+        course_detail = serializers.SerializerMethodField()
+
+	class Meta:
+		model = GroupCourseInstanceBook
+
+        def get_customer_detail(self,obj):
+            c = User.objects.get(name=obj.customer)
+	    serializer = SimpleUserSerilaizer(c)
+            return serializer.data
+        def get_course_detail(self,obj):
+            c = GroupCourseInstance.objects.get(id=obj.course)
+	    serializer = GroupCourseInstanceSerializer(c)
+            return serializer.data
+
 
 class GroupCourseInstanceSerializer(serializers.ModelSerializer):
         course_detail = serializers.SerializerMethodField()

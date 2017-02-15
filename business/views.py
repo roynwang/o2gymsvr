@@ -681,6 +681,13 @@ class GymGroupCourseList(generics.ListCreateAPIView):
 		ret = GroupCourse.objects.filter(gym=self.kwargs.get("pk"))
 		return ret
 
+class CustomerGroupCourseList(generics.ListCreateAPIView):
+	serializer_class = GroupCourseInstanceBookDetailSerializer
+	pagination_class = None
+	def get_queryset(self):
+		ret = GroupCourseInstanceBook.objects.filter(customer=self.kwargs.get("name"))
+		return ret
+
 #TODO
 class GymGroupCourseDayList(generics.ListCreateAPIView):
 	serializer_class = GroupCourseInstanceSerializer
