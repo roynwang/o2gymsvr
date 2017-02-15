@@ -46,6 +46,7 @@ urlpatterns = patterns('',
 
                 url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/incomplete/$', CoachIncompleteList.as_view()),
                 url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/trial/$', TrialBookView.as_view()),
+                url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/groupcourse/$', CustomerGroupCourseList.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/e/$',BodyEvalDateView.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/e/all/$',BodyEvalAllView.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/e/option/(?P<option>.+)/$',BodyEvalByOptionView.as_view()),
