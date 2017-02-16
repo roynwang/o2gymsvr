@@ -737,16 +737,31 @@ class UserSummaryView(APIView):
         def get(self, request, name):
             usr = get_object_or_404(User, name=name)
             #get pt count
-            pt_count = Schedule.objects.filter(custom=usr,done=True).count()
+            pt = Schedule.objects.filter(custom=usr,done=True)
+            pt_count = pt.count()
 
             #get groupcourse count
-            gc_count = GroupCourseInstanceBook.objects.filter(customer=name,date__lte=datetime.datetime.now()).count()
+            gc = GroupCourseInstanceBook.objects.filter(customer=name,date__lte=datetime.datetime.today())
+            gc_count = gc.count()
+
+            endday = datetime.datetime.today() + datetime.timedelta(days=-7)
+
+            week_trained = 0
+            for item in gc:
+                if item.date > endday.date():
+                    week_trained += 1
+
+            for item in pt:
+                if item.date > endday.date():
+                    week_trained += 1
+
+
             ret = {"name":usr.name,\
                     "displayname":usr.displayname,\
                     "balance":usr.balance,\
                     "pt_count":pt_count,\
                     "gc_count":gc_count,\
-                    "week_trained":0,\
+                    "week_trained":week_trained,\
                     "discount":0}
             #get
             return Response(ret, status=status.HTTP_200_OK)
