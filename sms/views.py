@@ -132,7 +132,7 @@ class SMSVerify(APIView):
     			ret = Response(get_or_create_user_return_token(number, pwd) , status=status.HTTP_200_OK)
 
                         if "openid" in request.data:
-    		            usr = User.objects.create(name=number)
+    		            usr = User.objects.get(name=number)
                             usr.openid = request.data["openid"]
                             usr.save()
 		else:
