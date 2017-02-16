@@ -732,5 +732,24 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
                 return ret
                 #create consumption log
 
+
+class UserSummaryView(APIView):
+        def get(self, request, name):
+            usr = get_object_or_404(User, name=name)
+            #get pt count
+            pt_count = Schedule.objects.filter(custom=usr,done=True).count()
+
+            #get groupcourse count
+            gc_count = GroupCourseInstanceBook.objects.filter(customer=name,date__lte=datetime.datetime.now()).count()
+            ret = {"name":usr.name,\
+                    "displayname":usr.displayname,\
+                    "balance":usr.balance,\
+                    "pt_count":pt_count,\
+                    "gc_count":gc_count,\
+                    "week_trained":0,\
+                    "discount":0}
+            #get
+            return Response(ret, status=status.HTTP_200_OK)
+
             
 
