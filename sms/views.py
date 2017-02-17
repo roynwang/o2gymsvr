@@ -218,7 +218,8 @@ class WechatSignature(APIView):
                 code = request.GET.get("code");
                 openid = wxutils.get_openid(code)
                 if openid:
-                    return Response({"openid": openid})
+                    encoded = hashlib.sha1(openid).hexdigest()
+                    return Response({"openid": encoded})
 		return Response({"result":"failed"}, status=status.HTTP_404_NOT_FOUND)
 
 

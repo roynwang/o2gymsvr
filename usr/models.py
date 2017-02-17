@@ -42,7 +42,7 @@ class User(models.Model):
 	sex = models.BooleanField(default=True)
 	signature = models.CharField(max_length=64, blank=True)
 	
-	openid = models.CharField(max_length=32,unique=True,db_index=True, blank=True, default="")
+	openid = models.CharField(max_length=64,unique=True,db_index=True, blank=True, default="")
 
 	role = models.CharField(max_length=32, default="customer")
 	corps = models.CharField(max_length=512, default="[]")
