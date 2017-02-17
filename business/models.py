@@ -6,6 +6,13 @@ from django.shortcuts import get_object_or_404
 #from usr.models import *
 import json
 
+class ChargePricing(models.Model):
+	id = models.AutoField(primary_key=True)
+        gym = models.IntegerField()
+        price = models.IntegerField()
+        gift = models.IntegerField()
+
+
 # Create your models here.
 class Finance(models.Model):
 	id = models.AutoField(primary_key=True)
