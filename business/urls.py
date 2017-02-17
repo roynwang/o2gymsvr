@@ -16,6 +16,7 @@ urlpatterns = patterns('',
 
 		url(r'^api/g/$', GymList.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/$', GymItem.as_view()),
+		url(r'^api/g/(?P<pk>[0-9]+)/chargepricing/$', ChargePricingList.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/finance/$', FinanceList.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/flow/$', FlowList.as_view()),
 		url(r'^api/g/(?P<gymid>[0-9]+)/flow/(?P<date>[0-9]{8})/$', FlowItemByDate.as_view()),

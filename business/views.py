@@ -24,6 +24,16 @@ from django.http import JsonResponse
 
 # Create your views here.
 
+class ChargePricingList(generics.ListAPIView):
+	serializer_class = ChargePricingSerializer
+	pagination_class = None
+
+        def get_queryset(self):
+            gym = self.kwargs.get("pk")
+            return ChargePricing.objects.filter(gym=gym)
+
+
+
 class FinanceList(generics.ListCreateAPIView):
 	serializer_class = FinanceSerializer
 	pagination_class = None
