@@ -5,13 +5,12 @@ sub urlencode {
     return $s;
 }
 
-($area,$keyword) = @ARGV;
 $area = shift;
 $query = $area;
-if($area == "北京"){
+if($area eq "北京"){
 	$area = 2;
 }
-if($area == "厦门"){
+if($area eq "厦门"){
 	$area = 15;
 }
 $keyword = "";
