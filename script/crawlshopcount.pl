@@ -35,7 +35,7 @@ $result =  $m[0];
 
 my $current_date = `date +"%Y-%m-%d"`;
 $current_date = substr($current_date,0,-1);
-$host = "http://localhost:8000";
+$host = "http://o2-fit.com";
 $cmd = "curl -d \"keyword=$query&count=$result&date=$current_date\" $host/api/cwl/shopcount/$query/";
 print $cmd;
 `$cmd`;
