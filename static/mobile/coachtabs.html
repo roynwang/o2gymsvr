@@ -37,13 +37,9 @@
                         <li style="border-bottom: solid 1px #eee;padding: 0px;
 						margin-left:20px;min-height:50px;" class="w-clearfix w-inline-block"
                         ng-repeat="c in ctrl.selecting" ng-click="ctrl.selectcustomer(c)">
-							<div class="nav-menu-titles">
-								<!--<img
-								style="height:40px;margin-right:10px;border-radius:6px" src="{{c.avatar}}">
-								-->
-								{{c.displayname}}
-&nbsp;&nbsp;<span
-				style="font-size:14px;color:#999">{{c.comments}}</span>
+						<div class="nav-menu-titles" ng-style="c.trial && {'color':'#999'}">
+							{{c.displayname}}
+&nbsp;&nbsp;<span style="font-size:14px;color:#999">{{c.comments}}</span>
 							</div>
                             <span ng-show="ctrl.selectedItem == c" class="icon-list-menu" style="float: right;width: 30px;padding-left:10px;margin-right: 10px;">
 								<a style="color:#4fd2c2" class="ion-ios-checkmark-outline"></a>
@@ -252,21 +248,9 @@
             <div style="width:85%; border-bottom: solid 1px #eee;padding: 0px; margin-left:20px;"
             ng-click="ctrl.showcustomer(c)" class="w-clearfix w-inline-block" ng-repeat="c in
 			ctrl.customershowing">
-                <!--
-                <a style="font-size: 25px;" href="sms:{{c.name}}" class="course-time icon-list highlighted">
-                    <div class="ion-ios-chatbubble-outline"></div>
-                </a>
-                <a style="font-size: 25px; width:25px"  class="course-time icon-list highlighted">
-                    <div class="ion-ios-telephone-outline"></div>
-                </a>
-				-->
                 <div class="nav-menu-titles">
-				<!--	<img
-					style="height:40px;margin-right:10px;border-radius:6px"
-					src="{{c.avatar}}"> -->
 					{{c.displayname}}&nbsp;&nbsp;<span
 				style="font-size:14px;color:#999">{{c.comments}}</span></div>
-
                 <span class="icon-list-menu" style="float: right;width: 30px;padding-left: 10px;">
 					<a style="color: #4fd2c2"class="ion-ios-chatbubble-outline" href="tel:{{c.name}}"></a>
                 </span>
