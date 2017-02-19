@@ -13,8 +13,9 @@ from crawl.serializers import *
 
 # Create your views here.
 class CrawlShopCountList(generics.ListCreateAPIView):
-	lookup_field = "keyword"
 	queryset = CrawlShopCount.objects.all()
 	serializer_class = CrawlShopCountSerializer
         pagination_class = None
+        def get_queryset(self):
+            return CrawlShopCount.objects.filter(keyword=self.kwargs.get("keyword"))
 
