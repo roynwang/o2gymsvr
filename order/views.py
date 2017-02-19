@@ -200,6 +200,8 @@ class ManualOrder(APIView):
 		displayname = self.request.data["customer_displayname"]
 		if User.objects.filter(name=phone).exists():
 			customer = User.objects.get(name=phone)
+                        customer.trial = None
+                        customer.save()
 		else:
 			sex = False
 			if request.data["sex"] == '1':
