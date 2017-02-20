@@ -238,7 +238,9 @@ class ScheduleForReadQuery(generics.ListAPIView):
 		daterange = [startdate, enddate]
                 print startdate
                 print enddate
-		return usr.sealed_time.filter(date__range=daterange).order_by("date","hour")
+		if usr.iscoach:
+	    	    return usr.sealed_time.filter(date__range=daterange).order_by("date","hour")
+	    	return usr.booked_time.filter(date__range=daterange).order_by("date","hour")
 
 
 
