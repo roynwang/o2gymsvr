@@ -13,7 +13,7 @@ from rest_framework import status
 import time
 import datetime
 from ipware.ip import get_ip
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
 import json
@@ -23,6 +23,7 @@ from django.utils import timezone
 from django.db.models import Sum, Count
 from random import randint
 from utils import smsutils
+from utils import wxutils 
 from django.conf import settings
 from sms.models import *
 import os
@@ -164,6 +165,25 @@ def pay_order(billid):
 	order.save()
 
 from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+@permission_classes((AllowAny,))
+def charge_callback(request):
+    #TODO load xml
+    result = "SUCCESS"
+    '''
+    req = xmltodict.parse(request.body)
+    if req.result_code != "SUCCESS":
+        result = "FAIL"
+    else:
+        billid = req['out_trade_no']
+        balance_order = BalanceOrder.objects.get(billid=billid)
+        usr = get_object_or_404(User, name=balance_order.customer)
+        usr.complete_order(balance_order)
+    '''
+    body = "<xml><return_code><![CDATA["+result+"]]></return_code></xml>"
+    return HttpResponse(body, content_type='text/xml')
+    
 
 @csrf_exempt
 @permission_classes((AllowAny,))
