@@ -61,3 +61,15 @@ class Product(models.Model):
 	product_type = models.IntegerField(default=0)
 
 
+
+class BalanceOrder(models.Model):
+	id = models.AutoField(primary_key=True)
+	created = models.DateTimeField(auto_now_add=True)
+	updated = models.DateTimeField(auto_now_add=True)
+	billid = models.CharField(max_length=20, blank=True, db_index=True)
+        customer = models.IntegerField()
+        amount = models.IntegerField()
+        status = models.CharField(max_length=64)
+        comments = models.CharField(max_length=128,default="")
+
+

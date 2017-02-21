@@ -132,6 +132,13 @@ class Balance(models.Model):
             if self.balance >= amount:
                 return True
             return False
+
+        def complete_order(self, balance_order):
+            if balance_order.status == "completed":
+                return
+            balance_order.status="completed"
+            balance_order.save()
+            self.charge(balance_order.amount)
         
 
 class ChargeHistory(models.Model):
