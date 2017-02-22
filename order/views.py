@@ -229,7 +229,7 @@ class ChargeOrder(APIView):
                 print charge
                 resp = {
                         "appId":charge['xml']['appid'],\
-                        "timeStamp": str(time.time()),\
+                        "timeStamp": str(int(time.time())),\
                         "nonceStr": wxutils.GetRandomStr(),\
                         "package": "prepay_id="+charge['xml']['prepay_id'],\
                         "signType": "MD5"}
