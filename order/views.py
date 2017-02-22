@@ -234,6 +234,7 @@ class ChargeOrder(APIView):
                         "package": "prepay_id="+charge['xml']['prepay_id'],\
                         "signType": "MD5"}
                 resp['paySign'] = wxutils.getSign(resp)
+                del resp["appId"]
 	        return JsonResponse(resp, status=status.HTTP_200_OK)
                 
             
