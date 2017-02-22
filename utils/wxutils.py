@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import requests
 from django.conf import settings
 import json
@@ -55,8 +54,9 @@ def getSign(data, appkey = "76e238bd3759d59d6582da47b7d65eae"):
     signature = '&'.join(['%s=%s' % (key, data[key]) for key in sorted(data)])
     signature += "&key="
     signature += appkey
-    print signature
-    return hashlib.sha1(signature).hexdigest().upper()
+    m2 = hashlib.md5()   
+    m2.update(signature)
+    return m2.hexdigest().upper()
  
 def XmlData(orderid,openid,title, price, ip, callbackurl, key):
     appidvalue = "wxf1aacfc6230603e8" #appid
@@ -65,9 +65,9 @@ def XmlData(orderid,openid,title, price, ip, callbackurl, key):
     nonce_strvalue = GetRandomStr()
     bodyvalue = "title"
     out_trade_novalue = orderid
-    total_feevalue = str(price)    #价格
+    total_feevalue = str(price)    
     spbill_create_ipvalue = ip
-    notify_urlvalue = callbackurl #用户回调URL地址
+    notify_urlvalue = callbackurl 
     trade_typevalue = "JSAPI"
     keyvalue = key
     openidvalue=openid
@@ -117,5 +117,11 @@ def create_charge(billid,openid,title,amount,ip):
 '''
 if __name__ == "__main__":
     #print Post(XmlData("123511654189415","openid","title",1000,"192.168.1.1","http://callback","mmmmmmmmmmmmmmmmmmm"))
-    print create_charge("1233423423423424","obzf70EAA4fBncDhQwe9z24l19es","title",1000, "192.168.1.1")
+    #print create_charge("1233423423423424","obzf70EAA4fBncDhQwe9z24l19es","title",1000, "192.168.1.1")
+    data = {"appId":"wxf1aacfc6230603e8",\
+            "nonceStr":"60B4E38272B8FEB2F34080AD1D393D45",\
+            "package":"prepay_id=wx201702221817403823c1747f0407516639",\
+            "signType":"MD5","timeStamp":"1487758660"}
+    signature = getSign(data)
+    print signature
 '''
