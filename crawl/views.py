@@ -16,6 +16,32 @@ class CrawlShopCountList(generics.ListCreateAPIView):
 	queryset = CrawlShopCount.objects.all()
 	serializer_class = CrawlShopCountSerializer
         pagination_class = None
-        def get_queryset(self):
-            return CrawlShopCount.objects.filter(keyword=self.kwargs.get("keyword"))
 
+class TaskList(generics.ListCreateAPIView):
+	queryset = CrawlTask.objects.filter(status="inited")
+	serializer_class = CrawlTaskSerializer
+
+class LatestTask(generics.RetrieveAPIView):
+	serializer_class = CrawlTaskSerializer
+	def get_object(self):
+
+            query  =  CrawlTask.objects.filter(status="init").order_by("created")
+            if query.count() == 0:
+                return None
+            ret =  CrawlTask.objects.filter(status="init").order_by("created")[0]
+            ret.status = "crawling"
+            if ret.url == "":
+                q = ret.keyword.replace(" ","+")
+                ret.url = "http://t.dianping.com/list/"+ret.city+"?q="+q
+                ret.save()
+            return ret
+
+class TaskItem(generics.RetrieveUpdateAPIView):
+	serializer_class = CrawlTaskSerializer
+	queryset = CrawlTask.objects.all()
+	def partial_update(self, request, *args, **kwargs):
+	    ret = super(TaskItem,self).partial_update(request,args, kwargs)
+            item = self.get_object()
+            item.handle_list()
+            item.status = "done"
+            return ret
