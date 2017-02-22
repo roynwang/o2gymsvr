@@ -9,6 +9,7 @@ import random
 import hashlib
 import socket
 import sys
+import xmltodict
 
 
 def get_accesstoken():
@@ -49,11 +50,15 @@ def GetRandomStr():
     m2.update(str(random.randint(10000, 99999999999999999)))   
     result = m2.hexdigest()    
     return result.upper()
+
+def getSign(data, appkey = "76e238bd3759d59d6582da47b7d65eae"):
+    signature = '&'.join(['%s=%s' % (key.lower(), data[key]) for key in sorted(data)])
+    return hashlib.sha1(signature).hexdigest()
  
 def XmlData(orderid,openid,title, price, ip, callbackurl, key):
-    appidvalue = "填写自己的appid" #appid
+    appidvalue = "wxf1aacfc6230603e8" #appid
     attachvalue ="o2_pay"
-    mch_idvalue = "填写自己的mchid" #mch_id
+    mch_idvalue = "1334658401" #mch_id
     nonce_strvalue = GetRandomStr()
     bodyvalue = "title"
     out_trade_novalue = orderid
@@ -82,7 +87,7 @@ def XmlData(orderid,openid,title, price, ip, callbackurl, key):
     nonce_str = "<nonce_str>"+nonce_strvalue+"</nonce_str>\r\n"
     notify_url = "<notify_url>"+notify_urlvalue+"</notify_url>\r\n"
     openid = "<openid>"+openidvalue+"</openid>\r\n"
-    out_trade_no ="<out_trade_no>"+out_trade_novalue+"</out_trade_no>\r\n"
+    out_trade_no ="<out_trade_no>"+str(out_trade_novalue)+"</out_trade_no>\r\n"
     spbill_create_ip = "<spbill_create_ip>"+spbill_create_ipvalue+"</spbill_create_ip>\r\n"
     total_fee = "<total_fee>"+total_feevalue+"</total_fee>\r\n"
     trade_type = "<trade_type>"+trade_typevalue+"</trade_type>\r\n"
@@ -101,7 +106,13 @@ def Post(data):
     return xmltodict.parse(res);
     #return res
 
+def create_charge(billid,openid,title,amount,ip):
+    callback = "https://o2-fit.com/api/chargecallback/"
+    key = "76e238bd3759d59d6582da47b7d65eae"
+    return Post(XmlData(billid,openid,title,amount*100,ip,callback,key))
+    
 '''
 if __name__ == "__main__":
-    Post(XmlData("123511654189415","openid","title",1000,"192.168.1.1","http://callback","mmmmmmmmmmmmmmmmmmm"))
+    #print Post(XmlData("123511654189415","openid","title",1000,"192.168.1.1","http://callback","mmmmmmmmmmmmmmmmmmm"))
+    print create_charge("1233423423423424","obzf70EAA4fBncDhQwe9z24l19es","title",1000, "192.168.1.1")
 '''

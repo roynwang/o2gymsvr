@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render,get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework_jwt.settings import api_settings
@@ -208,6 +209,32 @@ def pay_callback(request):
 			coach.save()
 			print order.status
 	return JsonResponse({'msg':'done'}, status=status.HTTP_200_OK)
+
+class ChargeOrder(APIView):
+	def post(self,request,name):
+		#get/create customer
+                customer = get_object_or_404(User,name=name)
+                priceitem = ChargePricing.objects.get(id=request.data['id'])
+                #openid = wxutils.get_openid(request.data['code'])
+                openid = "obzf70EAA4fBncDhQwe9z24l19es"
+		billid = getbillid(0, customer.id)
+                balance = BalanceOrder.objects.create(billid=billid,\
+                        customer=name,\
+                        amount=priceitem.price+priceitem.gift,\
+                        paid_amount=priceitem.price,\
+                        status="unpaid")
+                #create wx pay
+                title = "氧气训练馆-充值" + str(priceitem.price+priceitem.gift)
+                charge = wxutils.create_charge(billid,openid,title,priceitem.price,get_ip(request))
+                print charge
+                resp = {"timeStamp": int(time.time()),\
+                        "nonceStr": wxutils.GetRandomStr(),\
+                        "package": "prepay_id="+charge['xml']['prepay_id'],\
+                        "signType": "MD5"}
+                resp['paySign'] = wxutils.getSign(resp)
+	        return JsonResponse(resp, status=status.HTTP_200_OK)
+                
+            
 
 
 class ManualOrder(APIView):
