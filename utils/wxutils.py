@@ -53,6 +53,8 @@ def GetRandomStr():
 
 def getSign(data, appkey = "76e238bd3759d59d6582da47b7d65eae"):
     signature = '&'.join(['%s=%s' % (key.lower(), data[key]) for key in sorted(data)])
+    signature += "&key="
+    signature += appkey
     return hashlib.sha1(signature).hexdigest()
  
 def XmlData(orderid,openid,title, price, ip, callbackurl, key):
