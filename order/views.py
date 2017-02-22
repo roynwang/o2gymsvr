@@ -227,7 +227,9 @@ class ChargeOrder(APIView):
                 title = "氧气训练馆-充值" + str(priceitem.price+priceitem.gift)
                 charge = wxutils.create_charge(billid,openid,title,priceitem.price,get_ip(request))
                 print charge
-                resp = {"timeStamp": int(time.time()),\
+                resp = {
+                        "appId":charge['xml']['appid'],\
+                        "timeStamp": str(time.time()),\
                         "nonceStr": wxutils.GetRandomStr(),\
                         "package": "prepay_id="+charge['xml']['prepay_id'],\
                         "signType": "MD5"}
