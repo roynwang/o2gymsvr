@@ -69,6 +69,7 @@ class BalanceOrder(models.Model):
 	billid = models.CharField(max_length=20, blank=True, db_index=True)
         customer = models.CharField(max_length=64)
         amount = models.IntegerField()
+        gym = models.IntegerField()
         paid_amount = models.IntegerField(default=0)
         status = models.CharField(max_length=64)
         comments = models.CharField(max_length=128,default="")
