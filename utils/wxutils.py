@@ -110,7 +110,7 @@ def Post(data):
     #return res
 
 def create_charge(billid,openid,title,amount,ip):
-    callback = "https://o2-fit.com/api/chargecallback/"
+    callback = "https://o2-fit.com/api/pay/chargecallback/"
     key = "76e238bd3759d59d6582da47b7d65eae"
     return Post(XmlData(billid,openid,title,amount*100,ip,callback,key))
     
