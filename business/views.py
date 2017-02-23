@@ -746,7 +746,7 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
 
 
 class UserSummaryView(APIView):
-        def get(self, request, name):
+        def get(self, request, name, gym):
             usr = get_object_or_404(User, name=name)
             #get pt count
             pt = Schedule.objects.filter(custom=usr,done=True)
@@ -767,10 +767,11 @@ class UserSummaryView(APIView):
                 if item.date > endday.date():
                     week_trained += 1
 
+            balance = Balance.objects.get(name=usr.name,gym=int(gym))
 
             ret = {"name":usr.name,\
                     "displayname":usr.displayname,\
-                    "balance":usr.balance,\
+                    "balance":balance.balance,\
                     "pt_count":pt_count,\
                     "gc_count":gc_count,\
                     "week_trained":week_trained,\
