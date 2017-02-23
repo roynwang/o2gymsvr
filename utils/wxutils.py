@@ -85,7 +85,7 @@ def XmlData(orderid,openid,title, price, ip, callbackurl, key):
     xmlstart = "<xml>\r\n"
     appid = "<appid>"+appidvalue+"</appid>\r\n"
     attach = "<attach>"+attachvalue+"</attach>\r\n"
-    body = "<body><![CDATA["+bodyvalue+"]]</body>\r\n"
+    body = "<body><![CDATA["+bodyvalue+"]]></body>\r\n"
     mch_id = "<mch_id>"+mch_idvalue+"</mch_id>\r\n"
     nonce_str = "<nonce_str>"+nonce_strvalue+"</nonce_str>\r\n"
     notify_url = "<notify_url>"+notify_urlvalue+"</notify_url>\r\n"
