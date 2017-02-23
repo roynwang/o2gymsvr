@@ -47,7 +47,7 @@ class CurrentVersionItem(generics.RetrieveUpdateDestroyAPIView):
 
 
 class TrainSummary(APIView):
-        def get(self, request, name):
+        def get(self, request, name, gym):
             usr = get_object_or_404(User,name=name)
             all_done = usr.booked_time.filter(done=True).order_by("-date")
             # done count
@@ -77,12 +77,14 @@ class TrainSummary(APIView):
                 average = float(days)/float(done_count)
                 average = int(10 * average)/float(10)
 
+            balance = Balance.objects.get(name=name,gym=int(gym))
             
             return Response({"done": done_count, \
                     "last_train":last_train, \
                     "average":average, \
                     "allcourse": coursecount, \
                     "rest": coursecount - done_count, \
+                    "balance": balance.balance, \
                     }, status=status.HTTP_200_OK)
 
 
