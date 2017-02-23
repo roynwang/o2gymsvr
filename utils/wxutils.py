@@ -97,6 +97,7 @@ def XmlData(orderid,openid,title, price, ip, callbackurl, key):
     sign = "<sign>"+signvalue+"</sign>\r\n"
     xmlend = "</xml>"
     result = xmlstart+appid+attach+body+mch_id+nonce_str+notify_url+openid+out_trade_no+spbill_create_ip+total_fee+trade_type+sign+xmlend
+    print result
     #print result
     return result
      
