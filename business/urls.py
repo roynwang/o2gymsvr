@@ -45,7 +45,7 @@ urlpatterns = patterns('',
 		#body eval
 
 
-                url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/summary/$', UserSummaryView.as_view()),
+                url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/summary/(?P<gym>[0-9]+)/$', UserSummaryView.as_view()),
                 url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/incomplete/$', CoachIncompleteList.as_view()),
                 url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/trial/$', TrialBookView.as_view()),
                 url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/groupcourse/$', CustomerGroupCourseList.as_view()),
