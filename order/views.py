@@ -223,6 +223,7 @@ class ChargeOrder(APIView):
 		billid = getbillid(0, customer.id)
                 balance = BalanceOrder.objects.create(billid=billid,\
                         customer=name,\
+                        gym=gym,\
                         amount=priceitem.price+priceitem.gift,\
                         paid_amount=priceitem.price,\
                         status="unpaid")
