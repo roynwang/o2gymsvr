@@ -767,7 +767,7 @@ class UserSummaryView(APIView):
                 if item.date > endday.date():
                     week_trained += 1
 
-            balance = Balance.objects.get(name=usr.name,gym=int(gym))
+            balance,_ = Balance.objects.get_or_create(name=usr.name,gym=int(gym))
 
             ret = {"name":usr.name,\
                     "displayname":usr.displayname,\
