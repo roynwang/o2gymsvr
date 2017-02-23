@@ -19,6 +19,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, permission_classes
 import json
 import pytz
+import pprint
 from django.http import JsonResponse
 from django.utils import timezone
 from django.db.models import Sum, Count
@@ -29,6 +30,7 @@ from django.conf import settings
 from sms.models import *
 import os
 from django.http import Http404
+import xmltodict
 
 
 def create_pay(request, order,channel):
@@ -172,16 +174,16 @@ from django.views.decorators.csrf import csrf_exempt
 def charge_callback(request):
     #TODO load xml
     result = "SUCCESS"
-    '''
     req = xmltodict.parse(request.body)
-    if req.result_code != "SUCCESS":
+    req  = req['xml']
+    if req['result_code'] != "SUCCESS":
         result = "FAIL"
     else:
         billid = req['out_trade_no']
         balance_order = BalanceOrder.objects.get(billid=billid)
-        usr = get_object_or_404(User, name=balance_order.customer)
-        usr.complete_order(balance_order)
-    '''
+        b,_ = Balance.objects.get_or_create(name=balance_order.customer,gym=balance_order.gym)
+        pprint.pprint(b)
+        b.complete_order(balance_order)
     body = "<xml><return_code><![CDATA["+result+"]]></return_code></xml>"
     return HttpResponse(body, content_type='text/xml')
     
@@ -215,8 +217,9 @@ class ChargeOrder(APIView):
 		#get/create customer
                 customer = get_object_or_404(User,name=name)
                 priceitem = ChargePricing.objects.get(id=request.data['id'])
-                #openid = wxutils.get_openid(request.data['code'])
-                openid = "obzf70EAA4fBncDhQwe9z24l19es"
+                gym = int(request.data['gym'])
+                openid = wxutils.get_openid(request.data['code'])
+                #openid = "obzf70EAA4fBncDhQwe9z24l19es"
 		billid = getbillid(0, customer.id)
                 balance = BalanceOrder.objects.create(billid=billid,\
                         customer=name,\
@@ -226,7 +229,6 @@ class ChargeOrder(APIView):
                 #create wx pay
                 title = "氧气训练馆-充值" + str(priceitem.price+priceitem.gift)
                 charge = wxutils.create_charge(billid,openid,title,priceitem.price,get_ip(request))
-                print charge
                 resp = {
                         "appId":charge['xml']['appid'],\
                         "timeStamp": str(int(time.time())),\
