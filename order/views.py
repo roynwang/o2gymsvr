@@ -230,6 +230,7 @@ class ChargeOrder(APIView):
                 #create wx pay
                 title = "氧气训练馆-充值" + str(priceitem.price+priceitem.gift)
                 charge = wxutils.create_charge(billid,openid,title,priceitem.price,get_ip(request))
+                pprint.pprint(charge)
                 resp = {
                         "appId":charge['xml']['appid'],\
                         "timeStamp": str(int(time.time())),\
