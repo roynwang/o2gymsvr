@@ -63,6 +63,7 @@ class GroupCourseInstanceBook(models.Model):
         course = models.IntegerField()
 	date = models.DateField()
         gym = models.IntegerField() 
+        price = models.IntegerField(default=0)
         
         def consume(self):
             pass

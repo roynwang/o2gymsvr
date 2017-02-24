@@ -20,6 +20,7 @@ import calendar
 from django.conf import settings
 import json
 from django.http import JsonResponse
+from rest_framework.exceptions import NotAcceptable
 
 
 # Create your views here.
@@ -740,7 +741,19 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
 		return ret
 
 	def create(self, request, *args, **kwargs):
+                #calculate dispcount
+                
+                discount = get_discount(request.data['customer'])
+                gc = GroupCourseInstance.objects.get(id=request.data['course'])
+                amount = gc.price - (gc.price * discount / 100)
+
+                balance = Balance.objects.get(name=request.data['customer'],gym=int(request.data["gym"]))
+                if not balance.precheck(amount):
+                    raise NotAcceptable('infficient balance')
+                balance.consume(amount)
+                request.data['price'] = amount
 		ret = super(GymGroupCourseDayBookList, self).create(request, args,kwargs)
+                #consume balance
                 return ret
                 #create consumption log
 
