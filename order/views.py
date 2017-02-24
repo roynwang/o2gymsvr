@@ -228,7 +228,7 @@ class ChargeOrder(APIView):
                         paid_amount=priceitem.price,\
                         status="unpaid")
                 #create wx pay
-                title = "氧气训练馆-充值" + str(priceitem.price+priceitem.gift)
+                title = "氧气训练馆-充值" + str(priceitem.price+priceitem.gift) + "元"
                 charge = wxutils.create_charge(billid,openid,title,priceitem.price,get_ip(request))
                 pprint.pprint(charge)
                 resp = {
