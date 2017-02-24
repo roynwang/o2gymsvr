@@ -718,6 +718,14 @@ class GroupCourseBookItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = GroupCourseInstanceBook.objects.all()
 	serializer_class = GroupCourseInstanceBookSerializer
 
+	def destroy(self, request, *args, **kwargs):
+                book = GroupCourseInstanceBook.objects.get(id=self.kwargs.get("pk"))
+                balance =  Balance.objects.get(name=book.customer,gym=book.gym)
+                balance.cancelconsume(book.price)
+	        ret = super(GroupCourseBookItem, self).destroy(request, args,kwargs)
+                return ret
+
+
 class GroupCourseInstanceItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = GroupCourseInstance.objects.all()
 	serializer_class = GroupCourseInstanceSerializer
