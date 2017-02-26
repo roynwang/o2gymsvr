@@ -37,9 +37,9 @@ class CrawlTask(models.Model):
 
         def handle_list(self):
             handler = ListHandler(self)
-            for groupon in handler.extract_groupon():
+            groupons = handler.get_groupon_list()
+            for groupon in groupons:
                 #insert into groupon table
-                print "xxxxxxxxxxxxxx"
                 sold = 0
                 #if existed
                 if CrawlGrouponCount.objects.filter(grouponid=groupon['grouponid'],date=self.date).count() != 0:
@@ -63,13 +63,25 @@ class CrawlTask(models.Model):
                             sold = sold)
 
             #skip creating sub tasks if not the first page
-            if handler.get_current_page_num() != 1:
+            if len(groupons) == 40:
+                pagenum = handler.get_current_page_num()
+                newpage = pagenum
+                q = self.keyword.replace(" ","+")
+                url = "http://t.dianping.com/list/"+self.city+"?q="+ q + "&pageIndex=" + str(newpage)
+                CrawlTask.objects.get_or_create(\
+                        date=self.date,\
+                        keyword=self.keyword,\
+                        url=url)
+
+            '''
+            if not handler.is_first_page():
                 return
             for url in handler.extract_page_url():
                 CrawlTask.objects.create(\
                         date=self.date,\
                         keyword=self.keyword,\
                         url=url)
+            '''
                 
 
         

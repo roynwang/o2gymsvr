@@ -6,4 +6,5 @@ urlpatterns = patterns('',
         url(r'^api/cwl/task/$', TaskList.as_view()),
         url(r'^api/cwl/task/latest/$', LatestTask.as_view()),
         url(r'^api/cwl/task/(?P<pk>[0-9]+)/$', TaskItem.as_view()),
+        url(r'^api/cwl/task/(?P<pk>[0-9]+)/extract', TaskItemExtract.as_view()),
 )

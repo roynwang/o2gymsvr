@@ -9,6 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination 
 from crawl.models import *
 from crawl.serializers import *
+import pprint
 
 
 # Create your views here.
@@ -18,13 +19,12 @@ class CrawlShopCountList(generics.ListCreateAPIView):
         pagination_class = None
 
 class TaskList(generics.ListCreateAPIView):
-	queryset = CrawlTask.objects.filter(status="inited")
+	queryset = CrawlTask.objects.filter(status="init")
 	serializer_class = CrawlTaskSerializer
 
 class LatestTask(generics.RetrieveAPIView):
 	serializer_class = CrawlTaskSerializer
 	def get_object(self):
-
             query  =  CrawlTask.objects.filter(status="init").order_by("created")
             if query.count() == 0:
                 return None
@@ -33,7 +33,7 @@ class LatestTask(generics.RetrieveAPIView):
             if ret.url == "":
                 q = ret.keyword.replace(" ","+")
                 ret.url = "http://t.dianping.com/list/"+ret.city+"?q="+q
-                ret.save()
+            ret.save()
             return ret
 
 class TaskItem(generics.RetrieveUpdateAPIView):
@@ -44,4 +44,20 @@ class TaskItem(generics.RetrieveUpdateAPIView):
             item = self.get_object()
             item.handle_list()
             item.status = "done"
+            item.save()
             return ret
+
+
+class TaskItemExtract(APIView):
+        def get(self, request, pk):
+            item = get_object_or_404(CrawlTask, id=pk)
+            '''
+            lh = ListHandler(item)
+            gl = lh.get_groupon_list()
+            pagenum = lh.get_current_page_num()
+            links = lh.extract_page_url()
+            '''
+            item.handle_list()
+            return Response({"msg":"ok"})
+            
+
