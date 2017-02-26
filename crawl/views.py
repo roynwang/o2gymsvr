@@ -25,10 +25,10 @@ class TaskList(generics.ListCreateAPIView):
 class LatestTask(generics.RetrieveAPIView):
 	serializer_class = CrawlTaskSerializer
 	def get_object(self):
-            query  =  CrawlTask.objects.filter(status="init").order_by("created")
+            query  =  CrawlTask.objects.filter(status="init").order_by("keyword")
             if query.count() == 0:
                 return None
-            ret =  CrawlTask.objects.filter(status="init").order_by("created")[0]
+            ret =  CrawlTask.objects.filter(status="init").order_by("keyword")[0]
             ret.status = "crawling"
             if ret.url == "":
                 q = ret.keyword.replace(" ","+")
