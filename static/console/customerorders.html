@@ -12,22 +12,23 @@
                 <div class="row" ng-show="demo.summary.balance != 0 ">
                     <div class="col-lg-4 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
-                            <li class="text-center" style="border:solid 2px #1fb5ad;color:#1fb5ad;font-weight:600">余额 : {{demo.summary.balance}}</li>
-                        </ul>
-                    </div>
-                    <div class="col-lg-3 invoice-block">
-                        <ul class="unstyled amounts" style="padding-left:0">
                             <li class="text-center">完成私教课 : {{demo.summary.pt_count}}</li>
                         </ul>
                     </div>
-                    <div class="col-lg-3 invoice-block">
+                    <div class="col-lg-4 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
                             <li class="text-center">完成团体课 : {{demo.summary.gc_count}}</li>
                         </ul>
                     </div>
                     <div class="col-lg-2 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
-                            <li class="text-center grand-total">预约</li>
+                            <li class="text-center" style="color:#1fb5ad;font-weight:600">余额 : {{demo.summary.balance}}</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+							<li class="text-center grand-total"><a style="color:white"
+								href="#/charge/{{demo.currentcoach}}/{{demo.customername}}">预约</a></li>
                         </ul>
                     </div>
                 </div>

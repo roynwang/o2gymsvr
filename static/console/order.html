@@ -3,10 +3,10 @@
 		<header class="panel-heading">
 			<h4 class="text-center">
 				<i ng-click="ctrl.gohome()" class="fa fa-arrow-circle-o-left pull-left" style="margin-left: 20px;font-size:30px; color:lightgrey"></i>
-				<i ng-if="ctrl.order.customerdetail.flag==0"  style="color:#ccc" class="fa fa-circle-o"></i>
-				<i ng-if="ctrl.order.customerdetail.flag==1"  style="color:#a9d86e" class="fa fa-circle"></i>
-				<i ng-if="ctrl.order.customerdetail.flag==2"  style="color:#FCB322" class="fa fa-circle"></i>
-				{{ctrl.order.customerdetail.displayname}}
+				<i ng-if="ctrl.customerdetail.flag==0"  style="color:#ccc" class="fa fa-circle-o"></i>
+				<i ng-if="ctrl.customerdetail.flag==1"  style="color:#a9d86e" class="fa fa-circle"></i>
+				<i ng-if="ctrl.customerdetail.flag==2"  style="color:#FCB322" class="fa fa-circle"></i>
+				{{ctrl.customerdetail.displayname}}
 				<ul class="nav nav-tabs pull-right" style="position: relative;
 					bottom: -21px;right: 20px;">
 					<li class="panel-header-tab {{ctrl.activetab[0]?'active':''}}">
@@ -197,15 +197,15 @@
 				</div>
 			</div>
 			<div class="row" style="padding-left:10px">
-				<img ng-src="{{ctrl.order.customerdetail.avatar}}?imageView2/1/w/200/h/200"
+				<img ng-src="{{ctrl.customerdetail.avatar}}?imageView2/1/w/200/h/200"
 				style="-webkit-border-radius: 4px;height: 80px;float:left">
 				<div style="margin-left:10px;display:inline-block;width: calc(100% - 90px);" class="row">
 					<div style="float:left; padding-right: 30px;">
-						<p>{{ctrl.order.customerdetail.displayname}}</p>
-						<p>{{ctrl.order.customerdetail.name}}</p>
-						<p>{{ctrl.order.customerdetail.birthday}}</p>
+						<p>{{ctrl.customerdetail.displayname}}</p>
+						<p>{{ctrl.customerdetail.name}}</p>
+						<p>{{ctrl.customerdetail.birthday}}</p>
 					</div>
-					<div style="margin-right:30px" ng-model="ctrl.booked">
+					<div ng-show="ctrl.ordertype=='normal'" style="margin-right:30px" ng-model="ctrl.booked">
 						<p>过期时间:{{ctrl.order.endtime}}</p>
 						<p>课程状态(已上:{{ctrl.done.length}}/待上:{{ctrl.booked.length}}/待约{{ctrl.sum
 						- ctrl.booked.length - ctrl.done.length}})</p>
@@ -218,7 +218,6 @@
 							</div>
 						</div>
 					</div>
-
 				</div>
 			</div>
 			<div class="row" style="padding-top:30px;margin-left:10px;margin-right:10px">

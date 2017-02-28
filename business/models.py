@@ -5,6 +5,7 @@ from utils import smsutils
 from django.shortcuts import get_object_or_404
 #from usr.models import *
 import json
+from order.models import *
 
 class ChargePricing(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -117,11 +118,18 @@ class Gym(models.Model):
 		return ret
 	def get_all_customers(self):
 		customlist = self.get_customers()
+                customlist += self.get_charge_customers()
 		if self.shared_gyms != None and self.shared_gyms != '':
 			for g in self.get_shared_with():
 				customlist += g.get_customers()
+                                customlist += g.get_charge_customers()
 		customlist = list(set(customlist))
 		return customlist
+        def get_charge_customers(self):
+                ret = list(BalanceOrder.objects.filter(gym=self.id,status="completed") \
+                        .values_list("customer",flat=True))
+                print ret
+                return ret
 
         def get_admin(self):
             ret = []
