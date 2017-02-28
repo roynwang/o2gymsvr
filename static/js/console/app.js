@@ -414,6 +414,16 @@ app.factory("$customersvc", function(Restangular) {
         })
         return c
     }
+	function loadcustomer(key, onsuccess){
+		var ret = getcustomer(key)
+		if(!ret){
+            Restangular.one("api/", key)
+                .get()
+				.then(function(res){
+					onsuccess && onsuccess(res)
+				})
+		}
+	}
 
     function getcustomerbydisplayname(key) {
         var c = _.find(customers, {
@@ -438,6 +448,7 @@ app.factory("$customersvc", function(Restangular) {
     return {
         getcustomers: getcustomers,
         getcustomer: getcustomer,
+		loadcustomer: loadcustomer,
         gettrialcustomers: gettrialcustomers,
         getcustomerbydisplayname: getcustomerbydisplayname,
         flag: flag,
@@ -520,6 +531,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/order/:coachname/:orderid",
             templateUrl: "/static/console/order.html",
         })
+        .state('chargeorderdetail', {
+            url: "/charge/:coachname/:customername",
+            templateUrl: "/static/console/order.html",
+        })
         .state('feedback', {
             url: "/feedback",
             templateUrl: "/static/console/feedback.html",
@@ -591,9 +606,20 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
         that.coaches = []
         that.coach = {}
         that.role = $.cookie('role')
+        that.currentcoach = ""
+        that.customername = $stateParams.customername
 
         Restangular.one('api/g/', $.cookie("gym")).get().then(function(gym) {
             that.coaches = gym.coaches_set
+            Restangular.one("api/", $stateParams.customername)
+                .one("coach")
+                .get()
+                .then(function(res) {
+                    that.currentcoach = res.coach
+                    if (res.coach == '') {
+                        that.currentcoach = that.coaches[0].name
+                    }
+                })
         })
 
         that.statusmap = {
@@ -650,9 +676,11 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                 .then(function(data) {
                     c = data
                     that.customer_displayname = c.displayname
+                    that.customer = c
                 })
         } else {
             that.customer_displayname = c.displayname
+            that.customer = c
         }
         that.nexturl = undefined
         that.prevurl = undefined
@@ -688,20 +716,20 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
             })
         }
 
-		that.refreshBalance = function() {
-			var gymid = $.cookie("gym")
+        that.refreshBalance = function() {
+            var gymid = $.cookie("gym")
             Restangular.one('api/', $stateParams.customername)
-                .one("summary/",gymid)
+                .one("summary/", gymid)
                 .get()
                 .then(function(data) {
-					that.summary = data
-				})
-		}
+                    that.summary = data
+                })
+        }
 
         that.refresh = function() {
-			that.refreshBalance()
+            that.refreshBalance()
             Restangular.one('api/', $stateParams.customername)
-                .one("o/" )
+                .one("o/")
                 .get()
                 .then(function(data) {
                     that.nexturl = data.next
@@ -951,12 +979,20 @@ app.controller("FeedbackControl", ['$scope', "Restangular",
     }
 ])
 
-app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader", "Lightbox",
-    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader, Lightbox) {
+app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', 'SweetAlert', "$http", "$uploader", "Lightbox", "$customersvc",
+    function($scope, Restangular, NgTableParams, $stateParams, $state, SweetAlert, $http, $uploader, Lightbox, $customersvc) {
         console.log($stateParams)
         var that = this
         var coachname = $stateParams.coachname
         var orderid = $stateParams.orderid
+        that.ordertype = "normal"
+        if ($stateParams.customername) {
+            that.customername = $stateParams.customername
+            that.ordertype = "charge"
+            $customersvc.loadcustomer(that.customername, function(res){
+				that.customerdetail = res
+			});
+        }
 
         that.role = $.cookie('role')
 
@@ -1130,8 +1166,13 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 _.each(addlist, function(item, i) {
                     var datestr = item.date.replace(/-/g, "")
                     item.coach = item.coachprofile.id
-                    item.custom = that.order.customerdetail.id
-                    item.order = that.order.id
+                    item.custom = that.customerdetail.id
+					if(that.ordertype == "charge"){
+						item.coursetype = "charge"
+					} else {
+	                    item.order = that.order.id
+					}
+					
                     Restangular.one("api/", item.coachprofile.name)
                         .post("b/" + datestr, item)
                         .then(function(data) {
@@ -1300,7 +1341,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             var r = _.filter(that.tableParams.data, function(item) {
                 return item.pendingaction != "remove"
             })
-            if (r.length == that.sum) {
+            if (that.ordertype == "normal" && r.length == that.sum) {
                 return
             }
             that.tableParams.data.push({
@@ -1380,14 +1421,33 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
 
 
         that.reload = function() {
-            Restangular.one("api/", coachname)
-                .one("o/", orderid)
-                .get()
-                .then(function(data) {
+            var query = null
+            if (that.ordertype == 'charge') {
+                query = Restangular.one("api/", that.customername).one("o/", "charge")
+                query.get().then(function(data) {
+                    that.booked = _.where(data, {
+                        done: false
+                    })
+                    that.done = _.where(data, {
+                        done: true
+                    })
+                    that.tableParams = new NgTableParams({
+                        count: 5,
+                        sorting: {},
+                    }, {
+                        counts: [],
+                        dataset: data,
+                    });
+                    that.refreshtimetable()
+                })
+            } else {
+                query = Restangular.one("api/", coachname).one("o/", orderid)
+                query.get().then(function(data) {
                     //that.coach = data.coachdetail
                     //get product
                     that.order = data
-                    that.customername = that.order.customerdetail.name
+                        //that.customername = that.order.customerdetail.name
+                    that.customerdetail = that.order.customerdetail
                     that.customerid = that.order.customerdetail.id
                     Restangular.one("api/p", data.product)
                         .get()
@@ -1412,6 +1472,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                             that.refreshtimetable()
                         })
                 })
+            }
         }
         that.toggle = function(tab) {
             that.activetab = [0, 0, 0, 0]
@@ -1667,7 +1728,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
 
 
         function validate() {
-			that.mo.ordertype = that.ordertype
+            that.mo.ordertype = that.ordertype
             if (that.mo.subsidy == undefined) {
                 that.mo.subsidy = 0
             }
@@ -2581,16 +2642,16 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
             var g = 0
 
             $scope.coursecount = 0
-			// check update
-			Restangular.one("api/",$.cookie('user'))
-				.one("version","web")
-				.get()
-				.then(function(data){
-					if(data.version == 0){
-						window.location.href="/whatsnew/"
-						data.version = 1
-					}
-				});
+                // check update
+            Restangular.one("api/", $.cookie('user'))
+                .one("version", "web")
+                .get()
+                .then(function(data) {
+                    if (data.version == 0) {
+                        window.location.href = "/whatsnew/"
+                        data.version = 1
+                    }
+                });
 
 
             $customersvc.getcustomers(function(data) {

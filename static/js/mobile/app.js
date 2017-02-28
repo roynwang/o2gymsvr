@@ -380,6 +380,13 @@ app.factory("$usersvc", function(Restangular) {
     var usr = false
     var customer = false
 
+    function getsummary(username, gymid, onsuccess, onfail) {
+        Restangular.one("api/", username)
+            .one("summary/", gymid)
+            .get()
+            .then(onsuccess, onfail)
+    }
+
     function changepwd(username, vcode, pwd, onsuccess, onfail) {
         $.post("/api/sms/" + username + "/", {
                     vcode: vcode,
@@ -498,7 +505,8 @@ app.factory("$usersvc", function(Restangular) {
         getcustomer: getcustomer,
         sendvcode: sendvcode,
         loginwithvcode: loginwithvcode,
-        changepwd: changepwd
+        changepwd: changepwd,
+        getsummary: getsummary
     }
 })
 app.controller("LoginCtrl", ["$state", "$usersvc", "$mdDialog",
@@ -803,51 +811,67 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     } else {
 
                         //余额预定
-
-                        var showunmatch = function() {
-                            that.showtoast = true
-                            $mdToast.show(
-                                $mdToast.simple()
-                                .textContent('没有匹配的订单')
-                                .parent(angular.element(document.querySelector("#toast-placeholder")))
-                                .hideDelay(3000)
-                            ).then(function() {
+                        $usersvc.getsummary(customer.name,that.user.gym_id[0],function(summary) {
+							if(summary.balance > 0){
+                                that.pendingbook = {
+                                    date: that.selected.Format("yyyy-MM-dd"),
+                                    hour: c.index,
+                                    coach: that.user.id,
+                                    custom: customer.id,
+									coursetype: "charge"
+                                }
                                 $timeout(function() {
-                                    that.showtoast = false
-                                }, 500)
-                            });
-                            that.querystatus = "unmatch"
-                        }
+                                    that.querystatus = "pending"
+                                }, 1000)
+								return
+							}
+                            var showunmatch = function() {
+                                that.showtoast = true
+                                $mdToast.show(
+                                    $mdToast.simple()
+                                    .textContent('没有匹配的订单')
+                                    .parent(angular.element(document.querySelector("#toast-placeholder")))
+                                    .hideDelay(3000)
+                                ).then(function() {
+                                    $timeout(function() {
+                                        that.showtoast = false
+                                    }, 500)
+                                });
+                                that.querystatus = "unmatch"
+                            }
 
-                        if (customer.trial == null) {
-                            return
-                        }
-
-                        swal({
-                            title: "体验预约",
-                            text: "无匹配订单，确认是体验预约吗?",
-                            type: "info",
-                            showCancelButton: true,
-                            closeOnConfirm: false,
-                            confirmButtonText: "是",
-                            cancelButtonText: "否",
-                            closeOnConfirm: true
-                        }, function(yes) {
-                            if (!yes) {
-                                showunmatch()
+                            if (customer.trial == null) {
                                 return
                             }
-                            that.pendingbook = {
-                                date: that.selected.Format("yyyy-MM-dd"),
-                                hour: c.index,
-                                coach: that.user.id,
-                                custom: customer.id,
-                            }
-                            $timeout(function() {
-                                that.querystatus = "pending"
-                            }, 1000)
-                            console.log(that.pendingbook)
-                        });
+
+                            swal({
+                                title: "体验预约",
+                                text: "无匹配订单，确认是体验预约吗?",
+                                type: "info",
+                                showCancelButton: true,
+                                closeOnConfirm: false,
+                                confirmButtonText: "是",
+                                cancelButtonText: "否",
+                                closeOnConfirm: true
+                            }, function(yes) {
+                                if (!yes) {
+                                    showunmatch()
+                                    return
+                                }
+                                that.pendingbook = {
+                                    date: that.selected.Format("yyyy-MM-dd"),
+                                    hour: c.index,
+                                    coach: that.user.id,
+                                    custom: customer.id,
+									coursetype: "trial"
+                                }
+                                $timeout(function() {
+                                    that.querystatus = "pending"
+                                }, 1000)
+                                console.log(that.pendingbook)
+                            });
+                        }, function() {
+						})
                     }
                 },
                 function(data) {
@@ -1753,13 +1777,13 @@ app.controller("CustomerDetailCtrl", ["$state", "$usersvc", "Restangular", "$mdD
     }
 ])
 
-app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog", "$ordersvc", "SweetAlert", "Restangular","$usersvc",
+app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog", "$ordersvc", "SweetAlert", "Restangular", "$usersvc",
     function($scope, $state, $usersvc, $mdDialog, $ordersvc, SweetAlert, Restangular, $usersvc) {
         var that = this
         that.cancel = function() {
             $mdDialog.hide()
         }
-		that.coach = {}
+        that.coach = {}
 
 
         that.init = function() {
@@ -1783,11 +1807,11 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
         function validate() {
 
             var data = that.mo
-			if (that.mo.name == undefined){
-				that.mo.name = ""
-			}
+            if (that.mo.name == undefined) {
+                that.mo.name = ""
+            }
 
-            if (that.mo.displayname.toString().length == 0 ) {
+            if (that.mo.displayname.toString().length == 0) {
                 swal("", "请输入客户姓名", "warning")
                 return false
             }
@@ -1796,7 +1820,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
                 swal("", "请输入正确的11位电话号码或留空", "warning")
                 return false
             }
-			/*
+            /*
             for (var k in data) {
                 if (data[k] == undefined || data[k].length == 0) {
                     swal("", "请填完所有选项", "warning")
@@ -1829,7 +1853,7 @@ app.controller("NewOrderDialgCtrl", ["$scope", "$state", "$usersvc", "$mdDialog"
                         return
                     }
                     that.mo.trial = that.gymid
-					that.mo.trial_coach = that.user.displayname
+                    that.mo.trial_coach = that.user.displayname
                     Restangular.one("api")
                         .post("u", that.mo)
                         .then(function(data) {
