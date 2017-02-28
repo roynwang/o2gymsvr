@@ -208,22 +208,26 @@ class ScheduleList(generics.ListCreateAPIView):
 		#ret = super(ScheduleList, self).create(request, args,kwargs)
 		customer = User.objects.get(id=request.data["custom"])
 		coach = User.objects.get(id=request.data["coach"])
+
                 order = None
+                coursetype = "trial"
+
                 if "order" in request.data:
-         		order = Order.objects.get(id=request.data["order"])
+         	        order = Order.objects.get(id=request.data["order"])
+                        coursetype = "normal"
+
+                if "coursetype" in request.data and request.data['coursetype'] == "charge":
+                        coursetype = "charge"
+
 		book = Schedule.objects.create(coach=coach,
 				custom=customer,
 				date= datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d").date(),
 				hour=request.data["hour"],
-				order=order)
+				order=order,
+                                coursetype=coursetype)
 		if "done" in request.data:
 			book.done = request.data["done"]
 			book.save()
-                        # threshold mesg
-                #if is an charge book
-                if "coursetype" in request.data and request.data['coursetype'] == "charge":
-                        book.coursetype = "charge"
-                        book.save()
 
 		sl = ScheduleSerializer(instance=book)
 		print sl.data
