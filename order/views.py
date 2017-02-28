@@ -92,6 +92,10 @@ class AvailableOrderItem(generics.RetrieveAPIView):
                 raise Http404
 
 
+class ChargeScheduleList(generics.ListAPIView):
+	serializer_class = ScheduleSimpleSerializer
+        def get_queryset(self):
+            return Schedule.objects.filter(order=None)
         
 
 class OrderItemById(generics.RetrieveUpdateDestroyAPIView):
