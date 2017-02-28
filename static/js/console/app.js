@@ -688,9 +688,20 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
             })
         }
 
-        that.refresh = function() {
+		that.refreshBalance = function() {
+			var gymid = $.cookie("gym")
             Restangular.one('api/', $stateParams.customername)
-                .one("o/")
+                .one("summary/",gymid)
+                .get()
+                .then(function(data) {
+					that.summary = data
+				})
+		}
+
+        that.refresh = function() {
+			that.refreshBalance()
+            Restangular.one('api/', $stateParams.customername)
+                .one("o/" )
                 .get()
                 .then(function(data) {
                     that.nexturl = data.next
