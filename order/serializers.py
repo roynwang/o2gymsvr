@@ -3,6 +3,7 @@ from order.models import *
 from business.models import *
 from business.serializers import *
 from usr.serializers import *
+from usr.models import *
 import datetime
 
 
@@ -10,6 +11,23 @@ import datetime
 class ProductSimpleSerializer(serializers.ModelSerializer):
 	class Meta:
 		model =	Product
+
+class BalanceOrderSerializer(serializers.ModelSerializer):
+        customerdetail = serializers.SerializerMethodField()
+        paid_day = serializers.SerializerMethodField()
+
+	class Meta:
+		model =	BalanceOrder
+
+        def get_customerdetail(self,obj):
+                customer = get_object_or_404(User, name=obj.customer)
+                s = SimpleUserSerilaizer(customer)
+                return s.data
+
+        def get_paid_day(self,obj):
+                return (obj.updated + datetime.timedelta(hours=8)).date()
+
+
 
 class OrderDetailSerializer(serializers.ModelSerializer):
 	coachdetail = SimpleUserSerilaizer(source="coach",read_only = True)

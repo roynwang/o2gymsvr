@@ -1642,8 +1642,9 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         that.ordertype = "normal"
 
         that.order_display = {
-            "groupon": "团购订单",
-            "normal": "普通订单"
+            "groupon": "包月",
+            "normal": "普通",
+            "charge": "充值"
         }
 
         Restangular.one("api/", coachname)
@@ -1655,6 +1656,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
 
 
         function validate() {
+			that.mo.ordertype = that.ordertype
             if (that.mo.subsidy == undefined) {
                 that.mo.subsidy = 0
             }
@@ -2316,6 +2318,18 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                         dataset: data
                     });
                 })
+            Restangular.one('api/g', gymid)
+                .customGETLIST('chargeorder', {
+                    start: that.startday.Format("yyyyMMdd"),
+                    end: that.endday.Format("yyyyMMdd")
+                })
+                .then(function(data) {
+                    that.chargeOrders = data
+                    that.chargeOrderTableParams = new NgTableParams({}, {
+                        dataset: data
+                    });
+                })
+
 
             Restangular.one('api/g', gymid).get().then(function(gym) {
                 $scope.coaches = gym.coaches_set
