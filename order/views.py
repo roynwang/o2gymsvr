@@ -94,8 +94,11 @@ class AvailableOrderItem(generics.RetrieveAPIView):
 
 class ChargeScheduleList(generics.ListAPIView):
 	serializer_class = ScheduleSimpleSerializer
+        pagination_class = None
         def get_queryset(self):
-            return Schedule.objects.filter(order=None)
+	    usr = get_object_or_404(User, name=self.kwargs["name"])
+            return Schedule.objects.filter(order=None,coursetype="charge",custom=usr).order_by("-date")
+
         
 
 class OrderItemById(generics.RetrieveUpdateDestroyAPIView):
