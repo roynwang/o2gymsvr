@@ -146,6 +146,15 @@ class GymScheduleList(generics.ListAPIView):
 		queryset = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True), date=date).order_by("hour")
 		return queryset
 
+class CurrentCoach(APIView):
+        def get(self, request, name):
+            usr = get_object_or_404(User, name = name)
+            course = usr.booked_time.order_by("-date")
+            coachname = ""
+            if course.count() != 0:
+                coachname = course[0].coach.name
+            return Response({"coach":coachname}, status=status.HTTP_200_OK)
+
 class GymLoadList(APIView):
         def get(self, request, pk, date):
 	    gym = get_object_or_404(Gym, id=self.kwargs.get("pk"))
@@ -211,6 +220,10 @@ class ScheduleList(generics.ListCreateAPIView):
 			book.done = request.data["done"]
 			book.save()
                         # threshold mesg
+                #if is an charge book
+                if "coursetype" in request.data and request.data['coursetype'] == "charge":
+                        book.coursetype = "charge"
+
 		sl = ScheduleSerializer(instance=book)
 		print sl.data
                 #if is an order book
