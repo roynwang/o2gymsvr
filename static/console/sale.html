@@ -164,5 +164,22 @@
 		</table>
 	</div>
 	</section>
+	<section class="panel" ng-show="ctrl.chargeOrders.length > 0">
+	<header class="panel-heading">
+		充值订单
+	</header>
+	<div class="panel-body">
+		<table ng-table="ctrl.chargeOrderTableParams" class="table table-condensed table-striped">
+			<tr ng-repeat="row in $data" style="color:#333">
+				<td data-title="'日期'" sortable="'paid_day'">{{row.paid_day}}</td>
+				<td data-title="'姓名'">{{row.customerdetail.displayname}}</td>
+				<td data-title="'电话'">{{row.customerdetail.name}}</td>
+				<td data-title="'性别'">{{row.customerdetail.sex?"男":"女"}}</td>
+				<td data-title="'金额'">{{row.paid_amount}}</td>
+				<td data-title="'赠送'">{{row.amount-row.paid_amount}}</td>
+			</tr>
+		</table>
+	</div>
+	</section>
     </div>
 </div>

@@ -15,7 +15,9 @@
                     <ul class="uib-dropdown-menu" role="menu" aria-labelledby="split-button">
                         <li role="menuitem" ng-click="ctrl.ordertype='normal'"><a>普通订单</a>
                         </li>
-                        <li role="menuitem" ng-click="ctrl.ordertype='groupon'"><a>团购订单</a>
+                        <li role="menuitem" ng-click="ctrl.ordertype='groupon'"><a>包月订单</a>
+                        </li>
+                        <li role="menuitem" ng-click="ctrl.ordertype='charge'"><a>充值订单</a>
                         </li>
                     </ul>
                 </div>
@@ -40,16 +42,29 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-6" ng-hide="ctrl.ordertype == 'charge'">
                     <div class="input-group input-group-lg m-bot15">
                         <span class="input-group-addon btn-primary"><i class="fa  fa-calendar-o"></i></span>
                         <input type="number" class="form-control" placeholder="课程数量(节)" ng-model="ctrl.mo.product_amount">
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-6" ng-hide="ctrl.ordertype == 'charge'">
                     <div class="input-group input-group-lg m-bot15">
                         <span style="padding-left: 18px;padding-right: 18px;" class="input-group-addon btn-primary"><i class="fa fa-cny"></i></span>
                         <input type="number" class="form-control" placeholder="课程总价(元)" ng-model="ctrl.mo.product_price">
+                    </div>
+                </div>
+                <div class="col-lg-6" ng-show="ctrl.ordertype == 'charge'">
+                    <div class="input-group input-group-lg m-bot15">
+                        <span style="padding-left: 18px;padding-right: 18px;" class="input-group-addon btn-primary"><i class="fa fa-cny"></i></span>
+                        <input type="number" class="form-control" placeholder="充值金额(元)" ng-model="ctrl.mo.product_price">
+                    </div>
+                </div>
+                <div class="col-lg-6" ng-show="ctrl.ordertype == 'charge'">
+                    <div class="input-group input-group-lg m-bot15">
+                        <span class="input-group-addon btn-primary"><i class="fa  fa-calendar-o"></i></span>
+                        <input type="number" class="form-control" placeholder="赠送金额(元)"
+						ng-model="ctrl.mo.product_promotion">
                     </div>
                 </div>
             </div>
