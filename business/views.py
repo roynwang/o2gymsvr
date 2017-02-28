@@ -223,6 +223,7 @@ class ScheduleList(generics.ListCreateAPIView):
                 #if is an charge book
                 if "coursetype" in request.data and request.data['coursetype'] == "charge":
                         book.coursetype = "charge"
+                        book.save()
 
 		sl = ScheduleSerializer(instance=book)
 		print sl.data
