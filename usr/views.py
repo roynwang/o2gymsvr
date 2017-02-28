@@ -84,7 +84,7 @@ class TrainSummary(APIView):
                     "average":average, \
                     "allcourse": coursecount, \
                     "rest": coursecount - done_count, \
-                    "balance": balance.balance, \
+                    #"balance": balance.balance, \
                     }, status=status.HTTP_200_OK)
 
 
