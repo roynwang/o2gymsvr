@@ -769,7 +769,9 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
 	def create(self, request, *args, **kwargs):
                 #calculate dispcount
                 
-                discount = get_discount(request.data['customer'])
+		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+                _, discount = get_discount(request.data['customer'], date)
+
                 gc = GroupCourseInstance.objects.get(id=request.data['course'])
                 amount = gc.price - (gc.price * discount / 100)
 
@@ -782,6 +784,11 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
                 #consume balance
                 return ret
                 #create consumption log
+class UserDateDiscountView(APIView):
+        def get(self, request, name, date):
+		date = datetime.datetime.strptime(date,"%Y%m%d")
+                dura, discount = get_discount(name,date.date())
+                return Response({"dura":dura,"discount":discount},status.HTTP_200_OK)
 
 
 class UserSummaryView(APIView):
@@ -814,17 +821,51 @@ class UserSummaryView(APIView):
                     "pt_count":pt_count,\
                     "gc_count":gc_count,\
                     "week_trained":week_trained,\
-                    "discount":get_discount(usr.name)}
+                    "discount": 0}
             #get
             return Response(ret, status=status.HTTP_200_OK)
 
-def get_discount(name):
 
+def get_last_trained(name):
             usr = get_object_or_404(User, name=name)
 
-            pt = Schedule.objects.filter(custom=usr,done=True)
+            today = datetime.datetime.today()
+            last_pt = None
+            if Schedule.objects.filter(custom=usr,done=True).order_by("-date").count() >0 :
+                last_pt = Schedule.objects.filter(custom=usr,done=True).order_by("-date")[0].date
 
+            last_gc = None
+            last_gc_query = GroupCourseInstanceBook.objects \
+                    .filter(customer=name,date__lte=datetime.datetime.today()) \
+                    .order_by("-date")
+            if last_gc_query.count() > 0:
+                last_gc = last_gc_query[0].date
+
+            last_trained_date = last_pt
+            
+            if last_trained_date is None:
+                last_trained_date = last_gc
+
+            if last_trained_date is None:
+                return None
+
+            if not last_gc is None and last_trained_date < last_gc:
+                last_trained_date = last_gc
+            return last_trained_date
+
+
+def get_discount(name, coursedate):
+            last_trained_date = get_last_trained(name)
+            if last_trained_date is None:
+                return (0,0)
+            dura = (coursedate - last_trained_date).days
+            if dura <= 2:
+                return (dura,15)
+            if dura <= 3:
+                return (dura,10)
+            return (0,0)
             #get groupcourse count
+            '''
             gc = GroupCourseInstanceBook.objects.filter(customer=name,date__lte=datetime.datetime.today())
 
             endday = datetime.datetime.today() + datetime.timedelta(days=-7)
@@ -841,6 +882,7 @@ def get_discount(name):
                 return 15
             if week_trained >= 2:
                 return 10
+            '''
             return 0
 
             
