@@ -221,6 +221,7 @@ class ScheduleList(generics.ListCreateAPIView):
                 order = None
                 coursetype = "trial"
                 price = 0
+                discount_amount = 0
 
                 if "order" in request.data:
          	        order = Order.objects.get(id=request.data["order"])
@@ -232,6 +233,7 @@ class ScheduleList(generics.ListCreateAPIView):
 			day = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d").date(),
                         _,discount = get_discount(customer.name, day)
                         amount = price - int(price*discount/100)
+                        discount_amount = int(price*discount/100)
                         gym = coach.get_coach_gym()
                         balance = Balance.objects.get(name=customer.name,gym=gym.id)
                         if balance.precheck(amount):
@@ -245,7 +247,8 @@ class ScheduleList(generics.ListCreateAPIView):
 				hour=request.data["hour"],
 				order=order,
                                 coursetype=coursetype,
-                                price=price)
+                                price=price,
+                                discount=discount_amount)
 		if "done" in request.data:
 			book.done = request.data["done"]
 			book.save()

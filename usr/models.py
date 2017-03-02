@@ -115,9 +115,11 @@ class Balance(models.Model):
 	name = models.CharField(max_length=64, db_index=True)
         gym = models.IntegerField()
         balance = models.IntegerField(default=0)
+        gift = models.IntegerField(default=0)
 
-        def charge(self, amount):
+        def charge(self, amount, gift = 0):
             self.balance += int(amount)
+            self.gift += 0
             self.save()
 
         def consume(self, amount):
@@ -138,7 +140,8 @@ class Balance(models.Model):
                 return
             balance_order.status="completed"
             balance_order.save()
-            self.charge(balance_order.amount)
+            gift = balance_order.amount - balance_order.paid_amount
+            self.charge(balance_order.amount, gift)
         
 
 class ChargeHistory(models.Model):

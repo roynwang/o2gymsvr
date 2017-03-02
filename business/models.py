@@ -159,6 +159,7 @@ class Schedule(models.Model):
 
         group_course = models.IntegerField(default = 0)
         price = models.IntegerField(default = 0)
+        discount = models.IntegerField(default = 0)
         coursetype = models.CharField(max_length=32,default="time")
 
 
