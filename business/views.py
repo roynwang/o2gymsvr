@@ -120,6 +120,15 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 		hour  = self.kwargs.get("hour")
 		ret = Schedule.objects.filter(coach=coach,date=date_str, hour=hour).first()
 		return ret
+        def destroy(self, request, *args, **kwargs):
+                schedule = self.get_object()
+                if schedule.coursetype == "charge":
+                    gym = schedule.coach.get_coach_gym()
+                    balance = Balance.objects.get(gym=gym.id, name=schedule.custom.name)
+                    balance.cancelconsume(schedule.price)
+                
+		return super(ScheduleItem, self).destroy(request, args,kwargs)
+
 		#return get_object_or_404(Schedule,coach=coach,date=date_str, hour=hour)
 
 	def partial_update(self, request, *args, **kwargs):
@@ -211,6 +220,7 @@ class ScheduleList(generics.ListCreateAPIView):
 
                 order = None
                 coursetype = "trial"
+                price = 0
 
                 if "order" in request.data:
          	        order = Order.objects.get(id=request.data["order"])
@@ -218,16 +228,28 @@ class ScheduleList(generics.ListCreateAPIView):
 
                 if "coursetype" in request.data and request.data['coursetype'] == "charge":
                         coursetype = "charge"
+                        price  = 1
+			day = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d").date(),
+                        _,discount = get_discount(customer.name, day)
+                        amount = price - int(price*discount/100)
+                        gym = coach.get_coach_gym()
+                        balance = Balance.objects.get(name=customer.name,gym=gym.id)
+                        if balance.precheck(amount):
+                            balance.consume(amount)
+                        else:
+                            raise NotAcceptable('infficient balance')
 
 		book = Schedule.objects.create(coach=coach,
 				custom=customer,
 				date= datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d").date(),
 				hour=request.data["hour"],
 				order=order,
-                                coursetype=coursetype)
+                                coursetype=coursetype,
+                                price=price)
 		if "done" in request.data:
 			book.done = request.data["done"]
 			book.save()
+
 
 		sl = ScheduleSerializer(instance=book)
 		print sl.data
