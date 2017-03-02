@@ -1495,16 +1495,14 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             Lightbox.openModal(that.album, i);
         }
         that.refreshEval = function() {
-            Restangular.all("api")
-                .one(that.customername, "e")
+            Restangular.one("api/" + that.customerdetail.name, "e")
                 .getList()
                 .then(function(resp) {
                     that.evals = resp.reverse()
                 })
         }
         that.refreshQues = function() {
-            Restangular.all("api")
-                .one(that.customername, "h")
+            Restangular.one("api/" + that.customerdetail.name, "h")
                 .getList()
                 .then(function(resp) {
                     that.ques = resp.reverse()
@@ -1512,8 +1510,7 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         }
 
         that.refreshPhoto = function() {
-            Restangular.all("api")
-                .one(that.customername, "album")
+            Restangular.one("api/" + that.customerdetail.name, "album")
                 .get(that.loadmore)
                 .then(function(resp) {
                     _.each(resp.results, function(item) {
@@ -3245,7 +3242,7 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 })
         }
         that.refreshEval = function() {
-            Restangular.all("api")
+            Restangular.one("api")
                 .one(that.customername, "e")
                 .getList()
                 .then(function(resp) {
@@ -3253,7 +3250,7 @@ app.controller("TrialDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 })
         }
         that.refreshQues = function() {
-            Restangular.all("api")
+            Restangular.one("api")
                 .one(that.customername, "h")
                 .getList()
                 .then(function(resp) {
