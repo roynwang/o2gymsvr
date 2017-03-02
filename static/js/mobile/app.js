@@ -841,6 +841,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                             }
 
                             if (customer.trial == null) {
+								showunmatch()
                                 return
                             }
 
