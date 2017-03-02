@@ -119,7 +119,7 @@ class Balance(models.Model):
 
         def charge(self, amount, gift = 0):
             self.balance += int(amount)
-            self.gift += 0
+            self.gift += gift
             self.save()
 
         def consume(self, amount):
