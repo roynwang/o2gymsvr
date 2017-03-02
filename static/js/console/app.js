@@ -1560,13 +1560,13 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
 
         that.showeval = function(date) {
             $state.transitionTo('eval', {
-                customername: that.customername,
+                customername: that.customerdetail.name,
                 date: date.replace(/-/g, "")
             })
         }
         that.showques = function(date) {
             $state.transitionTo('healthques', {
-                customername: that.customername,
+                customername: that.customerdetail.name,
                 date: date.replace(/-/g, "")
             })
         }
@@ -1577,9 +1577,9 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                 'title': "训练记录",
                 'brief': "训练记录",
                 'imgs': JSON.stringify(that.images),
-                'by': that.customername
+                'by': that.customerdetail.name
             }
-            Restangular.one("api", that.customername)
+            Restangular.one("api", that.customerdetail.name)
                 .post("weibo", data)
                 .then(function(resp) {
                     /*	
