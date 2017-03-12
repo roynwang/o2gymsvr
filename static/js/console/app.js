@@ -422,6 +422,8 @@ app.factory("$customersvc", function(Restangular) {
 				.then(function(res){
 					onsuccess && onsuccess(res)
 				})
+		} else {
+			onsuccess && onsuccess(ret)
 		}
 	}
 
@@ -1808,10 +1810,18 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
                                 timer: 1500,
                                 showConfirmButton: false
                             });
-                            $state.transitionTo('orderdetail', {
-                                coachname: coachname,
-                                orderid: data.id
-                            })
+							if(that.ordertype != "charge"){
+	                            $state.transitionTo('orderdetail', {
+	                             coachname: coachname,
+	                             orderid: data.id
+	                         })
+							} else {
+	                            $state.transitionTo('chargeorderdetail', {
+	                             coachname: coachname,
+	                             customername: that.mo.customer_phone
+	                         })
+
+							}
                         }, function(data) {
                             swal("", "订单保存失败，请检查输入后重试", "warning")
                         })
