@@ -125,7 +125,7 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
                 if schedule.coursetype == "charge":
                     gym = schedule.coach.get_coach_gym()
                     balance = Balance.objects.get(gym=gym.id, name=schedule.custom.name)
-                    balance.cancelconsume(schedule.price)
+                    balance.cancelconsume(schedule.price - schedule.discount)
                 
 		return super(ScheduleItem, self).destroy(request, args,kwargs)
 
