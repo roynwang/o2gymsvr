@@ -230,7 +230,7 @@ class ScheduleList(generics.ListCreateAPIView):
                 if "coursetype" in request.data and request.data['coursetype'] == "charge":
                         coursetype = "charge"
                         price  = 350
-			day = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d").date(),
+			day = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d").date()
                         _,discount = get_discount(customer.name, day)
                         amount = price - int(price*discount/100)
                         discount_amount = int(price*discount/100)
