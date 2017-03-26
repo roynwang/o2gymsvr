@@ -283,7 +283,9 @@ class CustomerList(generics.ListAPIView):
 
                 customlist = list(set(customlist + triallist))
 
-		ret = User.objects.filter(name__in = customlist)
+
+		end = datetime.datetime.now() + datetime.timedelta(days=-7)
+		ret = User.objects.filter(name__in = customlist).exclude(trial=gym.id,created__lt=end)
 		if ret.count() == 0:
 			ret = User.objects.filter(name = usr.name)
 		return ret
