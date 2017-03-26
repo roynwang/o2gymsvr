@@ -274,7 +274,7 @@ class ManualOrder(APIView):
 		sex = False
 		if request.data["sex"] == '1':
 		    sex = True
-		customer = User.objects.create(name=phone,displayname=displayname,sex=sex,iscoach=False)
+		customer = User.objects.create(name=phone,displayname=displayname,sex=sex,iscoach=False,created=datetime.datetime.now())
 	    if "birthday" in self.request.data:
 		customer.birthday = datetime.datetime.strptime(self.request.data["birthday"],"%Y-%m-%d").date()
 		#customer.save()
@@ -438,6 +438,33 @@ class GymChart(APIView):
 				.annotate(sold_count=Count('amount')) \
 				.annotate(sold_course=Sum('product__amount'))
 		return Response(orders)
+
+class GymScheduleChart(APIView):
+	def get(self,request,gymid):
+		if "end" in request.GET:
+			end = datetime.datetime.strptime(request.GET["end"], "%Y%m%d")
+		else:
+			end = datetime.date.today()
+
+		if "start" in request.GET:
+			start = datetime.datetime.strptime(request.GET["start"], "%Y%m%d")
+		else:
+		        start = end - datetime.timedelta(days=365)
+
+		end = end + datetime.timedelta(days=1)
+                schedules = Schedule.objects.filter(date__range=[start,end], done=True)
+                ret = {"<30":0, "30-60":0,">60":0}
+                for s in schedules:
+                    if s.order is None or s.order.gym.id != 19:
+                        continue
+                    delta =  s.date - s.order.paidtime.date()
+                    if delta.days <30:
+                        ret['<30'] +=1;
+                    if delta.days >=30 and delta.days<=60:
+                        ret['30-60'] +=1;
+                    if delta.days >60:
+                        ret['>60'] +=1;
+                return Response(ret)
 
 
 
