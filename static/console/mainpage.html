@@ -58,9 +58,13 @@
 						  50%;-webkit-border-radius: 50%;width: 28px; margin-right:10px"/> --> {{book.customerprofile.displayname}}
 						  <span ng-show="book.done"><i class="fa
 								  fa-check-square-o"></i></span>
-						  <a ng-hide="book.order" href="#/trialcustomer/{{book.customerprofile.name}}"
+						  <a ng-show="book.complete_status=='体验课'" href="#/trialcustomer/{{book.customerprofile.name}}"
 								  class="pull-right btn btn-danger btn-xs"
 						  style="margin-left:10px">体验</a>
+						  <a ng-show="book.complete_status=='储值客户'" href="#/charge/{{coach.name}}/{{book.customerprofile.name}}"
+								  class="pull-right btn btn-danger btn-xs"
+						  style="margin-left:10px">储值</a>
+
 						  <a ng-show="book.order" href="#/order/{{book.coachprofile.name}}/{{book.order}}"
 								  class="pull-right btn btn-danger btn-xs" style="margin-left:10px"><i
 									  class="fa fa-calendar"></i></a>
