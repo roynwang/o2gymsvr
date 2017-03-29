@@ -71,8 +71,10 @@
 				</h4>
                 </div>
                 <div flex=10 class="icon-list" style="z-index: 1000;">
-                    <div style="font-size:34px; color:#777; margin-top:-2px" class="icon ion-ios-people-outline"
+                    <div ng-show="ctrl.displaycustomers" style="font-size:34px; color:#777; margin-top:-2px" class="icon ion-ios-people-outline"
                     ng-click="ctrl.toggleMenu('right')"></div>
+                    <div ng-hide="ctrl.displaycustomers" style="font-size:34px; color:#777;margin-top:-2px" class="icon ion-ios-personadd-outline"
+                    ng-click="ctrl.showneworder()"></div>
                 </div>
             </div>
             <div class="md-toolbar-tools" style="padding:0" layout="row" layout-align="center center">

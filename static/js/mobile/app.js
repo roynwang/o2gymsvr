@@ -721,6 +721,11 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             $usersvc.getuser(undefined, false, function(data) {
                     that.user = data
                     setmenu(data)
+                    Restangular.one("api/g", that.user.gym_id[0])
+                        .get()
+                        .then(function(data) {
+							that.displaycustomers = !data.hide_customers
+						})
                 },
                 function(data) {})
             Restangular.one("api", user)
@@ -811,20 +816,20 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     } else {
 
                         //余额预定
-                        $usersvc.getsummary(customer.name,that.user.gym_id[0],function(summary) {
-							if(summary.balance > 0){
+                        $usersvc.getsummary(customer.name, that.user.gym_id[0], function(summary) {
+                            if (summary.balance > 0) {
                                 that.pendingbook = {
                                     date: that.selected.Format("yyyy-MM-dd"),
                                     hour: c.index,
                                     coach: that.user.id,
                                     custom: customer.id,
-									coursetype: "charge"
+                                    coursetype: "charge"
                                 }
                                 $timeout(function() {
                                     that.querystatus = "pending"
                                 }, 1000)
-								return
-							}
+                                return
+                            }
                             var showunmatch = function() {
                                 that.showtoast = true
                                 $mdToast.show(
@@ -841,7 +846,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                             }
 
                             if (customer.trial == null) {
-								showunmatch()
+                                showunmatch()
                                 return
                             }
 
@@ -864,15 +869,14 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                                     hour: c.index,
                                     coach: that.user.id,
                                     custom: customer.id,
-									coursetype: "trial"
+                                    coursetype: "trial"
                                 }
                                 $timeout(function() {
                                     that.querystatus = "pending"
                                 }, 1000)
                                 console.log(that.pendingbook)
                             });
-                        }, function() {
-						})
+                        }, function() {})
                     }
                 },
                 function(data) {
