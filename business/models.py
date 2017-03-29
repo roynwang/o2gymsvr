@@ -101,6 +101,7 @@ class Gym(models.Model):
 	distance = models.IntegerField(default=0)
 	sms_notification = models.BooleanField(default=True)
 	shared_gyms = models.CharField(max_length=512,blank=True,default="[]")
+        hide_customers = models.BooleanField(default=False)
 	
 
 	def __unicode__(self):
