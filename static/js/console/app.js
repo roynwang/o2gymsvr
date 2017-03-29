@@ -598,6 +598,8 @@ app.controller("GymCtrl", ["$stateParams", "$state",
         })
         refreshcorner()
         getincomplete()
+		initflow()
+
         $state.transitionTo("index")
             //window.location = "/console/dashboard/"
     }
