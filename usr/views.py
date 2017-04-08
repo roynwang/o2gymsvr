@@ -119,6 +119,7 @@ class UserList(generics.CreateAPIView):
                     if User.objects.filter(name=request.data['name']):
                         usr =  User.objects.get(name=request.data["name"])
                         usr.trial = request.data['trial']
+                        usr.created = datetime.datetime.now()
                         usr.save()
 
 		resp = super(UserList, self).create(request, args, kwargs)
