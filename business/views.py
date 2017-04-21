@@ -885,10 +885,10 @@ def get_discount(name, coursedate):
                 return (0,10)
             dura = (coursedate - last_trained_date).days
             if dura <= 2:
-                return (dura,30)
-            if dura <= 3:
                 return (dura,20)
-            return (0,10)
+            if dura <= 3:
+                return (dura,10)
+            return (0,0)
             #get groupcourse count
             '''
             gc = GroupCourseInstanceBook.objects.filter(customer=name,date__lte=datetime.datetime.today())
