@@ -345,7 +345,7 @@ class InCome(APIView):
 
 		courses = usr.sealed_time.filter(date__range=[start,end],done=True).exclude(order=None)
 
-		exp_courses = usr.sealed_time.filter(date__range=[start,end],done=True, order=None)
+		exp_courses = usr.sealed_time.filter(date__range=[start,end],done=True, order=None,coursetype="trial")
 
 
 		#courses = orders.value_list("schedule")
