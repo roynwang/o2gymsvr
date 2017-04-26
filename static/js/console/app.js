@@ -2271,7 +2271,7 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                     that.sumstatus.takeprice = that.sumstatus.takesum / that.sumstatus.takecount
                 }
             })
-        }
+		}
         that.is_admin = $.cookie("admin_confirmed")
 
         that.submit = function() {
@@ -2409,6 +2409,10 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                     that.chargeOrderTableParams = new NgTableParams({}, {
                         dataset: data
                     });
+					_.each(that.chargeOrders, function(item){
+						that.sumstatus.salesum += item.paid_amount
+					})
+   
                 })
 
 
