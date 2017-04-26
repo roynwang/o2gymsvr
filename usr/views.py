@@ -343,9 +343,9 @@ class InCome(APIView):
 
 		sold_xu = orders.filter(isfirst=False).aggregate(Sum('amount'))["amount__sum"] or 0
 
-		courses = usr.sealed_time.filter(date__range=[start,end],done=True).exclude(order=None)
+		courses = usr.sealed_time.filter(date__range=[start,end],done=True).exclude(coursetype ='trial')
 
-		exp_courses = usr.sealed_time.filter(date__range=[start,end],done=True, order=None)
+		exp_courses = usr.sealed_time.filter(date__range=[start,end],done=True, order=None,coursetype="trial")
 
 
 		#courses = orders.value_list("schedule")
