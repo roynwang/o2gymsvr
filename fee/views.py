@@ -63,9 +63,9 @@ class CoachSalaryView(APIView):
 		income = 0
 		price = 0
 		for course in query:
-                        if course.order is None:
+                        if course.order is None and course.coursetype == 'trial':
                             continue
-			if course.order.subsidy == 0:
+			if  course.coursetype == 'charge' or course.order.subsidy == 0 :
 				income = income + course.getprice()*shangke/100 + fixed_shangke
 			else:
 				income += course.order.subsidy
