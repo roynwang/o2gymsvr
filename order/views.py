@@ -340,7 +340,6 @@ class ManualOrder(APIView):
 					settings.UCPAASTEMPLATE_REGISTER,
 					str(pwd))
 			
-                customer.created = timezone.now()
 
 		if "age" in self.request.data:
 			customer.age = self.request.data["age"]
