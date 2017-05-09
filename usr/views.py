@@ -6,6 +6,7 @@ from rest_framework import status
 from django.contrib.auth import get_user_model
 from rest_framework.decorators import api_view
 import json
+from django.utils import timezone
 from django.db.models import Sum
 from rest_framework.pagination import PageNumberPagination 
 from usr.models import *
@@ -119,10 +120,15 @@ class UserList(generics.CreateAPIView):
                     if User.objects.filter(name=request.data['name']):
                         usr =  User.objects.get(name=request.data["name"])
                         usr.trial = request.data['trial']
-                        usr.created = datetime.datetime.now()
+                        usr.created = timezone.now()
                         usr.save()
 
 		resp = super(UserList, self).create(request, args, kwargs)
+
+                if User.objects.filter(name=request.data['name']):
+                        usr =  User.objects.get(name=request.data["name"])
+                        usr.created = timezone.now()
+                        usr.save()
 
 		tl = TimeLine.objects.create(name=get_object_or_404(User, name=request.data["name"]))
 		tl.followedby.add(tl)
