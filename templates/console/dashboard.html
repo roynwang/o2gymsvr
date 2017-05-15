@@ -32,7 +32,8 @@
 	<link href="{% static "consolecss/style-responsive.css" %}" rel="stylesheet">
 	<link href="//cdn.bootcss.com/bootstrap-switch/3.3.2/css/bootstrap3/bootstrap-switch.min.css">
 	<link href="//cdn.bootcss.com/angular-chart.js/0.8.8/angular-chart.min.css" rel="stylesheet" rel="stylesheet">
-<link href="//cdn.bootcss.com/angular-bootstrap-lightbox/0.12.0/angular-bootstrap-lightbox.min.css" rel="stylesheet">
+	<link href="//cdn.bootcss.com/angular-bootstrap-lightbox/0.12.0/angular-bootstrap-lightbox.min.css" rel="stylesheet">
+	<link href="//cdn.bootcss.com/angularjs-slider/5.4.3/rzslider.min.css" rel="stylesheet">
 
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
@@ -237,6 +238,12 @@
                     </a>
                 </li>
 	            <li class="admin-show">
+                    <a href="#docs" >
+                        <i class="fa fa-folder-o"></i>
+                        <span>文档管理</span>
+                    </a>
+                </li>
+	            <li class="admin-show">
                     <a href="/whatsnew/" >
                         <i class="fa fa-barcode"></i>
                         <span>更新日志</span>
@@ -275,7 +282,7 @@
                 </div>
                 <div class="side-mini-graph">
                     <div class="target-sell" style="padding: 0px; position: relative;">
-						<p style="line-height:40px;font-size:24px;color:#fa8564" class="red"><span class="right-sidebar-action" data-action="add" data-option="groupon">+</span> <span id="flow-groupon">10</span> <span class="right-sidebar-action" data-action="minus" data-option="groupon">-</span></p>
+						<p style="line-height:40px;font-size:24px;color:#fa8564" class="red"><span class="right-sidebar-action" data-action="add" data-option="groupon">+</span> <span id="flow-groupon">0</span> <span class="right-sidebar-action" data-action="minus" data-option="groupon">-</span></p>
 					</div>
                 </div>
             </div>
@@ -288,7 +295,7 @@
                 </div>
                 <div class="side-mini-graph">
                     <div class="target-sell" style="padding: 0px; position: relative;">
-						<p style="line-height:40px;font-size:24px;color:#fa8564"><span class="right-sidebar-action" data-action="add" data-option="direct">+</span> <span id="flow-direct">10</span> <span class="right-sidebar-action" data-action="minus" data-option="direct">-</span></p>
+						<p style="line-height:40px;font-size:24px;color:#fa8564"><span class="right-sidebar-action" data-action="add" data-option="direct">+</span> <span id="flow-direct">0</span> <span class="right-sidebar-action" data-action="minus" data-option="direct">-</span></p>
 					</div>
                 </div>
             </div>
@@ -301,7 +308,7 @@
                 </div>
                 <div class="side-mini-graph">
                     <div class="target-sell" style="padding: 0px; position: relative;">
-						<p style="line-height:40px;font-size:24px;color:#fa8564"><span class="right-sidebar-action" data-action="add" data-option="phone_call">+</span> <span id="flow-phone_call">10</span> <span class="right-sidebar-action" data-action="minus" data-option="phone_call">-</span></p>
+						<p style="line-height:40px;font-size:24px;color:#fa8564"><span class="right-sidebar-action" data-action="add" data-option="phone_call">+</span> <span id="flow-phone_call">0</span> <span class="right-sidebar-action" data-action="minus" data-option="phone_call">-</span></p>
 					</div>
                 </div>
             </div>
@@ -314,7 +321,7 @@
                 </div>
                 <div class="side-mini-graph">
                     <div class="target-sell" style="padding: 0px; position: relative;">
-						<p style="line-height:40px;font-size:24px;color:#fa8564"><span class="right-sidebar-action" data-action="add" data-option="by_customer">+</span> <span id="flow-by_customer">10</span> <span class="right-sidebar-action" data-action="minus" data-option="by_customer">-</span></p>
+						<p style="line-height:40px;font-size:24px;color:#fa8564"><span class="right-sidebar-action" data-action="add" data-option="by_customer">+</span> <span id="flow-by_customer">0</span> <span class="right-sidebar-action" data-action="minus" data-option="by_customer">-</span></p>
 					</div>
                 </div>
             </div>
@@ -398,6 +405,8 @@
 <script src="/static/js/angular-ladda.min.js" ></script>
 <script src="//cdn.bootcss.com/signature_pad/1.5.3/signature_pad.min.js"></script>
 <script src="/static/js/angular-ladda.min.js" ></script>
+<script src="/static/js/angular-pageslide-directive.min.js"></script>
+<script src="/static/js/ng-flow-standalone.min.js"></script>
 <script>
 	//load user info by token
 	var USER = null
