@@ -308,7 +308,7 @@ app.factory('$doc', function(Restangular) {
 
     function createTask(cid) {
         var gymid = $.cookie("gym")
-        var day_str = new Date.Format("yyyy-MM-dd")
+        var day_str = new Date().Format("yyyy-MM-dd")
         return {
             title: "创建",
             url: "/api/g/" + gymid + "/docs/",
@@ -340,7 +340,7 @@ app.factory('$doc', function(Restangular) {
                 type: "shorttext",
                 key: "datestr",
                 label: "",
-                value: day_str
+                value: day_str,
                 disabled: 1
             }]
         }
