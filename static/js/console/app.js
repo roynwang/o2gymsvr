@@ -308,6 +308,7 @@ app.factory('$doc', function(Restangular) {
 
     function createTask(cid) {
         var gymid = $.cookie("gym")
+        var day_str = new Date.Format("yyyy-MM-dd")
         return {
             title: "创建",
             url: "/api/g/" + gymid + "/docs/",
@@ -334,6 +335,12 @@ app.factory('$doc', function(Restangular) {
                 key: "gym",
                 label: "健身房",
                 value: parseInt(gymid),
+                disabled: 1
+            },{
+                type: "shorttext",
+                key: "date",
+                label: "",
+                value: day_str
                 disabled: 1
             }]
         }
