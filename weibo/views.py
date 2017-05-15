@@ -151,7 +151,11 @@ class PicFetch(APIView):
 class PicToken(APIView):
 	def get(self,request):
 		q = Auth(settings.QNACCESSKEY, settings.QNSECRETKEY)
-		filename = str(uuid.uuid1()).replace("-","") + ".jpg"
+                if "filename" in request.query_params:
+                    filename = request.query_params['filename']
+                else:
+		    filename = str(uuid.uuid1()).replace("-","") + ".jpg"
+
 		print(filename)
 		token = q.upload_token(settings.QNBUKET, filename)
 		print(token)
