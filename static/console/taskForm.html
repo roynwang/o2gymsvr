@@ -1,0 +1,65 @@
+<pageslide  ps-open="tasks.show" ps-size='500px' ps-click-outside='false' ps-speed='0.25'>
+<form class='form-horizontal bucket-form' role="form" style="padding:20px;min-height:100%;background:white">
+	<div class="form-group">
+	<span class="alert-icon outline pull-left" ng-click="tasks.show=false"><i class="fa fa-angle-right"></i></span>
+			<div class="pull-right" style="margin-right:20px" flow-init
+				flow-files-submitted="singleupload($flow, task)"
+				flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1,mp3:1,pdf:1,doc:1,docx:1,key:1,numbers:1,pages:1}[$file.getExtension()]">
+				<span class="fa fa-cloud-upload" flow-btn></span>
+			</div>
+		<h4 class="text-center">{{tasks.title}}</h4>
+	</div>
+	<div class="form-group" ng-hide="task.disabled == 1" ng-repeat="task in tasks.tasks">
+		<label class="col-sm-3 control-label">{{task.label}}</label>
+		<div class="col-sm-9">
+			<select class="form-control input-sm m-bot15" ng-if='task.type=="selection"' style="line-height:inherit"
+				        ng-model="task.value"
+						 ng-options="option.key as option.value  for option in task.options">
+			</select>
+
+<!--
+			<select style=" line-height: inherit;
+				" ng-if='task.type=="selection"' class="form-control input-sm m-bot15" >
+				<option ng-repeat='(k,v) in task.options' ng-selected="{{task.value == k}}"
+				value={{k}} ng-click="select(task,k)">{{v}}</option>
+				-->
+
+
+			<input ng-if='task.type=="shorttext"' class="form-control" type="text"
+			placeholder="{{task.placeholder}}" ng-model="task.value"/>
+			<input ng-if='task.type=="time"' class="form-control" type="datetime" placeholder="格式: 12:00" ng-model="task.value"/>
+			<textarea style="height:150px" ng-if='task.type=="text"' class="form-control"  placeholder="{{task.label}}" ng-model="task.value"> </textarea>
+			<input ng-if='task.type=="date"' placeholder="请选择日期" class="form-control"
+			datetime-picker date-only future-only ng-model="task.value" date-format="yyyy-MM-dd"/>
+			<div ng-if='task.type=="image"' flow-init
+				flow-files-submitted="upload($flow, task)"
+				flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1,mp3:1}[$file.getExtension()]">
+				<div class="drop" flow-drop ng-class="dropClass">
+					<span class="btn btn-primary-o" flow-btn>上传</span>
+					<b>或</b><a>拖入图片</a>
+				</div>
+				<br/>
+				<div>
+					<div ng-repeat="file in $flow.files" class="gallery-box">
+						<span class="title">{{file.name}}</span>
+						<div class="thumbnail" ng-show="$flow.files.length">
+							<img flow-img="file" />
+						</div>
+						<div class="btn-group">
+							<a class="btn btn-xs btn-danger" ng-click="file.cancel()">
+								移除
+							</a>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-lg-offset-4 col-lg-8">
+			<button type="submit" class="btn btn-danger" ng-click="submit()">提交</button>
+		</div>
+	</div>
+</form>
+</pageslide>

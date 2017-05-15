@@ -1,0 +1,24 @@
+<div class="col-md-12" ng-controller="DocCtrl as demo">
+	<!--<h3>客户信息</h3>-->
+	<section class="panel">
+	<header class="panel-heading">
+		文档管理
+
+			<span class="tools pull-right">
+                                <a ng-click='demo.add()' class="fa fa-add">添加</a>
+                             </span>
+	</header>
+	<div class="panel-body">
+		<table ng-table="demo.tableParams" class="table table-condensed table-striped">
+			<tr ng-repeat="row in $data" style="color:#333">
+				<td data-title="'标题'" filter="{title: 'text'}" >{{row.title}}</td>
+				<td data-title="'描述'" filter="{summary: 'text'}" >{{row.summary}}</td>
+				<td data-title="'作者'">{{row.author}}</td>
+				<td data-title="'日期'" sortable="'number'">{{row.update}}</td>
+				<td data-title="'操作'"><a style="color:#1fb5ad" target="_blank" href="{{row.attachment}}">下载</a></td>
+			</tr>
+		</table>
+	</div>
+	</section>
+	<task-Form tasks="demo.tasks"></task-Form>
+</div>

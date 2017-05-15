@@ -21,6 +21,7 @@ urlpatterns = [
 		url(r'^', include('fee.urls')),
 		url(r'^', include('coupon.urls')),
 		url(r'^', include('crawl.urls')),
+		url(r'^', include('doc.urls')),
 		url(r'^mobile/home/$', TemplateView.as_view(template_name="mobile/home.html")),
 		url(r'^mobile/login/$', TemplateView.as_view(template_name="mobile/login.html")),
 		url(r'^mobile/i/$', TemplateView.as_view(template_name="customermobile/home.html")),

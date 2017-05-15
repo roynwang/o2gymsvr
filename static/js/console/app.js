@@ -82,6 +82,14 @@ Date.prototype.addHours = function(h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
     return this;
 }
+var uploadSuccess = function(url) {
+	    swal({
+			        title: "成功,请复制地址",
+			        text: url,
+			        type: 'success',
+			        showConfirmButton: true
+			    });
+}
 
 function ConvertToCSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
@@ -112,6 +120,8 @@ var app = angular.module('JobApp', [
     'oitozero.ngSweetAlert',
     'angular-ladda',
     'ui.bootstrap',
+    'pageslide-directive',
+    'flow',
     'chart.js',
     '720kb.datepicker',
     'angularQFileUpload',
@@ -230,37 +240,232 @@ app.factory("$uploader", function($qupload) {
             return newImageData
         }
 
-        $.get("/api/p/token", function(data, status) {
-            key = data.key
-            token = data.token
+        if (file.type.indexOf("image") >= 0) {
 
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function(event) {
-                var imgori = new Image();
-                imgori.onload = function() {
-                    var compressed = compress(imgori, 60)
-                    var newf = b64toBlob(compressed, "image/jpeg")
-                    newf.upload = $qupload.upload({
-                        key: key,
-                        file: newf,
-                        token: token
-                    });
+            $.get("/api/p/token", function(data, status) {
+                key = data.key
+                token = data.token
 
-                    newf.upload.then(function(response) {
-                        onsuccess && onsuccess(response)
-                    }, function(response) {
-                        onfail && onfail(response)
-                    }, function(evt) {});
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function(event) {
+                    var imgori = new Image();
+                    imgori.onload = function() {
+                        var compressed = compress(imgori, 60)
+                        var newf = b64toBlob(compressed, "image/jpeg")
+                        newf.upload = $qupload.upload({
+                            key: key,
+                            file: newf,
+                            token: token
+                        });
+
+                        newf.upload.then(function(response) {
+                            onsuccess && onsuccess(response)
+                        }, function(response) {
+                            onfail && onfail(response)
+                        }, function(evt) {});
+                    }
+                    imgori.src = reader.result
                 }
-                imgori.src = reader.result
-            }
-        })
+            })
+        } else {
+			var filename = file.name
+			$.get("/api/p/token/?filename="+filename, function(data, status){
+
+		                key = data.key
+						token = data.token
+
+                        file.upload = $qupload.upload({
+                            key: key,
+                            file: file,
+                            token: token
+                        });
+
+                        file.upload.then(function(response) {
+                            onsuccess && onsuccess(response)
+                        }, function(response) {
+                            onfail && onfail(response)
+                        }, function(evt) {});
+			})
+		}
+
     }
     return {
         upload: upload
     }
 })
+app.factory('$doc', function(Restangular) {
+
+    function getList(onsuccess) {
+		var gymid = $.cookie("gym")
+        Restangular.one('api/g/' + gymid, "docs")
+            .get()
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+    }
+
+
+    function createTask(cid) {
+        var gymid = $.cookie("gym")
+        return {
+            title: "创建",
+            url: "/api/g/" + gymid + "/docs/",
+            tasks: [{
+                type: "shorttext",
+                key: "title",
+                label: "标题",
+            }, {
+                type: "shorttext",
+                key: "summary",
+                label: "描述",
+            }, {
+                type: "shorttext",
+                key: "attachment",
+                label: "文件",
+                placeholder: "请用右上角上传按钮上传并复制链接"
+            }, {
+                type: "shorttext",
+                key: "author",
+                label: "作者",
+                value: $.cookie("displayname")
+            }, {
+                type: "shorttext",
+                key: "gym",
+                label: "健身房",
+                value: parseInt(gymid),
+                disabled: 1
+            }]
+        }
+    }
+
+
+    return {
+        getList: getList,
+        createTask: createTask
+    }
+})
+
+app.directive('taskForm', ["$uploader", "$http",
+    function($upload, $http) {
+        return {
+            restrict: 'E',
+            scope: {
+                tasks: "=",
+                sendto: "@"
+            },
+            templateUrl: '/static/console/taskForm.html',
+            link: function(scope, element, attrs) {
+                scope.select = function(t, v) {
+                        t.value = v;
+                    }
+                    //scope.timeoptions = dict2arr(TIME_MAP)
+                scope.submit = function() {
+                    var url = scope.tasks.url
+                    var data = {}
+
+                    function validateTime(timestr) {
+                        var re = /^\d{2}:\d{2}$/
+                        return timestr != undefined && timestr.match(re) != null
+                    }
+
+                    function validate(item) {
+                            /*
+                            if (item.validate != undefined) {
+                                if (!item.validate(item.value)) {
+                                    return false
+                                }
+                            }
+				*/
+                            if (item.key != 'cover' && (item.value == undefined || item.value == "")) {
+                                return false
+                            }
+
+                            if (item.type == 'time') {
+                                item.value = item.value.replace(/：/, ":")
+                                if (!validateTime(item.value)) {
+                                    return false
+                                }
+                            }
+                            return true
+                        }
+                        //fill selection
+
+                    for (var k in scope.tasks.tasks) {
+                        var item = scope.tasks.tasks[k];
+                        if (validate(item)) {
+                            data[item.key] = item.value
+                        } else {
+                            swal({
+                                title: "",
+                                text: item.label + "的值不合法",
+                                type: 'warning',
+                                showConfirmButton: true
+                            });
+                            return
+                        }
+                    }
+                    var method = "POST"
+                    if (['POST', 'PATCH', "DELETE"].indexOf(scope.tasks.method) > -1) {
+                        method = scope.tasks.method
+                    }
+
+                    $http({
+                        'method': method,
+                        'url': url,
+                        'data': data,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'jwttoken': $.cookie("token")
+                        }
+                    }).then(
+                        function successCallback(response) {
+                            console.log(response);
+                                swal({
+                                    title: "",
+                                    text: "提交成功",
+                                    type: "success",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+                                if (scope.tasks.callback) {
+                                    scope.tasks.callback(response.data.data)
+                                }
+                                scope.tasks.show = false
+                        },
+                        function errorCallback(response) {
+                            swal({
+                                title: "",
+                                text: "提交失败",
+                                type: "warning",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        });
+                }
+                scope.upload = function($flow, task) {
+                    var len = $flow.files.length
+                    $upload.upload($flow.files[len - 1].file, function(url) {
+                        if (task.value == undefined) {
+                            task.value = url
+                        } else {
+                            if (!Array.isArray(task.value)) {
+                                task.value = [task.value]
+                            }
+                            task.value.push(url);
+                        }
+                    });
+                }
+                scope.singleupload = function($flow) {
+                    var len = $flow.files.length
+                    $upload.upload($flow.files[len - 1].file, function(resp) {
+                        uploadSuccess(bukcet+"/"+resp.key)
+                    });
+                }
+            }
+        }
+    }
+]);
 
 app.factory("$groupcoursesvc", function(Restangular) {
     function courselist(onsuccess) {
@@ -414,18 +619,19 @@ app.factory("$customersvc", function(Restangular) {
         })
         return c
     }
-	function loadcustomer(key, onsuccess){
-		var ret = getcustomer(key)
-		if(!ret){
+
+    function loadcustomer(key, onsuccess) {
+        var ret = getcustomer(key)
+        if (!ret) {
             Restangular.one("api/", key)
                 .get()
-				.then(function(res){
-					onsuccess && onsuccess(res)
-				})
-		} else {
-			onsuccess && onsuccess(ret)
-		}
-	}
+                .then(function(res) {
+                    onsuccess && onsuccess(res)
+                })
+        } else {
+            onsuccess && onsuccess(ret)
+        }
+    }
 
     function getcustomerbydisplayname(key) {
         var c = _.find(customers, {
@@ -450,7 +656,7 @@ app.factory("$customersvc", function(Restangular) {
     return {
         getcustomers: getcustomers,
         getcustomer: getcustomer,
-		loadcustomer: loadcustomer,
+        loadcustomer: loadcustomer,
         gettrialcustomers: gettrialcustomers,
         getcustomerbydisplayname: getcustomerbydisplayname,
         flag: flag,
@@ -474,6 +680,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/",
             templateUrl: "/static/console/mainpage.html",
             controller: "MainPageCtrl"
+        })
+        .state('docs', {
+            url: "/docs",
+            templateUrl: "/static/console/doc.html",
         })
         .state('finance', {
             url: "/finance",
@@ -598,7 +808,7 @@ app.controller("GymCtrl", ["$stateParams", "$state",
         })
         refreshcorner()
         getincomplete()
-		initflow()
+        initflow()
 
         $state.transitionTo("index")
             //window.location = "/console/dashboard/"
@@ -993,9 +1203,9 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         if ($stateParams.customername) {
             that.customername = $stateParams.customername
             that.ordertype = "charge"
-            $customersvc.loadcustomer(that.customername, function(res){
-				that.customerdetail = res
-			});
+            $customersvc.loadcustomer(that.customername, function(res) {
+                that.customerdetail = res
+            });
         }
 
         that.role = $.cookie('role')
@@ -1171,12 +1381,12 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
                     var datestr = item.date.replace(/-/g, "")
                     item.coach = item.coachprofile.id
                     item.custom = that.customerdetail.id
-					if(that.ordertype == "charge"){
-						item.coursetype = "charge"
-					} else {
-	                    item.order = that.order.id
-					}
-					
+                    if (that.ordertype == "charge") {
+                        item.coursetype = "charge"
+                    } else {
+                        item.order = that.order.id
+                    }
+
                     Restangular.one("api/", item.coachprofile.name)
                         .post("b/" + datestr, item)
                         .then(function(data) {
@@ -1812,18 +2022,18 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
                                 timer: 1500,
                                 showConfirmButton: false
                             });
-							if(that.ordertype != "charge"){
-	                            $state.transitionTo('orderdetail', {
-	                             coachname: coachname,
-	                             orderid: data.id
-	                         })
-							} else {
-	                            $state.transitionTo('chargeorderdetail', {
-	                             coachname: coachname,
-	                             customername: that.mo.customer_phone
-	                         })
+                            if (that.ordertype != "charge") {
+                                $state.transitionTo('orderdetail', {
+                                    coachname: coachname,
+                                    orderid: data.id
+                                })
+                            } else {
+                                $state.transitionTo('chargeorderdetail', {
+                                    coachname: coachname,
+                                    customername: that.mo.customer_phone
+                                })
 
-							}
+                            }
                         }, function(data) {
                             swal("", "订单保存失败，请检查输入后重试", "warning")
                         })
@@ -2271,7 +2481,7 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                     that.sumstatus.takeprice = that.sumstatus.takesum / that.sumstatus.takecount
                 }
             })
-		}
+        }
         that.is_admin = $.cookie("admin_confirmed")
 
         that.submit = function() {
@@ -2409,10 +2619,10 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                     that.chargeOrderTableParams = new NgTableParams({}, {
                         dataset: data
                     });
-					_.each(that.chargeOrders, function(item){
-						that.sumstatus.salesum += item.paid_amount
-					})
-   
+                    _.each(that.chargeOrders, function(item) {
+                        that.sumstatus.salesum += item.paid_amount
+                    })
+
                 })
 
 
@@ -3622,6 +3832,42 @@ app.controller("CustomerDetailCtrl", ['$scope', "Restangular", "NgTableParams", 
         }
     }
 ])
+
+app.controller("DocCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert", "$groupcoursesvc", "$doc",
+    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $groupcoursesvc, $doc) {
+        var that = this
+        that.add = function() {
+            that.tasks = $doc.createTask();
+            that.tasks.show = true
+			that.tasks.callback = function(){
+                swal({
+                    title: "成功",
+                    text: "已创建",
+                    type: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+				that.refresh();
+
+			}
+        }
+		that.refresh = function(){
+			$doc.getList(function(data){
+                that.tableParams = new NgTableParams({
+                    count: 100,
+                    sorting: {}
+                }, {
+                    counts: [],
+                    dataset: data
+                });
+
+			})
+		}
+		that.refresh()
+    }
+])
+
 app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert", "$groupcoursesvc", "$customersvc",
     function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $groupcoursesvc, $customersvc) {
         var that = this
