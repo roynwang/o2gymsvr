@@ -9,6 +9,7 @@ class GymDoc(models.Model):
         title = models.CharField(max_length=256)
         summary = models.CharField(max_length=256)
         attachment = models.CharField(max_length=256)
+        datestr = models.CharField(max_length=64, default="")
         update = models.DateTimeField(default=datetime.datetime.now())
 
 
