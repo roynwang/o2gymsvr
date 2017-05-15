@@ -338,7 +338,7 @@ app.factory('$doc', function(Restangular) {
                 disabled: 1
             },{
                 type: "shorttext",
-                key: "date",
+                key: "datestr",
                 label: "",
                 value: day_str
                 disabled: 1
