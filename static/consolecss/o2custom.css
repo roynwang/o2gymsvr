@@ -114,3 +114,21 @@ ul.sidebar-menu {
 	border-right: none;
 	border-radius: 0;
 }
+
+pageslide {
+	background: #fcfcfc;
+	z-index: 10000 !important;
+	overflow: scroll;
+	box-shadow: 1px 0 10px rgba(0,0,0,.15);
+}
+
+.alert-icon.outline {
+	background: rgba(0,0,0,0);
+	border: solid 1px #1fb5ac;
+}
+.alert-icon.outline i {
+	color: #1fb5ac;
+	margin-top: -1px;
+	margin-left: -1px;
+}
+
