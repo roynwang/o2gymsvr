@@ -1,22 +1,29 @@
-<div class="col-md-12" ng-controller="DocCtrl as demo">
+<div class="col-md-12" ng-controller="VideoCtrl as demo">
 	<!--<h3>客户信息</h3>-->
 	<section class="panel">
 	<header class="panel-heading">
-		文档管理
+		视频管理
 
 			<span class="tools pull-right">
                                 <a ng-click='demo.add()' class="fa fa-add">添加</a>
                              </span>
 	</header>
 	<div class="panel-body">
+        <p>*点击两次可以删除相应关键字</p>
 		<table ng-table="demo.tableParams" class="table table-condensed table-striped">
 			<tr ng-repeat="row in $data" style="color:#333">
+				<td data-title="'关键字'" style="width:40%">
+					<a ng-class="{true:'btn-default',false:'btn-primary'}[row.id==demo.active_row&&t==demo.active_keyword]" style="margin-right:4px" ng-click="demo.remove_keyword(row,t)" ng-repeat="t in row.keywords_set" class="btn btn-xs" ng-if="t != ''"> 
+						{{t}}
+					</a>
+					<a style="color:#1fb5ad" ng-click="demo.add_keyword(row)">+</a>
+				</td>
 				<td data-title="'标题'" filter="{title: 'text'}" >
-					<a style="color:#1fb5ad" target="_blank"
+					<a style="color:#1fb5ad;margin-right:10px" target="_blank"
 						href="{{row.attachment}}">{{row.title}}</a>
 				</td>
 				<td data-title="'描述'" filter="{summary: 'text'}" >{{row.summary}}</td>
-				<td data-title="'作者'">{{row.author}}</td>
+				<td data-title="'作者'">{{row.coach}}</td>
 				<td data-title="'日期'" sortable="'text'">{{row.datestr}}</td>
 				<td data-title="'操作'">
 					<a style="color:#1fb5ad" ng-click="demo.edit(row)">修改</a>

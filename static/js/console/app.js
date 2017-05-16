@@ -294,6 +294,155 @@ app.factory("$uploader", function($qupload) {
         upload: upload
     }
 })
+app.factory('$video', function(Restangular) {
+
+	function add_keyword_task(row, onsuccess) {
+		var gymid = $.cookie("gym")
+        return {
+            title: "添加",
+            url: "/api/video/" + row.id + "/keywords/",
+            tasks: [{
+                type: "shorttext",
+                key: "keyword",
+                label: "关键字",
+            },{
+                type: "shorttext",
+                key: "videoid",
+                label: "vid",
+				disabled: 1,
+				value: row.id
+            },{
+                type: "shorttext",
+                key: "gym",
+                label: "健身房",
+                value: parseInt(gymid),
+                disabled: 1
+            }]
+		}
+	}
+
+	function remove_keyword_task(row,keyword, onsuccess){
+        Restangular.one('api/video/'+row.id + '/keywords/', keyword)
+            .remove()
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+	}
+
+    function getList(onsuccess) {
+		var gymid = $.cookie("gym")
+        Restangular.one('api/g/' + gymid, "video")
+            .get()
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+    }
+	function editTask(row){
+        var day_str = new Date().Format("yyyy-MM-dd")
+        return {
+            title: "修改",
+            url: "/api/video/" + row.id,
+			method: 'PATCH',
+            tasks: [{
+                type: "shorttext",
+                key: "title",
+                label: "标题",
+				value: row.title
+            }, {
+                type: "shorttext",
+                key: "summary",
+                label: "描述",
+				value: row.summary
+            }, {
+                type: "shorttext",
+                key: "attachment",
+                label: "文件",
+                placeholder: "请用右上角上传按钮上传并复制链接",
+				value: row.attachment
+            },{
+                type: "shorttext",
+                key: "coach",
+                label: "教练",
+                value: $.cookie("displayname"),
+            }, {
+                type: "shorttext",
+                key: "uploader",
+                label: "",
+                value: $.cookie("displayname"),
+				disabled: 1
+            },  {
+                type: "shorttext",
+                key: "datestr",
+                label: "",
+                value: day_str,
+                disabled: 1
+            },{
+                type: "shorttext",
+                key: "gym",
+                label: "健身房",
+                value: parseInt(gymid),
+                disabled: 1
+            }]
+        }
+	}
+
+
+    function createTask() {
+        var gymid = $.cookie("gym")
+        var day_str = new Date().Format("yyyy-MM-dd")
+        return {
+            title: "创建",
+            url: "/api/g/" + gymid + "/video/",
+            tasks: [{
+                type: "shorttext",
+                key: "title",
+                label: "标题",
+            }, {
+                type: "shorttext",
+                key: "summary",
+                label: "描述",
+            }, {
+                type: "shorttext",
+                key: "attachment",
+                label: "文件",
+                placeholder: "请用右上角上传按钮上传并复制链接"
+            },{
+                type: "shorttext",
+                key: "coach",
+                label: "教练",
+                value: $.cookie("displayname")
+            }, {
+                type: "shorttext",
+                key: "uploader",
+                label: "",
+                value: $.cookie("displayname"),
+				disabled: 1
+            }, {
+                type: "shorttext",
+                key: "gym",
+                label: "健身房",
+                value: parseInt(gymid),
+                disabled: 1
+            },{
+                type: "shorttext",
+                key: "datestr",
+                label: "",
+                value: day_str,
+                disabled: 1
+            }]
+        }
+    }
+
+
+    return {
+        getList: getList,
+        createTask: createTask,
+		editTask: editTask,
+		add_keyword_task: add_keyword_task,
+		remove_keyword_task: remove_keyword_task
+    }
+})
+
 app.factory('$doc', function(Restangular) {
 
     function getList(onsuccess) {
@@ -304,6 +453,42 @@ app.factory('$doc', function(Restangular) {
                 onsuccess && onsuccess(data)
             })
     }
+	function editTask(row){
+        var day_str = new Date().Format("yyyy-MM-dd")
+        return {
+            title: "修改",
+            url: "/api/docs/" + row.id,
+			method: 'PATCH',
+            tasks: [{
+                type: "shorttext",
+                key: "title",
+                label: "标题",
+				value: row.title
+            }, {
+                type: "shorttext",
+                key: "summary",
+                label: "描述",
+				value: row.summary
+            }, {
+                type: "shorttext",
+                key: "attachment",
+                label: "文件",
+                placeholder: "请用右上角上传按钮上传并复制链接",
+				value: row.attachment
+            }, {
+                type: "shorttext",
+                key: "author",
+                label: "作者",
+                value: $.cookie("displayname")
+            }, {
+                type: "shorttext",
+                key: "datestr",
+                label: "",
+                value: day_str,
+                disabled: 1
+            }]
+        }
+	}
 
 
     function createTask(cid) {
@@ -349,7 +534,8 @@ app.factory('$doc', function(Restangular) {
 
     return {
         getList: getList,
-        createTask: createTask
+        createTask: createTask,
+		editTask: editTask
     }
 })
 
@@ -691,6 +877,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
         .state('docs', {
             url: "/docs",
             templateUrl: "/static/console/doc.html",
+        })
+        .state('video', {
+            url: "/video",
+            templateUrl: "/static/console/video.html",
         })
         .state('finance', {
             url: "/finance",
@@ -3859,6 +4049,20 @@ app.controller("DocCtrl", ['$scope', "Restangular", "NgTableParams", "$statePara
 
 			}
         }
+		that.edit = function(row){
+			that.tasks = $doc.editTask(row)
+			that.tasks.show = true
+			that.tasks.callback = function(){
+                swal({
+                    title: "成功",
+                    text: "已保存",
+                    type: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+				that.refresh();
+			}
+		}
 		that.refresh = function(){
 			$doc.getList(function(data){
                 that.tableParams = new NgTableParams({
@@ -4206,3 +4410,88 @@ app.controller("NewGroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", 
         }
     }
 ])
+app.controller("VideoCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert", "$groupcoursesvc", "$video",
+    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $groupcoursesvc, $video) {
+        var that = this
+        that.add = function() {
+            that.tasks = $video.createTask();
+            that.tasks.show = true
+			that.tasks.callback = function(){
+                swal({
+                    title: "成功",
+                    text: "已创建",
+                    type: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+				that.refresh();
+
+			}
+        }
+		that.edit = function(row){
+			that.tasks = $video.editTask(row)
+			that.tasks.show = true
+			that.tasks.callback = function(){
+                swal({
+                    title: "成功",
+                    text: "已保存",
+                    type: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+				that.refresh();
+			}
+		}
+		that.refresh = function(){
+			$video.getList(function(data){
+				_.each(data, function(item){
+					item.keywords_set = item.keywords.split(/ /i);
+				})
+                that.tableParams = new NgTableParams({
+                    count: 100,
+                    sorting: {}
+                }, {
+                    counts: [],
+                    dataset: data
+                });
+
+			})
+		}
+		that.add_keyword = function(row){
+			that.tasks = $video.add_keyword_task(row)
+			that.tasks.show = true
+			that.tasks.callback = function(){
+                swal({
+                    title: "成功",
+                    text: "已保存",
+                    type: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+				that.refresh();
+			}
+		}
+		that.active_row = 0
+		that.active_keyword = ""
+		that.remove_keyword = function(row,keyword){
+			if(row.id != that.active_row || that.active_keyword != keyword){
+				that.active_row = row.id
+				that.active_keyword = keyword
+			} else {
+				$video.remove_keyword_task(row,keyword, function(){
+					swal({
+						title: "成功",
+					text: "已删除",
+					type: "success",
+					timer: 1500,
+                    showConfirmButton: false
+                });
+				that.refresh();
+				})
+			}
+		}
+		that.refresh()
+    }
+])
+

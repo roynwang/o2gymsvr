@@ -10,9 +10,20 @@ class GymDocSerializer(serializers.ModelSerializer):
 		model =	GymDoc
 
 class GymVideoSerializer(serializers.ModelSerializer):
+        keywords = serializers.SerializerMethodField()
 	class Meta:
 		model =	GymVideo
+        def get_keywords(self,obj):
+            keywords = ""
+            cursor = GymVideoKeyword.objects.filter(videoid=obj.id)
+            for row in cursor:
+                keywords += row.keyword
+                keywords += ' '
+            return keywords[0:-1]
 
 
 
 
+class GymVideoKeywordSerializer(serializers.ModelSerializer):
+	class Meta:
+		model =	GymVideoKeyword
