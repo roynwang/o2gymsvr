@@ -9,7 +9,10 @@ class GymDocList(generics.ListCreateAPIView):
 	serializer_class = GymDocSerializer
         pagination_class = None
 	def get_queryset(self):
-            return GymDoc.objects.filter(gym=self.kwargs['gymid'])
+            if self.kwargs['gymid'] in ["19","31"]:
+                return GymDoc.objects.filter(gym__in=[19,31])
+            else:
+                return GymDoc.objects.filter(gym=self.kwargs['gymid'])
 
 class GymDocItem(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = GymDocSerializer
@@ -20,8 +23,10 @@ class GymVideoList(generics.ListCreateAPIView):
 	serializer_class = GymVideoSerializer
         pagination_class = None
 	def get_queryset(self):
-            return GymVideo.objects.filter(gym=self.kwargs['gymid'])
-
+            if self.kwargs['gymid'] in ["19","31"]:
+                return GymVideo.objects.filter(gym__in=[19,31])
+            else:
+                return GymVideo.objects.filter(gym=self.kwargs['gymid'])
 
 class GymVideoKeywordList(generics.ListCreateAPIView):
 	serializer_class = GymVideoKeywordSerializer
@@ -32,7 +37,7 @@ class GymVideoKeywordList(generics.ListCreateAPIView):
 
 class GymVideoKeywordItem(generics.RetrieveDestroyAPIView):
         lookup_field = "keyword"
-	serializer_class = GymVideoKeywordSerializer
+        serializer_class = GymVideoKeywordSerializer
         def get_queryset(self):
             t = self.kwargs['keyword'].encode("utf8")
             m =  GymVideoKeyword.objects.filter(keyword=t,videoid=self.kwargs['videoid'])
