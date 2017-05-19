@@ -848,6 +848,7 @@ class UserSummaryView(APIView):
                     week_trained += 1
 
             balance,_ = Balance.objects.get_or_create(name=usr.name,gym=int(gym))
+            order_count = Order.objects.filter(custom=usr.name).count()
 
             ret = {"name":usr.name,\
                     "displayname":usr.displayname,\
@@ -855,7 +856,8 @@ class UserSummaryView(APIView):
                     "pt_count":pt_count,\
                     "gc_count":gc_count,\
                     "week_trained":week_trained,\
-                    "discount": 0}
+                    "discount": 0,\
+                    "order_count":order_count}
             #get
             return Response(ret, status=status.HTTP_200_OK)
 
