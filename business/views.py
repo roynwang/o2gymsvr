@@ -468,6 +468,15 @@ class BodyEvalAllView(generics.ListAPIView):
 	def get_queryset(self):
 		return BodyEval.objects.filter(name=self.kwargs.get("name")).order_by("date")
 
+class BodyEvalDataView(generics.ListAPIView):
+	pagination_class = None
+	serializer_class = BodyEvalSerializer
+	def get_queryset(self):
+		return BodyEval.objects.filter(name=self.kwargs.get("name")) \
+                        .exclude(group__in=["4.背面观","5.侧面观","3.正面观"]) \
+                        .order_by("date")
+
+
 
 class BodyEvalByOptionView(generics.ListAPIView):
 	pagination_class = None
