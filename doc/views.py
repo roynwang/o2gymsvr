@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
 from rest_framework import generics
+from rest_framework import pagination
 from doc.serializers import *
 
 # Create your views here.
@@ -27,6 +28,16 @@ class GymVideoList(generics.ListCreateAPIView):
                 return GymVideo.objects.filter(gym__in=[19,31])
             else:
                 return GymVideo.objects.filter(gym=self.kwargs['gymid'])
+
+class GymVideoListWithPage(generics.ListCreateAPIView):
+	serializer_class = GymVideoSerializer
+        pagination_class = pagination.PageNumberPagination
+	def get_queryset(self):
+            if self.kwargs['gymid'] in ["19","31"]:
+                return GymVideo.objects.filter(gym__in=[19,31])
+            else:
+                return GymVideo.objects.filter(gym=self.kwargs['gymid'])
+
 
 class GymVideoKeywordList(generics.ListCreateAPIView):
 	serializer_class = GymVideoKeywordSerializer
