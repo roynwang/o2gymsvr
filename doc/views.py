@@ -19,6 +19,11 @@ class GymDocItem(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = GymDocSerializer
         queryset = GymDoc.objects.all()
 
+class GymVideoItem(generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = GymVideoSerializer
+        queryset = GymVideo.objects.all()
+
+
 
 class GymVideoList(generics.ListCreateAPIView):
 	serializer_class = GymVideoSerializer
@@ -34,9 +39,9 @@ class GymVideoListWithPage(generics.ListCreateAPIView):
         pagination_class = pagination.PageNumberPagination
 	def get_queryset(self):
             if self.kwargs['gymid'] in ["19","31"]:
-                return GymVideo.objects.filter(gym__in=[19,31])
+                return GymVideo.objects.filter(gym__in=[19,31]).order_by("-id")
             else:
-                return GymVideo.objects.filter(gym=self.kwargs['gymid'])
+                return GymVideo.objects.filter(gym=self.kwargs['gymid']).order_by("-id")
 
 
 class GymVideoKeywordList(generics.ListCreateAPIView):
