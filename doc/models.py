@@ -16,6 +16,7 @@ class GymDoc(models.Model):
 class GymVideo(models.Model):
 	id = models.AutoField(primary_key=True)
         gym = models.IntegerField()
+        pic = models.CharField(max_length=256)
         uploader = models.CharField(max_length=128)
         coach = models.CharField(max_length=128)
         title = models.CharField(max_length=256)

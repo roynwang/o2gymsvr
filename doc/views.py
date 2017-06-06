@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
+from django.http import JsonResponse, HttpResponse
+from rest_framework.response import Response
 from django.shortcuts import render
 from rest_framework import generics
+from rest_framework.views import APIView 
 from rest_framework import pagination
+from rest_framework import status
 from doc.serializers import *
 
 # Create your views here.
@@ -59,4 +63,28 @@ class GymVideoKeywordItem(generics.RetrieveDestroyAPIView):
             m =  GymVideoKeyword.objects.filter(keyword=t,videoid=self.kwargs['videoid'])
             return m
 
+
+class GymVideoCrawl(APIView):
+    def get(self, request,pk):
+        file_object = open('./crontab/workout/'+ str(pk))
+        try:
+            all_the_text = file_object.read( )
+            j = json.loads(all_the_text)
+            if not 'id' in j:
+                return Response({'content':'invalid'}, status=status.HTTP_404_NOT_FOUND)
+            obj = GymVideo.objects.create(id=int(j['id']),\
+                    gym = 31,\
+                    uploader="虞柳河",\
+                    coach="虞柳河",\
+                    title=j['name'],\
+                    summary=j['description'],\
+                    attachment=j['video_url'],\
+                    pic=j['pic'],\
+                    datestr="2017-06-06",\
+                    update = datetime.datetime.now())
+	    serializer = GymVideoSerializer(obj)
+	    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        finally:
+            file_object.close( )
 
