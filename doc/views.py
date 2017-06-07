@@ -47,6 +47,16 @@ class GymVideoListWithPage(generics.ListCreateAPIView):
             else:
                 return GymVideo.objects.filter(gym=self.kwargs['gymid']).order_by("-id")
 
+class GymVideoListWithKeyword(APIView):
+	serializer_class = GymVideoSerializer
+	def get(self, request, gymid, keyword):
+            print keyword
+            q = GymVideoKeyword.objects.filter(keyword=keyword).values_list('videoid',flat=True)
+            print q
+            queryset =  GymVideo.objects.filter(id__in=q)
+	    serializer = GymVideoSerializer(queryset, many=True)
+	    return Response({"next":None,"previous":None, "results":serializer.data})
+
 
 class GymVideoKeywordList(generics.ListCreateAPIView):
 	serializer_class = GymVideoKeywordSerializer
