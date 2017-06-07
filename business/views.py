@@ -804,7 +804,7 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
                 #calculate dispcount
                 
 		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
-                _, discount = get_discount(request.data['customer'], date)
+                _, discount = get_discount(request.data['customer'], date.date())
 
                 gc = GroupCourseInstance.objects.get(id=request.data['course'])
                 amount = gc.price - (gc.price * discount / 100)
