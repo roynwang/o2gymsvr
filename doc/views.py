@@ -72,17 +72,10 @@ class GymVideoCrawl(APIView):
             j = json.loads(all_the_text)
             if not 'id' in j:
                 return Response({'content':'invalid'}, status=status.HTTP_404_NOT_FOUND)
-            obj = GymVideo.objects.create(id=int(j['id']),\
+            obj = GymVideoKeyword.objects.create(videoid=int(j['id']),\
                     gym = 31,\
-                    uploader="虞柳河",\
-                    coach="虞柳河",\
-                    title=j['name'],\
-                    summary=j['description'],\
-                    attachment=j['video_url'],\
-                    pic=j['pic'],\
-                    datestr="2017-06-06",\
-                    update = datetime.datetime.now())
-	    serializer = GymVideoSerializer(obj)
+                    keyword=j["muscle_name"])
+	    serializer = GymVideoKeywordSerializer(obj)
 	    return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         finally:
