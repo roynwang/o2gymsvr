@@ -9,6 +9,7 @@ urlpatterns = patterns('',
 		url(r'^api/video/(?P<pk>[0-9]+)/$',GymVideoItem.as_view()),
 		url(r'^api/g/(?P<gymid>[0-9]+)/video/$',GymVideoList.as_view()),
 		url(r'^api/g/(?P<gymid>[0-9]+)/video/page/$',GymVideoListWithPage.as_view()),
+		url(r'^api/g/(?P<gymid>[0-9]+)/video/keyword/(?P<keyword>.+)/$',GymVideoListWithKeyword.as_view()),
 		url(r'^api/video/(?P<videoid>[0-9]+)/keywords/$',GymVideoKeywordList.as_view()),
 		url(r'^api/video/(?P<videoid>[0-9]+)/keywords/(?P<keyword>.+)/$',GymVideoKeywordItem.as_view()),
 		)
