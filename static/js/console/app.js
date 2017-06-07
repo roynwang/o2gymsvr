@@ -338,6 +338,7 @@ app.factory('$video', function(Restangular) {
             })
     }
 	function editTask(row){
+		var gymid = $.cookie("gym")
         var day_str = new Date().Format("yyyy-MM-dd")
         return {
             title: "修改",
@@ -349,7 +350,7 @@ app.factory('$video', function(Restangular) {
                 label: "标题",
 				value: row.title
             }, {
-                type: "shorttext",
+                type: "text",
                 key: "summary",
                 label: "描述",
 				value: row.summary
@@ -398,7 +399,7 @@ app.factory('$video', function(Restangular) {
                 key: "title",
                 label: "标题",
             }, {
-                type: "shorttext",
+                type: "text",
                 key: "summary",
                 label: "描述",
             }, {
@@ -4302,7 +4303,7 @@ app.controller("NewGroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", 
         that.day_str = that.day.Format("yyyy-MM-dd")
         that.newcourse = {
             coach: false,
-            price: 100
+            price: 150
         }
 
 
