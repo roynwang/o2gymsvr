@@ -33,7 +33,7 @@ class SimpleUserSerilaizer(serializers.ModelSerializer):
 	pinyin = serializers.SerializerMethodField()
 	class Meta:
 		model = User
-		exclude = ("upped","fwded","commented","upped_person","created")
+		exclude = ("upped","fwded","commented","upped_person")
 	def get_pinyin(self, obj):
 		return pinyin.get_initial(obj.displayname)
 
