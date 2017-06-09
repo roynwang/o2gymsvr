@@ -52,6 +52,15 @@
                     </td>
                 </tr>
             </table>
+            <table ng-table="ctrl.freqTableParams" class="table table-condensed table-striped">
+                <tr ng-repeat="row in $data" style="color:#333">
+                    <td data-title="'姓名'" sortable="'name'">{{row.name}}</td>
+                    <td data-title="'加入日期'" sortable="'date'">{{row.date}}</td>
+                    <td data-title="'次数'" sortable="'times'">{{row.times}}</td>
+                    </td>
+                </tr>
+            </table>
+
         </div>
     </section>
 </div>
