@@ -2032,6 +2032,34 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
         $scope.timemap = TimeMap
         var coachid = $stateParams.coachid
         that.coursedata = []
+
+		that.grouped = []
+		that.group = function(data){
+			var tmp = {}
+			var dates = {}
+			_.each(data, function(item){
+				if(item.coursetype !='trial'){
+					var k = item.customerprofile.displayname
+					dates[k] = item.customerprofile.created.split("T")[0]
+					tmp[k] |= 0 
+					tmp[k] += 1
+				}
+			})
+			_.each(tmp, function(v, k){
+				that.grouped.push({"name":k,"times":v, "date":dates[k]});
+			})
+
+			that.freqTableParams = new NgTableParams({
+				sorting: {
+					times: "asc"
+				}
+			}, {
+				dataset: that.grouped
+			});
+
+		}
+
+		
         that.refresh = function() {
 
             that.startday = new Date(Date.parse(that.startday_str))
@@ -2044,6 +2072,8 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
                 })
                 .then(function(data) {
                     that.coursedata = data
+					that.grouped = []
+					that.group(data)
                     that.tableParams = new NgTableParams({
                         sorting: {
                             name: "asc"
