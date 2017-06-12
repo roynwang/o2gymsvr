@@ -282,6 +282,7 @@ class ManualOrder(APIView):
 	    if "emergency_contact" in self.request.data and self.request.data["emergency_contact"] != "":
 		customer.emergency_contact = self.request.data["emergency_contact"]
 		#customer.save()
+            customer.order_status = None
 	    customer.save()
 
             #2.create chage
