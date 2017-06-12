@@ -178,6 +178,7 @@ class Schedule(models.Model):
 		self.coach.course_count += 1
 		self.save()
 		self.coach.save()
+                self.custom.save_owner(self.coach)
                 if not self.order is None:
 		        self.order.done()
 	def getprice(self):

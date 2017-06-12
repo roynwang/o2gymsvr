@@ -65,6 +65,7 @@ class User(models.Model):
 	trial_coach = models.CharField(max_length=64, blank=True, default="")
 
 	owner = models.CharField(max_length=64,default="") 
+	order_status = models.CharField(max_length=32,default="") 
 
         def get_coach_gym(self):
             return self.gym.all()[0]
@@ -82,6 +83,14 @@ class User(models.Model):
             if q.count() > 0:
                 if q[0].coursetype != 'trial':
                     self.save_owner(q[0].coach)
+
+        def update_owner_status(self):
+            q = self.orders.all()
+            for o in q:
+                self.order_status = o.status
+                if o.status != 'done':
+                    break
+            self.save()
 
 
         def trySendEvalNotification(self, schedule):
