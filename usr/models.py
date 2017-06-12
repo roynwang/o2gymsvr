@@ -64,12 +64,24 @@ class User(models.Model):
 
 	trial_coach = models.CharField(max_length=64, blank=True, default="")
 
+	owner = models.CharField(max_length=64,default="") 
+
         def get_coach_gym(self):
             return self.gym.all()[0]
 
         def get_frequency(self, days):
             startday = datetime.datetime.today().date() + datetime.timedelta(days=-days)
             return self.booked_time.filter(date__gt=startday, done=True).count()
+
+        def save_owner(self, coach):
+            self.owner = coach.name
+            self.save()
+
+        def find_owner(self):
+            q = self.booked_time.order_by("-date")
+            if q.count() > 0:
+                if q[0].coursetype != 'trial':
+                    self.save_owner(q[0].coach)
 
 
         def trySendEvalNotification(self, schedule):

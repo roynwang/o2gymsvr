@@ -293,8 +293,14 @@ class CustomerList(generics.ListAPIView):
 
 		end = datetime.datetime.now() + datetime.timedelta(days=-7)
 		ret = User.objects.filter(name__in = customlist).exclude(trial=gym.id,created__lt=end)
+
 		if ret.count() == 0:
 			ret = User.objects.filter(name = usr.name)
+
+                for c in ret:
+                    if c.owner is None:
+                        c.find_owner()
+
 		return ret
 
 
