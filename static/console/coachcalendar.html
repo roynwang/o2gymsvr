@@ -52,15 +52,21 @@
                     </td>
                 </tr>
             </table>
+			<p>活跃客户:{{ctrl.activecustomercount}}人</p>
             <table ng-table="ctrl.freqTableParams" class="table table-condensed table-striped">
                 <tr ng-repeat="row in $data" style="color:#333">
                     <td data-title="'姓名'" sortable="'name'">{{row.name}}</td>
                     <td data-title="'加入日期'" sortable="'date'">{{row.date}}</td>
                     <td data-title="'次数'" sortable="'times'">{{row.times}}</td>
-                    </td>
                 </tr>
             </table>
-
+			<p>存量客户(不含订单已结束的):{{ctrl.allcustomercount}}人</p>
+            <table ng-table="ctrl.respTableParams" class="table table-condensed table-striped">
+                <tr ng-repeat="row in $data" style="color:#333">
+                    <td data-title="'姓名'" sortable="'displayname'">{{row.displayname}}</td>
+                    <td data-title="'加入日期'" sortable="'date'">{{row.date}}</td>
+                </tr>
+            </table>
         </div>
     </section>
 </div>

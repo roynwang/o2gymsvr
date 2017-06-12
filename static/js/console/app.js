@@ -2048,7 +2048,7 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
 			_.each(tmp, function(v, k){
 				that.grouped.push({"name":k,"times":v, "date":dates[k]});
 			})
-
+			that.activecustomercount = that.grouped.length
 			that.freqTableParams = new NgTableParams({
 				sorting: {
 					times: "asc"
@@ -2059,11 +2059,33 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
 
 		}
 
+
+		that.refreshrespcustomer = function(){
+            Restangular.one("api", coachid)
+                .one("respcustomers")
+				.get()
+				.then(function(data){
+					_.each(data, function(item){
+						item.date = item.created.split("T")[0]
+					})
+					that.allcustomercount = data.length
+					that.respTableParams = new NgTableParams({
+						sorting: {
+							date: "desc"
+						}
+					}, {
+						dataset: data
+					});
+				})
+		}
+
+
 		
         that.refresh = function() {
 
             that.startday = new Date(Date.parse(that.startday_str))
             that.endday = new Date(Date.parse(that.endday_str))
+			that.refreshrespcustomer()
             Restangular.one("api", coachid)
                 .one("w")
                 .get({
