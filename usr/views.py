@@ -277,6 +277,14 @@ class CoachComments(generics.ListAPIView):
 		usr = get_object_or_404(User, name=self.kwargs.get("name"))
 		return usr.sealed_time.exclude(rate__isnull=True)
 
+class RespCustomerList(generics.ListAPIView):
+	serializer_class = SimpleUserSerilaizer
+	pagination_class = None
+	def get_queryset(self):
+		ret = User.objects.filter(owner = self.kwargs['name'], order_status__in = ['paid','inprogress'])
+                return ret
+
+
 class CustomerList(generics.ListAPIView):
 	serializer_class = SimpleUserSerilaizer
 	pagination_class = None
@@ -300,7 +308,8 @@ class CustomerList(generics.ListAPIView):
                 for c in ret:
                     if c.owner is None:
                         c.find_owner()
-
+                    if c.order_status is None:
+                        c.update_owner_status()
 		return ret
 
 
