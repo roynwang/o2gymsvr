@@ -65,7 +65,7 @@ class User(models.Model):
 	trial_coach = models.CharField(max_length=64, blank=True, default="")
 
 	owner = models.CharField(max_length=64,default="") 
-	order_status = models.CharField(max_length=32,default="") 
+	order_status = models.CharField(max_length=32,default=None,blank=True,null=True) 
 
         def get_coach_gym(self):
             return self.gym.all()[0]

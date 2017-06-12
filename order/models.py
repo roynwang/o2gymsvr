@@ -43,6 +43,8 @@ class Order(models.Model):
 			self.coach.order_count += 1
 			self.save()
 			self.coach.save()
+                        self.custom.order_status = None
+                        self.custom.save()
 	def cal_endtime(self):
 		if self.duration == None or self.duration == 0:
 			return "N/A"
