@@ -2034,6 +2034,7 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
         that.coursedata = []
 
 		that.grouped = []
+		that.av = {customercount:0, coursecount:0}
 		that.group = function(data){
 			var tmp = {}
 			var dates = {}
@@ -2047,8 +2048,9 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
 			})
 			_.each(tmp, function(v, k){
 				that.grouped.push({"name":k,"times":v, "date":dates[k]});
+				that.av.customercount ++
+				that.av.coursecount += v
 			})
-			that.activecustomercount = that.grouped.length
 			that.freqTableParams = new NgTableParams({
 				sorting: {
 					times: "asc"
