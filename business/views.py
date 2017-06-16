@@ -328,7 +328,7 @@ class CustomerMonthAverageView(APIView):
             
             #2 get all schedule
 	    gym = get_object_or_404(Gym, id=pk)
-            allschedule = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True),done=True,date__range=[ startday, endday])
+            allschedule = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True),done=True,date__range=[startday, endday]).exclude(coursetype = 'trial')
             #3 cal
             customer_count = allschedule.values("custom").distinct().count()
             return Response({"course_count":allschedule.count(), "customer_count":customer_count, "average":float(allschedule.count())/float(customer_count)})
