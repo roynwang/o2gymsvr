@@ -52,7 +52,8 @@
                     </td>
                 </tr>
             </table>
-			<p>活跃客户:{{ctrl.activecustomercount}}人</p>
+			<p>活跃客户:{{ctrl.av.customercount}}人</p>
+			<p>人均上课:{{ctrl.av.coursecount/ctrl.av.customercount}}节</p>
             <table ng-table="ctrl.freqTableParams" class="table table-condensed table-striped">
                 <tr ng-repeat="row in $data" style="color:#333">
                     <td data-title="'姓名'" sortable="'name'">{{row.name}}</td>
