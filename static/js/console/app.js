@@ -2036,6 +2036,7 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
 		that.grouped = []
 		that.av = {customercount:0, coursecount:0}
 		that.group = function(data){
+			that.av = {customercount:0, coursecount:0}
 			var tmp = {}
 			var dates = {}
 			_.each(data, function(item){
