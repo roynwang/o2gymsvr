@@ -2034,9 +2034,47 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
         that.coursedata = []
 
 		that.grouped = []
-		that.av = {customercount:0, coursecount:0}
+
+		that.av = {average: 0, customercount:0, coursecount:0}
+		that.refreshchart = function(){
+            Restangular.one("api", coachid)
+                .one("kpi")
+                .get({
+                    start: that.startday.Format("yyyyMMdd"),
+                    end: that.endday.Format("yyyyMMdd")
+                })
+                .then(function(data) {
+					data.reverse()
+                    that.averagechart = {
+                        labels: [],
+                        series: ["客均上课"],
+                        data: [
+                            []
+                        ]
+                    }
+					var averageset = []
+					var customercountset = []
+					var coursecountset = [] 
+					_.each(data,function(item){
+                        that.averagechart.labels.push(item.day)
+						that.averagechart.data[0].push(item.average)
+						averageset.push(item.average)
+						customercountset.push(item.customercount)
+						coursecountset.push(item.coursecount)
+					})
+					averageset = averageset.sort()
+					customercountset = customercountset.sort()
+					coursecountset = coursecountset.sort()
+
+					var i = parseInt(averageset.length * 0.8)
+					that.av.average = averageset[i]
+					that.av.customercount = customercountset[i]
+					that.av.coursecount = coursecountset[i]
+				})
+		}
+
+
 		that.group = function(data){
-			that.av = {customercount:0, coursecount:0}
 			var tmp = {}
 			var dates = {}
 			_.each(data, function(item){
@@ -2049,8 +2087,8 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
 			})
 			_.each(tmp, function(v, k){
 				that.grouped.push({"name":k,"times":v, "date":dates[k]});
-				that.av.customercount ++
-				that.av.coursecount += v
+				//that.av.customercount ++
+				//that.av.coursecount += v
 			})
 			that.freqTableParams = new NgTableParams({
 				sorting: {
@@ -2089,6 +2127,7 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
             that.startday = new Date(Date.parse(that.startday_str))
             that.endday = new Date(Date.parse(that.endday_str))
 			that.refreshrespcustomer()
+			that.refreshchart();
             Restangular.one("api", coachid)
                 .one("w")
                 .get({

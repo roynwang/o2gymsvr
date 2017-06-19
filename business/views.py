@@ -286,8 +286,37 @@ class ScheduleForReadQuery(generics.ListAPIView):
 	    	    return usr.sealed_time.filter(date__range=daterange).order_by("date","hour")
 	    	return usr.booked_time.filter(date__range=daterange).order_by("date","hour")
 
+class CoachKPI(APIView):
+        def getkpi(self,enddate,queryset):
+                customers = []
+                customercount = 0
+                coursecount = 0
+                floor = enddate - datetime.timedelta(days=30)
+                ceil = enddate.date()
+                
+                for item in queryset:
+                    if item.date > ceil or item.date <= floor.date():
+                        continue
+                    coursecount += 1
+                    if not item.custom in customers:
+                        customers.append(item.custom)
+                return {"day": datetime.date.strftime(enddate, "%Y%m%d"), \
+                        "customercount":len(customers),\
+                        "average": float(coursecount)/len(customers),\
+                        "coursecount": coursecount}
 
-
+	def get(self, request, name):
+		usr = get_object_or_404(User, name=name)
+	        oristartdate = datetime.datetime.strptime(self.request.GET["start"],"%Y%m%d")
+	        startdate = oristartdate - datetime.timedelta(days=30)
+	        enddate = datetime.datetime.strptime(self.request.GET["end"],"%Y%m%d")
+		daterange = [startdate, enddate]
+	    	q = usr.sealed_time.filter(date__range=daterange,coursetype__in=["normal","charge"]).order_by("date","hour")
+                ret = []
+                for i in range(0,30):
+                    d = enddate - datetime.timedelta(days=i)
+                    ret.append(self.getkpi(d,q))
+                return Response(ret)
 
 class ScheduleForRead(generics.ListAPIView):
 	serializer_class = ScheduleSerializer 
