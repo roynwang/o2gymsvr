@@ -313,9 +313,10 @@ class CoachKPI(APIView):
 		daterange = [startdate, enddate]
 	    	q = usr.sealed_time.filter(date__range=daterange,coursetype__in=["normal","charge"]).order_by("date","hour")
                 ret = []
-                for i in range(0,30):
-                    d = enddate - datetime.timedelta(days=i)
+                d = oristartdate
+                while d < enddate:
                     ret.append(self.getkpi(d,q))
+                    d = d + datetime.timedelta(days=1)
                 return Response(ret)
 
 class ScheduleForRead(generics.ListAPIView):
