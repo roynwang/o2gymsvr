@@ -41,6 +41,7 @@
             </div>
         </header>
         <div class="panel-body">
+			<h4>课程统计</h4>
             <table ng-table="ctrl.tableParams" class="table table-condensed table-striped">
                 <tr ng-repeat="row in $data" style="color:#333">
                     <td data-title="'姓名'" sortable="'customerprofile.displayname'">{{row.customerprofile.displayname}}</td>
@@ -52,8 +53,14 @@
                     </td>
                 </tr>
             </table>
-			<p>活跃客户:{{ctrl.av.customercount}}人</p>
-			<p>人均上课:{{ctrl.av.coursecount/ctrl.av.customercount}}节</p>
+			<h4>客均上课数量统计</h4>
+			<p>活跃客户(加权):{{ctrl.av.customercount}}人
+			课程总数(加权):{{ctrl.av.coursecount}}节
+			客均上课(加权):{{ctrl.av.average}}节</p>
+            <canvas id="line" class="chart chart-bar" chart-data="ctrl.averagechart.data"
+				chart-labels="ctrl.averagechart.labels"></canvas>
+
+			<h4>活跃客户</h4>
             <table ng-table="ctrl.freqTableParams" class="table table-condensed table-striped">
                 <tr ng-repeat="row in $data" style="color:#333">
                     <td data-title="'姓名'" sortable="'name'">{{row.name}}</td>
@@ -61,7 +68,7 @@
                     <td data-title="'次数'" sortable="'times'">{{row.times}}</td>
                 </tr>
             </table>
-			<p>存量客户(不含订单已结束的):{{ctrl.allcustomercount}}人</p>
+			<h4>存量客户(不含订单已结束的):{{ctrl.allcustomercount}}人</h4>
             <table ng-table="ctrl.respTableParams" class="table table-condensed table-striped">
                 <tr ng-repeat="row in $data" style="color:#333">
                     <td data-title="'姓名'" sortable="'displayname'">{{row.displayname}}</td>
