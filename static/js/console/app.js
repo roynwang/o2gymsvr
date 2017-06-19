@@ -2044,7 +2044,6 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
                     end: that.endday.Format("yyyyMMdd")
                 })
                 .then(function(data) {
-					data.reverse()
                     that.averagechart = {
                         labels: [],
                         series: ["客均上课"],
