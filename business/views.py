@@ -830,9 +830,34 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
 		ret = GroupCourseInstanceBook.objects.filter(date=date.date(), gym=self.kwargs.get("pk"))
 		return ret
 
+        def create_first_time(self, request, *args, **kwargs):
+                #get or create user
+                phone = request.data['phone']
+                if User.objects.filter(name=phone).exists():
+                    customer = User.objects.get(name=phone)
+                else:
+                    sex = False
+                    displayname = request.data['displayname']
+                    if request.data["sex"] == '1':
+        		sex = True
+                 	customer = User.objects.create(name=phone,displayname=displayname,sex=sex,iscoach=False,created=datetime.datetime.now())
+                    #bind open id to the user
+                customer.openid = request.data['openid']
+                customer.save()
+                #create an book
+                gc = GroupCourseInstanceBook.objects.create(customer=phone,\
+                        course = request.data['course'],\
+                        date = request.data['date'],\
+                        gym = request.data['gym'],\
+                        price = 0)
+                serializer = GroupCourseInstanceBookDetailSerializer(gc)
+                return Response(serializer.data)
+
 	def create(self, request, *args, **kwargs):
+                if "firsttime" in request.data:
+                    return self.create_first_time(request, args, kwargs)
+                    
                 #calculate dispcount
-                
 		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
                 _, discount = get_discount(request.data['customer'], date.date())
 
