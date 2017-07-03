@@ -2065,7 +2065,7 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
 					customercountset = customercountset.sort()
 					coursecountset = coursecountset.sort()
 
-					var i = parseInt(averageset.length * 0.8)
+					var i = parseInt(averageset.length * 0.95)
 					that.av.average = averageset[i]
 					that.av.customercount = customercountset[i]
 					that.av.coursecount = coursecountset[i]
