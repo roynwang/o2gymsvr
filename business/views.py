@@ -19,6 +19,7 @@ import requests
 import calendar
 from django.conf import settings
 import json
+import pprint
 from django.http import JsonResponse
 from rest_framework.exceptions import NotAcceptable
 
@@ -285,6 +286,48 @@ class ScheduleForReadQuery(generics.ListAPIView):
 		if usr.iscoach:
 	    	    return usr.sealed_time.filter(date__range=daterange).order_by("date","hour")
 	    	return usr.booked_time.filter(date__range=daterange).order_by("date","hour")
+
+class CoachTodayKPI(APIView):
+        def getkpi(self,enddate,queryset):
+                customers = []
+                customercount = 0
+                coursecount = 0
+                floor = enddate - datetime.timedelta(days=30)
+                ceil = enddate.date()
+                
+                for item in queryset:
+                    if item.date > ceil or item.date <= floor.date():
+                        continue
+                    coursecount += 1
+                    if not item.custom in customers:
+                        customers.append(item.custom)
+                return {"day": datetime.date.strftime(enddate, "%Y%m%d"), \
+                        "customercount":len(customers),\
+                        "average": float(coursecount)/len(customers),\
+                        "coursecount": coursecount}
+
+	def get(self, request, name):
+		usr = get_object_or_404(User, name=name)
+	        oristartdate = datetime.datetime.today() - datetime.timedelta(days=30)
+	        startdate = oristartdate - datetime.timedelta(days=30)
+	        enddate = datetime.datetime.today()
+		daterange = [startdate, enddate]
+	    	q = usr.sealed_time.filter(date__range=daterange,coursetype__in=["normal","charge"]).order_by("date","hour")
+                ret = []
+                d = oristartdate
+                while d < enddate:
+                    ret.append(self.getkpi(d,q))
+                    d = d + datetime.timedelta(days=1)
+
+                maxaverage = 0
+                for item in ret:
+                    if maxaverage < item['average']:
+                        maxaverage = item['average']
+                lastday = ret[-1]
+                pprint.pprint(ret);
+                print maxaverage
+                return Response({"month":"{:1.2f}".format(maxaverage*0.95), "today":"{:1.2f}".format(lastday['average'])})
+
 
 class CoachKPI(APIView):
         def getkpi(self,enddate,queryset):

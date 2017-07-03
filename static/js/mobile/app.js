@@ -716,6 +716,8 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             })
         }
 
+		that.kpisummary = {}
+
         that.init = function() {
             user = $.cookie("user")
             $usersvc.getuser(undefined, false, function(data) {
@@ -728,6 +730,8 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 						})
                 },
                 function(data) {})
+
+
             Restangular.one("api", user)
                 .all("customers")
                 .getList()
@@ -979,6 +983,14 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
 
         that.refresh = function() {
+            Restangular.one("api", user)
+                .one("todaykpi")
+                .get()
+                .then(function(data) {
+					that.kpi = data
+                    },
+                    function(data) {})
+
             that.searchText = undefined
             if (that.animating == -1) {
                 that.animating = 0
