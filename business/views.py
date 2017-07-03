@@ -993,9 +993,9 @@ def get_discount(name, coursedate):
             if last_trained_date is None:
                 return (0,10)
             dura = (coursedate - last_trained_date).days
-            if dura <= 2:
-                return (dura,20)
             if dura <= 3:
+                return (dura,20)
+            if dura <= 4:
                 return (dura,10)
             return (0,0)
             #get groupcourse count
