@@ -823,7 +823,7 @@ class CustomerGroupCourseList(generics.ListCreateAPIView):
 	serializer_class = GroupCourseInstanceBookDetailSerializer
 	pagination_class = None
 	def get_queryset(self):
-		ret = GroupCourseInstanceBook.objects.filter(customer=self.kwargs.get("name")).order_by("date").order_by("-date")
+		ret = GroupCourseInstanceBook.objects.filter(customer=self.kwargs.get("name")).order_by("date").order_by("date")
 		return ret
 
 #TODO
