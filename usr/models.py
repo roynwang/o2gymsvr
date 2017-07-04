@@ -137,11 +137,29 @@ class Balance(models.Model):
         gym = models.IntegerField()
         balance = models.IntegerField(default=0)
         gift = models.IntegerField(default=0)
+        group_enddate = models.DateField(null=True, blank=True)
 
         def charge(self, amount, gift = 0):
             self.balance += int(amount)
             self.gift += gift
             self.save()
+
+        def add_months(self, sourcedate,months):
+            month = sourcedate.month - 1 + months
+            year = int(sourcedate.year + month / 12 )
+    	    month = month % 12 + 1
+	    day = min(sourcedate.day,calendar.monthrange(year,month)[1])
+	    return datetime.date(year,month,day)
+
+
+        def charge_date(self, price, duration):
+            startdate = self.group_enddate
+            if not startdate:
+                startdate = datetime.date.today()
+            enddate = self.add_months(startdate,duration)
+            self.group_enddate = enddate
+            self.consume(price)
+
 
         def consume(self, amount):
             self.balance -= int(amount)
