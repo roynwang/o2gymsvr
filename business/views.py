@@ -902,6 +902,15 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
                     
                 #calculate dispcount
 		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+                
+
+                #get balance
+                b = Balance.objects.get(name=request.data['customer'],gym=31)
+                if b.group_enddate and b.group_enddate>=date.date():
+                    request.data['price'] = 0
+		    ret = super(GymGroupCourseDayBookList, self).create(request, args,kwargs)
+                    return ret
+
                 _, discount = get_discount(request.data['customer'], date.date())
 
                 gc = GroupCourseInstance.objects.get(id=request.data['course'])
@@ -920,7 +929,8 @@ class UserDateDiscountView(APIView):
         def get(self, request, name, date):
 		date = datetime.datetime.strptime(date,"%Y%m%d")
                 dura, discount = get_discount(name,date.date())
-                return Response({"dura":dura,"discount":discount},status.HTTP_200_OK)
+                b =  Balance.objects.get(name=name,gym=31)
+                return Response({"dura":dura,"discount":discount,"enddate":b.group_enddate},status.HTTP_200_OK)
 
 
 class UserSummaryView(APIView):

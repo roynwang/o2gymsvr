@@ -50,6 +50,16 @@ def isFirstOrder(coach,customer):
 	print count
 	return count == 0
 
+class ChargeMonth(APIView):
+        def post(self, request, name):
+            price_list = [1800, 3600, 4500]
+            price = request.data['duration']
+            b = Balance.objects.get(name=name, gym=31)
+            if b.precheck(price):
+                b.charge_date(price, request.data['duration'])
+                Response({"msg":"success"})
+            else:
+                raise Http404
 
 class OrderList(generics.ListCreateAPIView):
 	serializer_class = OrderSerializer
