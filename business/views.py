@@ -961,6 +961,7 @@ class UserSummaryView(APIView):
             ret = {"name":usr.name,\
                     "displayname":usr.displayname,\
                     "balance":balance.balance,\
+                    "group_enddate": balance.group_enddate, \
                     "pt_count":pt_count,\
                     "gc_count":gc_count,\
                     "week_trained":week_trained,\
