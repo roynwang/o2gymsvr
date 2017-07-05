@@ -51,13 +51,13 @@ def isFirstOrder(coach,customer):
 	return count == 0
 
 class ChargeMonth(APIView):
-        def post(self, request, name):
+        def post(self, request, pk, name):
             price_list = [1800, 3600, 4500]
-            price = request.data['duration']
-            b = Balance.objects.get(name=name, gym=31)
+            price = price_list[int(request.data['duration']) - 1]
+            b = Balance.objects.get(name=name, gym=int(pk))
             if b.precheck(price):
                 b.charge_date(price, request.data['duration'])
-                Response({"msg":"success"})
+                return Response({"msg":"success"})
             else:
                 raise Http404
 
