@@ -86,6 +86,14 @@ class Course(models.Model):
 
 	def __unicode__(self):
 		return self.title
+
+class SelfTrain(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=32)
+	gym = models.IntegerField()
+	hour = models.IntegerField()
+        date = models.DateField()
+
 	
 class Gym(models.Model):
 	id = models.AutoField(primary_key=True)
