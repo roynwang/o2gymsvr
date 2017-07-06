@@ -21,6 +21,11 @@ class GroupCourseSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = GroupCourse
 
+class SelfTrainSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = SelfTrain
+
+
 class GroupCourseInstanceBookSerializer(serializers.ModelSerializer):
         customer_detail = serializers.SerializerMethodField()
 

@@ -156,6 +156,16 @@ class GymScheduleList(generics.ListAPIView):
 		queryset = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True), date=date).order_by("hour")
 		return queryset
 
+class SelfTrainList(generics.CreateAPIView):
+	serializer_class = SelfTrainSerializer
+
+class SelfTrainItem(generics.RetrieveDestroyAPIView):
+	serializer_class = SelfTrainSerializer
+        lookup_field = "pk"
+        queryset = SelfTrain.objects.all()
+
+        
+
 class CurrentCoach(APIView):
         def get(self, request, name):
             usr = get_object_or_404(User, name = name)
@@ -173,11 +183,25 @@ class GymLoadList(APIView):
             #init
             ret = []
             for i in range(0,26):
-                ret.append({'hour':i,'course_count':0})
+                ret.append({'hour':i,'course_count':0, 'available': 1,'selftrain':0})
 
             for hour in queryset:
                 ret[hour.hour]['course_count'] += 1
                 ret[hour.hour+1]['course_count'] += 1
+
+            selftrain = SelfTrain.objects.filter(gym=self.kwargs.get("pk"), date=date)
+            for hour in selftrain:
+                ret[hour.hour]['course_count'] += 1
+                if 'name' in self.request.GET:
+                    name = self.request.GET['name']
+                    if name == hour.name:
+                        ret[hour.hour]['selftrain'] = hour.id
+                        ret[hour.hour]['available'] = 2
+
+            for item in ret:
+                if item['course_count'] >= 4 or item['selftrain']:
+                    if item['available'] == 1:
+                        item['available'] = 0
 
 	    return Response(ret, status=status.HTTP_200_OK)
 
