@@ -4396,7 +4396,7 @@ app.controller("NewGroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", 
         that.day_str = that.day.Format("yyyy-MM-dd")
         that.newcourse = {
             coach: false,
-            price: 150
+            price: 180
         }
 
 
