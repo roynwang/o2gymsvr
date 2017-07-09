@@ -326,6 +326,7 @@ class ManualOrder(APIView):
 		displayname = self.request.data["customer_displayname"]
 		if User.objects.filter(name=phone).exists():
 			customer = User.objects.get(name=phone)
+                        customer.displayname = displayname
                         customer.trial = None
                         customer.save()
 		else:
