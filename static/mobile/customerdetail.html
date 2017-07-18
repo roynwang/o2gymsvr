@@ -2,7 +2,8 @@
     <form>
         <md-toolbar>
             <div class="md-toolbar-tools">
-				<h2><img style="height:30px;margin-right:5px" src="{{ctrl.customer.avatar}}">{{ctrl.customer.name }}</h2>
+				<h2><img style="height:30px;margin-right:5px"
+					src="{{ctrl.customer.avatar}}">{{ctrl.customer.displayname}}</h2>
                 <span flex></span>
                 <md-button style="padding-left: 0" class="md-icon-button">
                  <span style="color: #1fb5ad;font-size:25px" 
@@ -17,6 +18,12 @@
                 </md-button>
             </div>
         </md-toolbar>
+        <div class="grey-header" style="padding-bottom:16px">
+			<h2 class="grey-heading-title">电话：{{ctrl.customer.name}}</h2>
+        </div>
+        <div class="grey-header" style="padding-bottom:16px">
+			<h2 class="grey-heading-title">紧急联系人：{{ctrl.customer.emergency_contact}}</h2>
+        </div>
         <div class="grey-header" style="padding-bottom:16px">
             <h2 class="grey-heading-title">订单列表</h2>
         </div>
