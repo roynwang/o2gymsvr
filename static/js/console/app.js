@@ -3149,6 +3149,7 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
 app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state",
         function($scope, Restangular, $customersvc, $state) {
             var that = this
+			$scope.day_str = new Date().Format("yyyy-MM-dd");
             var date = new Date().Format("yyyyMMdd");
             //var date = "20151029"
             $scope.calendarRowGroup = []
@@ -3205,6 +3206,15 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                 });
             })
 
+			$scope.changedate = function (delta){
+				var d = new Date($scope.day_str);
+				d = d.addDays(delta);
+				date = d.Format("yyyyMMdd")
+				$scope.day_str = d.Format("yyyy-MM-dd");
+                renderCoaches()
+                renderSale()
+			}
+
             function renderSale() {
                 var gymid = $.cookie("gym")
                 Restangular.one('api/g/', gymid)
@@ -3214,6 +3224,7 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                         $scope.sale = data
                     })
             }
+
 
             function renderCoaches() {
                 var gymid = $.cookie("gym")
