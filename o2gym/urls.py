@@ -8,6 +8,7 @@ urlpatterns = [
 		# url(r'^blog/', include('blog.urls')),
 	#	url(r'^favicon.ico$','django.views.generic.simple.redirect_to',{'url':'/static/images/favicon.ico'}),
 		url(r'^$',TemplateView.as_view(template_name="index.html")),
+		url(r'^onboard/$',TemplateView.as_view(template_name="onboard.html")),
 		url(r'^',include("console.urls")),
 		url(r'^api/protocol/$',TemplateView.as_view(template_name="agreement.html")),
 		url(r'^admin/', include(admin.site.urls)),
