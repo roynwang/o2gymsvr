@@ -120,7 +120,8 @@
                         flex layout="row" ng-show="c.book && !c.extend">
                             <span flex="5"></span>
                             <div flex="50" layout="row" layout-align="start center">
-                                <span>{{c.book.customerprofile.displayname}}</span>
+								<span>{{c.book.customerprofile.displayname}}
+									<strong style="font-weight:900;color:#fa8564;padding-left:4px;">{{c.book.action_required}}</strong></span>
                             </div>
                             <span flex></span>
                             <div style="margin:0" ng-hide="c.book.done" flex=20 ng-click="ctrl.removebook(c.book);$event.stopPropagation();"
