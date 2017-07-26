@@ -171,6 +171,8 @@ class Schedule(models.Model):
         discount = models.IntegerField(default = 0)
         coursetype = models.CharField(max_length=32,default="time")
 
+        action_required = models.CharField(max_length=128,blank=True,null=True,default="")
+
 
 	def __unicode__(self):
 		return str(self.date) + str(self.hour)
@@ -201,6 +203,7 @@ class Schedule(models.Model):
 		price  = p.price/p.amount
 		return price
 		
+        ''' OBSOLETE
         def send_launch_notification(self):
             if not self.order is None and self.order.amount != 0 and self.order.subsidy != 0:
                 #1 send to coach
@@ -218,6 +221,7 @@ class Schedule(models.Model):
                         content= self.custom.displayname +"需要订餐", \
                         link="", \
                         dismiss_date=self.date)
+        '''
 
         def create_threshold_msg(self):
             ThresholdMsg.try_create_msg_by_frequency(self,\

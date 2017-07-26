@@ -110,6 +110,9 @@ class User(models.Model):
             #3 send all in the gym
             order = self.booked_time.order_by("-date")[0].order
             gym = order.gym
+            if gym in [19,31]:
+                schedule.action_required = "数据测量"
+                schedule.save()
             message = Message.objects.create(name=schedule.coach.name, \
                         by=self.name, \
                         content= self.displayname +"需要进行数据测量", \
