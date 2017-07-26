@@ -159,6 +159,15 @@ class GymScheduleList(generics.ListAPIView):
 class SelfTrainList(generics.CreateAPIView):
 	serializer_class = SelfTrainSerializer
 
+class SelfTrainByDateList(generics.ListAPIView):
+	pagination_class = None
+	serializer_class = SelfTrainSerializer
+        def get_queryset(self):
+	    pk=self.kwargs.get("pk")
+	    date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+	    queryset = SelfTrain.objects.filter(gym=pk, date=date)
+            return queryset
+
 class SelfTrainItem(generics.RetrieveDestroyAPIView):
 	serializer_class = SelfTrainSerializer
         lookup_field = "pk"

@@ -3213,6 +3213,18 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
 				$scope.day_str = d.Format("yyyy-MM-dd");
                 renderCoaches()
                 renderSale()
+				renderSelfWorkout()
+			}
+
+			function renderSelfWorkout() {
+                var gymid = $.cookie("gym")
+                Restangular.one('api/g/', gymid)
+                    .one("selftrain)
+                    .get()
+                    .then(function(data) {
+                        $scope.selftrain = data
+                    })
+
 			}
 
             function renderSale() {
@@ -3259,6 +3271,7 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                 } else {
                     renderCoaches()
                     renderSale()
+					renderSelfWorkout()
                 }
             }
             recur()
