@@ -185,9 +185,9 @@ class GymLoadList(APIView):
             for i in range(0,26):
                 ret.append({'hour':i,'course_count':0, 'available': 1,'selftrain':0})
 
-            for hour in queryset:
-                ret[hour.hour]['course_count'] += 1
-                ret[hour.hour+1]['course_count'] += 1
+            for p in queryset:
+                ret[p.hour]['course_count'] += 1
+                ret[p.hour+1]['course_count'] += 1
 
             selftrain = SelfTrain.objects.filter(gym=self.kwargs.get("pk"), date=date)
             for hour in selftrain:
@@ -290,7 +290,7 @@ class ScheduleList(generics.ListCreateAPIView):
 		                order.save()
 		#send sms
                 customer.trySendEvalNotification(book)
-                book.send_launch_notification()
+                #book.send_launch_notification()
 		#print book.sendSms()
 		return Response(sl.data)
 
