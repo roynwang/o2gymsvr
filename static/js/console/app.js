@@ -3214,6 +3214,18 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                 renderCoaches()
                 renderSale()
 				renderSelfWorkout()
+				renderGroupCourse()
+			}
+
+			function renderGroupCourse() {
+                var gymid = $.cookie("gym")
+				$scope.gymid = gymid
+                Restangular.one('api/g/', gymid)
+                    .one("groupcourseinstance",date)
+                    .get()
+                    .then(function(data) {
+                        $scope.groupcourse = data
+                 })
 			}
 
 			function renderSelfWorkout() {
@@ -3273,6 +3285,7 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                     renderCoaches()
                     renderSale()
 					renderSelfWorkout()
+					renderGroupCourse()
                 }
             }
             recur()
