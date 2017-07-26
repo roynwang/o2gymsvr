@@ -3218,8 +3218,9 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
 
 			function renderSelfWorkout() {
                 var gymid = $.cookie("gym")
+				$scope.gymid = gymid
                 Restangular.one('api/g/', gymid)
-                    .one("selftrain)
+                    .one("selftrain",date)
                     .get()
                     .then(function(data) {
                         $scope.selftrain = data
