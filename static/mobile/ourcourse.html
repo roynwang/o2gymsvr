@@ -67,8 +67,10 @@
                             <div ng-show="b" flex=90 style="background:{{ctrl.colorset[$index%5][0]}};
 								color:{{ctrl.colorset[$index%5][1]}};" layout="row" layout-align="start center">
 								<span style="padding-left:10px">{{c.extend[$index]?b.customerprofile.displayname:b.coachprofile.displayname}}
-									<strong ng-if="c.extend[$index] && b.action_required"
-										style="font-weight:900;color:#fa8564;"><br>{{b.action_required}}</strong></span>
+									<strong ng-if="!c.extend[$index] && b.action_required"
+										style="font-weight:900;color:#fa8564;"><br>{{b.action_required}}</strong>
+									<strong ng-if="c.extend[$index]"
+										style="font-weight:900;color:#fa8564;"><br>{{b.customerprofile.comments}}</strong>
 								</span>
                             </div>
                         </div>
