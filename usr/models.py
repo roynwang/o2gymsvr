@@ -109,7 +109,11 @@ class User(models.Model):
                 return
             #3 send all in the gym
             order = self.booked_time.order_by("-date")[0].order
-            gym = order.gym
+            if not order:
+                gym = 31
+            else:
+                gym = order.gym
+
             if gym in [19,31]:
                 schedule.action_required = "数据测量"
                 schedule.save()
