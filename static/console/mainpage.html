@@ -104,3 +104,38 @@
 		</div>
 	</div>
 </div>
+
+<div class="row">
+	<div class="col-md-6">
+<section class="panel">
+        <header class="panel-heading">
+            自助锻炼
+<!-- <span class="tools pull-right">
+            <a href="javascript:;" class="fa fa-chevron-down"></a>
+            <a href="javascript:;" class="fa fa-cog"></a>
+            <a href="javascript:;" class="fa fa-times"></a>
+            </span> -->
+        </header>
+        <div class="panel-body">
+            <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 300px;"><ul class="to-do-list ui-sortable" id="sortable-todo" style="overflow: hidden; width: auto; height: 300px;">
+                <li ng-repeat = "c in selftrain" class="clearfix">
+                    <span class="drag-marker">
+                    <i></i>
+                    </span>
+                    <p class="todo-title" style="margin-left:20px">
+                       {{c.customer_detail.displayname}} / {{timemap[c.hour]}}
+                    </p>
+                    <!--<div class="todo-actionlist pull-right clearfix">
+                        <a href="#" class="todo-done"><i class="fa fa-check"></i></a>
+                        <a href="#" class="todo-edit"><i class="ico-pencil"></i></a>
+                        <a href="#" class="todo-remove"><i class="ico-close"></i></a>
+                    </div>-->
+                </li>
+            </ul><div class="slimScrollBar" style="background: rgb(0, 0, 0); width: 7px; position: absolute; top: 38px; opacity: 0.4; display: none; border-radius: 7px; z-index: 99; right: 1px; height: 262.391px;"></div><div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div></div>
+        </div>
+    </section>
+	</div>
+
+	<div class="col-md-6">
+	</div>
+</div>
