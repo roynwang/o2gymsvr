@@ -65,7 +65,7 @@
 <div class="row" ng-repeat="cg in calendarRowGroup" style="margin-bottom:20px">
 	<div ng-if="cg != undefined" class="col-md-3" ng-repeat="coach in cg ">
 		<div class="event-calendar clearfix">
-			<div class="col-lg-12 event-list-block">
+			<div class="col-lg-12 event-list-block" style="padding-left:5px;padding-right:5px">
 				<div class="cal-day">
 					<!--<span>Today</span>-->
 					<img ng-if="calendarRowGroup" ng-src="{{coach.avatar}}" style="border-radius:5px;-webkit-border-radius: 5px;width: 40px;">
@@ -83,6 +83,8 @@
 						  50%;-webkit-border-radius: 50%;width: 28px; margin-right:10px"/> --> {{book.customerprofile.displayname}}
 						  <span ng-show="book.done"><i class="fa
 								  fa-check-square-o"></i></span>
+
+						  <strong ng-if="book.action_required" style="font-size:0.6rem;color:#fa8564;">{{book.action_required}}</strong>
 						  <a ng-show="book.complete_status=='体验课'" href="#/trialcustomer/{{book.customerprofile.name}}"
 								  class="pull-right btn btn-danger btn-xs"
 						  style="margin-left:10px">试</a>
