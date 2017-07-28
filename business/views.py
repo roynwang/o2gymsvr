@@ -873,7 +873,9 @@ class GymTodoList(generics.ListCreateAPIView):
         pagination_class = None
 	def get_queryset(self):
             date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
-	    return Todo.objects.filter(gym=self.kwargs.get("pk"), schedule_date__lte=date.date())
+	    pending = Todo.objects.filter(gym=self.kwargs.get("pk"), done = False, schedule_date__lt=date.date())
+	    tody = Todo.objects.filter(gym=self.kwargs.get("pk"), schedule_date=date.date())
+            return pending | tody
 
 class TodoItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Todo.objects.all()
