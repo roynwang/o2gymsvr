@@ -162,7 +162,9 @@ class TrainSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Train
 
-
+class TodoSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Todo
 
 class TrainDateSerializer(serializers.ModelSerializer):
 	class Meta:

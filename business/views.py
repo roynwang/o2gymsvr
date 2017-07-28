@@ -868,6 +868,19 @@ class GymGroupCourseDayList(generics.ListCreateAPIView):
 		ret = GroupCourseInstance.objects.filter(gym=self.kwargs.get("pk"),date=date.date())
 		return ret
 
+class GymTodoList(generics.ListCreateAPIView):
+	serializer_class = TodoSerializer
+        pagination_class = None
+	def get_queryset(self):
+            date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+	    return Todo.objects.filter(gym=self.kwargs.get("pk"), schedule_date__lte=date.date())
+
+class TodoItem(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Todo.objects.all()
+        lookup_field = "pk"
+	serializer_class = TodoSerializer
+
+
 class GroupCourseItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = GroupCourse.objects.all()
 	serializer_class = GroupCourseSerializer

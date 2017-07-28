@@ -29,7 +29,7 @@
 			placeholder="{{task.placeholder}}" ng-model="task.value"/>
 			<input ng-if='task.type=="time"' class="form-control" type="datetime" placeholder="格式: 12:00" ng-model="task.value"/>
 			<textarea style="height:150px" ng-if='task.type=="text"' class="form-control"  placeholder="{{task.label}}" ng-model="task.value"> </textarea>
-			<input ng-if='task.type=="date"' placeholder="请选择日期" class="form-control"
+			<input ng-if='task.type=="date"' placeholder="!!注意格式 2017-06-07" class="form-control"
 			datetime-picker date-only future-only ng-model="task.value" date-format="yyyy-MM-dd"/>
 			<div ng-if='task.type=="image"' flow-init
 				flow-files-submitted="upload($flow, task)"
