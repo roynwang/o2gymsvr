@@ -292,6 +292,14 @@ class Message(models.Model):
 	created = models.DateTimeField(default=datetime.datetime.now())
 	dismiss_date = models.DateField(default=datetime.date.today)
 
+class Todo(models.Model):
+	id = models.AutoField(primary_key=True)
+        done = models.BooleanField(default=False)
+        content = models.CharField(max_length=1024, default="")
+        gym = models.IntegerField(default=0)
+        by = models.CharField(max_length=64, default="")
+	schedule_date = models.DateField(default=datetime.date.today)
+
 
 class ThresholdMsg(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -306,6 +314,7 @@ class ThresholdMsg(models.Model):
         @staticmethod
         def try_create_msg_by_frequency(schedule, frequncy, deltadays, templateid, desc):
             #check wthether existed
+            '''
             customer = schedule.custom
             startday = datetime.datetime.today().date() + datetime.timedelta(days= -deltadays)
 
@@ -326,6 +335,7 @@ class ThresholdMsg(models.Model):
                         content=schedule.custom.displayname +"触发了奖励", \
                         link="", \
                         dismiss_date=schedule.date)
+            '''
 
 
         def send_msg(self):

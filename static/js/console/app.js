@@ -765,6 +765,63 @@ app.factory("$login", function(Restangular) {
     }
 })
 
+app.factory("$todosvc", function(Restangular) {
+	function createTask(){
+        var gymid = $.cookie("gym")
+        var day_str = new Date().Format("yyyy-MM-dd")
+        return {
+            title: "创建",
+            url: "/api/g/" + gymid + "/todo/",
+            tasks: [ {
+                type: "text",
+                key: "content",
+                label: "描述",
+            }, {
+                type: "shorttext",
+                key: "by",
+                label: "作者",
+                value: $.cookie("displayname")
+            }, {
+                type: "shorttext",
+                key: "gym",
+                label: "健身房",
+                value: parseInt(gymid),
+                disabled: 1
+            },{
+                type: "date",
+                key: "schedule_date",
+                label: "日期",
+				value: day_str
+            }]
+		}
+	}
+	function doneTask(todo, onsuccess, onfail){
+        var gymid = $.cookie("gym")
+        Restangular.one('api/todo/', todo.id)
+                .patch({done:todo.done})
+                .then(function(data) {
+                    onsuccess && onsuccess(todo)
+                })
+	}
+	function remove(todo, onsuccess, onfail){
+        var gymid = $.cookie("gym")
+        Restangular.one('api/todo/', todo.id)
+                .remove()
+                .then(function(data) {
+                    onsuccess && onsuccess(todo)
+                })
+	}
+
+
+
+	return  {
+		create: createTask,
+		done: doneTask,
+		remove: remove
+	}
+
+})
+
 app.factory("$customersvc", function(Restangular) {
     var customers = []
 
@@ -3146,8 +3203,8 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
     }
 ])
 
-app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state",
-        function($scope, Restangular, $customersvc, $state) {
+app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state","$todosvc","SweetAlert",
+        function($scope, Restangular, $customersvc, $state, $todosvc,SweetAlert) {
             var that = this
 			$scope.day_str = new Date().Format("yyyy-MM-dd");
             var date = new Date().Format("yyyyMMdd");
@@ -3168,29 +3225,79 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                     }
                 });
 
+			$scope.addtodo = function(){
+	            $scope.tasks = $todosvc.create()
+				$scope.tasks.show = true
+				$scope.tasks.callback = function(){
+					renderTodo()
+				}
+			}
+			$scope.toggleDone = function(todo){
+				todo.done = !todo.done
+				$todosvc.done(todo, 
+						function(){
+						},
+						function(){
+						})
+			}
+			$scope.toggleRemove = function(todo){
+				SweetAlert.swal({
+					//title: "确定移除该教练吗?",
+					title: "",
+					text: "确定删除吗?",
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#1fb5ad",
+					confirmButtonText: "确定",
+					cancelButtonText: "取消",
+					showLoaderOnConfirm: true,
+					closeOnConfirm: false
+				},
+				function(yes) {
+					if (!yes) {
+						return
+					}
+					$todosvc.remove(todo, 
+						function(){
+                                swal({
+                                    title: "成功",
+                                    text: "已经删除",
+                                    type: "success",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
 
-            $customersvc.getcustomers(function(data) {
-                that.customers = data
-                    //refresh birthdays
-                getbirthdays(data)
+							renderTodo()
+						},
+						function(){
+						})
+				})
+			}
 
-                $('#customer-search').autocomplete({
-                    lookup: function(query, done) {
-                        // Do ajax call or lookup locally, when done,
-                        // call the callback and pass your results:
-                        var filtered = _.filter(that.customers, function(p) {
-                            var pinyin = p.pinyin.replace(/ /g, "")
-                            if (pinyin.indexOf(query) >= 0 || p.displayname.indexOf(query) >= 0) {
-                                return true
-                            }
-                            return false
-                        })
-                        var sug = _.map(filtered, function(p) {
-                            return {
-                                "value": p.displayname,
-                                "data": p
-                            }
-                        })
+
+
+			$customersvc.getcustomers(function(data) {
+				that.customers = data
+				//refresh birthdays
+				getbirthdays(data)
+
+				$('#customer-search').autocomplete({
+					lookup: function(query, done) {
+						// Do ajax call or lookup locally, when done,
+						// call the callback and pass your results:
+						var filtered = _.filter(that.customers, function(p) {
+							var pinyin = p.pinyin.replace(/ /g, "")
+							if (pinyin.indexOf(query) >= 0 || p.displayname.indexOf(query) >= 0) {
+								return true
+							}
+						return false
+						})
+						var sug = _.map(filtered, function(p) {
+							return {
+								"value": p.displayname,
+							"data": p
+							}
+						})
 
                         var result = {
                             suggestions: sug
@@ -3215,6 +3322,7 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                 renderSale()
 				renderSelfWorkout()
 				renderGroupCourse()
+				renderTodo()
 			}
 
 			function renderGroupCourse() {
@@ -3225,6 +3333,15 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                     .get()
                     .then(function(data) {
                         $scope.groupcourse = data
+                 })
+			}
+			function renderTodo(){
+                var gymid = $.cookie("gym")
+                Restangular.one('api/g/', gymid)
+                    .one("todo",date)
+                    .get()
+                    .then(function(data) {
+                        $scope.todolist = data
                  })
 			}
 
@@ -3286,6 +3403,7 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                     renderSale()
 					renderSelfWorkout()
 					renderGroupCourse()
+					renderTodo()
                 }
             }
             recur()
