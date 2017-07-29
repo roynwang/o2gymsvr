@@ -877,6 +877,20 @@ class GymTodoList(generics.ListCreateAPIView):
 	    tody = Todo.objects.filter(gym=self.kwargs.get("pk"), schedule_date=date.date())
             return pending | tody
 
+class RecurTodoView(APIView):
+        def post(self, request, pk):
+            item = Todo.objects.get(id=pk)
+            times = int(request.data['times'])
+            interval = int(request.data['interval'])
+            for i in range(1, times):
+                newday = item.schedule_date + datetime.timedelta( days = i*interval)
+                Todo.objects.create(schedule_date = newday, \
+                        by = item.by, \
+                        gym = item.gym, \
+                        content = item.content)
+            return Response({}, status=status.HTTP_200_OK)
+            
+
 class TodoItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Todo.objects.all()
         lookup_field = "pk"
