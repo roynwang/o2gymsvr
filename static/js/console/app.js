@@ -766,6 +766,24 @@ app.factory("$login", function(Restangular) {
 })
 
 app.factory("$todosvc", function(Restangular) {
+	function recurTask(todo){
+        return {
+            title: "创建",
+            url: "/api/todo/"+todo.id + "/recur/",
+			method: "POST",
+            tasks: [{
+                type: "shorttext",
+                key: "times",
+                label: "重复次数"
+            },{
+                type: "shorttext",
+                key: "interval",
+                label: "间隔",
+				placeholder: "7天"
+            }]
+		}
+	}
+
 	function createTask(){
         var gymid = $.cookie("gym")
         var day_str = new Date().Format("yyyy-MM-dd")
@@ -817,7 +835,8 @@ app.factory("$todosvc", function(Restangular) {
 	return  {
 		create: createTask,
 		done: doneTask,
-		remove: remove
+		remove: remove,
+		recur: recurTask
 	}
 
 })
@@ -3229,6 +3248,20 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
 	            $scope.tasks = $todosvc.create()
 				$scope.tasks.show = true
 				$scope.tasks.callback = function(){
+					renderTodo()
+				}
+			}
+			$scope.toggleRecur = function(todo){
+				$scope.tasks = $todosvc.recur(todo)
+				$scope.tasks.show = true
+				$scope.tasks.callback = function(){
+					swal({
+						title: "成功",
+						text: "已经提交",
+						type: "success",
+						timer: 1500,
+						showConfirmButton: false
+					});
 					renderTodo()
 				}
 			}
