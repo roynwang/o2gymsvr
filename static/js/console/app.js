@@ -1,6 +1,18 @@
 'use strict';
 var bukcet = "https://dn-o2fit.qbox.me"
 
+function dict2arr(dict) {
+    var arr = []
+    for (var i in dict) {
+        var tmp = {
+            key: i,
+            value: dict[i]
+        }
+        arr.push(tmp)
+    }
+    return arr;
+}
+
 function b64toBlob(b64Data, contentType, sliceSize) {
         contentType = contentType || '';
         sliceSize = sliceSize || 512;
@@ -672,6 +684,69 @@ app.factory("$groupcoursesvc", function(Restangular) {
             })
 
     }
+	function dup(course){
+        var gymid = $.cookie("gym")
+        var url = '/api/g/' + gymid + "/groupcourseinstance/"
+        return {
+            title: "复制到另一天",
+            url: url,
+			method: "POST",
+            tasks: [{
+                type: "shorttext",
+                key: "date",
+                label: "日期",
+				value: course.date
+            },{
+                type: "shorttext",
+                key: "coach",
+                label: "教练",
+				value: course.coach,
+				disabled: true
+            },{
+                type: "shorttext",
+                key: "course",
+                label: "course",
+				value: course.course,
+				disabled: true
+            },{
+                type: "shorttext",
+                key: "gym",
+                label: "gym",
+				value: course.gym,
+				disabled: true
+            },{
+                type: "selection",
+                key: "hour",
+                label: "时间",
+				options: dict2arr(TimeMap),
+            },{
+                type: "shorttext",
+                key: "price",
+                label: "价格",
+				value: course.price
+            }]
+		}
+	}
+	function editTime(course){
+        return {
+            title: "修改时间",
+            url: "/api/groupcourseinstance/"+course.id + "/",
+			method: "PATCH",
+            tasks: [{
+                type: "shorttext",
+                key: "date",
+                label: "日期",
+				value: course.date
+            },{
+                type: "selection",
+                key: "hour",
+                label: "时间",
+				options: dict2arr(TimeMap),
+				value: course.hour
+            }]
+		}
+	}
+
 
     function cancelcourse(course, onsuccess) {
         Restangular.one('api/groupcourseinstance/', course.id)
@@ -747,7 +822,9 @@ app.factory("$groupcoursesvc", function(Restangular) {
         createcourseinstance: createcourseinstance,
         book: book,
         cancel: cancel,
-        cancelcourse: cancelcourse
+        cancelcourse: cancelcourse,
+		editTime: editTime,
+		dupCourse: dup
     }
 })
 
@@ -3222,8 +3299,8 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
     }
 ])
 
-app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state","$todosvc","SweetAlert",
-        function($scope, Restangular, $customersvc, $state, $todosvc,SweetAlert) {
+app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state","$todosvc","SweetAlert","$groupcoursesvc",
+        function($scope, Restangular, $customersvc, $state, $todosvc,SweetAlert, $groupcoursesvc) {
             var that = this
 			$scope.day_str = new Date().Format("yyyy-MM-dd");
             var date = new Date().Format("yyyyMMdd");
@@ -3251,6 +3328,60 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
 					renderTodo()
 				}
 			}
+			$scope.changeCourseTime = function(c){
+	            $scope.tasks = $groupcoursesvc.editTime(c)
+				$scope.tasks.show = true
+				$scope.tasks.callback = function(){
+					renderGroupCourse()
+				}
+			}
+			$scope.copyCourse = function(c){
+	            $scope.tasks = $groupcoursesvc.dupCourse(c)
+				$scope.tasks.show = true
+				$scope.tasks.callback = function(){
+					swal({
+						title: "成功",
+						text: "已经提交",
+						type: "success",
+						timer: 1500,
+						showConfirmButton: false
+					});
+					renderGroupCourse()
+				}
+			}
+			$scope.removeCourse = function(c){
+				SweetAlert.swal({
+					//title: "确定移除该教练吗?",
+					title: "",
+					text: "确定删除吗?",
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#1fb5ad",
+					confirmButtonText: "确定",
+					cancelButtonText: "取消",
+					showLoaderOnConfirm: true,
+					closeOnConfirm: false
+				},
+				function(yes) {
+					if (!yes) {
+						return
+					}
+					$groupcoursesvc.cancelcourse(c, 
+						function(){
+                                swal({
+                                    title: "成功",
+                                    text: "已经删除",
+                                    type: "success",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+							renderGroupCourse()
+						},
+						function(){
+						})
+				})
+			}
+
 			$scope.toggleRecur = function(todo){
 				$scope.tasks = $todosvc.recur(todo)
 				$scope.tasks.show = true
