@@ -3915,6 +3915,7 @@ app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams", "$st
         that.groups = []
         that.newcustomer = {
             sex: '0',
+			name: "",
             trial: $.cookie("gym")
         }
         that.showstep = function(tab) {
