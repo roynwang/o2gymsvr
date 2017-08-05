@@ -176,6 +176,17 @@ class Schedule(models.Model):
 
 	def __unicode__(self):
 		return str(self.date) + str(self.hour)
+
+        def is_first_course(self):
+            if self.coursetype == "trial":
+                return False
+            else:
+                count = Schedule.objects.filter(custom = self.custom, \
+                        coursetype__in = ["normal", "charge"] )
+                if count == 0:
+                    return True
+            return False
+
 	def sendSms(self):
                 
                 if self.order is None:
