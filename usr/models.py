@@ -94,14 +94,19 @@ class User(models.Model):
 
 
         def trySendEvalNotification(self, schedule):
-            #1 should after 30 day after last eval
-            evals = BodyEval.objects.filter(name=self.name).order_by("-date")
-            if evals.count() == 0:
-                return
-            last_eval = evals[0]
-            delta = schedule.date - last_eval.date 
-            if delta.days < 30:
-                return
+            #0 if the first schedule
+            
+            if schedule.is_first_course():
+                pass
+            else:
+                #1 should after 30 day after last eval
+                evals = BodyEval.objects.filter(name=self.name).order_by("-date")
+                if evals.count() == 0:
+                    return
+                last_eval = evals[0]
+                delta = schedule.date - last_eval.date 
+                if delta.days < 30:
+                    return
             #2 train times should >= 8 in last 30 days
             startday = schedule.date + datetime.timedelta(days=-30)
             times = self.booked_time.filter(date__gt=startday).count()
@@ -117,6 +122,12 @@ class User(models.Model):
             if gym in [19,31]:
                 schedule.action_required = "数据测量"
                 schedule.save()
+                Todo.objects.create( \
+                        content = schedule.custom.displayname + "需要测量",
+                        gym = gym,\
+                        by = "系统通知",\
+                        schedule_date = schedule.date)
+                #create todo
             message = Message.objects.create(name=schedule.coach.name, \
                         by=self.name, \
                         content= self.displayname +"需要进行数据测量", \
