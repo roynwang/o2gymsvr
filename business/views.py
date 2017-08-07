@@ -156,8 +156,17 @@ class GymScheduleList(generics.ListAPIView):
 		queryset = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True), date=date).order_by("hour")
 		return queryset
 
-class SelfTrainList(generics.CreateAPIView):
+class SelfTrainList(generics.ListCreateAPIView):
 	serializer_class = SelfTrainSerializer
+	pagination_class = None
+
+        def get_queryset(self):
+            startdate = datetime.datetime.strptime(self.request.GET["start"],"%Y%m%d")
+	    enddate = datetime.datetime.strptime(self.request.GET["end"],"%Y%m%d")
+	    daterange = [startdate, enddate]
+	    queryset = SelfTrain.objects.filter(gym=self.kwargs.get("pk"),date__range=daterange).order_by("date","hour")
+            return queryset
+
 
 class SelfTrainByDateList(generics.ListAPIView):
 	pagination_class = None
@@ -167,6 +176,7 @@ class SelfTrainByDateList(generics.ListAPIView):
 	    date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
 	    queryset = SelfTrain.objects.filter(gym=pk, date=date)
             return queryset
+
 
 class SelfTrainItem(generics.RetrieveDestroyAPIView):
 	serializer_class = SelfTrainSerializer
