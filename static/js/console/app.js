@@ -1028,6 +1028,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             templateUrl: "/static/console/mainpage.html",
             controller: "MainPageCtrl"
         })
+        .state('selftrain', {
+            url: "/selftrain",
+            templateUrl: "/static/console/selftraincalendar.html",
+        })
         .state('docs', {
             url: "/docs",
             templateUrl: "/static/console/doc.html",
@@ -2172,6 +2176,44 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.reload()
     }
 ])
+app.controller("SelfTrainCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', '$http',
+    function($scope, Restangular, NgTableParams, $stateParams, $state, $http) {
+        var that = this
+
+		var gymid = $.cookie("gym")
+        that.startday = new Date().addMonths(-1)
+        that.endday = new Date();
+
+        that.startday_str = that.startday.Format("yyyy-MM-dd")
+        that.endday_str = that.endday.Format("yyyy-MM-dd")
+
+
+        $scope.timemap = TimeMap
+		
+        that.refresh = function() {
+
+            that.startday = new Date(Date.parse(that.startday_str))
+            that.endday = new Date(Date.parse(that.endday_str))
+            Restangular.one("api/g", gymid)
+                .one("selftrain")
+                .get({
+                    start: that.startday.Format("yyyyMMdd"),
+                    end: that.endday.Format("yyyyMMdd")
+                })
+                .then(function(data) {
+                    that.tableParams = new NgTableParams({
+                        sorting: {
+                            name: "asc"
+                        }
+                    }, {
+                        dataset: data
+                    });
+                }, function(data) {})
+        }
+        that.refresh()
+    }
+])
+
 app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '$stateParams', '$state', '$http',
     function($scope, Restangular, NgTableParams, $stateParams, $state, $http) {
         var that = this

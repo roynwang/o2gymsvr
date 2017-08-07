@@ -1,0 +1,52 @@
+<div class="col-md-12" ng-controller="SelfTrainCalendarCtrl as ctrl">
+    <!--<h3>客户信息</h3>-->
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="row">
+                <h4 class="col-sm-4">{{ctrl.startday.Format("yyyy-MM-dd")}} ~
+		{{ctrl.endday.Format("yyyy-MM-dd")}}</h4>
+	<div class="col-md-1 pull-right">
+						 </div>
+                <div class="col-md-3 pull-right">
+                    <newdatepicker button-prev="<i class='fa fa-arrow-left'></i>" button-next="<i
+						class='fa fa-arrow-right'></i>" date-format="yyyy-MM-dd" selector="form-control"
+                    style="margin-bottom:10px;">
+                        <div class="col-lg-12 input-group">
+                            <input class="form-control" style="background: rgba(0,0,0,0);" ng-model="ctrl.endday_str"
+                            ng-change="ctrl.refresh()" placeholder="Choose a date"
+                            />
+                        </div>
+                        <span style="cursor: pointer;position: absolute;top: 6px;right: 20px;" style="cursor: pointer">
+							<i class="fa fa-lg fa-calendar"></i>
+						</span>
+                    </newdatepicker>
+                </div>
+                <div class="col-md-3 pull-right">
+                    <newdatepicker button-prev="<i class='fa fa-arrow-left'></i>" button-next="<i
+						class='fa fa-arrow-right'></i>" date-format="yyyy-MM-dd" selector="form-control"
+                    style="margin-bottom:10px;">
+                        <div class="col-lg-12 input-group">
+                            <input class="form-control" style="background: rgba(0,0,0,0);" ng-model="ctrl.startday_str"
+                            ng-change="ctrl.refresh()" placeholder="Choose a date"
+                            />
+                        </div>
+                        <span style="cursor: pointer;position: absolute;top: 6px;right: 20px;" style="cursor: pointer">
+							<i class="fa fa-lg fa-calendar"></i>
+						</span>
+                    </newdatepicker>
+                </div>
+            </div>
+        </header>
+        <div class="panel-body">
+			<h4>自助锻炼统计</h4>
+            <table ng-table="ctrl.tableParams" class="table table-condensed table-striped">
+                <tr ng-repeat="row in $data" style="color:#333">
+                    <td data-title="'姓名'"
+						sortable="'customer_detail.displayname'">{{row.customer_detail.displayname}}</td>
+                    <td data-title="'日期'" sortable="'date'">{{row.date}}</td>
+                    <td data-title="'时间'">{{timemap[row.hour]}}</td>
+                </tr>
+            </table>
+        </div>
+    </section>
+</div>
