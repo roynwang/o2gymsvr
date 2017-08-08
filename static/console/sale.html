@@ -79,6 +79,7 @@
                         <tr>
                             <th>教练</th>
                             <th>体验课(节)</th>
+                            <th>团课(人次)</th>
                             <th>销售总价(元)</th>
                             <th>销售课时(节)</th>
                             <th>耗课总价(元)</th>
@@ -89,6 +90,7 @@
                         <tr ng-repeat="coach in coaches" style="color:#333">
                             <td>{{coach.displayname}}</td>
 							<td>{{coach.income.exp_courses}}</td>
+                            <td>{{coach.income.group_courses}}</td>
                             <td>{{coach.income.sold_price}}</td>
                             <td>{{coach.income.sold_count}}</td>
                             <td>{{coach.income.completed_course_price}}</td>

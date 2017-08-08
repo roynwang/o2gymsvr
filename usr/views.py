@@ -11,6 +11,7 @@ from django.db.models import Sum
 from rest_framework.pagination import PageNumberPagination 
 from usr.models import *
 from order.models import *
+from business.models import *
 from usr.serializers import *
 from weibo.serializers import *
 from business.serializers import *
@@ -369,9 +370,19 @@ class InCome(APIView):
 		exp_courses = usr.sealed_time.filter(date__range=[start,end],done=True, order=None,coursetype="trial")
 
 
+                #groupcourse_person = 
+                group_courses = GroupCourseInstanceBook.objects.filter(date__range=[start,end], coach = usr.name)
+                for c in group_courses:
+                    c.update_coach()
+                
 		#courses = orders.value_list("schedule")
-		return Response({"sold_xu":sold_xu, "sold_price": sold, "sold_count": sold_count, "completed_course":courses.count()
-			or 0, "completed_course_price":self.cal_course_income(courses), "exp_courses": exp_courses.count()})
+		return Response({"sold_xu":sold_xu,\
+                    "sold_price": sold, \
+                    "sold_count": sold_count, \
+                    "completed_course":courses.count() or 0, \
+                    "completed_course_price":self.cal_course_income(courses), \
+                    "exp_courses": exp_courses.count(), \
+                    "group_courses": group_courses.count()})
 
 
 class FeedbackList(generics.ListCreateAPIView):
