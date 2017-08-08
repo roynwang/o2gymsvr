@@ -56,12 +56,8 @@
                     <tr ng-repeat="row in $data" style="color:#333">
                         <td data-title="'姓名'">{{row.coachname}}</td>
                         <td data-title="'底薪'">{{row.base_salary}}</td>
-                        <td data-title="'养老'">-{{row.base_salary * row.yanglao / 100}}({{row.yanglao}}%)</td>
-                        <td data-title="'医疗'">-{{row.base_salary * row.yiliao / 100}}({{row.yiliao}}%)</td>
-                        <td data-title="'失业'">-{{row.base_salary * row.shiye / 100}}({{row.shiye}}%)</td>
-                        <td data-title="'公积金'">-{{row.base_salary * row.gongjijin/100}}({{row.gongjijin}}%)</td>
                         <td data-title="'销售提成'">{{row.sale.sold}}*{{row.xiaoshou}}%={{row.sale.sold*row.xiaoshou/100}}</td>
-                        <td data-title="'续课奖励'">{{row.sale.sold_xu}}*{{row.xuke}}%={{row.sale.sold_xu*row.xuke/100}}</td>
+                        <td data-title="'团课工资'">{{row.sale.group_course}}*{{row.group_person}}={{row.sale.group_course*row.group_person}}</td>
                         <!-- <td
 							data-title="'上课提成'">{{row.sale.course}}*{{row.shangke}}%={{row.sale.course*row.shangke/100}}</td>
 						-->

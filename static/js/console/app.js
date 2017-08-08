@@ -2781,7 +2781,7 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
 
         function calSum(data) {
             console.log(data)
-            return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100 + data.sale.course_salary
+            return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke ) / 100 + data.sale.course_salary + data.sale.group_course*data.group_person
         }
 
         function refresh() {
@@ -3332,6 +3332,7 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
             cs.xuke = parseInt(row.xuke)
             cs.shangke = parseInt(row.shangke)
             cs.fixed_shangke = parseInt(row.fixed_shangke)
+            cs.group_person = parseInt(row.group_person)
 
             Restangular.one('api/g/', gymid)
                 .one("salarysetting", row.id)
