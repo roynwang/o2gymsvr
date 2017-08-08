@@ -16,3 +16,15 @@ class WorkoutActionList(generics.ListCreateAPIView):
 		cate = get_object_or_404(WorkoutCategeory, id=self.kwargs.get("cate"))
 		by = self.kwargs.get("name")
 		return WorkoutAction.objects.filter(categeory = cate, by__in = [by, ""])
+
+class SimpleWorkoutActionList(generics.ListCreateAPIView):
+	serializer_class = SimpleWorkoutActionSerializer 
+	pagination_class = None
+        queryset = WorkoutAction.objects.all()
+        '''
+        def get_queryset(self):
+            t = WorkoutAction.objects.all()
+            for i in t:
+                SimpleWorkoutAction.objects.create(name=i.name)
+        '''
+

@@ -8,6 +8,7 @@ class WorkoutCategeory(models.Model):
 	icon = models.CharField(max_length=256)
 	def __unicode__(self):
 		return self.name
+
 class WorkoutAction(models.Model):
 	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=32)
@@ -17,3 +18,9 @@ class WorkoutAction(models.Model):
 	units = models.CharField(max_length=32,blank=True, default="")
 	by = models.CharField(max_length=64,blank=True, default="")
 	
+
+class SimpleWorkoutAction(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=32)
+
+

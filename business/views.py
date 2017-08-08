@@ -142,7 +142,8 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 			coach.rate += request.DATA["rate"]
 			coach.save()
 
-                if request.data["done"] or "order" in request.data:
+                
+                if ("done" in request.data and request.data["done"]) or "order" in request.data:
                         self.get_object().doneBook()
                         self.get_object().create_threshold_msg()
 		return ret
