@@ -964,7 +964,7 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
                         course = request.data['course'],\
                         date = request.data['date'],\
                         gym = request.data['gym'],\
-                        coach = request.coach['coach'],\
+                        coach = request.data['coach'],\
                         price = 0)
                 serializer = GroupCourseInstanceBookDetailSerializer(gc)
                 return Response(serializer.data)
