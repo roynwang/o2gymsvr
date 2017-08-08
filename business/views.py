@@ -970,15 +970,16 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
                 return Response(serializer.data)
 
 	def create(self, request, *args, **kwargs):
+                #get course coach
+                course = GroupCourseInstance.objects.get(id=request.data['course'])
+                request.data['coach'] = course.coach
+
                 if "firsttime" in request.data:
                     return self.create_first_time(request, args, kwargs)
                     
                 #calculate dispcount
 		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
 
-                #get course coach
-                course = GroupCourseInstance.objects.get(id=request.data['course'])
-                request.data['coach'] = course.coach
 
                 #get balance
                 b = Balance.objects.get(name=request.data['customer'],gym=31)
