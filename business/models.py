@@ -61,6 +61,7 @@ class GroupCourseInstance(models.Model):
 class GroupCourseInstanceBook(models.Model):
 	id = models.AutoField(primary_key=True)
         customer = models.CharField(max_length=32)
+        coach = models.CharField(max_length=32)
         course = models.IntegerField()
 	date = models.DateField()
         gym = models.IntegerField() 
@@ -68,6 +69,12 @@ class GroupCourseInstanceBook(models.Model):
         
         def consume(self):
             pass
+
+        def update_coach(self):
+            if not self.coach:
+                course = GroupCourseInstance.objects.get(id=self.course)
+                self.coach = course.coach
+                self.save()
 
 
 class Course(models.Model):
