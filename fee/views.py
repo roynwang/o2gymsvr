@@ -84,7 +84,10 @@ class CoachSalaryView(APIView):
 		courses_query = coach.sealed_time.filter(date__range=[start,end],done=True)
 		courses = self.cal_course_income(courses_query) 
 		salary, course_price = self.cal_coach_income(courses_query, fee.shangke, fee.fixed_shangke)
-		return {"sold":sold, "sold_xu":sold, "course": courses, "course_price":course_price, "course_salary": salary}
+                group_course = GroupCourseInstanceBook.objects.filter(\
+                        date__range=[start,order_end],\
+                        coach = coach.name)
+		return {"sold":sold, "sold_xu":sold, "course": courses, "course_price":course_price, "course_salary": salary, "group_course":group_course.count()}
 
 	def get(self, request, gymid):
 		gymfee = get_object_or_404(GymFee, gym = self.kwargs["gymid"])
@@ -101,8 +104,6 @@ class CoachSalaryView(APIView):
 		#end = end + datetime.timedelta(days=1)
 
 		resp = []
-		print start
-		print end
 		for coach in gymfee.coach_salary_setting.all():
 			sl = CoachSalarySettingSerializer(coach)
 			tmp = sl.data

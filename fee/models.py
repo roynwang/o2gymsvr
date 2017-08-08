@@ -24,4 +24,5 @@ class CoachSalarySetting(models.Model):
 	xuke = models.FloatField(default=0)
 	shangke = models.FloatField(default=0)
 	fixed_shangke = models.FloatField(default=0)
+	group_person = models.FloatField(default=0)
 

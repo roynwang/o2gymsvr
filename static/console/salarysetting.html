@@ -126,6 +126,17 @@
                                     required />
                                 </div>
                             </td>
+                            <td data-title="'团课(人次/元)'" ng-switch="row.isEditing" ng-class="group_person.$dirty ? 'bg-warning' : ''"
+                            ng-form="group_person" demo-tracked-table-cell>
+                                <span ng-switch-default class="editable-text">{{row.group_person}}</span>
+                                <div class="controls" ng-class="group_person.$invalid && group_person.$dirty ? 'has-error' : ''"
+                                ng-switch-when="true">
+                                    <input type="text" name="group_person"
+									ng-model="row.group_person" class="editable-input form-control input-sm"
+                                    required />
+                                </div>
+                            </td>
+
                             <td>
                                 <button class="btn btn-primary btn-sm" ng-click="demo.save(row, rowForm)" ng-if="row.isEditing"
                                 ng-disabled="rowForm.$pristine || rowForm.$invalid"><span class="glyphicon glyphicon-ok"></span>
