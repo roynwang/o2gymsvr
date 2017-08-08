@@ -964,6 +964,7 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
                         course = request.data['course'],\
                         date = request.data['date'],\
                         gym = request.data['gym'],\
+                        coach = request.coach['coach'],\
                         price = 0)
                 serializer = GroupCourseInstanceBookDetailSerializer(gc)
                 return Response(serializer.data)
@@ -974,7 +975,10 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
                     
                 #calculate dispcount
 		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
-                
+
+                #get course coach
+                course = GroupCourseInstance.objects.get(id=request.data['course'])
+                request.data['coach'] = course.coach
 
                 #get balance
                 b = Balance.objects.get(name=request.data['customer'],gym=31)
