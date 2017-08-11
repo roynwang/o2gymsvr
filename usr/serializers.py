@@ -37,6 +37,20 @@ class SimpleUserSerilaizer(serializers.ModelSerializer):
 	def get_pinyin(self, obj):
 		return pinyin.get_initial(obj.displayname)
 
+class SimpleUserWithLastDateSerilaizer(serializers.ModelSerializer):
+	pinyin = serializers.SerializerMethodField()
+        lastdate = serializers.SerializerMethodField()
+	class Meta:
+		model = User
+		exclude = ("upped","fwded","commented","upped_person")
+	def get_pinyin(self, obj):
+		return pinyin.get_initial(obj.displayname)
+        def get_lastdate(self, obj):
+                s = Schedule.objects.filter(custom=obj).order_by("-date")[0]
+                return s.date
+
+
+
 class CoachSimpleSerializer(serializers.ModelSerializer):
 	#gym_detail = GymSimpleSerializer(source="gym",many=True,read_only=True)
 	all_order_count = serializers.SerializerMethodField()
