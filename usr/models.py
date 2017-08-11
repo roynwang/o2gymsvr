@@ -87,6 +87,10 @@ class User(models.Model):
         def update_owner_status(self):
             q = self.orders.all()
             for o in q:
+                donecount = o.schedule_set.filter(done=True).count()
+                if donecount == o.product.amount:
+                    o.status = "done"
+                    o.save()
                 self.order_status = o.status
                 if o.status != 'done':
                     break
