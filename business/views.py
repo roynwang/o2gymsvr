@@ -918,7 +918,7 @@ class GroupCourseBookItem(generics.RetrieveUpdateDestroyAPIView):
 
 	def destroy(self, request, *args, **kwargs):
                 book = GroupCourseInstanceBook.objects.get(id=self.kwargs.get("pk"))
-                balance =  Balance.objects.get(name=book.customer,gym=book.gym)
+                balance,_ =  Balance.objects.get_or_create(name=book.customer,gym=book.gym)
                 balance.cancelconsume(book.price)
 	        ret = super(GroupCourseBookItem, self).destroy(request, args,kwargs)
                 return ret
