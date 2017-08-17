@@ -111,11 +111,11 @@ class User(models.Model):
                 delta = schedule.date - last_eval.date 
                 if delta.days < 30:
                     return
-            #2 train times should >= 8 in last 30 days
-            startday = schedule.date + datetime.timedelta(days=-30)
-            times = self.booked_time.filter(date__gt=startday).count()
-            if times < 8:
-                return
+                #2 train times should >= 8 in last 30 days
+                startday = schedule.date + datetime.timedelta(days=-30)
+                times = self.booked_time.filter(date__gt=startday).count()
+                if times < 8:
+                    return
             #3 send all in the gym
             order = self.booked_time.order_by("-date")[0].order
             if not order:
