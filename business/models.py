@@ -190,7 +190,7 @@ class Schedule(models.Model):
             else:
                 count = Schedule.objects.filter(custom = self.custom, \
                         coursetype__in = ["normal", "charge"] )
-                if count == 0:
+                if count == 1:
                     return True
             return False
 
