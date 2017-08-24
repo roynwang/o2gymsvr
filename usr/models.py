@@ -100,9 +100,7 @@ class User(models.Model):
         def trySendEvalNotification(self, schedule):
             #0 if the first schedule
             
-            if schedule.is_first_course():
-                pass
-            else:
+            if not schedule.is_first_course():
                 #1 should after 30 day after last eval
                 evals = BodyEval.objects.filter(name=self.name).order_by("-date")
                 if evals.count() == 0:
@@ -121,7 +119,7 @@ class User(models.Model):
             if not order:
                 gym = 31
             else:
-                gym = order.gym
+                gym = order.gym.id
 
             if gym in [19,31]:
                 schedule.action_required = "数据测量"
@@ -138,6 +136,7 @@ class User(models.Model):
                         link="", \
                         dismiss_date=schedule.date)
 
+            '''
             for coach in gym.coaches.all():
                 if coach.role != 'admin' or coach.name == schedule.coach.name:
                     continue
@@ -146,6 +145,7 @@ class User(models.Model):
                         content= self.displayname +"需要进行数据测量", \
                         link="", \
                         dismiss_date=schedule.date)
+            '''
 
 
 	def __unicode__(self):
