@@ -192,6 +192,13 @@ class Schedule(models.Model):
                         coursetype__in = ["normal", "charge"] ).count()
                 if count == 1:
                     return True
+
+            #if no eval
+            '''
+            ecount = BodyEval.objects.filter(custom = self.custom).count()
+            if ecount == 0:
+                return True
+            '''
             return False
 
 	def sendSms(self):
