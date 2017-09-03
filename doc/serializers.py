@@ -22,7 +22,7 @@ class GymVideoSerializer(serializers.ModelSerializer):
                 keywords += ' '
             return keywords[0:-1]
         def get_coachdetail(self, obj):
-            usr = User.objects.get(displayname=obj.coach, iscoach=True)
+            usr = User.objects.filter(displayname=obj.coach, iscoach=True)[0]
             return {"name":usr.name,"displayname":usr.displayname,"avatar":usr.avatar}
             
 
