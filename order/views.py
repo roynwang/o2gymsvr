@@ -534,7 +534,7 @@ class GymTrialCustomerList(generics.ListAPIView):
 	serializer_class = SimpleUserSerilaizer
 	pagination_class = None
 	def get_queryset(self):
-		ret = User.objects.filter(trial = self.kwargs['gymid'])
+		ret = User.objects.filter(trial = self.kwargs['gymid']).order_by('-created')
 		return ret
 
 
