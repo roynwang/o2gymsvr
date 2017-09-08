@@ -4056,7 +4056,7 @@ app.controller("TrailCustomerCtrl", ['$scope', "Restangular", "NgTableParams", "
         $customersvc.gettrialcustomers(function(data) {
             that.tableParams = new NgTableParams({
                 sorting: {
-                    name: "asc"
+                    created: "desc"
                 }
             }, {
                 dataset: data
