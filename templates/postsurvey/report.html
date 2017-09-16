@@ -41,8 +41,11 @@ sans-serif;margin:0">
 			style="padding-left:5px">{{ coach.displayname }}</span></p>
 	</div>
 	<div style="width:100%;height:80px"></div>
-	<p style="padding:2px 12px">氧气十分关注您的锻炼的感受，为了能够更好的提高服务水平，请您对一下5个问题进行作答</p>
+	<p style="padding:2px
+	12px">您的锻炼的感受对于氧气十分重要，为了持续跟踪并提高服务水平，请您对一下5个问题进行作答:</p>
+
 	{% for o in questions %}
+	<form action="/api/cs/{{course.id}}/complete/" method="post">
 	<div style="width:100%;padding: 12px 0; border-bottom: 1px solid #ececec">
 		<a style="font-size:16px;position: absolute;left: 10px; color:#666"> {{ o }}  </a>
 		<br>
@@ -60,11 +63,12 @@ sans-serif;margin:0">
 		</div>
 	</div>
 	{% endfor %}
-</div>
+<input type="submit" style="font-size:16px; border:none; box-shadow: 0 0 16px 0 rgba(59,247,200,0.7),0 0 20px 0 rgba(0,0,0,0.19);
+	background: rgb(75,208, 199); margin-top: 20px;bottom: 0;color: white;height: 40px;line-height: 40px;width:
+	100%;text-align: center;">
+</form>
 
-<div style="box-shadow: 0 0 16px 0 rgba(59,247,200,0.7),0 0 20px 0 rgba(0,0,0,0.19);
-	background: #4fd2c2;position: fixed;bottom: 0;color: white;height: 40px;line-height: 40px;width:
-	100%;text-align: center;">提交</div>
+
 </body>
 
 </html>

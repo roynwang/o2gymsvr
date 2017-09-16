@@ -373,3 +373,12 @@ class ThresholdMsg(models.Model):
             if self.desc == '7次奖励':
     	        return smsutils.sendSMS(self.name, self.templateid, ','.join(["30","7"]))
 
+class Survey(models.Model):
+	id = models.AutoField(primary_key=True)
+        courseid = models.IntegerField()
+        score = models.IntegerField()
+	date = models.DateField(default=datetime.date.today)
+	coach = models.CharField(max_length=32)
+	customer = models.CharField(max_length=32)
+	question = models.CharField(max_length=512)
+
