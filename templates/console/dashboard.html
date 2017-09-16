@@ -48,7 +48,38 @@
 	rel="stylesheet"/>-->
 
 </head>
- <body>
+
+ <body id="consolescreen">
+<section id="lockscreen" class="lock-screen" onload="startTime()" style="display:none;height: 100%;
+    position: absolute;
+    width: 100%;">
+    <div class="lock-wrapper">
+
+        <div id="time"></div>
+
+
+        <div class="lock-box text-center">
+            <div class="lock-name" id="lockusername"></div>
+            <img id="lockuseravatar"  alt="lock avatar" />
+            <div class="lock-pwd">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <input type="password" placeholder="Password" id="pwd" class="form-control
+						lock-input"  autocomplete="off">
+                        <button class="btn btn-lock" onclick="tryunlock()">
+                            <i class="fa fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+		<p id="login-error" style="padding-top: 200px;
+		    color: white;
+			    text-align: center;
+				    font-size: 18px;"></p>
+    </div>
+</section>
+
 <section id="container">
 <!--header start-->
 <header class="header fixed-top clearfix">
@@ -439,7 +470,9 @@
 			$.cookie("role", data.role, {path:"/"})
 
 			$("#username").html(data.displayname)
+			$("#lockusername").html(data.displayname)
 			$("#useravatar").attr("src", data.avatar + "?imageView2/1/w/128/h/128/format/jpg")
+			$("#lockuseravatar").attr("src", data.avatar + "?imageView2/1/w/180/h/180/format/jpg")
 			if(data.role == "admin"){
 				$(".admin-show").show()
 			}
@@ -546,9 +579,85 @@
 		    data: data 
 		});
 	}
+	function trylockscreen(){
+		var t = new Date().getTime()
+		if(!$('#lockscreen').is(':hidden')){
+			return 
+		}
+		if(t - $.cookie("lastrequest") > 30000){
+			$("#lockscreen").show()
+			$("#container").hide()
+			$.cookie("locked", 1, {path:"/"})
+			startTime()
+			$("#pwd").attr("disabled", true)
+			$("#pwd").val(" ")
+			setTimeout(function(){
+				$("#pwd").attr("disabled", false)
+				$("#pwd").val("")
+　　　　	},1000)
+		}
+		
+	}
+    function tryunlock() {
+        var pwd = $("#pwd").val()
+		var usrname = $.cookie("user")
+        $.post("/api/lg/", {
+            username: usrname,
+            password: pwd
+        }, function(data, status) {
+            $.cookie("token", data.token, {
+                path: '/'
+            })
+			unlockscreen()
+        }).fail(function(resp) {
+            if (resp.status == 403) {
+                $("#login-error").html("错误的密码")
+            }
+        })
+    }
+
+	function unlockscreen(){
+		$("#lockscreen").hide()
+		$("#container").show()
+		$.cookie("locked", 0, {path:"/"})
+	}
+    function startTime()
+        {
+            var today = new Date();
+            var h = today.getHours();
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            // add a zero in front of numbers<10
+            m = checkTime(m);
+            s = checkTime(s);
+            document.getElementById('time').innerHTML = h + ":" + m + ":" +
+                s;
+            t = setTimeout(function()
+            {
+                startTime()
+            }, 500);
+        }
+
+        function checkTime(i)
+        {
+            if (i < 10)
+            {
+                i = "0" + i;
+            }
+            return i;
+        }
+
 
 
 	$(function(){
+		if($.cookie("locked") === "1"){
+			trylockscreen()
+		} else {
+			var t = new Date().getTime()
+			$.cookie("lastrequest", t, {path:"/"})
+		}
+
+		setInterval(trylockscreen,120000)
 		refreshuser(getusrauth())
 		$("#logout").click(function(){
 			$.removeCookie("user", {path:"/"})
