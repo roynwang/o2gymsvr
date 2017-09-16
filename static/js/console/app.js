@@ -137,7 +137,8 @@ var app = angular.module('JobApp', [
     'chart.js',
     '720kb.datepicker',
     'angularQFileUpload',
-    'bootstrapLightbox'
+    'bootstrapLightbox',
+	'ngclipboard'
 ])
 app.directive(
     'ngSignaturePad', [
@@ -1658,6 +1659,14 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.day = new Date()
         that.availiable = []
         that.day_str = that.day.Format("yyyy-MM-dd")
+
+		that.showsurvey = function(row){
+			row.showsurvey = true
+		}
+		that.hidesurvey = function(row){
+			row.showsurvey = false
+		}
+
 
         that.gohome = function() {
             $state.transitionTo('index')

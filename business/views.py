@@ -23,6 +23,7 @@ import pprint
 from django.http import JsonResponse
 from rest_framework.exceptions import NotAcceptable
 
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -825,8 +826,8 @@ def show_customer_eval(request, name):
         ret = render(request, "evalresult/report.html",{'avatar': user.avatar, "deltas":deltas, "lastevalday":lastevalday_str,"name":name, "times":times})
         return ret
 
-def show_post_survey(request, courseid):
-        print courseid
+@csrf_exempt
+def show_complete_survey(request, courseid):
         course = Schedule.objects.get(id=int(courseid))
         customer = course.custom
         coach = course.coach
@@ -836,13 +837,49 @@ def show_post_survey(request, courseid):
         times = user.booked_time.filter(date__gt=startday).count()
 
         questions = [ \
-                '我总能在需要的时段约到我的教练', \
+                '现在课程的时间安排符合我的需求', \
                 '我觉得课程内容和强度合理，对我很有帮助', \
                 '教练能精力充沛的带我完成训练', \
                 '教练帮助我管理饮食', \
                 '教练会及时提醒并鼓励我来锻炼'
         ]
-        ret = render(request, "postsurvey/report.html",\
+        for i in [1,2,3,4,5]:
+            k = 'q' + str(i)
+            if k in request.POST:
+                Survey.objects.create( \
+                        courseid = int(courseid), \
+                        score = request.POST[k], \
+                        date = course.date, \
+                        coach = coach.name, \
+                        customer = customer.name, \
+                        question = questions[i-1])
+
+        ret = render(request, "postsurvey/complete.html",\
+                {"times":times, "questions":questions, "course":course,"customer":customer, "coach":coach})
+        return ret
+
+
+def show_post_survey(request, courseid):
+        course = Schedule.objects.get(id=int(courseid))
+        customer = course.custom
+        coach = course.coach
+
+        user = customer
+        startday = datetime.datetime.today() + datetime.timedelta(days=-30)
+        times = user.booked_time.filter(date__gt=startday).count()
+
+        questions = [ \
+                '现在课程的时间安排符合我的需求', \
+                '我觉得课程内容和强度合理，对我很有帮助', \
+                '教练能精力充沛的带我完成训练', \
+                '教练帮助我管理饮食', \
+                '教练会及时提醒并鼓励我来锻炼'
+        ]
+
+        template = "postsurvey/report.html"
+        if Survey.objects.filter(courseid = course.id).count() > 0:
+            template = "postsurvey/complete.html"
+        ret = render(request, template,\
                 {"times":times, "questions":questions, "course":course,"customer":customer, "coach":coach})
         return ret
 
