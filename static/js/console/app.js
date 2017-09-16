@@ -1022,6 +1022,14 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
     RestangularProvider.setDefaultHttpFields({
         timeout: 10000
     })
+	RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
+		//update last request time
+		if($.cookie("locked") !== "1"){
+			var t = new Date().getTime()
+			$.cookie("lastrequest", t, {path:"/"})
+		}
+		return data
+    });
     $urlRouterProvider.otherwise("/");
     $stateProvider
         .state('index', {
