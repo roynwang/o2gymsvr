@@ -77,6 +77,7 @@ urlpatterns = patterns('',
 		url(r'^api/a/$',NearByView.as_view()),
 		url(r'^api/a/(?P<pk>[0-9]+)/$', GymMap.as_view()),
                 url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/evalresult/$',show_customer_eval),
+                url(r'^api/cs/(?P<courseid>[0-9]+)/$',show_post_survey),
                 url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/gesture/$',show_gesture_eval),
                 url(r'^api/risk/$',get_health_risk),
 		)
