@@ -584,7 +584,7 @@
 		if(!$('#lockscreen').is(':hidden')){
 			return 
 		}
-		if(t - $.cookie("lastrequest") > 30000){
+		if(t - $.cookie("lastrequest") > 300000){
 			$("#lockscreen").show()
 			$("#container").hide()
 			$.cookie("locked", 1, {path:"/"})
