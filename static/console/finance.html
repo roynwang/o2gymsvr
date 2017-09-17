@@ -37,7 +37,54 @@
             </header>
             <div class="panel-body" ng-hide="ctrl.adding">
                 <p>*本功能仅用于销售之外的收支记录</p>
-                <p>*个人为公司购买物品请先添加一笔资金注入记录，再添加一条资产购买记录</p>
+                <div class="row">
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+							<li class="text-center grand-total">总收入:{{ctrl.summary['收入']}}</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+							<li class="text-center grand-total">总支出:{{ctrl.summary['总支出']}}</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+							<li class="text-center grand-total">资产注入:{{ctrl.summary['资产注入']}}</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+							<li class="text-center">运营支出:{{ctrl.summary['运营支出']}}</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+							<li class="text-center">房租支出:{{ctrl.summary['房租支出']}}</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+							<li class="text-center">工资支出:{{ctrl.summary['工资支出']}}</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+							<li class="text-center">资产购买:{{ctrl.summary['资产购买']}}</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+							<li class="text-center">客户退款:{{ctrl.summary['客户退款']}}</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+							<li class="text-center">其他支出:{{ctrl.summary['其他支出']}}</li>
+                        </ul>
+                    </div>
+                </div>
                 <table class="table table-invoice" ng-table="ctrl.tableParams">
                     <tr ng-repeat="row in $data" style="color:#333">
                         <td data-title="'日期'">{{row.date}}</td>
@@ -100,6 +147,7 @@
                                 <option value="运营支出" selected>运营支出</option>
                                 <option value="工资支出">工资支出</option>
                                 <option value="广告支出">广告支出</option>
+                                <option value="房租支出">房租支出</option>
                                 <option value="资产购买">资产购买</option>
                                 <option value="资产减记">资产减记</option>
                                 <option value="客户退款">客户退款</option>

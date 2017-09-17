@@ -41,18 +41,55 @@ class FinanceList(generics.ListCreateAPIView):
 	serializer_class = FinanceSerializer
 	pagination_class = None
 
+
+        def archieve(self,gym, start,end):
+            #archieve order
+            gyminst = Gym.objects.get(id=gym)
+            orders = Order.objects.filter(gym=gyminst, paidtime__range=[start,end])
+            result = {}
+            for order in orders:
+                print "xxxx"
+                if Finance.objects.filter(date=order.paidtime.date()).count() == 0:
+                    datestr = datetime.datetime.strftime(order.paidtime.date(), "%Y%m%d")
+                    if not datestr in result:
+                        result[datestr] = 0
+                    result[datestr] += order.amount
+                
+            #archieve balance order
+            borders = BalanceOrder.objects.filter(gym=gym,status="completed",updated__range=[start,end])
+            for border in borders:
+                if Finance.objects.filter(date=border.updated.date()).count() == 0:
+                    datestr = datetime.datetime.strftime(border.updated.date(), "%Y%m%d")
+                    if not datestr in result:
+                        result[datestr] = 0
+                    result[datestr] += border.paid_amount
+
+            for tmp in result:
+                d = datetime.datetime.strptime(tmp,"%Y%m%d").date()
+                Finance.objects.create(gym=gym, \
+                        date = d,
+                        brief = '收入',
+                        by = 'system',
+                        op = 'system',
+                        cate = '收入',
+                        amount = result[tmp],
+                        channel = '其他',
+                        memo = 'auto archieve')
+
         def get_queryset(self):
             #1 get date range
             startdate = self.request.GET["start"]
             enddate = self.request.GET["end"]
             pk = self.kwargs.get("pk")
 
+
             startday = datetime.datetime.strptime(startdate,"%Y%m%d")
             endday = datetime.datetime.strptime(enddate,"%Y%m%d")
+            #archieve
             
-            #2 get all schedule
-            allitems = Finance.objects.filter(gym=int(pk), date__range=[ startday, endday])
-            #3 cal
+            allitems = Finance.objects.filter(gym=int(pk), date__range=[ startday,endday]).order_by("-date")
+
+            self.archieve(int(pk),startday,endday)
             return allitems
 
 class FlowList(generics.ListCreateAPIView):

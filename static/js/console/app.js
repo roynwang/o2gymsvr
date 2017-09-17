@@ -2669,6 +2669,18 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
         that.startday_str = that.startday.Format("yyyy-MM-dd")
         that.endday_str = that.endday.Format("yyyy-MM-dd")
 
+		that.summary = {
+			"收入":0,
+			"总支出":0,
+			"资产注入":0,
+			"运营支出":0,
+			"房租支出":0,
+			"工资支出":0,
+			"资产购买":0,
+			"客户退款":0,
+			"其他支出":0
+		}
+
         function refresh() {
             that.startday = new Date(Date.parse(that.startday_str))
             that.endday = new Date(Date.parse(that.endday_str))
@@ -2679,6 +2691,13 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
                     end: that.endday.Format("yyyyMMdd")
                 })
                 .then(function(data) {
+					_.each(data, function(item){
+						that.summary[item.cate]  += item.amount
+						if(item.cate !='收入' && item.cate != '资产注入'){
+							that.summary['总支出'] += item.amount
+						}
+					})
+					
                     that.tableParams = new NgTableParams({
                         sorting: {
                             created: "desc"
