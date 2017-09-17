@@ -27,6 +27,7 @@ class Finance(models.Model):
         channel = models.CharField(max_length=128)
         memo = models.CharField(max_length=512, blank=True, default="")
 	created = models.DateTimeField(auto_now=True)
+	reimburse = models.BooleanField(default=False)
 
 class Flow(models.Model):
 	id = models.AutoField(primary_key=True)
