@@ -2693,7 +2693,7 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
             that.summary = {
                 "收入": 0,
                 "总支出": 0,
-                "资产注入": 0,
+                "资金注入": 0,
                 "运营支出": 0,
                 "房租支出": 0,
                 "工资支出": 0,
@@ -2713,7 +2713,7 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
                 .then(function(data) {
                     _.each(data, function(item) {
                         that.summary[item.cate] += item.amount
-                        if (item.cate != '收入' && item.cate != '资产注入') {
+                        if (item.cate != '收入' && item.cate != '资金注入') {
                             that.summary['总支出'] += item.amount
                         }
                     })
