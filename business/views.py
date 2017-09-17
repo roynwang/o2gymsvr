@@ -48,8 +48,6 @@ class FinanceList(generics.ListCreateAPIView):
             orders = Order.objects.filter(gym=gyminst, paidtime__range=[start,end])
             result = {}
             for order in orders:
-                print "xxxx"
-                if Finance.objects.filter(date=order.paidtime.date()).count() == 0:
                     datestr = datetime.datetime.strftime(order.paidtime.date(), "%Y%m%d")
                     if not datestr in result:
                         result[datestr] = 0
@@ -58,7 +56,6 @@ class FinanceList(generics.ListCreateAPIView):
             #archieve balance order
             borders = BalanceOrder.objects.filter(gym=gym,status="completed",updated__range=[start,end])
             for border in borders:
-                if Finance.objects.filter(date=border.updated.date()).count() == 0:
                     datestr = datetime.datetime.strftime(border.updated.date(), "%Y%m%d")
                     if not datestr in result:
                         result[datestr] = 0
@@ -66,6 +63,8 @@ class FinanceList(generics.ListCreateAPIView):
 
             for tmp in result:
                 d = datetime.datetime.strptime(tmp,"%Y%m%d").date()
+                if Finance.objects.filter(date=d, cate='收入').count() != 0:
+                    continue
                 Finance.objects.create(gym=gym, \
                         date = d,
                         brief = '收入',

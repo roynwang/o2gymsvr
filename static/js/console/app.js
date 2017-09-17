@@ -95,12 +95,12 @@ Date.prototype.addHours = function(h) {
     return this;
 }
 var uploadSuccess = function(url) {
-	    swal({
-			        title: "成功,请复制地址",
-			        text: url,
-			        type: 'success',
-			        showConfirmButton: true
-			    });
+    swal({
+        title: "成功,请复制地址",
+        text: url,
+        type: 'success',
+        showConfirmButton: true
+    });
 }
 
 function ConvertToCSV(objArray) {
@@ -138,7 +138,7 @@ var app = angular.module('JobApp', [
     '720kb.datepicker',
     'angularQFileUpload',
     'bootstrapLightbox',
-	'ngclipboard'
+    'ngclipboard'
 ])
 app.directive(
     'ngSignaturePad', [
@@ -282,25 +282,25 @@ app.factory("$uploader", function($qupload) {
                 }
             })
         } else {
-			var filename = file.name
-			$.get("/api/p/token/?filename="+filename, function(data, status){
+            var filename = file.name
+            $.get("/api/p/token/?filename=" + filename, function(data, status) {
 
-		                key = data.key
-						token = data.token
+                key = data.key
+                token = data.token
 
-                        file.upload = $qupload.upload({
-                            key: key,
-                            file: file,
-                            token: token
-                        });
+                file.upload = $qupload.upload({
+                    key: key,
+                    file: file,
+                    token: token
+                });
 
-                        file.upload.then(function(response) {
-                            onsuccess && onsuccess(response)
-                        }, function(response) {
-                            onfail && onfail(response)
-                        }, function(evt) {});
-			})
-		}
+                file.upload.then(function(response) {
+                    onsuccess && onsuccess(response)
+                }, function(response) {
+                    onfail && onfail(response)
+                }, function(evt) {});
+            })
+        }
 
     }
     return {
@@ -309,8 +309,8 @@ app.factory("$uploader", function($qupload) {
 })
 app.factory('$video', function(Restangular) {
 
-	function add_keyword_task(row, onsuccess) {
-		var gymid = $.cookie("gym")
+    function add_keyword_task(row, onsuccess) {
+        var gymid = $.cookie("gym")
         return {
             title: "添加",
             url: "/api/video/" + row.id + "/keywords/",
@@ -318,62 +318,63 @@ app.factory('$video', function(Restangular) {
                 type: "shorttext",
                 key: "keyword",
                 label: "关键字",
-            },{
+            }, {
                 type: "shorttext",
                 key: "videoid",
                 label: "vid",
-				disabled: 1,
-				value: row.id
-            },{
+                disabled: 1,
+                value: row.id
+            }, {
                 type: "shorttext",
                 key: "gym",
                 label: "健身房",
                 value: parseInt(gymid),
                 disabled: 1
             }]
-		}
-	}
+        }
+    }
 
-	function remove_keyword_task(row,keyword, onsuccess){
-        Restangular.one('api/video/'+row.id + '/keywords/', keyword)
+    function remove_keyword_task(row, keyword, onsuccess) {
+        Restangular.one('api/video/' + row.id + '/keywords/', keyword)
             .remove()
             .then(function(data) {
                 onsuccess && onsuccess(data)
             })
-	}
+    }
 
     function getList(onsuccess) {
-		var gymid = $.cookie("gym")
+        var gymid = $.cookie("gym")
         Restangular.one('api/g/' + gymid, "video")
             .get()
             .then(function(data) {
                 onsuccess && onsuccess(data)
             })
     }
-	function editTask(row){
-		var gymid = $.cookie("gym")
+
+    function editTask(row) {
+        var gymid = $.cookie("gym")
         var day_str = new Date().Format("yyyy-MM-dd")
         return {
             title: "修改",
             url: "/api/video/" + row.id,
-			method: 'PATCH',
+            method: 'PATCH',
             tasks: [{
                 type: "shorttext",
                 key: "title",
                 label: "标题",
-				value: row.title
+                value: row.title
             }, {
                 type: "text",
                 key: "summary",
                 label: "描述",
-				value: row.summary
+                value: row.summary
             }, {
                 type: "shorttext",
                 key: "attachment",
                 label: "文件",
                 placeholder: "请用右上角上传按钮上传并复制链接",
-				value: row.attachment
-            },{
+                value: row.attachment
+            }, {
                 type: "shorttext",
                 key: "coach",
                 label: "教练",
@@ -383,14 +384,14 @@ app.factory('$video', function(Restangular) {
                 key: "uploader",
                 label: "",
                 value: $.cookie("displayname"),
-				disabled: 1
-            },  {
+                disabled: 1
+            }, {
                 type: "shorttext",
                 key: "datestr",
                 label: "",
                 value: day_str,
                 disabled: 1
-            },{
+            }, {
                 type: "shorttext",
                 key: "gym",
                 label: "健身房",
@@ -398,7 +399,7 @@ app.factory('$video', function(Restangular) {
                 disabled: 1
             }]
         }
-	}
+    }
 
 
     function createTask() {
@@ -420,7 +421,7 @@ app.factory('$video', function(Restangular) {
                 key: "attachment",
                 label: "文件",
                 placeholder: "请用右上角上传按钮上传并复制链接"
-            },{
+            }, {
                 type: "shorttext",
                 key: "coach",
                 label: "教练",
@@ -430,14 +431,14 @@ app.factory('$video', function(Restangular) {
                 key: "uploader",
                 label: "",
                 value: $.cookie("displayname"),
-				disabled: 1
+                disabled: 1
             }, {
                 type: "shorttext",
                 key: "gym",
                 label: "健身房",
                 value: parseInt(gymid),
                 disabled: 1
-            },{
+            }, {
                 type: "shorttext",
                 key: "datestr",
                 label: "",
@@ -451,44 +452,45 @@ app.factory('$video', function(Restangular) {
     return {
         getList: getList,
         createTask: createTask,
-		editTask: editTask,
-		add_keyword_task: add_keyword_task,
-		remove_keyword_task: remove_keyword_task
+        editTask: editTask,
+        add_keyword_task: add_keyword_task,
+        remove_keyword_task: remove_keyword_task
     }
 })
 
 app.factory('$doc', function(Restangular) {
 
     function getList(onsuccess) {
-		var gymid = $.cookie("gym")
+        var gymid = $.cookie("gym")
         Restangular.one('api/g/' + gymid, "docs")
             .get()
             .then(function(data) {
                 onsuccess && onsuccess(data)
             })
     }
-	function editTask(row){
+
+    function editTask(row) {
         var day_str = new Date().Format("yyyy-MM-dd")
         return {
             title: "修改",
             url: "/api/docs/" + row.id,
-			method: 'PATCH',
+            method: 'PATCH',
             tasks: [{
                 type: "shorttext",
                 key: "title",
                 label: "标题",
-				value: row.title
+                value: row.title
             }, {
                 type: "shorttext",
                 key: "summary",
                 label: "描述",
-				value: row.summary
+                value: row.summary
             }, {
                 type: "shorttext",
                 key: "attachment",
                 label: "文件",
                 placeholder: "请用右上角上传按钮上传并复制链接",
-				value: row.attachment
+                value: row.attachment
             }, {
                 type: "shorttext",
                 key: "author",
@@ -502,7 +504,7 @@ app.factory('$doc', function(Restangular) {
                 disabled: 1
             }]
         }
-	}
+    }
 
 
     function createTask(cid) {
@@ -535,7 +537,7 @@ app.factory('$doc', function(Restangular) {
                 label: "健身房",
                 value: parseInt(gymid),
                 disabled: 1
-            },{
+            }, {
                 type: "shorttext",
                 key: "datestr",
                 label: "",
@@ -549,7 +551,7 @@ app.factory('$doc', function(Restangular) {
     return {
         getList: getList,
         createTask: createTask,
-		editTask: editTask
+        editTask: editTask
     }
 })
 
@@ -628,17 +630,17 @@ app.directive('taskForm', ["$uploader", "$http",
                     }).then(
                         function successCallback(response) {
                             console.log(response);
-                                swal({
-                                    title: "",
-                                    text: "提交成功",
-                                    type: "success",
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
-                                if (scope.tasks.callback) {
-                                    scope.tasks.callback(response.data.data)
-                                }
-                                scope.tasks.show = false
+                            swal({
+                                title: "",
+                                text: "提交成功",
+                                type: "success",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            if (scope.tasks.callback) {
+                                scope.tasks.callback(response.data.data)
+                            }
+                            scope.tasks.show = false
                         },
                         function errorCallback(response) {
                             swal({
@@ -666,7 +668,7 @@ app.directive('taskForm', ["$uploader", "$http",
                 scope.singleupload = function($flow) {
                     var len = $flow.files.length
                     $upload.upload($flow.files[len - 1].file, function(resp) {
-                        uploadSuccess(bukcet+"/"+resp.key)
+                        uploadSuccess(bukcet + "/" + resp.key)
                     });
                 }
             }
@@ -685,68 +687,70 @@ app.factory("$groupcoursesvc", function(Restangular) {
             })
 
     }
-	function dup(course){
+
+    function dup(course) {
         var gymid = $.cookie("gym")
         var url = '/api/g/' + gymid + "/groupcourseinstance/"
         return {
             title: "复制到另一天",
             url: url,
-			method: "POST",
+            method: "POST",
             tasks: [{
                 type: "shorttext",
                 key: "date",
                 label: "日期",
-				value: course.date
-            },{
+                value: course.date
+            }, {
                 type: "shorttext",
                 key: "coach",
                 label: "教练",
-				value: course.coach,
-				disabled: true
-            },{
+                value: course.coach,
+                disabled: true
+            }, {
                 type: "shorttext",
                 key: "course",
                 label: "course",
-				value: course.course,
-				disabled: true
-            },{
+                value: course.course,
+                disabled: true
+            }, {
                 type: "shorttext",
                 key: "gym",
                 label: "gym",
-				value: course.gym,
-				disabled: true
-            },{
+                value: course.gym,
+                disabled: true
+            }, {
                 type: "selection",
                 key: "hour",
                 label: "时间",
-				options: dict2arr(TimeMap),
-            },{
+                options: dict2arr(TimeMap),
+            }, {
                 type: "shorttext",
                 key: "price",
                 label: "价格",
-				value: course.price
+                value: course.price
             }]
-		}
-	}
-	function editTime(course){
+        }
+    }
+
+    function editTime(course) {
         return {
             title: "修改时间",
-            url: "/api/groupcourseinstance/"+course.id + "/",
-			method: "PATCH",
+            url: "/api/groupcourseinstance/" + course.id + "/",
+            method: "PATCH",
             tasks: [{
                 type: "shorttext",
                 key: "date",
                 label: "日期",
-				value: course.date
-            },{
+                value: course.date
+            }, {
                 type: "selection",
                 key: "hour",
                 label: "时间",
-				options: dict2arr(TimeMap),
-				value: course.hour
+                options: dict2arr(TimeMap),
+                value: course.hour
             }]
-		}
-	}
+        }
+    }
 
 
     function cancelcourse(course, onsuccess) {
@@ -824,8 +828,8 @@ app.factory("$groupcoursesvc", function(Restangular) {
         book: book,
         cancel: cancel,
         cancelcourse: cancelcourse,
-		editTime: editTime,
-		dupCourse: dup
+        editTime: editTime,
+        dupCourse: dup
     }
 })
 
@@ -844,31 +848,31 @@ app.factory("$login", function(Restangular) {
 })
 
 app.factory("$todosvc", function(Restangular) {
-	function recurTask(todo){
+    function recurTask(todo) {
         return {
             title: "创建",
-            url: "/api/todo/"+todo.id + "/recur/",
-			method: "POST",
+            url: "/api/todo/" + todo.id + "/recur/",
+            method: "POST",
             tasks: [{
                 type: "shorttext",
                 key: "times",
                 label: "重复次数"
-            },{
+            }, {
                 type: "shorttext",
                 key: "interval",
                 label: "间隔",
-				placeholder: "7天"
+                placeholder: "7天"
             }]
-		}
-	}
+        }
+    }
 
-	function createTask(){
+    function createTask() {
         var gymid = $.cookie("gym")
         var day_str = new Date().Format("yyyy-MM-dd")
         return {
             title: "创建",
             url: "/api/g/" + gymid + "/todo/",
-            tasks: [ {
+            tasks: [{
                 type: "text",
                 key: "content",
                 label: "描述",
@@ -883,39 +887,43 @@ app.factory("$todosvc", function(Restangular) {
                 label: "健身房",
                 value: parseInt(gymid),
                 disabled: 1
-            },{
+            }, {
                 type: "date",
                 key: "schedule_date",
                 label: "日期",
-				value: day_str
+                value: day_str
             }]
-		}
-	}
-	function doneTask(todo, onsuccess, onfail){
+        }
+    }
+
+    function doneTask(todo, onsuccess, onfail) {
         var gymid = $.cookie("gym")
         Restangular.one('api/todo/', todo.id)
-                .patch({done:todo.done})
-                .then(function(data) {
-                    onsuccess && onsuccess(todo)
-                })
-	}
-	function remove(todo, onsuccess, onfail){
+            .patch({
+                done: todo.done
+            })
+            .then(function(data) {
+                onsuccess && onsuccess(todo)
+            })
+    }
+
+    function remove(todo, onsuccess, onfail) {
         var gymid = $.cookie("gym")
         Restangular.one('api/todo/', todo.id)
-                .remove()
-                .then(function(data) {
-                    onsuccess && onsuccess(todo)
-                })
-	}
+            .remove()
+            .then(function(data) {
+                onsuccess && onsuccess(todo)
+            })
+    }
 
 
 
-	return  {
-		create: createTask,
-		done: doneTask,
-		remove: remove,
-		recur: recurTask
-	}
+    return {
+        create: createTask,
+        done: doneTask,
+        remove: remove,
+        recur: recurTask
+    }
 
 })
 
@@ -1022,13 +1030,15 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
     RestangularProvider.setDefaultHttpFields({
         timeout: 10000
     })
-	RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
-		//update last request time
-		if($.cookie("locked") !== "1"){
-			var t = new Date().getTime()
-			$.cookie("lastrequest", t, {path:"/"})
-		}
-		return data
+    RestangularProvider.addResponseInterceptor(function(data, operation, what, url, response, deferred) {
+        //update last request time
+        if ($.cookie("locked") !== "1") {
+            var t = new Date().getTime()
+            $.cookie("lastrequest", t, {
+                path: "/"
+            })
+        }
+        return data
     });
     $urlRouterProvider.otherwise("/");
     $stateProvider
@@ -1668,12 +1678,12 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
         that.availiable = []
         that.day_str = that.day.Format("yyyy-MM-dd")
 
-		that.showsurvey = function(row){
-			row.showsurvey = true
-		}
-		that.hidesurvey = function(row){
-			row.showsurvey = false
-		}
+        that.showsurvey = function(row) {
+            row.showsurvey = true
+        }
+        that.hidesurvey = function(row) {
+            row.showsurvey = false
+        }
 
 
         that.gohome = function() {
@@ -2197,7 +2207,7 @@ app.controller("SelfTrainCalendarCtrl", ['$scope', "Restangular", "NgTableParams
     function($scope, Restangular, NgTableParams, $stateParams, $state, $http) {
         var that = this
 
-		var gymid = $.cookie("gym")
+        var gymid = $.cookie("gym")
         that.startday = new Date().addMonths(-1)
         that.endday = new Date();
 
@@ -2206,7 +2216,7 @@ app.controller("SelfTrainCalendarCtrl", ['$scope', "Restangular", "NgTableParams
 
 
         $scope.timemap = TimeMap
-		
+
         that.refresh = function() {
 
             that.startday = new Date(Date.parse(that.startday_str))
@@ -2245,10 +2255,14 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
         var coachid = $stateParams.coachid
         that.coursedata = []
 
-		that.grouped = []
+        that.grouped = []
 
-		that.av = {average: 0, customercount:0, coursecount:0}
-		that.refreshchart = function(){
+        that.av = {
+            average: 0,
+            customercount: 0,
+            coursecount: 0
+        }
+        that.refreshchart = function() {
             Restangular.one("api", coachid)
                 .one("kpi")
                 .get({
@@ -2263,82 +2277,86 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
                             []
                         ]
                     }
-					var averageset = []
-					var customercountset = []
-					var coursecountset = [] 
-					_.each(data,function(item){
+                    var averageset = []
+                    var customercountset = []
+                    var coursecountset = []
+                    _.each(data, function(item) {
                         that.averagechart.labels.push(item.day)
-						that.averagechart.data[0].push(item.average)
-						averageset.push(item.average)
-						customercountset.push(item.customercount)
-						coursecountset.push(item.coursecount)
-					})
-					averageset = averageset.sort()
-					customercountset = customercountset.sort()
-					coursecountset = coursecountset.sort()
+                        that.averagechart.data[0].push(item.average)
+                        averageset.push(item.average)
+                        customercountset.push(item.customercount)
+                        coursecountset.push(item.coursecount)
+                    })
+                    averageset = averageset.sort()
+                    customercountset = customercountset.sort()
+                    coursecountset = coursecountset.sort()
 
-					var i = parseInt(averageset.length * 0.95)
-					that.av.average = averageset[i]
-					that.av.customercount = customercountset[i]
-					that.av.coursecount = coursecountset[i]
-				})
-		}
-
-
-		that.group = function(data){
-			var tmp = {}
-			var dates = {}
-			_.each(data, function(item){
-				if(item.coursetype !='trial'){
-					var k = item.customerprofile.displayname
-					dates[k] = item.customerprofile.created.split("T")[0]
-					tmp[k] |= 0 
-					tmp[k] += 1
-				}
-			})
-			_.each(tmp, function(v, k){
-				that.grouped.push({"name":k,"times":v, "date":dates[k]});
-				//that.av.customercount ++
-				//that.av.coursecount += v
-			})
-			that.freqTableParams = new NgTableParams({
-				sorting: {
-					times: "asc"
-				}
-			}, {
-				dataset: that.grouped
-			});
-
-		}
+                    var i = parseInt(averageset.length * 0.95)
+                    that.av.average = averageset[i]
+                    that.av.customercount = customercountset[i]
+                    that.av.coursecount = coursecountset[i]
+                })
+        }
 
 
-		that.refreshrespcustomer = function(){
+        that.group = function(data) {
+            var tmp = {}
+            var dates = {}
+            _.each(data, function(item) {
+                if (item.coursetype != 'trial') {
+                    var k = item.customerprofile.displayname
+                    dates[k] = item.customerprofile.created.split("T")[0]
+                    tmp[k] |= 0
+                    tmp[k] += 1
+                }
+            })
+            _.each(tmp, function(v, k) {
+                that.grouped.push({
+                    "name": k,
+                    "times": v,
+                    "date": dates[k]
+                });
+                //that.av.customercount ++
+                //that.av.coursecount += v
+            })
+            that.freqTableParams = new NgTableParams({
+                sorting: {
+                    times: "asc"
+                }
+            }, {
+                dataset: that.grouped
+            });
+
+        }
+
+
+        that.refreshrespcustomer = function() {
             Restangular.one("api", coachid)
                 .one("respcustomers")
-				.get()
-				.then(function(data){
-					_.each(data, function(item){
-						item.date = item.created.split("T")[0]
-					})
-					that.allcustomercount = data.length
-					that.respTableParams = new NgTableParams({
-						sorting: {
-							date: "desc"
-						}
-					}, {
-						dataset: data
-					});
-				})
-		}
+                .get()
+                .then(function(data) {
+                    _.each(data, function(item) {
+                        item.date = item.created.split("T")[0]
+                    })
+                    that.allcustomercount = data.length
+                    that.respTableParams = new NgTableParams({
+                        sorting: {
+                            date: "desc"
+                        }
+                    }, {
+                        dataset: data
+                    });
+                })
+        }
 
 
-		
+
         that.refresh = function() {
 
             that.startday = new Date(Date.parse(that.startday_str))
             that.endday = new Date(Date.parse(that.endday_str))
-			that.refreshrespcustomer()
-			that.refreshchart();
+            that.refreshrespcustomer()
+            that.refreshchart();
             Restangular.one("api", coachid)
                 .one("w")
                 .get({
@@ -2347,8 +2365,8 @@ app.controller("CoachCalendarCtrl", ['$scope', "Restangular", "NgTableParams", '
                 })
                 .then(function(data) {
                     that.coursedata = data
-					that.grouped = []
-					that.group(data)
+                    that.grouped = []
+                    that.group(data)
                     that.tableParams = new NgTableParams({
                         sorting: {
                             name: "asc"
@@ -2669,19 +2687,21 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
         that.startday_str = that.startday.Format("yyyy-MM-dd")
         that.endday_str = that.endday.Format("yyyy-MM-dd")
 
-		that.summary = {
-			"收入":0,
-			"总支出":0,
-			"资产注入":0,
-			"运营支出":0,
-			"房租支出":0,
-			"工资支出":0,
-			"资产购买":0,
-			"客户退款":0,
-			"其他支出":0
-		}
+        that.summary = {}
 
         function refresh() {
+            that.summary = {
+                "收入": 0,
+                "总支出": 0,
+                "资产注入": 0,
+                "运营支出": 0,
+                "房租支出": 0,
+                "工资支出": 0,
+                "资产购买": 0,
+                "客户退款": 0,
+                "其他支出": 0
+            }
+
             that.startday = new Date(Date.parse(that.startday_str))
             that.endday = new Date(Date.parse(that.endday_str))
             Restangular.one('api/g/', gymid)
@@ -2691,13 +2711,13 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
                     end: that.endday.Format("yyyyMMdd")
                 })
                 .then(function(data) {
-					_.each(data, function(item){
-						that.summary[item.cate]  += item.amount
-						if(item.cate !='收入' && item.cate != '资产注入'){
-							that.summary['总支出'] += item.amount
-						}
-					})
-					
+                    _.each(data, function(item) {
+                        that.summary[item.cate] += item.amount
+                        if (item.cate != '收入' && item.cate != '资产注入') {
+                            that.summary['总支出'] += item.amount
+                        }
+                    })
+
                     that.tableParams = new NgTableParams({
                         sorting: {
                             created: "desc"
@@ -2730,7 +2750,8 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
             date: new Date().Format("yyyy-MM-dd"),
             by: $.cookie("displayname"),
             op: $.cookie("displayname"),
-            gym: gymid
+            gym: gymid,
+            reimburse: 0
         }
 
         that.submit = function() {
@@ -2817,7 +2838,7 @@ app.controller("SalarySummaryCtrl", ['$scope', "Restangular", "NgTableParams", "
 
         function calSum(data) {
             console.log(data)
-            return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke ) / 100 + data.sale.course_salary + data.sale.group_course*data.group_person
+            return (data.base_salary * (100 - data.yanglao - data.yiliao - data.shiye - data.gongjijin) + data.sale.sold * data.xiaoshou + data.sale.sold_xu * data.xuke) / 100 + data.sale.course_salary + data.sale.group_course * data.group_person
         }
 
         function refresh() {
@@ -3378,10 +3399,10 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
     }
 ])
 
-app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state","$todosvc","SweetAlert","$groupcoursesvc",
-        function($scope, Restangular, $customersvc, $state, $todosvc,SweetAlert, $groupcoursesvc) {
+app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state", "$todosvc", "SweetAlert", "$groupcoursesvc",
+        function($scope, Restangular, $customersvc, $state, $todosvc, SweetAlert, $groupcoursesvc) {
             var that = this
-			$scope.day_str = new Date().Format("yyyy-MM-dd");
+            $scope.day_str = new Date().Format("yyyy-MM-dd");
             var date = new Date().Format("yyyyMMdd");
             //var date = "20151029"
             $scope.calendarRowGroup = []
@@ -3400,53 +3421,53 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                     }
                 });
 
-			$scope.addtodo = function(){
-	            $scope.tasks = $todosvc.create()
-				$scope.tasks.show = true
-				$scope.tasks.callback = function(){
-					renderTodo()
-				}
-			}
-			$scope.changeCourseTime = function(c){
-	            $scope.tasks = $groupcoursesvc.editTime(c)
-				$scope.tasks.show = true
-				$scope.tasks.callback = function(){
-					renderGroupCourse()
-				}
-			}
-			$scope.copyCourse = function(c){
-	            $scope.tasks = $groupcoursesvc.dupCourse(c)
-				$scope.tasks.show = true
-				$scope.tasks.callback = function(){
-					swal({
-						title: "成功",
-						text: "已经提交",
-						type: "success",
-						timer: 1500,
-						showConfirmButton: false
-					});
-					renderGroupCourse()
-				}
-			}
-			$scope.removeCourse = function(c){
-				SweetAlert.swal({
-					//title: "确定移除该教练吗?",
-					title: "",
-					text: "确定删除吗?",
-					type: "warning",
-					showCancelButton: true,
-					confirmButtonColor: "#1fb5ad",
-					confirmButtonText: "确定",
-					cancelButtonText: "取消",
-					showLoaderOnConfirm: true,
-					closeOnConfirm: false
-				},
-				function(yes) {
-					if (!yes) {
-						return
-					}
-					$groupcoursesvc.cancelcourse(c, 
-						function(){
+            $scope.addtodo = function() {
+                $scope.tasks = $todosvc.create()
+                $scope.tasks.show = true
+                $scope.tasks.callback = function() {
+                    renderTodo()
+                }
+            }
+            $scope.changeCourseTime = function(c) {
+                $scope.tasks = $groupcoursesvc.editTime(c)
+                $scope.tasks.show = true
+                $scope.tasks.callback = function() {
+                    renderGroupCourse()
+                }
+            }
+            $scope.copyCourse = function(c) {
+                $scope.tasks = $groupcoursesvc.dupCourse(c)
+                $scope.tasks.show = true
+                $scope.tasks.callback = function() {
+                    swal({
+                        title: "成功",
+                        text: "已经提交",
+                        type: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    renderGroupCourse()
+                }
+            }
+            $scope.removeCourse = function(c) {
+                SweetAlert.swal({
+                        //title: "确定移除该教练吗?",
+                        title: "",
+                        text: "确定删除吗?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#1fb5ad",
+                        confirmButtonText: "确定",
+                        cancelButtonText: "取消",
+                        showLoaderOnConfirm: true,
+                        closeOnConfirm: false
+                    },
+                    function(yes) {
+                        if (!yes) {
+                            return
+                        }
+                        $groupcoursesvc.cancelcourse(c,
+                            function() {
                                 swal({
                                     title: "成功",
                                     text: "已经删除",
@@ -3454,54 +3475,51 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                                     timer: 1500,
                                     showConfirmButton: false
                                 });
-							renderGroupCourse()
-						},
-						function(){
-						})
-				})
-			}
+                                renderGroupCourse()
+                            },
+                            function() {})
+                    })
+            }
 
-			$scope.toggleRecur = function(todo){
-				$scope.tasks = $todosvc.recur(todo)
-				$scope.tasks.show = true
-				$scope.tasks.callback = function(){
-					swal({
-						title: "成功",
-						text: "已经提交",
-						type: "success",
-						timer: 1500,
-						showConfirmButton: false
-					});
-					renderTodo()
-				}
-			}
-			$scope.toggleDone = function(todo){
-				todo.done = !todo.done
-				$todosvc.done(todo, 
-						function(){
-						},
-						function(){
-						})
-			}
-			$scope.toggleRemove = function(todo){
-				SweetAlert.swal({
-					//title: "确定移除该教练吗?",
-					title: "",
-					text: "确定删除吗?",
-					type: "warning",
-					showCancelButton: true,
-					confirmButtonColor: "#1fb5ad",
-					confirmButtonText: "确定",
-					cancelButtonText: "取消",
-					showLoaderOnConfirm: true,
-					closeOnConfirm: false
-				},
-				function(yes) {
-					if (!yes) {
-						return
-					}
-					$todosvc.remove(todo, 
-						function(){
+            $scope.toggleRecur = function(todo) {
+                $scope.tasks = $todosvc.recur(todo)
+                $scope.tasks.show = true
+                $scope.tasks.callback = function() {
+                    swal({
+                        title: "成功",
+                        text: "已经提交",
+                        type: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    renderTodo()
+                }
+            }
+            $scope.toggleDone = function(todo) {
+                todo.done = !todo.done
+                $todosvc.done(todo,
+                    function() {},
+                    function() {})
+            }
+            $scope.toggleRemove = function(todo) {
+                SweetAlert.swal({
+                        //title: "确定移除该教练吗?",
+                        title: "",
+                        text: "确定删除吗?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#1fb5ad",
+                        confirmButtonText: "确定",
+                        cancelButtonText: "取消",
+                        showLoaderOnConfirm: true,
+                        closeOnConfirm: false
+                    },
+                    function(yes) {
+                        if (!yes) {
+                            return
+                        }
+                        $todosvc.remove(todo,
+                            function() {
                                 swal({
                                     title: "成功",
                                     text: "已经删除",
@@ -3510,37 +3528,36 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                                     showConfirmButton: false
                                 });
 
-							renderTodo()
-						},
-						function(){
-						})
-				})
-			}
+                                renderTodo()
+                            },
+                            function() {})
+                    })
+            }
 
 
 
-			$customersvc.getcustomers(function(data) {
-				that.customers = data
-				//refresh birthdays
-				getbirthdays(data)
+            $customersvc.getcustomers(function(data) {
+                that.customers = data
+                    //refresh birthdays
+                getbirthdays(data)
 
-				$('#customer-search').autocomplete({
-					lookup: function(query, done) {
-						// Do ajax call or lookup locally, when done,
-						// call the callback and pass your results:
-						var filtered = _.filter(that.customers, function(p) {
-							var pinyin = p.pinyin.replace(/ /g, "")
-							if (pinyin.indexOf(query) >= 0 || p.displayname.indexOf(query) >= 0) {
-								return true
-							}
-						return false
-						})
-						var sug = _.map(filtered, function(p) {
-							return {
-								"value": p.displayname,
-							"data": p
-							}
-						})
+                $('#customer-search').autocomplete({
+                    lookup: function(query, done) {
+                        // Do ajax call or lookup locally, when done,
+                        // call the callback and pass your results:
+                        var filtered = _.filter(that.customers, function(p) {
+                            var pinyin = p.pinyin.replace(/ /g, "")
+                            if (pinyin.indexOf(query) >= 0 || p.displayname.indexOf(query) >= 0) {
+                                return true
+                            }
+                            return false
+                        })
+                        var sug = _.map(filtered, function(p) {
+                            return {
+                                "value": p.displayname,
+                                "data": p
+                            }
+                        })
 
                         var result = {
                             suggestions: sug
@@ -3556,49 +3573,50 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                 });
             })
 
-			$scope.changedate = function (delta){
-				var d = new Date($scope.day_str);
-				d = d.addDays(delta);
-				date = d.Format("yyyyMMdd")
-				$scope.day_str = d.Format("yyyy-MM-dd");
+            $scope.changedate = function(delta) {
+                var d = new Date($scope.day_str);
+                d = d.addDays(delta);
+                date = d.Format("yyyyMMdd")
+                $scope.day_str = d.Format("yyyy-MM-dd");
                 renderCoaches()
                 renderSale()
-				renderSelfWorkout()
-				renderGroupCourse()
-				renderTodo()
-			}
+                renderSelfWorkout()
+                renderGroupCourse()
+                renderTodo()
+            }
 
-			function renderGroupCourse() {
+            function renderGroupCourse() {
                 var gymid = $.cookie("gym")
-				$scope.gymid = gymid
+                $scope.gymid = gymid
                 Restangular.one('api/g/', gymid)
-                    .one("groupcourseinstance",date)
+                    .one("groupcourseinstance", date)
                     .get()
                     .then(function(data) {
                         $scope.groupcourse = data
-                 })
-			}
-			function renderTodo(){
+                    })
+            }
+
+            function renderTodo() {
                 var gymid = $.cookie("gym")
                 Restangular.one('api/g/', gymid)
-                    .one("todo",date)
+                    .one("todo", date)
                     .get()
                     .then(function(data) {
                         $scope.todolist = data
-                 })
-			}
+                    })
+            }
 
-			function renderSelfWorkout() {
+            function renderSelfWorkout() {
                 var gymid = $.cookie("gym")
-				$scope.gymid = gymid
+                $scope.gymid = gymid
                 Restangular.one('api/g/', gymid)
-                    .one("selftrain",date)
+                    .one("selftrain", date)
                     .get()
                     .then(function(data) {
                         $scope.selftrain = data
                     })
 
-			}
+            }
 
             function renderSale() {
                 var gymid = $.cookie("gym")
@@ -3644,9 +3662,9 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                 } else {
                     renderCoaches()
                     renderSale()
-					renderSelfWorkout()
-					renderGroupCourse()
-					renderTodo()
+                    renderSelfWorkout()
+                    renderGroupCourse()
+                    renderTodo()
                 }
             }
             recur()
@@ -3994,7 +4012,7 @@ app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams", "$st
         that.groups = []
         that.newcustomer = {
             sex: '0',
-			name: "",
+            name: "",
             trial: $.cookie("gym")
         }
         that.showstep = function(tab) {
@@ -4530,7 +4548,7 @@ app.controller("DocCtrl", ['$scope', "Restangular", "NgTableParams", "$statePara
         that.add = function() {
             that.tasks = $doc.createTask();
             that.tasks.show = true
-			that.tasks.callback = function(){
+            that.tasks.callback = function() {
                 swal({
                     title: "成功",
                     text: "已创建",
@@ -4539,14 +4557,14 @@ app.controller("DocCtrl", ['$scope', "Restangular", "NgTableParams", "$statePara
                     showConfirmButton: false
                 });
 
-				that.refresh();
+                that.refresh();
 
-			}
+            }
         }
-		that.edit = function(row){
-			that.tasks = $doc.editTask(row)
-			that.tasks.show = true
-			that.tasks.callback = function(){
+        that.edit = function(row) {
+            that.tasks = $doc.editTask(row)
+            that.tasks.show = true
+            that.tasks.callback = function() {
                 swal({
                     title: "成功",
                     text: "已保存",
@@ -4554,11 +4572,11 @@ app.controller("DocCtrl", ['$scope', "Restangular", "NgTableParams", "$statePara
                     timer: 1500,
                     showConfirmButton: false
                 });
-				that.refresh();
-			}
-		}
-		that.refresh = function(){
-			$doc.getList(function(data){
+                that.refresh();
+            }
+        }
+        that.refresh = function() {
+            $doc.getList(function(data) {
                 that.tableParams = new NgTableParams({
                     count: 100,
                     sorting: {}
@@ -4567,9 +4585,9 @@ app.controller("DocCtrl", ['$scope', "Restangular", "NgTableParams", "$statePara
                     dataset: data
                 });
 
-			})
-		}
-		that.refresh()
+            })
+        }
+        that.refresh()
     }
 ])
 
@@ -4910,7 +4928,7 @@ app.controller("VideoCtrl", ['$scope', "Restangular", "NgTableParams", "$statePa
         that.add = function() {
             that.tasks = $video.createTask();
             that.tasks.show = true
-			that.tasks.callback = function(){
+            that.tasks.callback = function() {
                 swal({
                     title: "成功",
                     text: "已创建",
@@ -4919,14 +4937,14 @@ app.controller("VideoCtrl", ['$scope', "Restangular", "NgTableParams", "$statePa
                     showConfirmButton: false
                 });
 
-				that.refresh();
+                that.refresh();
 
-			}
+            }
         }
-		that.edit = function(row){
-			that.tasks = $video.editTask(row)
-			that.tasks.show = true
-			that.tasks.callback = function(){
+        that.edit = function(row) {
+            that.tasks = $video.editTask(row)
+            that.tasks.show = true
+            that.tasks.callback = function() {
                 swal({
                     title: "成功",
                     text: "已保存",
@@ -4934,14 +4952,14 @@ app.controller("VideoCtrl", ['$scope', "Restangular", "NgTableParams", "$statePa
                     timer: 1500,
                     showConfirmButton: false
                 });
-				that.refresh();
-			}
-		}
-		that.refresh = function(){
-			$video.getList(function(data){
-				_.each(data, function(item){
-					item.keywords_set = item.keywords.split(/ /i);
-				})
+                that.refresh();
+            }
+        }
+        that.refresh = function() {
+            $video.getList(function(data) {
+                _.each(data, function(item) {
+                    item.keywords_set = item.keywords.split(/ /i);
+                })
                 that.tableParams = new NgTableParams({
                     count: 100,
                     sorting: {}
@@ -4950,12 +4968,12 @@ app.controller("VideoCtrl", ['$scope', "Restangular", "NgTableParams", "$statePa
                     dataset: data
                 });
 
-			})
-		}
-		that.add_keyword = function(row){
-			that.tasks = $video.add_keyword_task(row)
-			that.tasks.show = true
-			that.tasks.callback = function(){
+            })
+        }
+        that.add_keyword = function(row) {
+            that.tasks = $video.add_keyword_task(row)
+            that.tasks.show = true
+            that.tasks.callback = function() {
                 swal({
                     title: "成功",
                     text: "已保存",
@@ -4963,29 +4981,28 @@ app.controller("VideoCtrl", ['$scope', "Restangular", "NgTableParams", "$statePa
                     timer: 1500,
                     showConfirmButton: false
                 });
-				that.refresh();
-			}
-		}
-		that.active_row = 0
-		that.active_keyword = ""
-		that.remove_keyword = function(row,keyword){
-			if(row.id != that.active_row || that.active_keyword != keyword){
-				that.active_row = row.id
-				that.active_keyword = keyword
-			} else {
-				$video.remove_keyword_task(row,keyword, function(){
-					swal({
-						title: "成功",
-					text: "已删除",
-					type: "success",
-					timer: 1500,
-                    showConfirmButton: false
-                });
-				that.refresh();
-				})
-			}
-		}
-		that.refresh()
+                that.refresh();
+            }
+        }
+        that.active_row = 0
+        that.active_keyword = ""
+        that.remove_keyword = function(row, keyword) {
+            if (row.id != that.active_row || that.active_keyword != keyword) {
+                that.active_row = row.id
+                that.active_keyword = keyword
+            } else {
+                $video.remove_keyword_task(row, keyword, function() {
+                    swal({
+                        title: "成功",
+                        text: "已删除",
+                        type: "success",
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                    that.refresh();
+                })
+            }
+        }
+        that.refresh()
     }
 ])
-

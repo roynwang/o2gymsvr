@@ -93,12 +93,13 @@
                         <td data-title="'类别'">{{row.cate}}</td>
                         <td data-title="'渠道'">{{row.channel}}</td>
                         <td data-title="'明细'">{{row.brief}}</td>
+                        <td data-title="'是否报销'">{{row.reimburse?'是':'否'}}</td>
                     </tr>
                 </table>
             </div>
             <div class="form-group panel-body" ng-show="ctrl.adding">
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="input-group input-group-lg m-bot15">
                             <span class="input-group-addon btn-primary">日期</span>
                             <newdatepicker date-set-hidden="true" button-prev="<i class='fa fa-arrow-left'></i>"
@@ -117,30 +118,13 @@
                             </newdatepicker>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="input-group input-group-lg m-bot15">
                             <span class="input-group-addon btn-primary">姓名</span>
                             <input class="form-control" placeholder="支付费用人员姓名" ng-model="ctrl.newrow.by">
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="input-group input-group-lg m-bot15">
-                            <span class="input-group-addon btn-primary">金额</span>
-                            <input type="number" class="form-control" placeholder="请输入正整数" ng-model="ctrl.newrow.amount">
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="input-group input-group-lg m-bot15">
-                            <span class="input-group-addon btn-primary">描述</span>
-                            <input class="form-control" placeholder="费用详情"
-							ng-model="ctrl.newrow.brief">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-4">
                         <div class="input-group input-group-lg m-bot15">
                             <span class="input-group-addon btn-primary">类别</span>
                             <select class="form-control input" ng-model="ctrl.newrow.cate">
@@ -156,7 +140,35 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="input-group input-group-lg m-bot15">
+                            <span class="input-group-addon btn-primary">金额</span>
+                            <input type="number" class="form-control" placeholder="请输入正整数" ng-model="ctrl.newrow.amount">
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="input-group input-group-lg m-bot15">
+                            <span class="input-group-addon btn-primary">报销</span>
+                            <select class="form-control input" ng-model="ctrl.newrow.reimburse">
+                                <option value=0 selected>否</option>
+                                <option value=1 >是</option>
+                            </select>
+                        </div>
+					</div>
+
+                    <div class="col-lg-4">
+                        <div class="input-group input-group-lg m-bot15">
+                            <span class="input-group-addon btn-primary">描述</span>
+                            <input class="form-control" placeholder="费用详情"
+							ng-model="ctrl.newrow.brief">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4">
                         <div class="input-group input-group-lg m-bot15">
                             <span class="input-group-addon btn-primary">渠道</span>
                             <select class="form-control input" ng-model="ctrl.newrow.channel">
