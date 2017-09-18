@@ -21,6 +21,7 @@ from django.conf import settings
 import json
 import pprint
 from django.http import JsonResponse
+from traincategory.models import *
 from rest_framework.exceptions import NotAcceptable
 
 from django.views.decorators.csrf import csrf_exempt
@@ -183,6 +184,17 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
                 if ("done" in request.data and request.data["done"]) or "order" in request.data:
                         self.get_object().doneBook()
                         self.get_object().create_threshold_msg()
+
+                if "detail" in request.data and request.data["detail"] != "":
+                    print request.data["detail"]
+                    actions = json.loads(request.data["detail"])
+                    course = self.get_object()
+                    for item in actions:
+                        if "weight" in item:
+                            CustomerWorkoutValue.objects.update_or_create(customer=course.custom.name,\
+                                    name=item['name'], \
+                                    workoutid=item['workoutid'], \
+                                    defaults={"unit":item["unit"],"weight":item['weight'],"repeattimes":item['repeattimes']})
 		return ret
 
 class GymScheduleList(generics.ListAPIView):
