@@ -63,7 +63,7 @@ class FinanceList(generics.ListCreateAPIView):
 
             for tmp in result:
                 d = datetime.datetime.strptime(tmp,"%Y%m%d").date()
-                if Finance.objects.filter(date=d, cate='收入').count() != 0:
+                if Finance.objects.filter(date=d, gym=gym,cate='收入').count() != 0:
                     continue
                 Finance.objects.create(gym=gym, \
                         date = d,
