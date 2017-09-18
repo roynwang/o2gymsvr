@@ -17,10 +17,19 @@ class WorkoutActionList(generics.ListCreateAPIView):
 		by = self.kwargs.get("name")
 		return WorkoutAction.objects.filter(categeory = cate, by__in = [by, ""])
 
+class CustomerWorkoutValueItem(generics.RetrieveAPIView):
+	serializer_class = SimpleWorkoutActionSerializer 
+        def get_object(self):
+            customer = self.kwargs.get("customer")
+            workoutid = self.kwargs.get("workoutid")
+            return get_object_or_404(CustomerWorkoutValue,customer=customer,workoutid=workoutid) 
+            
+
+
 class SimpleWorkoutActionList(generics.ListCreateAPIView):
 	serializer_class = SimpleWorkoutActionSerializer 
 	pagination_class = None
-        queryset = WorkoutAction.objects.all()
+        queryset = SimpleWorkoutAction.objects.all()
         '''
         def get_queryset(self):
             t = WorkoutAction.objects.all()

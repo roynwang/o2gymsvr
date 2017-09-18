@@ -22,5 +22,16 @@ class WorkoutAction(models.Model):
 class SimpleWorkoutAction(models.Model):
 	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=32)
+	unit = models.CharField(max_length=32,blank=True, default="")
+        weight = models.IntegerField(default=10)
+	repeattimes = models.IntegerField(default=5)
 
+class CustomerWorkoutValue(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=32)
+	customer = models.CharField(max_length=32)
+	unit = models.CharField(max_length=32,blank=True, default="")
+	weight = models.IntegerField()
+	repeattimes = models.IntegerField(default=0)
+	workoutid = models.IntegerField()
 
