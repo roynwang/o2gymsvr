@@ -148,6 +148,11 @@ class GymItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Gym.objects.all()
 	serializer_class = GymSerializer
 
+class ScheduleDetailItem(generics.RetrieveAPIView):
+	serializer_class = ScheduleSerializer
+        lookup_field = "pk"
+        queryset = Schedule.objects.all()
+
 class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Schedule.objects.all()
 	serializer_class = ScheduleSerializer 
