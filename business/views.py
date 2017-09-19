@@ -195,7 +195,7 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
                     actions = json.loads(request.data["detail"])
                     course = self.get_object()
                     for item in actions:
-                        if "weight" in item:
+                        if item["contenttype"] == "action":
                             CustomerWorkoutValue.objects.update_or_create(customer=course.custom.name,\
                                     name=item['name'], \
                                     workoutid=item['workoutid'], \
