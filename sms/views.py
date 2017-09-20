@@ -120,7 +120,7 @@ class ForceBindOpenid(APIView):
             usr = User.objects.get(name=number)
             if "openid" in request.data:
                 usr.openid = request.data["openid"]
-                sr.save()
+                usr.save()
             return usr
 
 
