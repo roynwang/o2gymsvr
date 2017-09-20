@@ -121,7 +121,7 @@ class ForceBindOpenid(APIView):
             if "openid" in request.data:
                 usr.openid = request.data["openid"]
                 usr.save()
-            return usr
+            return Response({"result":"done"} , status=status.HTTP_200_OK)
 
 
 
