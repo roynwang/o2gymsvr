@@ -23,7 +23,7 @@ import pprint
 from django.http import JsonResponse
 from traincategory.models import *
 from rest_framework.exceptions import NotAcceptable
-
+from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
@@ -171,6 +171,12 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
                     balance = Balance.objects.get(gym=gym.id, name=schedule.custom.name)
                     balance.cancelconsume(schedule.price - schedule.discount)
                 
+
+                #2 get all schedule
+                if schedule.detail != "[]":
+                    print schedule.detail
+                    cache.set("o2_detailcache_" + schedule.custom.name, schedule.detail, None)
+                
 		return super(ScheduleItem, self).destroy(request, args,kwargs)
 
 		#return get_object_or_404(Schedule,coach=coach,date=date_str, hour=hour)
@@ -191,9 +197,12 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
                         self.get_object().create_threshold_msg()
 
                 if "detail" in request.data and request.data["detail"] != "":
-                    print request.data["detail"]
+                    #remove cache
+
                     actions = json.loads(request.data["detail"])
                     course = self.get_object()
+                    cache.delete("o2_detailcache_" + course.custom.name)
+
                     for item in actions:
                         if item["contenttype"] == "action":
                             CustomerWorkoutValue.objects.update_or_create(customer=course.custom.name,\
@@ -340,6 +349,14 @@ class ScheduleList(generics.ListCreateAPIView):
                         else:
                             raise NotAcceptable('infficient balance')
 
+                detail = "[]"
+                mkey = "o2_detailcache_" + customer.name
+                mdetail = cache.get(mkey)
+                print mdetail
+                print "xxxxxxxxxxxx"
+                if not mdetail is None:
+                    detail = mdetail
+
 		book = Schedule.objects.create(coach=coach,
 				custom=customer,
 				date= datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d").date(),
@@ -347,7 +364,8 @@ class ScheduleList(generics.ListCreateAPIView):
 				order=order,
                                 coursetype=coursetype,
                                 price=price,
-                                discount=discount_amount)
+                                discount=discount_amount,
+                                detail=detail)
 		if "done" in request.data:
 			book.done = request.data["done"]
 			book.save()
