@@ -115,6 +115,17 @@ class SMSGet(generics.CreateAPIView):
 
 
 @permission_classes((AllowAny, ))
+class ForceBindOpenid(APIView):
+	def post(self,request,number):
+            usr = User.objects.get(name=number)
+            if "openid" in request.data:
+                usr.openid = request.data["openid"]
+                sr.save()
+            return usr
+
+
+
+@permission_classes((AllowAny, ))
 class SMSVerify(APIView):
 	def post(self,request,number):
 		print "xxxxxxxxxxxxx"
