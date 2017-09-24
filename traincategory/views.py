@@ -37,3 +37,14 @@ class SimpleWorkoutActionList(generics.ListCreateAPIView):
                 SimpleWorkoutAction.objects.create(name=i.name)
         '''
 
+class NewSimpleWorkoutActionList(generics.ListCreateAPIView):
+	serializer_class = NewSimpleWorkoutActionSerializer 
+	pagination_class = None
+        queryset = NewSimpleWorkoutAction.objects.all()
+        '''
+        def get_queryset(self):
+            t = WorkoutAction.objects.all()
+            for i in t:
+                SimpleWorkoutAction.objects.create(name=i.name)
+        '''
+

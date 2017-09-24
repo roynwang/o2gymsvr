@@ -20,6 +20,14 @@ class SimpleWorkoutActionSerializer(serializers.ModelSerializer):
 	def get_pinyin(self, obj):
 		return pinyin.get_initial(obj.name).replace(" ","")
 
+class NewSimpleWorkoutActionSerializer(serializers.ModelSerializer):
+	pinyin = serializers.SerializerMethodField()
+	class Meta:
+		model = NewSimpleWorkoutAction
+	def get_pinyin(self, obj):
+		return pinyin.get_initial(obj.name).replace(" ","")
+
+
 class CustomerWorkoutValueSerializer(serializers.ModelSerializer):
 	pinyin = serializers.SerializerMethodField()
 	class Meta:
