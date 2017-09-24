@@ -25,6 +25,18 @@ class SimpleWorkoutAction(models.Model):
 	unit = models.CharField(max_length=32,blank=True, default="")
         weight = models.IntegerField(default=10)
 	repeattimes = models.IntegerField(default=5)
+	comments = models.CharField(max_length=128, default="")
+
+class NewSimpleWorkoutAction(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=32)
+	unit1 = models.CharField(max_length=32,blank=True, default="")
+        value1 = models.IntegerField(default=10)
+	unit2 = models.CharField(max_length=32,blank=True, default="")
+        value2 = models.IntegerField(default=10)
+	unit3 = models.CharField(max_length=32,blank=True, default="")
+        value3 = models.IntegerField(default=10)
+
 
 class CustomerWorkoutValue(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -33,5 +45,6 @@ class CustomerWorkoutValue(models.Model):
 	unit = models.CharField(max_length=32,blank=True, default="")
 	weight = models.IntegerField()
 	repeattimes = models.IntegerField(default=0)
+	comments = models.CharField(max_length=128, default="")
 	workoutid = models.IntegerField()
 
