@@ -208,7 +208,8 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
                             CustomerWorkoutValue.objects.update_or_create(customer=course.custom.name,\
                                     name=item['name'], \
                                     workoutid=item['workoutid'], \
-                                    defaults={"unit":item["unit"],"weight":item['weight'],"repeattimes":item['repeattimes']})
+                                    defaults={"unit":item["unit"],"weight":item['weight'],"repeattimes":item['repeattimes'], \
+                                    "comments":item['comments']})
 		return ret
 
 class GymScheduleList(generics.ListAPIView):
