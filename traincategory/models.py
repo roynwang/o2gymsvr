@@ -25,7 +25,7 @@ class SimpleWorkoutAction(models.Model):
 	unit = models.CharField(max_length=32,blank=True, default="")
         weight = models.IntegerField(default=10)
 	repeattimes = models.IntegerField(default=5)
-	comments = models.CharField(max_length=128, default="")
+	comments = models.CharField(blank=True,max_length=128, default="")
 
 class NewSimpleWorkoutAction(models.Model):
 	id = models.AutoField(primary_key=True)
