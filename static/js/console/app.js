@@ -1347,8 +1347,13 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
             if (type == "duration") {
                 tx = "有效时间(月)"
                 v = c.duration
-            } else {
+            }
+            if (type == "price") {
                 tx = "价格(元)"
+                v = c.amount
+            }
+            if (type == "coursecount") {
+                tx = "课程数量"
                 v = c.amount
             }
             swal({
@@ -1375,6 +1380,9 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                     }
                     if (type == "price") {
                         pdata["amount"] = inputValue
+                    }
+                    if (type == "coursecount") {
+                        pdata["coursecount"] = inputValue
                     }
 
                     Restangular.one("api", $stateParams.customername)
