@@ -91,6 +91,11 @@ class TrainSummary(APIView):
 
 
 
+class AllCourses(APIView):
+    def get(self, request, name):
+	usr = get_object_or_404(User, name=name)
+        dates = usr.booked_time.values_list("id",flat=True)
+	return Response(dates)
 
 @api_view(['POST'])
 def register(request):
