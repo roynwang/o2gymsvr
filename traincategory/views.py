@@ -4,6 +4,7 @@ from .models import *
 from .serializers import *
 from rest_framework.response import Response
 from django.core.cache import cache
+import json
 
 
 # Create your views here.
@@ -33,14 +34,22 @@ class SimpleWorkoutActionListSmart(generics.ListCreateAPIView):
         queryset = SimpleWorkoutAction.objects.all()
 
 
-        def get_last_used():
-            pass
+        def get_last_used(self,name):
+            detail = cache.get("o2_coachaction_" + name)
+            if detail is None:
+                return []
+            actions = json.loads(request.data["detail"])
+            used = []
+            for a in actions:
+                used.append['workoutid']
+            return used
 
         def list(self, request, name):
             t = SimpleWorkoutAction.objects.all()
             s = self.get_serializer(t, many=True)
             jd = s.data
             ret = []
+            used = self.get_last_used(name)
             for item in jd:
                 if item['id'] in used:
                     ret.insert(0,item)
