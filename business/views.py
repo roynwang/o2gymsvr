@@ -198,7 +198,7 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 
                 if "detail" in request.data and request.data["detail"] != "":
                     #remove cache
-
+                    cache.set("o2_coachaction_" + schedule.coach.name, schedule.detail, None)
                     actions = json.loads(request.data["detail"])
                     course = self.get_object()
                     cache.delete("o2_detailcache_" + course.custom.name)
