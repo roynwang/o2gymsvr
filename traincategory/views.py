@@ -38,7 +38,7 @@ class SimpleWorkoutActionListSmart(generics.ListCreateAPIView):
             detail = cache.get("o2_coachaction_" + name)
             if detail is None:
                 return []
-            actions = json.loads(request.data["detail"])
+            actions = json.loads(detail)
             used = []
             for a in actions:
                 used.append['workoutid']
