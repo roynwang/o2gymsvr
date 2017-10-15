@@ -183,11 +183,13 @@ class Feed(generics.ListAPIView):
 			TimeLine.objects.get(name=self.kwargs.get('name')).refresh.clear()
 		return TimeLine.objects.get(name=self.kwargs.get('name')).feed.all()
 
+class AlbumPagination(PageNumberPagination):       
+           page_size = 100
+
 class Album(generics.ListAPIView):
 	lookup_field = "name"
 	serializer_class = ImageSerializer 
-	page_size = 50
-        pagination_class = PageNumberPagination
+        pagination_class = AlbumPagination
 	def get_queryset(self):
 		return User.objects.get(name=self.kwargs.get('name')).album.all().order_by("-created")
 
