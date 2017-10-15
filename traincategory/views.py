@@ -2,6 +2,9 @@ from django.shortcuts import render
 from rest_framework import generics,pagination
 from .models import *
 from .serializers import *
+from rest_framework.response import Response
+from django.core.cache import cache
+
 
 # Create your views here.
 class WorkoutCategeoryList(generics.ListCreateAPIView):
@@ -23,13 +26,42 @@ class CustomerWorkoutValueItem(generics.RetrieveAPIView):
             customer = self.kwargs.get("customer")
             workoutid = self.kwargs.get("workoutid")
             return get_object_or_404(CustomerWorkoutValue,customer=customer,workoutid=workoutid) 
-            
+
+class SimpleWorkoutActionListSmart(generics.ListCreateAPIView):
+	serializer_class = SimpleWorkoutActionSerializer 
+	pagination_class = None
+        queryset = SimpleWorkoutAction.objects.all()
+
+
+        def get_last_used():
+            pass
+
+        def list(self, request, name):
+            t = SimpleWorkoutAction.objects.all()
+            s = self.get_serializer(t, many=True)
+            jd = s.data
+            ret = []
+            for item in jd:
+                if item['id'] in used:
+                    ret.insert(0,item)
+                else:
+                    ret.append(item)
+            return Response(ret)
+           
 
 
 class SimpleWorkoutActionList(generics.ListCreateAPIView):
 	serializer_class = SimpleWorkoutActionSerializer 
 	pagination_class = None
         queryset = SimpleWorkoutAction.objects.all()
+
+        '''
+	def create(self, request, *args, **kwargs):
+            print request.data
+	    ret = super(ScheduleList, self).create(request, args,kwargs)
+            return ret
+        '''
+            
         '''
         def get_queryset(self):
             t = WorkoutAction.objects.all()
