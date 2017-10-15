@@ -186,7 +186,7 @@ class Feed(generics.ListAPIView):
 class Album(generics.ListAPIView):
 	lookup_field = "name"
 	serializer_class = ImageSerializer 
-	page_size = 20
+	page_size = 50
         pagination_class = PageNumberPagination
 	def get_queryset(self):
 		return User.objects.get(name=self.kwargs.get('name')).album.all().order_by("-created")
