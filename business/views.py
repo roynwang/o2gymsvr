@@ -197,10 +197,10 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
                         self.get_object().create_threshold_msg()
 
                 if "detail" in request.data and request.data["detail"] != "":
-                    #remove cache
-                    cache.set("o2_coachaction_" + schedule.coach.name, schedule.detail, None)
-                    actions = json.loads(request.data["detail"])
                     course = self.get_object()
+                    #remove cache
+                    cache.set("o2_coachaction_" + course.coach.name, request.data["detail"], None)
+                    actions = json.loads(request.data["detail"])
                     cache.delete("o2_detailcache_" + course.custom.name)
 
                     for item in actions:
