@@ -40,8 +40,9 @@ class SimpleWorkoutActionListSmart(generics.ListCreateAPIView):
                 return []
             actions = json.loads(detail)
             used = []
-            for a in actions:
-                used.append(a['workoutid'])
+            for item in actions:
+                if item["contenttype"] == "action":
+                    used.append(item['workoutid'])
             return used
 
         def list(self, request, name):
