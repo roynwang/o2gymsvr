@@ -96,7 +96,7 @@ class AllCourses(generics.ListAPIView):
     pagination_class = None
     def get_queryset(self):
 	usr = get_object_or_404(User, name=self.kwargs["name"])
-        return usr.booked_time.order_by("date")
+        return usr.booked_time.order_by("-date")
 
 @api_view(['POST'])
 def register(request):
