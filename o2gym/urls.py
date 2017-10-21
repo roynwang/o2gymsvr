@@ -11,6 +11,7 @@ urlpatterns = [
 		url(r'^onboard/$',TemplateView.as_view(template_name="onboard.html")),
 		url(r'^',include("console.urls")),
 		url(r'^api/protocol/$',TemplateView.as_view(template_name="agreement.html")),
+		url(r'^store/$',TemplateView.as_view(template_name="storeindex.html")),
 		url(r'^admin/', include(admin.site.urls)),
 		url(r'^', include('traincategory.urls')),
 		url(r'^', include('business.urls')),
