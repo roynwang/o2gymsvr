@@ -1,230 +1,189 @@
-{% load staticfiles %}
+{% verbatim %}
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<title>氧气健身</title>
-		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<meta name="description" content="" />
-		<meta name="keywords" content="" />
-		<script src="{% static "js/jquery.min.js" %}"></script>
-		<style>
-			.body{
-				font-family: "Helvetica Neue","Helvetica","Arial","PingFang SC","Hiragino Sans GB",
-				"Microsoft YaHei","WenQuanYi Micro Hei", sans-serif;
-			}
-			.bg {
-				background: rgb(17,17,17)
 
-				
-			}
-			.text-bg{
-				background: rgb(37,37,37)
-			}
-			.primary-color{
-				color: rgb(0,187,172)
-			}
-			.avatar {
-				width: 3rem;
-				height: 3rem;
-				border-radius: 50%;
-				border: 0.2rem rgb(136,136,136) solid;
-			}
-			.person-block {
-				width: 33%;
-				display:inline-block;
-				height: 100%;
-				padding: 0.2rem;
-			}
-			.action-item {
-				width: 100%;
-				height: 4rem;
-				padding-top: 0.2rem;
-				margin-bottom: 0.2rem;
-			}
-			.action-comments {
-				width: 30%;
-				height:100%;
-				display:inline-block;
-				color: white;
-				float: left;
-				line-height: 4rem;
-				font-weight: 200;
-				letter-spacing: 0.04rem;
-				text-align: center;
-			}
-			.action-content {
-				width: 70%;
-				height:100%;
-				display:inline-block;
-				color: white;
-				float: left;
-				font-weight:100;
-			}
-			.action-content>p {
-				margin: 0;
-				line-height: 1.8rem;
-				text-align: center;
-			}
+<head>
+    <meta charset="UTF-8">
+    <title>氧气健身</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <script src="//cdn.bootcss.com/angular.js/1.4.7/angular.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'Montserrat';
+            font-style: normal;
+            font-weight: 400;
+            src: local('Montserrat-Regular'), url(/static/fonts/Montserrat-Regular.ttf) format('truetype');
+        }
+        .body {
+            font-family: Montserrat, "Helvetica Neue", "Helvetica", "Arial", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+        }
+        .bg {
+            background: rgb(17, 17, 17)
+        }
+        .text-bg {
+            background: rgb(37, 37, 37)
+        }
+        .primary-color {
+            color: rgb(0, 187, 172)
+        }
+        .avatar {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            border: 0.2rem rgb(136, 136, 136) solid;
+        }
+        .person-block {
+            width: 32%;
+            display: inline-block;
+            height: 100%;
+            padding: 0.2rem;
+        }
+        .action-item {
+            width: 100%;
+            height: 4rem;
+            padding-top: 0.2rem;
+            margin-bottom: 0.2rem;
+        }
+        .action-comments {
+            width: 30%;
+            height: 100%;
+            display: inline-block;
+            color: white;
+            float: left;
+            line-height: 4rem;
+            font-weight: 200;
+            letter-spacing: 0.04rem;
+            text-align: center;
+        }
+        .action-content {
+            width: 70%;
+            height: 100%;
+            display: inline-block;
+            color: white;
+            float: left;
+            font-weight: 100;
+        }
+        .action-content>p {
+            margin: 0;
+            line-height: 1.8rem;
+            text-align: center;
+        }
+        .action-content>p>b {
+            margin-left: 1.5rem;
+            margin-right: 1.5rem;
+        }
+        .person-info {
+            padding: 1rem;
+            padding-left: 1.3rem;
+            border-left: 0.4rem solid rgb(0, 187, 172);
+            margin-bottom: 0.8rem;
+        }
+        .customer-info {
+            color: rgb(186, 186, 186);
+            display: inline-block;
+            position: absolute;
+            margin-left: 0.8rem;
+            margin-top: 0.2rem;
+            font-weight: 200;
+            letter-spacing: 0.03rem;
+        }
+        .customer-info>.name {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .customer-info>.time {
+            margin: 0;
+            letter-spacing: 0.06rem;
+            color: rgb(106, 106, 106);
+            font-weight: 200;
+        }
+    </style>
+</head>
 
-			.action-content>p>b {
-				margin-left: 1.5rem;
-				margin-right: 1.5rem;
-			}
-			.person-info {
-				padding: 1rem;
-				padding-left: 1.3rem;
-				border-left: 0.2rem solid rgb(0,187,172);
-				margin-bottom: 0.8rem;
-			}
-			.customer-info {
-				color: rgb(186,186,186);
-				display: inline-block;
-				position: absolute;
-				margin-left: 0.8rem;
-				margin-top: 0.2rem;
-				font-weight: 200;
-				letter-spacing: 0.03rem;
-			}
-			.customer-info>.name {
-				margin:0;
-				font-size:1.2rem;
-			}
-			.customer-info>.time {
-				margin:0;
-				letter-spacing: 0.06rem;
-				color: rgb(106,106,106);
-				font-weight: 200;
-			}
+<body class="bg" ng-app="JobApp" ng-controller="home as ctrl">
+    <div class="person-block" ng-repeat="item in ctrl.courses track by $index">
+        <div class="person-info">
+            <div style="display:inline-block;width:20%">
+                <img class="avatar" src="https://dn-o2fit.qbox.me/07d48a349c2711e6ba7200163e00701b.jpg?imageView2/1/w/180/h/180/format/jpg">
+            </div>
+            <div class="customer-info">
+                <p class="name">{{item.customerprofile.displayname}}</p>
+                <p class="time">{{ctrl.courses[$index].hourstr}}</p>
+            </div>
+        </div>
+        <div class="action-item text-bg" ng-repeat="i in ctrl.courses[$index].detailactions"
+			ng-if="i.contenttype == 'action'">
+            <div class="action-content">
+                <p>{{i.name}}</p>
+				<p class="primary-color">{{i.repeattimes}}&nbsp;组<b
+					class="primary-color">✕</b>{{i.weight}}&nbsp;{{i.unit}}</p>
+            </div>
+			<div class="action-comments">{{i.comments}}</div>
+        </div>
+    </div>
+</body>
+<script>
+    Date.prototype.Format = function(fmt)
+    { //author: meizz 
+        var o = {
+            "M+": this.getMonth() + 1, //月份 
+            "d+": this.getDate(), //日 
+            "h+": this.getHours(), //小时 
+            "m+": this.getMinutes(), //分 
+            "s+": this.getSeconds(), //秒 
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+            "S": this.getMilliseconds() //毫秒 
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(
+                4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[
+                    k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+    var TimeMap = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+        "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00",
+        "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30",
+        "19:00", "19:30", "20:00", "20:30", "21:00", "21:30", "22:00"
+    ]
 
-			
-		</style>
-	</head>
-	<body class="bg">
-		<div class="person-block">
-			<div class="person-info">
-				<div style="display:inline-block;width:20%">
-				<img class="avatar" src="https://dn-o2fit.qbox.me/07d48a349c2711e6ba7200163e00701b.jpg?imageView2/1/w/180/h/180/format/jpg">
-				</div>
-				<div class="customer-info">
-					<p class="name">虞柳河</p>
-					<p class="time">19:00</p>
-				</div>
-			</div>
-			<div class="action-item text-bg">
-				<div class="action-content">
-					<p>壶铃摇摆</p>
-					<p class="primary-color">4&nbsp;组<b class="primary-color">✕</b>20&nbsp;个</p>
-				</div>
-				<div class="action-comments">20Kg</div>
-			</div>
-			<div class="action-item text-bg">
-				<div class="action-content">
-					<p>卧推</p>
-					<p class="primary-color">4&nbsp;组<b class="primary-color">✕</b>20&nbsp;个</p>
-				</div>
-				<div class="action-comments">90Kg</div>
-			</div>
-			<div class="action-item text-bg">
-				<div class="action-content">
-					<p>杠铃深蹲</p>
-					<p class="primary-color">4&nbsp;组<b class="primary-color">✕</b>20&nbsp;个</p>
-				</div>
-				<div class="action-comments">20Kg</div>
-			</div>
-			<div class="action-item text-bg">
-				<div class="action-content">
-					<p>椭圆仪</p>
-					<p class="primary-color">1&nbsp;组<b class="primary-color">✕</b>40&nbsp;min</p>
-				</div>
-				<div class="action-comments"></div>
-			</div>
+    var app = angular.module('JobApp', []);
+    app.controller("home", ["$scope", "$http",
+        function($scope, $http)
+        {
+            var that = this
+            var day = new Date().Format("yyyyMMdd")
+            var url = "/api/g/19/" + day + "/"
+            var refresh = function()
+            {
+                $http.get(url,
+                {}).success(function(data)
+                {
+                    that.courses = []
+                    console.log(data);
+                    data.forEach(function(v, i)
+                    {
+                        if (!v.done && v.detail.length >
+                            10)
+                        {
+                            v.detailactions =
+                                JSON.parse(
+                                    v.detail)
+                            v.hourstr = TimeMap[v
+                                .hour]
+                            that.courses.push(v)
+                        }
+                    });
+                });
+            }
+            setInterval(refresh, 120000)
+			refresh()
+        }
+    ]);
+</script>
 
-
-		</div>
-
-
-		<div class="person-block">
-			<div class="person-info">
-				<div style="display:inline-block;width:20%">
-				<img class="avatar" src="https://dn-o2fit.qbox.me/07d48a349c2711e6ba7200163e00701b.jpg?imageView2/1/w/180/h/180/format/jpg">
-				</div>
-				<div class="customer-info">
-					<p class="name">虞柳河</p>
-					<p class="time">19:00</p>
-				</div>
-			</div>
-			<div class="action-item text-bg">
-				<div class="action-content">
-					<p>壶铃摇摆</p>
-					<p class="primary-color">4&nbsp;组<b class="primary-color">✕</b>20&nbsp;个</p>
-				</div>
-				<div class="action-comments">20Kg</div>
-			</div>
-			<div class="action-item text-bg">
-				<div class="action-content">
-					<p>卧推</p>
-					<p class="primary-color">4&nbsp;组<b class="primary-color">✕</b>20&nbsp;个</p>
-				</div>
-				<div class="action-comments">90Kg</div>
-			</div>
-			<div class="action-item text-bg">
-				<div class="action-content">
-					<p>杠铃深蹲</p>
-					<p class="primary-color">4&nbsp;组<b class="primary-color">✕</b>20&nbsp;个</p>
-				</div>
-				<div class="action-comments">20Kg</div>
-			</div>
-			<div class="action-item text-bg">
-				<div class="action-content">
-					<p>椭圆仪</p>
-					<p class="primary-color">1&nbsp;组<b class="primary-color">✕</b>40&nbsp;min</p>
-				</div>
-				<div class="action-comments"></div>
-			</div>
-
-
-		</div>
-
-		<div class="person-block">
-			<div class="person-info">
-				<div style="display:inline-block;width:20%">
-				<img class="avatar" src="https://dn-o2fit.qbox.me/07d48a349c2711e6ba7200163e00701b.jpg?imageView2/1/w/180/h/180/format/jpg">
-				</div>
-				<div class="customer-info">
-					<p class="name">虞柳河</p>
-					<p class="time">19:00</p>
-				</div>
-			</div>
-			<div class="action-item text-bg">
-				<div class="action-content">
-					<p>壶铃摇摆</p>
-					<p class="primary-color">4&nbsp;组<b class="primary-color">✕</b>20&nbsp;个</p>
-				</div>
-				<div class="action-comments">20Kg</div>
-			</div>
-			<div class="action-item text-bg">
-				<div class="action-content">
-					<p>卧推</p>
-					<p class="primary-color">4&nbsp;组<b class="primary-color">✕</b>20&nbsp;个</p>
-				</div>
-				<div class="action-comments">90Kg</div>
-			</div>
-			<div class="action-item text-bg">
-				<div class="action-content">
-					<p>杠铃深蹲</p>
-					<p class="primary-color">4&nbsp;组<b class="primary-color">✕</b>20&nbsp;个</p>
-				</div>
-				<div class="action-comments">20Kg</div>
-			</div>
-			<div class="action-item text-bg">
-				<div class="action-content">
-					<p>椭圆仪</p>
-					<p class="primary-color">1&nbsp;组<b class="primary-color">✕</b>40&nbsp;min</p>
-				</div>
-				<div class="action-comments"></div>
-			</div>
-
-
-		</div>
-	</body>
 </html>
+{% endverbatim %}
