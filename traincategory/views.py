@@ -28,6 +28,12 @@ class CustomerWorkoutValueItem(generics.RetrieveAPIView):
             workoutid = self.kwargs.get("workoutid")
             return get_object_or_404(CustomerWorkoutValue,customer=customer,workoutid=workoutid) 
 
+class SimpleWorkoutItem(generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = SimpleWorkoutActionSerializer 
+        lookup_field = "pk"
+        queryset = SimpleWorkoutAction.objects.all()
+
+
 class SimpleWorkoutActionListSmart(generics.ListCreateAPIView):
 	serializer_class = SimpleWorkoutActionSerializer 
 	pagination_class = None
