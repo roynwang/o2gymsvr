@@ -42,6 +42,7 @@ urlpatterns = patterns('',
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/b/(?P<date>[0-9]{8})/(?P<hour>[0-9]{1,2})/$',ScheduleItem.as_view()),
 
 		url(r'^api/s/(?P<pk>[0-9]+)/$',ScheduleDetailItem.as_view()),
+		url(r'^api/s/(?P<pk>[0-9]+)/complete/$',ScheduleComplete.as_view()),
 		#schedule day booked items
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/b/(?P<date>[0-9]{8})/$',ScheduleList.as_view()),
 		#read week booked items

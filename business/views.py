@@ -153,6 +153,14 @@ class ScheduleDetailItem(generics.RetrieveAPIView):
         lookup_field = "pk"
         queryset = Schedule.objects.all()
 
+class ScheduleComplete(generics.RetrieveAPIView):
+	serializer_class = ScheduleSerializer
+        def get_object(self):
+            sid = self.kwargs.get("pk")
+            s = get_object_or_404(Schedule, id=sid)
+            s.user_confirm()
+            return s
+
 class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Schedule.objects.all()
 	serializer_class = ScheduleSerializer 

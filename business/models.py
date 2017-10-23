@@ -181,9 +181,14 @@ class Schedule(models.Model):
 
         action_required = models.CharField(max_length=128,blank=True,null=True,default="")
 
+        user_confirmed = models.BooleanField(default=False)
+
 
 	def __unicode__(self):
 		return str(self.date) + str(self.hour)
+        def user_confirm(self):
+            self.user_confirmed = True
+            self.save()
 
         def is_first_course(self):
             if self.coursetype == "trial":
