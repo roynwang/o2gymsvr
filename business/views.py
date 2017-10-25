@@ -259,7 +259,7 @@ class SelfTrainItem(generics.RetrieveDestroyAPIView):
 class ScheduleSurvey(APIView):
         def get(self, request, courseid):
             course = Schedule.objects.get(id=int(courseid))
-            course.create_survey()
+            course.create_newcustomer_survey()
             mkey = "o2_survey_" + str(courseid)
             mdetail = cache.get(mkey)
             if not mdetail is None:
@@ -272,14 +272,15 @@ class ScheduleSurvey(APIView):
             coach = course.coach
 
             user = customer
-            if k in request.data:
+            print request.data
+            for k in request.data:
                 Survey.objects.create( \
                         courseid = int(courseid), \
-                        score = request.data[k]["score"], \
+                        score = k["score"], \
                         date = course.date, \
                         coach = coach.name, \
                         customer = customer.name, \
-                        question = request.data[k]["question"])
+                        question = k["question"])
             return Response({}, status=status.HTTP_200_OK)
 
 
