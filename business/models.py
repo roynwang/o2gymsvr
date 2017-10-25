@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 #from usr.models import *
 import json
 from order.models import *
+from django.core.cache import cache
 
 class ChargePricing(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -189,6 +190,11 @@ class Schedule(models.Model):
         def user_confirm(self):
             self.user_confirmed = True
             self.save()
+
+        def create_survey(self):
+            mkey = "o2_survey_" + str(self.id)
+            survey = [{"question":"ttt"},{"question":"aaa"}]
+            cache.set(mkey, json.dumps(survey), None)
 
         def is_first_course(self):
             if self.coursetype == "trial":

@@ -256,7 +256,35 @@ class SelfTrainItem(generics.RetrieveDestroyAPIView):
         lookup_field = "pk"
         queryset = SelfTrain.objects.all()
 
-        
+class ScheduleSurvey(APIView):
+        def get(self, request, courseid):
+            course = Schedule.objects.get(id=int(courseid))
+            course.create_survey()
+            mkey = "o2_survey_" + str(courseid)
+            mdetail = cache.get(mkey)
+            if not mdetail is None:
+                return Response({"survey":json.loads(mdetail)}, status=status.HTTP_200_OK)
+            return Response({"survey":[]}, status=status.HTTP_200_OK)
+
+        def post(self, request, courseid):
+            course = Schedule.objects.get(id=int(courseid))
+            customer = course.custom
+            coach = course.coach
+
+            user = customer
+            if k in request.data:
+                Survey.objects.create( \
+                        courseid = int(courseid), \
+                        score = request.data[k]["score"], \
+                        date = course.date, \
+                        coach = coach.name, \
+                        customer = customer.name, \
+                        question = request.data[k]["question"])
+            return Response({}, status=status.HTTP_200_OK)
+
+
+
+
 
 class CurrentCoach(APIView):
         def get(self, request, name):
