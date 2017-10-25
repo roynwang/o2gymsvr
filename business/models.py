@@ -191,10 +191,12 @@ class Schedule(models.Model):
             self.user_confirmed = True
             self.save()
 
-        def create_survey(self):
-            mkey = "o2_survey_" + str(self.id)
-            survey = [{"question":"ttt"},{"question":"aaa"}]
-            cache.set(mkey, json.dumps(survey), None)
+        def create_newcustomer_survey(self):
+            print self.custom.booked_time.count()
+            if self.custom.booked_time.count() <20:
+                mkey = "o2_survey_" + str(self.id)
+                survey = [{"question":"ttt"},{"question":"aaa"}]
+                cache.set(mkey, json.dumps(survey), None)
 
         def is_first_course(self):
             if self.coursetype == "trial":
