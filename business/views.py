@@ -259,11 +259,9 @@ class SelfTrainItem(generics.RetrieveDestroyAPIView):
 class ScheduleSurvey(APIView):
         def get(self, request, courseid):
             course = Schedule.objects.get(id=int(courseid))
-            course.create_newcustomer_survey()
-            mkey = "o2_survey_" + str(courseid)
-            mdetail = cache.get(mkey)
-            if not mdetail is None:
-                return Response(json.loads(mdetail), status=status.HTTP_200_OK)
+            mdetail = course.create_newcustomer_survey()
+            if not mdetail is False:
+                return Response(mdetail, status=status.HTTP_200_OK)
             return Response({}, status=status.HTTP_200_OK)
 
         def post(self, request, courseid):
