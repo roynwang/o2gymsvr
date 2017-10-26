@@ -1,5 +1,7 @@
 from django.shortcuts import render,get_object_or_404
 from rest_framework.views import APIView
+from rest_framework.mixins import UpdateModelMixin
+from rest_framework.viewsets import ModelViewSet
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
@@ -144,10 +146,19 @@ class UserList(generics.CreateAPIView):
 		#return Response({"result": 0})
 		
 
+class UserItemPatch(generics.GenericAPIView, UpdateModelMixin):
+	lookup_field = "name"
+	queryset = User.objects.all()
+	serializer_class = UserSerializer
+        def put(self, request, *args, **kwargs):
+            return self.partial_update(request, *args, **kwargs)
+
+        
 class UserItem(generics.RetrieveUpdateDestroyAPIView):
 	lookup_field = "name"
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
+
 
 class UserItemByOpenId(generics.RetrieveUpdateDestroyAPIView):
 	lookup_field = "openid"
