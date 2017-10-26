@@ -193,16 +193,16 @@ class Schedule(models.Model):
 
         def create_newcustomer_survey(self):
             if Survey.objects.filter(courseid = self.id).count() >= 0:
-                return
+                return False
             if self.custom.booked_time.count() < 20:
-                mkey = "o2_survey_" + str(self.id)
                 survey = {"title":"新客户小调查",\
                         "questions":[\
                         {"question":"我能感觉到教练的鼓励"},\
                         {"question":"我能理解教练讲解的要领"},\
                         {"question":"我学会了新的运动知识和技能"}\
                         ]}
-                cache.set(mkey, json.dumps(survey), None)
+                return survey
+            return False
 
         def is_first_course(self):
             if self.coursetype == "trial":
