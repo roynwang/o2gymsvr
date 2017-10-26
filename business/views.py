@@ -153,8 +153,29 @@ class ScheduleDetailItem(generics.RetrieveAPIView):
         lookup_field = "pk"
         queryset = Schedule.objects.all()
 
-class ScheduleComplete(generics.RetrieveAPIView):
+class ScheduleDetailItemPatch(generics.GenericAPIView, UpdateModelMixin):
 	serializer_class = ScheduleSerializer
+        lookup_field = "pk"
+        queryset = Schedule.objects.all()
+        def put(self, request, *args, **kwargs):
+            if "detail" in request.data and request.data["detail"] != "":
+                course = self.get_object()
+                cache.set("o2_coachaction_" + course.coach.name, request.data["detail"], None)
+                actions = json.loads(request.data["detail"])
+                cache.delete("o2_detailcache_" + course.custom.name)
+                for item in actions:
+                    if item["contenttype"] == "action":
+                        CustomerWorkoutValue.objects.update_or_create(customer=course.custom.name,\
+                            name=item['name'], \
+                            workoutid=item['workoutid'], \
+                            defaults={"unit":item["unit"],"weight":item['weight'],"repeattimes":item['repeattimes'], \
+                            "comments":item['comments']})
+                        return ret
+            return self.partial_update(request, *args, **kwargs)
+
+
+class ScheduleComplete(generics.RetrieveAPIView):
+    serializer_class = ScheduleSerializer
         def get_object(self):
             sid = self.kwargs.get("pk")
             s = get_object_or_404(Schedule, id=sid)
