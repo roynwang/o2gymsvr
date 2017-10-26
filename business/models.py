@@ -192,10 +192,16 @@ class Schedule(models.Model):
             self.save()
 
         def create_newcustomer_survey(self):
-            print self.custom.booked_time.count()
-            if self.custom.booked_time.count() <20:
+            if Survey.filter(courseid = self.id).count() >= 0:
+                return
+            if self.custom.booked_time.count() < 20:
                 mkey = "o2_survey_" + str(self.id)
-                survey = {"title":"新客户小调查","questions":[{"question":"ttt"},{"question":"aaa"}]}
+                survey = {"title":"新客户小调查",\
+                        "questions":[\
+                        {"question":"我能感觉到教练的鼓励"},\
+                        {"question":"我能理解教练讲解的要领"},\
+                        {"question":"我学会了新的运动知识和技能"}\
+                        ]}
                 cache.set(mkey, json.dumps(survey), None)
 
         def is_first_course(self):
