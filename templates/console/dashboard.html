@@ -243,6 +243,7 @@
                         <li class="admin-show"><a href="#history">历史数据</a></li>
                         <li><a href="#finance">收支记录</a></li>
                         <li><a href="#flow">流量数据</a></li>
+                        <li class="admin-show backdoor"><a href="#survey">用户调研</a></li>
 					</ul>
 				</li>
 	            <li class="sub-menu admin-show">
@@ -457,6 +458,8 @@
 			window.location = "/console/login/"
 		}
 	}
+	function showbackdoor(){
+	}
 	function refreshuser(authinfo,gymid){
 		$.get("/api/" + authinfo.username + "/", function(data){
 			USER = data
@@ -467,6 +470,12 @@
 			}else {
 				$.cookie("gym", gymid, {path:"/"})
 			}
+			if($.cookie("gym") == 19 || $.cookie("gym") == 31){
+				$(".backdoor").show()
+			} else {
+				$(".backdoor").hide()
+			}
+
 			$.cookie("role", data.role, {path:"/"})
 
 			$("#username").html(data.displayname)

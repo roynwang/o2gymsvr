@@ -1044,6 +1044,13 @@ class GymGroupCourseDayList(generics.ListCreateAPIView):
 		ret = GroupCourseInstance.objects.filter(gym=self.kwargs.get("pk"),date=date.date())
 		return ret
 
+class GymSurveyList(generics.ListCreateAPIView):
+	serializer_class = SurveySerializer
+        pagination_class = None
+        queryset = Survey.objects.all()
+
+
+
 class GymTodoList(generics.ListCreateAPIView):
 	serializer_class = TodoSerializer
         pagination_class = None
