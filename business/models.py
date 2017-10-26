@@ -194,7 +194,7 @@ class Schedule(models.Model):
         def create_newcustomer_survey(self):
             if Survey.objects.filter(courseid = self.id).count() > 0:
                 return False
-            if self.custom.booked_time.count() < 20:
+            if self.custom.booked_time.count() == 3:
                 survey = {"title":"新客户小调查",\
                         "questions":[\
                         {"question":"我能感觉到教练的鼓励"},\
