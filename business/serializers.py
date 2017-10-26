@@ -170,3 +170,20 @@ class TrainDateSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = BodyEval
 		fields = ["date"]
+
+class SurveySerializer(serializers.ModelSerializer):
+	customerprofile = serializers.SerializerMethodField()
+	coachprofile = serializers.SerializerMethodField() 
+	class Meta:
+		model = Survey
+        def get_customerprofile(self,obj):
+            c = User.objects.get(name=obj.customer)
+            return {"name":c.name,"displayname":c.displayname}
+
+        def get_coachprofile(self,obj):
+            c = User.objects.get(name=obj.coach)
+	    serializer = SimpleUserSerilaizer(c)
+            return {"name":c.name,"displayname":c.displayname}
+
+
+

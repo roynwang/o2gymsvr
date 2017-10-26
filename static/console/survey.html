@@ -1,0 +1,22 @@
+<div class="row" ng-controller="SurveyCtrl as ctrl">
+    <div class="col-sm-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="row">
+                    <h4 class="col-sm-4">问卷调查</h4>
+				</div>
+            </header>
+            <div class="panel-body">
+                <table class="table table-invoice" ng-table="ctrl.tableParams">
+                    <tr ng-repeat="row in $data" style="color:#333">
+                        <td data-title="'日期'">{{row.date}}</td>
+                        <td data-title="'教练'">{{row.coachprofile.displayname}}</td>
+                        <td data-title="'客户'">{{row.customerprofile.displayname}}</td>
+                        <td data-title="'问题'">{{row.question}}</td>
+                        <td data-title="'评分'">{{row.score}}</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>

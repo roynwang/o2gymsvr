@@ -457,6 +457,22 @@ app.factory('$video', function(Restangular) {
         remove_keyword_task: remove_keyword_task
     }
 })
+app.factory('$survey', function(Restangular) {
+
+    function getList(onsuccess) {
+        var gymid = $.cookie("gym")
+        Restangular.one('api/g/' + gymid, "survey")
+            .get()
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+    }
+    return {
+        getList: getList,
+	}
+})
+
+
 
 app.factory('$doc', function(Restangular) {
 
@@ -1046,6 +1062,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/",
             templateUrl: "/static/console/mainpage.html",
             controller: "MainPageCtrl"
+        })
+        .state('survey', {
+            url: "/survey",
+            templateUrl: "/static/console/survey.html",
         })
         .state('selftrain', {
             url: "/selftrain",
@@ -5010,6 +5030,24 @@ app.controller("VideoCtrl", ['$scope', "Restangular", "NgTableParams", "$statePa
                     that.refresh();
                 })
             }
+        }
+        that.refresh()
+    }
+])
+app.controller("SurveyCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert", "$groupcoursesvc", "$survey",
+    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $groupcoursesvc, $survey) {
+		var that = this
+        that.refresh = function() {
+            $survey.getList(function(data) {
+                that.tableParams = new NgTableParams({
+                    count: 100,
+                    sorting: {}
+                }, {
+                    counts: [],
+                    dataset: data
+                });
+
+            })
         }
         that.refresh()
     }
