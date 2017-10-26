@@ -195,7 +195,7 @@ class Schedule(models.Model):
             print self.custom.booked_time.count()
             if self.custom.booked_time.count() <20:
                 mkey = "o2_survey_" + str(self.id)
-                survey = {"title":"新客户小调查",[{"question":"ttt"},{"question":"aaa"}]}
+                survey = {"title":"新客户小调查","questions":[{"question":"ttt"},{"question":"aaa"}]}
                 cache.set(mkey, json.dumps(survey), None)
 
         def is_first_course(self):
