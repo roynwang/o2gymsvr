@@ -263,8 +263,8 @@ class ScheduleSurvey(APIView):
             mkey = "o2_survey_" + str(courseid)
             mdetail = cache.get(mkey)
             if not mdetail is None:
-                return Response({"survey":json.loads(mdetail)}, status=status.HTTP_200_OK)
-            return Response({"survey":[]}, status=status.HTTP_200_OK)
+                return Response(json.loads(mdetail), status=status.HTTP_200_OK)
+            return Response({}, status=status.HTTP_200_OK)
 
         def post(self, request, courseid):
             course = Schedule.objects.get(id=int(courseid))
