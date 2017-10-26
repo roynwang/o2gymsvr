@@ -160,6 +160,7 @@ class ScheduleDetailItemPatch(generics.GenericAPIView, UpdateModelMixin):
         lookup_field = "pk"
         queryset = Schedule.objects.all()
         def put(self, request, *args, **kwargs):
+	    ret = super(ScheduleItem, self).partial_update(request, args,kwargs)
             if "detail" in request.data and request.data["detail"] != "":
                 course = self.get_object()
                 cache.set("o2_coachaction_" + course.coach.name, request.data["detail"], None)
@@ -172,8 +173,7 @@ class ScheduleDetailItemPatch(generics.GenericAPIView, UpdateModelMixin):
                             workoutid=item['workoutid'], \
                             defaults={"unit":item["unit"],"weight":item['weight'],"repeattimes":item['repeattimes'], \
                             "comments":item['comments']})
-                        return ret
-            return self.partial_update(request, *args, **kwargs)
+            return ret
 
 
 class ScheduleComplete(generics.RetrieveAPIView):
