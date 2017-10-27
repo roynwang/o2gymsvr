@@ -72,7 +72,15 @@
                                 required />
                             </div>
                         </td>
-
+                        <td data-title="'强度'" ng-switch="row.isEditing" ng-class="yanglao.$dirty ? 'bg-warning' : ''"
+                        ng-form="intensity" demo-tracked-table-cell>
+                            <span ng-switch-default class="editable-text">{{row.intensity}}</span>
+                            <div class="controls" ng-class="intensity.$invalid && intensity.$dirty ? 'has-error' : ''"
+                            ng-switch-when="true">
+                                <input type="number" name="brief" ng-model="row.intensity" class="editable-input form-control input-sm"
+                                required />
+                            </div>
+                        </td>
                         <td>
                             <button class="btn btn-primary btn-sm" ng-click="ctrl.save(row, rowForm)" ng-if="row.isEditing"
                             ng-disabled="rowForm.$pristine || rowForm.$invalid"><span class="glyphicon glyphicon-ok"></span>
