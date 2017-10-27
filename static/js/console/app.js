@@ -4704,6 +4704,7 @@ app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$s
 
             cs.serial = row.serial
             cs.step = row.step
+            cs.intensity = row.intensity
 
             Restangular.one('api/groupcourse/', row.id)
                 .patch(cs)

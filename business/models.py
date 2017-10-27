@@ -45,6 +45,7 @@ class GroupCourse(models.Model):
 	title = models.CharField(max_length=32)
 	brief = models.CharField(max_length=1024, blank=True)
 	pic = models.CharField(max_length=1024, default="[]")
+	intensity = models.IntegerField() 
         serial = models.CharField(max_length=128)
         step = models.CharField(max_length=128)
         gym = models.IntegerField() 
