@@ -100,7 +100,7 @@ class User(models.Model):
         def trySendEvalNotification(self, schedule):
             require_measure = False
             evals = BodyEval.objects.filter(name=self.name).order_by("-date")
-            if schedule.coursetype != "trial" and evals.count == 0:
+            if schedule.coursetype != "trial" and evals.count() == 0:
                 require_measure = True
             if not require_measure and not schedule.is_first_course():
                 #1 should after 30 day after last eval
