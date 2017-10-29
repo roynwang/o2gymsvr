@@ -7,7 +7,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
-    <script src="//cdn.bootcss.com/angular.js/1.4.7/angular.min.js"></script>
+    <link href="/static/consolecss/ui-carousel.min.css" rel="stylesheet">
     <style>
         @font-face {
             font-family: 'Montserrat';
@@ -34,16 +34,18 @@
             border: 0.2rem rgb(136, 136, 136) solid;
         }
         .person-block {
-            width: 32%;
+            width: 49%;
             display: inline-block;
             height: 100%;
             padding: 0.2rem;
         }
         .action-item {
-            width: 100%;
+            width: 49%;
             height: 4rem;
             padding-top: 0.2rem;
             margin-bottom: 0.2rem;
+			margin-left: 0.1rem;
+			display: inline-block;
         }
         .action-comments {
             width: 30%;
@@ -102,27 +104,44 @@
 </head>
 
 <body class="bg" ng-app="JobApp" ng-controller="home as ctrl">
-    <div class="person-block" ng-repeat="item in ctrl.courses track by $index">
+    <div class="person-block">
         <div class="person-info">
             <div style="display:inline-block;width:20%">
-                <img class="avatar" src="https://dn-o2fit.qbox.me/07d48a349c2711e6ba7200163e00701b.jpg?imageView2/1/w/180/h/180/format/jpg">
+                <img class="avatar" src="{{ctrl.item0.customerprofile.avatar}}">
             </div>
             <div class="customer-info">
-                <p class="name">{{item.customerprofile.displayname}}</p>
-                <p class="time">{{ctrl.courses[$index].hourstr}}</p>
+                <p class="name">{{ctrl.item0.customerprofile.displayname}}</p>
+                <p class="time">{{ctrl.item0.hourstr}}</p>
             </div>
         </div>
-        <div class="action-item text-bg" ng-repeat="i in ctrl.courses[$index].detailactions"
-			ng-if="i.contenttype == 'action'">
+        <div class="action-item text-bg" ng-repeat="i in ctrl.item0.detailactions" ng-if="i.contenttype == 'action'">
             <div class="action-content">
                 <p>{{i.name}}</p>
-				<p class="primary-color">{{i.repeattimes}}&nbsp;组<b
-					class="primary-color">✕</b>{{i.weight}}&nbsp;{{i.unit}}</p>
+                <p class="primary-color">{{i.repeattimes}}&nbsp;组<b class="primary-color">✕</b>{{i.weight}}&nbsp;{{i.unit}}</p>
             </div>
-			<div class="action-comments">{{i.comments}}</div>
+            <div class="action-comments">{{i.comments}}</div>
+        </div>
+    </div>
+    <div class="person-block" ng-show="ctrl.item1">
+        <div class="person-info">
+            <div style="display:inline-block;width:20%">
+                <img class="avatar" src="{{ctrl.item1.customerprofile.avatar}}">
+            </div>
+            <div class="customer-info">
+                <p class="name">{{ctrl.item1.customerprofile.displayname}}</p>
+                <p class="time">{{ctrl.item1.hourstr}}</p>
+            </div>
+        </div>
+        <div class="action-item text-bg" ng-repeat="i in ctrl.item1.detailactions" ng-if="i.contenttype == 'action'">
+            <div class="action-content">
+                <p>{{i.name}}</p>
+                <p class="primary-color">{{i.repeattimes}}&nbsp;组<b class="primary-color">✕</b>{{i.weight}}&nbsp;{{i.unit}}</p>
+            </div>
+            <div class="action-comments">{{i.comments}}</div>
         </div>
     </div>
 </body>
+<script src="//cdn.bootcss.com/angular.js/1.4.7/angular.min.js"></script>
 <script>
     Date.prototype.Format = function(fmt)
     { //author: meizz 
@@ -151,10 +170,11 @@
     ]
 
     var app = angular.module('JobApp', []);
-    app.controller("home", ["$scope", "$http",
-        function($scope, $http)
+    app.controller("home", ["$scope", "$http", "$interval",
+        function($scope, $http, $interval)
         {
             var that = this
+            that.active = 0
             var day = new Date().Format("yyyyMMdd")
             var url = "/api/g/19/" + day + "/"
             var refresh = function()
@@ -166,7 +186,7 @@
                     console.log(data);
                     data.forEach(function(v, i)
                     {
-                        if (!v.done && v.detail.length >
+                        if (v.detail.length >
                             10)
                         {
                             v.detailactions =
@@ -174,13 +194,33 @@
                                     v.detail)
                             v.hourstr = TimeMap[v
                                 .hour]
+                            v.show = false
                             that.courses.push(v)
+                            if (that.courses.length == 1)
+                            {
+                                that.item0 = v
+                            }
+                            if (that.courses.length == 2)
+                            {
+                                that.item1 = v
+                            }
                         }
+
                     });
                 });
             }
-            setInterval(refresh, 120000)
-			refresh()
+            $interval(function()
+            {
+
+                that.active++
+                    that.active %= that.courses.length
+                that.item0 = that.courses[that.active]
+                that.item1 = that.courses[(that.active + 1) %
+                    that.courses.length]
+            }, 20000)
+            refresh()
+
+            $interval(refresh, 60000)
         }
     ]);
 </script>
