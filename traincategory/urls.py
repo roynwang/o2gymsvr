@@ -13,5 +13,5 @@ urlpatterns = patterns('',
 		url(r'^api/(?P<name>[a-zA-Z0-9]+)/sw/$', SimpleWorkoutActionListSmart.as_view()),
 		url(r'^api/sw/(?P<pk>[0-9]+)/$', SimpleWorkoutItem.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]+)/workout/(?P<cate>[0-9]+)/$', WorkoutActionList.as_view()),
-                url(r'^api/(?P<customer>[0-9]{11})/sw/(?P<workoutid>[0-9]+)$', CustomerWorkoutValueItem.as_view())
+                url(r'^api/(?P<customer>[0-9]{11})/sw/(?P<workoutid>[0-9]+)/$', CustomerWorkoutValueItem.as_view())
 		)
