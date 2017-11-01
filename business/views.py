@@ -960,6 +960,7 @@ def show_customer_eval(request, name):
 def show_complete_survey_group(request, courseid):
         course = GroupCourseInstance.objects.get(id=int(courseid))
         coach = get_object_or_404(User, name=course.coach)
+        course_detail = GroupCourse.objects.get(id=course.course)
 
         questions = [ \
                 '我在训练中感受到了充分的鼓励', \
@@ -1015,6 +1016,7 @@ def show_complete_survey(request, courseid):
 
 def show_post_survey_group(request, courseid):
         course = GroupCourseInstance.objects.get(id=int(courseid))
+        course_detail = GroupCourse.objects.get(id=course.course)
         coach = get_object_or_404(User, name=course.coach)
 
         questions = [ \
@@ -1026,7 +1028,7 @@ def show_post_survey_group(request, courseid):
         if Survey.objects.filter(courseid = course.id).count() > 0:
             template = "postsurvey/complete.html"
         ret = render(request, template,\
-                {"questions":questions, "course":course,"coach":coach})
+                {"coursedetail":course_detail,"questions":questions, "course":course,"coach":coach})
         return ret
 
 
