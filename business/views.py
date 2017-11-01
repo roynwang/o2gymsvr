@@ -957,6 +957,31 @@ def show_customer_eval(request, name):
         return ret
 
 @csrf_exempt
+def show_complete_survey_group(request, courseid):
+        course = GroupCourseInstance.objects.get(id=int(courseid))
+        coach = get_object_or_404(User, name=course.coach)
+
+        questions = [ \
+                '我在训练中感受到了充分的鼓励', \
+                '我能理解并学会教练讲授的动作要领', \
+                '我觉得训练强度合理']
+        for i in [1,2,3,]:
+            k = 'q' + str(i)
+            if k in request.POST:
+                Survey.objects.create( \
+                        courseid = int(courseid), \
+                        score = request.POST[k], \
+                        date = course.date, \
+                        coach = coach.name, \
+                        customer = "", \
+                        course_type = "group", \
+                        question = questions[i-1])
+
+        ret = render(request, "postsurvey/complete.html",{})
+        return ret
+
+
+@csrf_exempt
 def show_complete_survey(request, courseid):
         course = Schedule.objects.get(id=int(courseid))
         customer = course.custom
@@ -987,6 +1012,23 @@ def show_complete_survey(request, courseid):
         ret = render(request, "postsurvey/complete.html",\
                 {"times":times, "questions":questions, "course":course,"customer":customer, "coach":coach})
         return ret
+
+def show_post_survey_group(request, courseid):
+        course = GroupCourseInstance.objects.get(id=int(courseid))
+        coach = get_object_or_404(User, name=course.coach)
+
+        questions = [ \
+                '我在训练中感受到了充分的鼓励', \
+                '我能理解并学会教练讲授的动作要领', \
+                '我觉得训练强度合理']
+
+        template = "postsurvey/gsreport.html"
+        if Survey.objects.filter(courseid = course.id).count() > 0:
+            template = "postsurvey/complete.html"
+        ret = render(request, template,\
+                {"questions":questions, "course":course,"coach":coach})
+        return ret
+
 
 
 def show_post_survey(request, courseid):
@@ -1070,7 +1112,7 @@ class GymGroupCourseDayList(generics.ListCreateAPIView):
 class GymSurveyList(generics.ListCreateAPIView):
 	serializer_class = SurveySerializer
         pagination_class = None
-        queryset = Survey.objects.all()
+        queryset = Survey.objects.all().order_by("-date")
 
 
 
