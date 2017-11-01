@@ -105,8 +105,10 @@
                         <div class="col-xs-6" style="padding:12px 10px">
                             <p>{{c.course_detail.title}}/{{c.course_detail.step}}</p>
                             <p>{{ctrl.timemap[c.hour]}} </p>
+							<p style="cursor:pointer;color:#4fd2c2" ngclipboard data-clipboard-text="http://o2-fit.com/api/gs/{{c.id}}/">复制回访链接</p>
                         </div>
                     </div>
+
                     <div class="col-xs-12">
                         <!--
 						<div class="btn-group btn-group-justified">

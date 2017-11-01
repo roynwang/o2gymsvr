@@ -223,7 +223,6 @@ class Schedule(models.Model):
             return False
 
 	def sendSms(self):
-                
                 if self.order is None:
                         return True
 		if self.order.gym.id != 20:
@@ -402,4 +401,5 @@ class Survey(models.Model):
 	coach = models.CharField(max_length=32)
 	customer = models.CharField(max_length=32)
 	question = models.CharField(max_length=512)
+	course_type = models.CharField(max_length=32, default="pt")
 
