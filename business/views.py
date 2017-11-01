@@ -1025,8 +1025,10 @@ def show_post_survey_group(request, courseid):
                 '我觉得训练强度合理']
 
         template = "postsurvey/gsreport.html"
+        '''
         if Survey.objects.filter(courseid = course.id).count() > 0:
             template = "postsurvey/complete.html"
+        '''
         ret = render(request, template,\
                 {"coursedetail":course_detail,"questions":questions, "course":course,"coach":coach})
         return ret
