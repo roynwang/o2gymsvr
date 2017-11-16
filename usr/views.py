@@ -53,7 +53,7 @@ class CurrentVersionItem(generics.RetrieveUpdateDestroyAPIView):
 class TrainSummary(APIView):
         def get(self, request, name):
             usr = get_object_or_404(User,name=name)
-            all_done = usr.booked_time.filter(done=True).order_by("-date")
+            all_done = usr.booked_time.filter(done=True).exclude(coursetype="trial").order_by("-date")
             # done count
             done_count = len(all_done)
             # last train
