@@ -186,4 +186,8 @@ class SurveySerializer(serializers.ModelSerializer):
             return {"name":c.name,"displayname":c.displayname}
 
 
+class HomeworkSerializer(serializers.ModelSerializer):
+	class Meta:
+	    model = Homework
+
 

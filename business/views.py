@@ -1350,4 +1350,20 @@ def get_discount(name, coursedate):
             return 0
 
             
+class HomeworkListView(generics.ListCreateAPIView):
+	serializer_class = HomeworkSerializer 
+	pagination_class = None
+
+        def get_queryset(self):
+            customer = self.kwargs.get("name")
+            return Homework.objects.filter(customer=customer)
+
+        '''
+	def create(self, request, *args, **kwargs):
+            print request.data
+        '''
+
+class HomeworkItemView(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Homework.objects.all()
+	serializer_class = HomeworkSerializer 
 
