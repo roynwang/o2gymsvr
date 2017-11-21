@@ -403,3 +403,14 @@ class Survey(models.Model):
 	question = models.CharField(max_length=512)
 	course_type = models.CharField(max_length=32, default="pt")
 
+class Homework(models.Model):
+	id = models.AutoField(primary_key=True)
+	created_date = models.DateField()
+        completed_date = models.CharField(max_length=32,default="",blank=True)
+	customer = models.CharField(max_length=32)
+	coach = models.CharField(max_length=32)
+	detail =  models.TextField(blank=True, default="[]")
+
+        
+	
+
