@@ -764,6 +764,11 @@ app.factory("$groupcoursesvc", function(Restangular) {
                 label: "时间",
                 options: dict2arr(TimeMap),
                 value: course.hour
+            },{
+                type: "shorttext",
+                key: "price",
+                label: "价格",
+                value: course.price
             }]
         }
     }
