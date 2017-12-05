@@ -307,6 +307,28 @@ app.factory("$uploader", function($qupload) {
         upload: upload
     }
 })
+app.factory('$finance', function(Restangular) {
+
+	function editTask(row){
+        return {
+            title: "修改",
+            url: "/api/video/" + row.id + "/keywords/",
+            tasks: [{
+                type: "shorttext",
+                key: "amount",
+                label: "金额",
+				value: row.amount
+            }]
+        }
+	}
+
+    return {
+        editTask: editTask
+	}
+
+})
+
+
 app.factory('$video', function(Restangular) {
 
     function add_keyword_task(row, onsuccess) {
@@ -2744,11 +2766,21 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
                     end: that.endday.Format("yyyyMMdd")
                 })
                 .then(function(data) {
+					var logged = $.cookie("displayname")
+					var today  = new Date().Format("yyyy-MM-dd")
                     _.each(data, function(item) {
                         that.summary[item.cate] += item.amount
                         if (item.cate != '收入' && item.cate != '资金注入') {
                             that.summary['总支出'] += item.amount
                         }
+						item.showedit = true
+						if (logged != item.op){
+							item.showedit = false
+						}
+						if (item.date != today) {
+							item.showedit = false
+						}
+						
                     })
 
                     that.tableParams = new NgTableParams({
@@ -2786,19 +2818,26 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
             gym: gymid,
             reimburse: 0
         }
+		that.edit = function(row){
+			that.tasks = $finance.createTask(row)
+			that.tasks.show = true
+			$scope.tasks.callback = function() {
+				refresh()
+			}
+		}
 
-        that.submit = function() {
-            if (that.newrow.cate != "资金注入") {
-                that.newrow.amount *= -1
-            }
-            SweetAlert.swal({
-                    title: "提交",
-                    text: "为保证数据准确，提交后不能更改，确认提交吗?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#1fb5ad",
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
+		that.submit = function() {
+			if (that.newrow.cate != "资金注入") {
+				that.newrow.amount *= -1
+			}
+			SweetAlert.swal({
+				title: "提交",
+			text: "为保证数据准确，提交后不能更改，确认提交吗?",
+			type: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#1fb5ad",
+			confirmButtonText: "确定",
+			cancelButtonText: "取消",
                     showLoaderOnConfirm: true,
                     closeOnConfirm: false
                 },

@@ -1367,3 +1367,7 @@ class HomeworkItemView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Homework.objects.all()
 	serializer_class = HomeworkSerializer 
 
+class FinanceItemView(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Finance.objects.all()
+	serializer_class = FinanceSerializer
+
