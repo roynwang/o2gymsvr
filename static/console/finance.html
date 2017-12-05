@@ -94,6 +94,8 @@
                         <td data-title="'渠道'">{{row.channel}}</td>
                         <td data-title="'明细'">{{row.brief}}</td>
                         <td data-title="'是否报销'" sortable="'reimburse'">{{row.reimburse?'是':'否'}}</td>
+                        <td data-title="'修改'" sortable="'reimburse'"><a class="btn btn-xs
+								btn-primary" ng-click="ctrl.edit(row)" ng-show="row.showedit">修改</a></td>
                     </tr>
                 </table>
             </div>
@@ -186,5 +188,6 @@
 		        </p>
             </div>
         </section>
+		<task-Form tasks="ctrl.tasks"></task-Form>
     </div>
 </div>
