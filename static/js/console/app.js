@@ -2731,8 +2731,8 @@ app.controller("FlowCtrl", ['$scope', "Restangular", "NgTableParams", "$login", 
     }
 ])
 
-app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login", "SweetAlert",
-    function($scope, Restangular, NgTableParams, $login, SweetAlert) {
+app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login", "SweetAlert","$finance",
+    function($scope, Restangular, NgTableParams, $login, SweetAlert, $finance) {
         var gymid = $.cookie("gym")
         var that = this
         that.adding = false;
