@@ -312,7 +312,8 @@ app.factory('$finance', function(Restangular) {
 	function editTask(row){
         return {
             title: "修改",
-            url: "/api/video/" + row.id + "/keywords/",
+            url: "/api/finance/" + row.id + "/",
+			method: "PATCH",
             tasks: [{
                 type: "shorttext",
                 key: "amount",
@@ -2819,9 +2820,9 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
             reimburse: 0
         }
 		that.edit = function(row){
-			that.tasks = $finance.createTask(row)
+			that.tasks = $finance.editTask(row)
 			that.tasks.show = true
-			$scope.tasks.callback = function() {
+			that.tasks.callback = function() {
 				refresh()
 			}
 		}
