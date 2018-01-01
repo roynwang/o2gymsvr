@@ -114,6 +114,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
 	customerprofile = SimpleUserSerilaizer(source='custom', read_only=True)
 	coachprofile = CoachSerializer(source='coach', read_only=True)
 	complete_status = serializers.SerializerMethodField()
+	finalprice = serializers.SerializerMethodField()
 	class Meta:
 		model = Schedule
 	def get_complete_status(self, obj):
@@ -124,6 +125,14 @@ class ScheduleSerializer(serializers.ModelSerializer):
 		completed = obj.order.schedule_set.filter(deleted = False, done = True).count()
 		sum_amount = obj.order.product.amount
 		return str(completed) + "/" + str(sum_amount)
+        def get_finalprice(self, obj):
+                if obj.coursetype == "charge":
+                        return  obj.price
+                if obj.order is None:
+                        return 0
+		sum_amount = obj.order.product.price/obj.order.product.amount
+		return sum_amount
+
 
 class ScheduleSimpleSerializer(serializers.ModelSerializer):
 	customerprofile = SimpleUserSerilaizer(source='custom', read_only=True)
