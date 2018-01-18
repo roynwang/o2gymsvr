@@ -926,11 +926,18 @@ class GymSumSale(APIView):
 		gym = get_object_or_404(Gym, id=pk)
 		sum_coursecount = 0
                 sum_completedcount = 0
+                sum_expiredcount = 0
+                today = datetime.datetime.strftime(datetime.datetime.today(),"%Y-%m-%d")
 		for o in gym.orders.iterator():
+                        a = o.product.amount
 			sum_coursecount += o.product.amount
+                        c = o.schedule_set.count()
                         sum_completedcount += o.schedule_set.count()
+                        endtime = o.cal_endtime()
+                        if endtime != "N/A" and endtime < today:
+                            sum_expiredcount += (a - c)
 		#sum_completedcount = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True), done=True).count()
-		return Response({"sum_coursecount":sum_coursecount, "sum_completedcount": sum_completedcount})
+                return Response({"sum_expiredcount": sum_expiredcount, "sum_coursecount":sum_coursecount, "sum_completedcount": sum_completedcount})
 		
 
 
