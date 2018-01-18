@@ -72,6 +72,9 @@ class OrderSerializer(serializers.ModelSerializer):
 	def get_complete_status(self, obj):
 		completed = Schedule.objects.filter(order=obj,deleted = False, done = True).count()
 		sum_amount = obj.product.amount
+                if obj.status != "done" and completed == sum_amount:
+                    obj.status = "done"
+                    obj.save()
 		return str(completed) + "/" + str(sum_amount)
 
 	def get_all_booked(self, obj):
