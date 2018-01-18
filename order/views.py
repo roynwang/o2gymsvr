@@ -433,6 +433,22 @@ class GymSoldRange(APIView):
 				.annotate(sold_count=Count('amount'))
 		return Response(orders)
 
+class GymOrderExpired(generics.ListAPIView):
+	serializer_class = OrderSerializer
+	pagination_class = None
+
+	def get_queryset(self):
+		orders = Order.objects.filter(gym=get_object_or_404(Gym,id=self.kwargs["gymid"])) 
+                print orders.count()
+                today = datetime.datetime.strftime(datetime.datetime.today(),"%Y-%m-%d")
+                ret = []
+                for o in orders:
+                    endtime = o.cal_endtime()
+                    if endtime == "N/A" or endtime < today:
+                        ret.append(o)
+		return ret
+
+
 class GymChart(APIView):
 	def get(self,request,gymid):
 		if "end" in request.GET:
