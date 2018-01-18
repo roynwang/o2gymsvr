@@ -438,7 +438,7 @@ class GymOrderExpired(generics.ListAPIView):
 	pagination_class = None
 
 	def get_queryset(self):
-		orders = Order.objects.filter(gym=get_object_or_404(Gym,id=self.kwargs["gymid"])) 
+		orders = Order.objects.filter(gym=get_object_or_404(Gym,id=self.kwargs["gymid"])).exclude(status="done")
                 print orders.count()
                 today = datetime.datetime.strftime(datetime.datetime.today(),"%Y-%m-%d")
                 ret = []
