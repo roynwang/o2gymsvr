@@ -3226,6 +3226,15 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                     });
                 })
             Restangular.one('api/g', gymid)
+                .getList("expired")
+                .then(function(data) {
+                    that.expiredorders = data
+                    that.expiredOrderTableParams = new NgTableParams({}, {
+                        dataset: data
+                    });
+                })
+
+            Restangular.one('api/g', gymid)
                 .customGETLIST('chargeorder', {
                     start: that.startday.Format("yyyyMMdd"),
                     end: that.endday.Format("yyyyMMdd")
