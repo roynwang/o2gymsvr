@@ -56,22 +56,28 @@
             </header>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-lg-4 invoice-block">
+                    <div class="col-lg-3 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
                             <li class="text-center grand-total">结余课程 : {{ctrl.gymsale.sum_coursecount - ctrl.gymsale.sum_completedcount}}</li>
                         </ul>
                     </div>
-                    <div class="col-lg-4 invoice-block">
+                    <div class="col-lg-3 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
                             <li class="text-center">已上课程 : {{ctrl.gymsale.sum_completedcount}}</li>
                         </ul>
                     </div>
+                    <div class="col-lg-3 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+							<li class="text-center">过期课程 : {{ctrl.gymsale.sum_expiredcount}}</li>
+                        </ul>
+                    </div>
 
-                    <div class="col-lg-4 invoice-block">
+                    <div class="col-lg-3 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
                             <li class="text-center">课程总计 : {{ctrl.gymsale.sum_coursecount}}</li>
                         </ul>
                     </div>
+
                 </div>
 
                 <table class="table table-invoice">
