@@ -3354,7 +3354,7 @@ app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$cust
         var gymid = $.cookie("gym")
         var that = this
         that.o2 = false
-        if (gymid == 19) {
+        if (gymid == 19 || gymid == 31) {
             that.o2 = true
         }
 
