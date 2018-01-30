@@ -2,7 +2,9 @@
 	<!--<h3>客户信息</h3>-->
 	<section class="panel">
 	<header class="panel-heading">
-		客户信息  <a href="#trialcustomers" style="margin-left:10px" class="btn btn-primary btn-xs">查看体验客户</a>
+		客户信息  <a href="#trialcustomers" style="margin-left:10px" class="btn btn-primary btn-xs">体验客户</a>
+				<a ng-show="demo.o2" href="#taggedcustomer" style="margin-left:10px" class="btn btn-primary
+		btn-xs">客户标签</a>
 			<span class="tools pull-right">
                                 <a ng-click='demo.export()' class="fa fa-save">&nbsp;{{demo.backupstr}}</a>
                              </span>
@@ -23,8 +25,10 @@
 				<td><a style="color:#1fb5ad" href="#customer/{{row.name}}/orders">查看/预约</a></td>
 				<td><a style="color:#0060c6" href="#customer/{{row.name}}">基本信息</a></td>
 				<td><a style="color:#000" href="#trialcustomer/{{row.name}}">体验补录</a></td>
+				<td ng-show="demo.o2" ng-click="demo.addtag(row)"><a class="btn btn-primary btn-xs">+标签</a></td>
 			</tr>
 		</table>
 	</div>
 	</section>
+	<task-Form tasks="demo.tasks"></task-Form>
 </div>

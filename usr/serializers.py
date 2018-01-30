@@ -134,3 +134,13 @@ class ThresholdMsgSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ThresholdMsg
 
+class TagIndexSerializer(serializers.ModelSerializer):
+	customerdetail = serializers.SerializerMethodField()
+	class Meta:
+		model = TagIndex
+	def get_customerdetail(self, obj):
+                usr = User.objects.get(name=obj.name)
+		sl = SimpleUserSerilaizer(usr)
+                return sl.data
+
+

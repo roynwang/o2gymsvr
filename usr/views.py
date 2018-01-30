@@ -453,3 +453,9 @@ class ThresholdMsgItem(generics.RetrieveUpdateDestroyAPIView):
                     self.get_object().send_msg()
                 return ret
 
+class TagQueryList(generics.ListCreateAPIView):
+	serializer_class = TagIndexSerializer
+        pagination_class = None
+	def get_queryset(self):
+            return TagIndex.objects.all().filter(gym=self.kwargs['gymid'],tag=self.request.GET['tag'])
+

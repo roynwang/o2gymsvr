@@ -307,25 +307,76 @@ app.factory("$uploader", function($qupload) {
         upload: upload
     }
 })
+app.factory('$tagindex', function(Restangular) {
+	function getbytag(tag, onsuccess){
+        var gymid = $.cookie("gym")
+        Restangular.one('api/' + gymid, "tagged")
+            .get({tag:tag})
+            .then(function(data) {
+				var d = []
+				_.each(data,function(item){
+					d.push(item.customerdetail)
+				})
+                onsuccess && onsuccess(d)
+            })
+
+	}
+    function add(row) {
+        var gymid = $.cookie("gym")
+        return {
+            title: "修改",
+            url: "/api/" + gymid + "/tagged/",
+            method: "POST",
+            tasks: [{
+                key: "tag",
+                label: "标签",
+                type: "selection",
+                options: dict2arr(["新客", "减肥", "高频"]),
+				getvalue:function(v){
+					var col = ["新客", "减肥", "高频"]
+					return col[v]
+				}
+            }, {
+                type: "shorttext",
+                key: "gym",
+                label: "gym",
+                value: gymid
+            }, {
+                type: "shorttext",
+                key: "name",
+                label: "name",
+                value: row.name
+            }]
+        }
+    }
+
+    return {
+        add: add,
+		getbytag: getbytag
+    }
+
+})
+
+
 app.factory('$finance', function(Restangular) {
 
-	function editTask(row){
+    function editTask(row) {
         return {
             title: "修改",
             url: "/api/finance/" + row.id + "/",
-			method: "PATCH",
+            method: "PATCH",
             tasks: [{
                 type: "shorttext",
                 key: "amount",
                 label: "金额",
-				value: row.amount
+                value: row.amount
             }]
         }
-	}
+    }
 
     return {
         editTask: editTask
-	}
+    }
 
 })
 
@@ -492,7 +543,7 @@ app.factory('$survey', function(Restangular) {
     }
     return {
         getList: getList,
-	}
+    }
 })
 
 
@@ -641,6 +692,9 @@ app.directive('taskForm', ["$uploader", "$http",
 
                     for (var k in scope.tasks.tasks) {
                         var item = scope.tasks.tasks[k];
+						if(item.getvalue != undefined){
+							item.value = item.getvalue(item.value)
+						}
                         if (validate(item)) {
                             data[item.key] = item.value
                         } else {
@@ -787,7 +841,7 @@ app.factory("$groupcoursesvc", function(Restangular) {
                 label: "时间",
                 options: dict2arr(TimeMap),
                 value: course.hour
-            },{
+            }, {
                 type: "shorttext",
                 key: "price",
                 label: "价格",
@@ -1090,6 +1144,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/",
             templateUrl: "/static/console/mainpage.html",
             controller: "MainPageCtrl"
+        })
+        .state('taggedcustomer', {
+            url: "/taggedcustomer",
+            templateUrl: "/static/console/taggedcustomer.html",
         })
         .state('survey', {
             url: "/survey",
@@ -2732,7 +2790,7 @@ app.controller("FlowCtrl", ['$scope', "Restangular", "NgTableParams", "$login", 
     }
 ])
 
-app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login", "SweetAlert","$finance",
+app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login", "SweetAlert", "$finance",
     function($scope, Restangular, NgTableParams, $login, SweetAlert, $finance) {
         var gymid = $.cookie("gym")
         var that = this
@@ -2767,21 +2825,21 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
                     end: that.endday.Format("yyyyMMdd")
                 })
                 .then(function(data) {
-					var logged = $.cookie("displayname")
-					var today  = new Date().Format("yyyy-MM-dd")
+                    var logged = $.cookie("displayname")
+                    var today = new Date().Format("yyyy-MM-dd")
                     _.each(data, function(item) {
                         that.summary[item.cate] += item.amount
                         if (item.cate != '收入' && item.cate != '资金注入') {
                             that.summary['总支出'] += item.amount
                         }
-						item.showedit = true
-						if (logged != item.op){
-							item.showedit = false
-						}
-						if (item.date != today) {
-							item.showedit = false
-						}
-						
+                        item.showedit = true
+                        if (logged != item.op) {
+                            item.showedit = false
+                        }
+                        if (item.date != today) {
+                            item.showedit = false
+                        }
+
                     })
 
                     that.tableParams = new NgTableParams({
@@ -2819,26 +2877,26 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
             gym: gymid,
             reimburse: 0
         }
-		that.edit = function(row){
-			that.tasks = $finance.editTask(row)
-			that.tasks.show = true
-			that.tasks.callback = function() {
-				refresh()
-			}
-		}
+        that.edit = function(row) {
+            that.tasks = $finance.editTask(row)
+            that.tasks.show = true
+            that.tasks.callback = function() {
+                refresh()
+            }
+        }
 
-		that.submit = function() {
-			if (that.newrow.cate != "资金注入") {
-				that.newrow.amount *= -1
-			}
-			SweetAlert.swal({
-				title: "提交",
-			text: "为保证数据准确，提交后不能更改，确认提交吗?",
-			type: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#1fb5ad",
-			confirmButtonText: "确定",
-			cancelButtonText: "取消",
+        that.submit = function() {
+            if (that.newrow.cate != "资金注入") {
+                that.newrow.amount *= -1
+            }
+            SweetAlert.swal({
+                    title: "提交",
+                    text: "为保证数据准确，提交后不能更改，确认提交吗?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#1fb5ad",
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
                     showLoaderOnConfirm: true,
                     closeOnConfirm: false
                 },
@@ -3291,10 +3349,15 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
 
     }
 ])
-app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$customersvc", 'SweetAlert',
-    function($scope, Restangular, NgTableParams, $customersvc, SweetAlert) {
+app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$customersvc", 'SweetAlert', '$tagindex',
+    function($scope, Restangular, NgTableParams, $customersvc, SweetAlert, $tagindex) {
         var gymid = $.cookie("gym")
         var that = this
+        that.o2 = false
+        if (gymid == 19) {
+            that.o2 = true
+        }
+
         that.backupstr = '导出'
         $customersvc.getcustomers(function(data) {
             that.tableParams = new NgTableParams({
@@ -3307,6 +3370,12 @@ app.controller("CustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$cust
         })
         that.flag = function(usr) {
             $customersvc.flag(usr)
+        }
+        that.addtag = function(row) {
+            that.tasks = $tagindex.add(row)
+            that.tasks.show = true
+            that.tasks.callback = function() {}
+
         }
 
         that.export = function() {
@@ -5091,7 +5160,7 @@ app.controller("VideoCtrl", ['$scope', "Restangular", "NgTableParams", "$statePa
 ])
 app.controller("SurveyCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert", "$groupcoursesvc", "$survey",
     function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $groupcoursesvc, $survey) {
-		var that = this
+        var that = this
         that.refresh = function() {
             $survey.getList(function(data) {
                 that.tableParams = new NgTableParams({
@@ -5105,5 +5174,26 @@ app.controller("SurveyCtrl", ['$scope', "Restangular", "NgTableParams", "$stateP
             })
         }
         that.refresh()
+    }
+])
+app.controller("TaggedCustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$customersvc", 'SweetAlert','$tagindex',
+    function($scope, Restangular, NgTableParams, $customersvc, SweetAlert, $tagindex) {
+        var that = this;
+        that.refresh = function(tab) {
+			that.tab = tab
+            $tagindex.getbytag(tab,function(data) {
+                that.tableParams = new NgTableParams({
+                    sorting: {
+                        created: "desc"
+                    }
+                }, {
+                    dataset: data
+                });
+            })
+        }
+        that.flag = function(usr) {
+            $customersvc.flag(usr)
+        }
+		that.refresh('新客')
     }
 ])

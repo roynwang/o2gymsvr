@@ -8,6 +8,9 @@ urlpatterns = patterns('',
 		url(r'^api/t/', 'rest_framework_jwt.views.refresh_jwt_token'),
 		url(r'^api/u/$', UserList.as_view()),
 
+
+        url(r'^api/(?P<gymid>[0-9]+)/tagged/$', TagQueryList.as_view()),
+
         url(r'^api/(?P<openid>[a-zA-Z0-9]{40})/$', UserItemByOpenId.as_view()),
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/$', UserItem.as_view()),
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/patch/$', UserItemPatch.as_view()),
