@@ -155,6 +155,29 @@ class User(models.Model):
 		return self.name
 
 
+        def get_trial_count(self,start,end):
+            #try to get 
+	    daterange = [startdate, enddate]
+            #if empty try 
+            count = self.booked_time.filter(done=True,coursetype="trial",date__range=daterange).count()
+            #save
+            return count
+        
+
+        def get_order_count(self,start,end):
+            pass
+
+        def get_course_completed(self,start,end):
+            count = self.booked_time.filter(done=True,date__range=daterange).exclude(coursetype="trial")
+            return count
+
+        def get_active_customer(self,start,end):
+            self.booked_time.filter(done=True,date__range=daterange).values_list('custom', flat=True)
+            pass
+
+        def get_unactive_customer(self,start,end):
+            pass
+
 
 class Balance(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -243,11 +266,12 @@ class FeedBack(models.Model):
 	created = models.DateTimeField(default=datetime.datetime.now())
 
 
-
-
-
-
-
+class TagIndex(models.Model):
+	id = models.AutoField(primary_key=True)
+	tag = models.CharField(max_length=64, db_index=True)
+	name = models.CharField(max_length=64)
+	gym = models.IntegerField()
+	created = models.DateTimeField(default=datetime.datetime.now())
 
 
 

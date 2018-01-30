@@ -1,0 +1,34 @@
+<div class="col-md-12" ng-controller="TaggedCustomerCtrl as ctrl">
+	<!--<h3>客户信息</h3>-->
+	<section class="panel">
+	<header class="panel-heading">
+		标签
+	</header>
+	<div class="panel-body">
+        <div class="row" style="padding-left:20px;margin-bottom:20px">
+            <span ng-click="ctrl.refresh('新客')" class="salary-span" ng-class="{'active': ctrl.tab ==
+				'新客'}">新客</span>
+			<span ng-click="ctrl.refresh('减肥')" class="salary-span" ng-class="{'active':ctrl.tab ==
+				'减肥'}">减肥</span>
+			<span ng-click="ctrl.refresh('高频')" class="salary-span" ng-class="{'active':ctrl.tab ==
+				'高频'}">高频</span>
+        </div>
+		<table ng-table="ctrl.tableParams" class="table table-condensed table-striped">
+			<tr ng-repeat="row in $data" style="color:#333">
+				<td data-title="' '">
+					<i ng-if="row.flag==0" ng-click="ctrl.flag(row) " style="color:#ccc" class="fa fa-circle-o"></i>
+					<i ng-if="row.flag==1" ng-click="ctrl.flag(row) "  style="color:#a9d86e" class="fa fa-circle"></i>
+					<i ng-if="row.flag==2" ng-click="ctrl.flag(row) " style="color:#FCB322" class="fa fa-circle"></i>
+				</td>
+				<td data-title="'姓名'" filter="{displayname: 'text'}" sortable="'displayname'">{{row.displayname}}</td>
+				<td data-title="'电话'" filter="{name: 'text'}" sortable="'number'">{{row.name}}</td>
+				<td data-title="'生日'">{{row.birthday}}</td>
+				<td data-title="'性别'">{{row.sex?"男":"女"}}</td>
+				<td>
+					<a style="color:#1fb5ad">移除</a>
+				</td>
+			</tr>
+		</table>
+	</div>
+	</section>
+</div>
