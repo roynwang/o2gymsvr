@@ -13,6 +13,7 @@ urlpatterns = patterns('',
 
         url(r'^api/(?P<openid>[a-zA-Z0-9]{40})/$', UserItemByOpenId.as_view()),
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/$', UserItem.as_view()),
+        url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/statistics/$', CoachStatistics.as_view()),
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/patch/$', UserItemPatch.as_view()),
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/version/(?P<client>[a-z]{3,10})/$', CurrentVersionItem.as_view()),
         url(r'^api/(?P<name>[a-zA-Z0-9]{4,20})/timeline/$', TimeLineItem.as_view()),
