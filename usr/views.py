@@ -49,6 +49,38 @@ class CurrentVersionItem(generics.RetrieveUpdateDestroyAPIView):
                 ret.version = 0
             return ret
 
+class CoachStatistics(APIView):
+        def get(self, request, name):
+            usr = get_object_or_404(User,name=name)
+            print usr
+	    startday = datetime.datetime.strptime(request.GET['start'],"%Y%m%d").date()
+	    endday = datetime.datetime.strptime(request.GET['end'],"%Y%m%d").date()
+            #get all course
+            courses = usr.sealed_time.filter(done=True,\
+                    date__gt = startday,\
+                    date__lt = endday)
+            print courses.count()
+            trial = 0
+            normal = 0
+            customers_set = []
+            orders = []
+            price = 0
+            #count trail
+            for c in courses:
+                if c.coursetype == "trial":
+                    trial += 1
+                else:
+                    normal += 1
+                if not c.custom in customers_set:
+                    customers_set.append(c.custom)
+                if not c.order is None and not c.order in orders:
+                    orders.append(c.order)
+                    price += c.order.amount
+
+            return Response({"trial": trial, \
+                    "price": price,\
+                    "customer": len(customers_set), \
+                    "normal":normal})
 
 class TrainSummary(APIView):
         def get(self, request, name):
