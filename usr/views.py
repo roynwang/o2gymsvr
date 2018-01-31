@@ -71,7 +71,7 @@ class CoachStatistics(APIView):
                     trial += 1
                 else:
                     normal += 1
-                if not c.custom in customers_set:
+                if c.coursetype != "trial" and not c.custom in customers_set:
                     customers_set.append(c.custom)
                 if not c.order is None and not c.order in orders:
                     orders.append(c.order)
