@@ -79,6 +79,7 @@ class CoachStatistics(APIView):
 
             return Response({"trial": trial, \
                     "price": price,\
+                    "order": len(orders),\
                     "customer": len(customers_set), \
                     "normal":normal})
 
