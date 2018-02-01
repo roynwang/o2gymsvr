@@ -65,6 +65,9 @@ class CoachStatistics(APIView):
             customers_set = []
             orders = []
             price = 0
+            morethanonce = 0
+            price_strict = 0
+            order_strict = []
             #count trail
             for c in courses:
                 if c.coursetype == "trial":
@@ -76,10 +79,20 @@ class CoachStatistics(APIView):
                 if not c.order is None and not c.order in orders:
                     orders.append(c.order)
                     price += c.order.amount
+                    if c.order.coach == usr and not c.order in order_strict:
+                        price_strict += c.order.amount
+                        order_strict.append(c.order)
+                        if not c.order.isfirst:
+                            morethanonce += 1
+
+                        
 
             return Response({"trial": trial, \
                     "price": price,\
                     "order": len(orders),\
+                    "price_strict": price_strict,\
+                    "order_strict": len(order_strict),\
+                    "morethanonce": morethanonce, \
                     "customer": len(customers_set), \
                     "normal":normal})
 
