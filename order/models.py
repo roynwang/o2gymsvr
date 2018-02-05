@@ -1,5 +1,8 @@
+# coding=utf-8
 from django.db import models
 import datetime, calendar
+from django.core.cache import cache
+from business.models import *
 
 # Create your models here.
 
@@ -51,6 +54,41 @@ class Order(models.Model):
 		endtime = add_months(self.created, self.duration)
 		date_str = datetime.datetime.strftime(endtime,"%Y-%m-%d")
 		return date_str
+
+        def expire_notification(self):
+	    today = datetime.datetime.today().date()
+            mkey = "o2_" + self.billid + "_" + str(today)
+            checked = cache.get(mkey)
+            if not checked is None:
+                return
+            cache.set(mkey, 1, 60*60*24)
+
+            if self.status == "inprogress" or self.status == "paid":
+                delta = today - self.paidtime.date() 
+                print delta.days
+                d = 0
+                if delta.days == 60:
+                    d = 60
+                    #create notification
+                if delta.days == 30:
+                    d = 30
+                    #create notification
+                if delta.days == 10:
+                    d = 10
+                    #create notification
+                if delta.days == 3:
+                    d = 3
+                    #create notification
+                if d == 0:
+                    return
+                Todo.objects.create( \
+                        content = self.custom.displayname + "订单还有" + str(d) + "天过期",
+                        gym = self.gym.id,\
+                        by = "系统通知",\
+                        schedule_date = today)
+
+                
+
 
 class Product(models.Model):
 	id = models.AutoField(primary_key=True)

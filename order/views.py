@@ -696,5 +696,7 @@ class DeadOrderList(generics.ListAPIView):
                     d = datetime.datetime.strptime(ed, "%Y-%m-%d").date()
                     if d >= today and d <= enddate:
                         ret.append(order)
+                    #send expire notification
+                    order.expire_notification()
 		return ret
 
