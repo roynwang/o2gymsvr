@@ -106,7 +106,7 @@
 	</div>
 </div>
 
-<div class="row" ng-if="gymid == 19 || gymid == 31">
+<div class="row" >
 <div class="col-md-5">
 <section class="panel">
         <header class="panel-heading">
@@ -136,7 +136,7 @@
     </section>
 
 	</div>
-	<div class="col-md-4">
+	<div ng-if="gymid == 19 || gymid == 31" class="col-md-4">
 <section class="panel">
         <header class="panel-heading">
             团课
@@ -169,7 +169,7 @@
     </section>
 
 	</div>
-	<div class="col-md-3">
+	<div ng-if="gymid == 19 || gymid == 31" class="col-md-3">
 <section class="panel">
         <header class="panel-heading">
             自助锻炼
