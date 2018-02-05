@@ -64,10 +64,11 @@ class Order(models.Model):
 
             if self.status == "inprogress" or self.status == "paid":
 
+                from business.models import Todo
 		if self.duration == None or self.duration == 0:
 			return "N/A"
 		endtime = add_months(self.paidtime, self.duration)
-                delta = today - endtime.date()
+                delta = endtime - today
                 d = 0
                 if delta.days == 60:
                     d = 60
@@ -81,10 +82,10 @@ class Order(models.Model):
                 if delta.days == 3:
                     d = 3
                     #create notification
+                print d
                 if d == 0:
                     return
 
-                from business.models import Todo
                 print "creating ........" + self.billid
                 Todo.objects.create( \
                         content = self.custom.displayname + "订单还有" + str(d) + "天过期",
