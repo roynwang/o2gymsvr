@@ -63,8 +63,11 @@ class Order(models.Model):
             cache.set(mkey, 1, 60*60*24)
 
             if self.status == "inprogress" or self.status == "paid":
-                delta = today - self.paidtime.date() 
-                print delta.days
+
+		if self.duration == None or self.duration == 0:
+			return "N/A"
+		endtime = add_months(self.paidtime, self.duration)
+                delta = today - endtime.date()
                 d = 0
                 if delta.days == 60:
                     d = 60
@@ -82,6 +85,7 @@ class Order(models.Model):
                     return
 
                 from business.models import Todo
+                print "creating ........" + self.billid
                 Todo.objects.create( \
                         content = self.custom.displayname + "订单还有" + str(d) + "天过期",
                         gym = self.gym.id,\
