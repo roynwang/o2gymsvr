@@ -2,7 +2,6 @@
 from django.db import models
 import datetime, calendar
 from django.core.cache import cache
-from business.models import *
 
 # Create your models here.
 
@@ -81,6 +80,8 @@ class Order(models.Model):
                     #create notification
                 if d == 0:
                     return
+
+                from business.models import Todo
                 Todo.objects.create( \
                         content = self.custom.displayname + "订单还有" + str(d) + "天过期",
                         gym = self.gym.id,\
