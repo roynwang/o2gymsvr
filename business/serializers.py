@@ -198,5 +198,15 @@ class SurveySerializer(serializers.ModelSerializer):
 class HomeworkSerializer(serializers.ModelSerializer):
 	class Meta:
 	    model = Homework
+	customerprofile = serializers.SerializerMethodField()
+	coachprofile = serializers.SerializerMethodField() 
+        def get_customerprofile(self,obj):
+            c = User.objects.get(name=obj.customer)
+            return {"name":c.name,"displayname":c.displayname,"avatar":c.avatar}
+
+        def get_coachprofile(self,obj):
+            c = User.objects.get(name=obj.coach)
+	    serializer = SimpleUserSerilaizer(c)
+            return {"name":c.name,"displayname":c.displayname, "avatar":c.avatar}
 
 
