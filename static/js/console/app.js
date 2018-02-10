@@ -308,19 +308,22 @@ app.factory("$uploader", function($qupload) {
     }
 })
 app.factory('$tagindex', function(Restangular) {
-	function getbytag(tag, onsuccess){
+    function getbytag(tag, onsuccess) {
         var gymid = $.cookie("gym")
         Restangular.one('api/' + gymid, "tagged")
-            .get({tag:tag})
+            .get({
+                tag: tag
+            })
             .then(function(data) {
-				var d = []
-				_.each(data,function(item){
-					d.push(item.customerdetail)
-				})
+                var d = []
+                _.each(data, function(item) {
+                    d.push(item.customerdetail)
+                })
                 onsuccess && onsuccess(d)
             })
 
-	}
+    }
+
     function add(row) {
         var gymid = $.cookie("gym")
         return {
@@ -332,10 +335,10 @@ app.factory('$tagindex', function(Restangular) {
                 label: "标签",
                 type: "selection",
                 options: dict2arr(["新客", "减肥", "高频"]),
-				getvalue:function(v){
-					var col = ["新客", "减肥", "高频"]
-					return col[v]
-				}
+                getvalue: function(v) {
+                    var col = ["新客", "减肥", "高频"]
+                    return col[v]
+                }
             }, {
                 type: "shorttext",
                 key: "gym",
@@ -352,7 +355,7 @@ app.factory('$tagindex', function(Restangular) {
 
     return {
         add: add,
-		getbytag: getbytag
+        getbytag: getbytag
     }
 
 })
@@ -692,9 +695,9 @@ app.directive('taskForm', ["$uploader", "$http",
 
                     for (var k in scope.tasks.tasks) {
                         var item = scope.tasks.tasks[k];
-						if(item.getvalue != undefined){
-							item.value = item.getvalue(item.value)
-						}
+                        if (item.getvalue != undefined) {
+                            item.value = item.getvalue(item.value)
+                        }
                         if (validate(item)) {
                             data[item.key] = item.value
                         } else {
@@ -1144,6 +1147,10 @@ app.config(function($stateProvider, $urlRouterProvider, RestangularProvider, $ht
             url: "/",
             templateUrl: "/static/console/mainpage.html",
             controller: "MainPageCtrl"
+        })
+        .state('coachkpi', {
+            url: "/coachkpi",
+            templateUrl: "/static/console/coachkpi.html",
         })
         .state('taggedcustomer', {
             url: "/taggedcustomer",
@@ -5176,12 +5183,12 @@ app.controller("SurveyCtrl", ['$scope', "Restangular", "NgTableParams", "$stateP
         that.refresh()
     }
 ])
-app.controller("TaggedCustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$customersvc", 'SweetAlert','$tagindex',
+app.controller("TaggedCustomerCtrl", ['$scope', "Restangular", "NgTableParams", "$customersvc", 'SweetAlert', '$tagindex',
     function($scope, Restangular, NgTableParams, $customersvc, SweetAlert, $tagindex) {
         var that = this;
         that.refresh = function(tab) {
-			that.tab = tab
-            $tagindex.getbytag(tab,function(data) {
+            that.tab = tab
+            $tagindex.getbytag(tab, function(data) {
                 that.tableParams = new NgTableParams({
                     sorting: {
                         created: "desc"
@@ -5194,6 +5201,27 @@ app.controller("TaggedCustomerCtrl", ['$scope', "Restangular", "NgTableParams", 
         that.flag = function(usr) {
             $customersvc.flag(usr)
         }
-		that.refresh('新客')
+        that.refresh('新客')
+    }
+])
+app.controller("CoachKpiCtrl", ['$scope', "Restangular", "NgTableParams",
+    function($scope, Restangular, NgTableParams, $login) {
+        var that = this
+        that.year = 2008
+        that.month = 1
+        that.gymid = $.cookie("gym")
+        that.refresh = function() {
+            Restangular.one('api/g/' + that.gymid + '/coachkpi/' + that.year + "/" + that.month + "/")
+                .get()
+                .then(function(data) {
+                    that.tableParams = new NgTableParams({
+                        sorting: {
+                        }
+                    }, {
+                        dataset: data
+                    });
+                })
+        }
+
     }
 ])
