@@ -1,0 +1,54 @@
+<div class="row" ng-controller="CoachKpiCtrl as ctrl">
+    <div class="col-sm-12">
+        <section class="panel">
+            <header class="panel-heading">
+                <div class="row">
+                    <h4 class="col-sm-4"></h4>
+					<div class="col-md-1 pull-right">
+						<a class="btn btn-primary btn-sm" ng-click="ctrl.refresh()">查询</a>
+					</div>
+                    <div class="col-md-3 pull-right">
+						<div class="input-group input-group-sm m-bot15">
+                        <span class="input-group-addon btn-primary"><i class="fa">月</i></span>
+                        <select class="form-control input" ng-model="ctrl.month">
+                            <option value=1>1</option>
+                            <option value=2>2</option>
+                            <option value=3>3</option>
+                            <option value=4>4</option>
+                            <option value=5>5</option>
+                            <option value=6>6</option>
+                            <option value=7>7</option>
+                            <option value=8>8</option>
+                            <option value=9>9</option>
+                            <option value=10>10</option>
+                            <option value=11>11</option>
+                            <option value=12>12</option>
+                        </select>
+					</div>
+                    </div>
+                    <div class="col-md-3 pull-right">
+						<div class="input-group input-group-sm m-bot15">
+                        <span class="input-group-addon btn-primary"><i class="fa">年</i></span>
+                        <select class="form-control input" ng-model="ctrl.year">
+                            <option value=2017>2017</option>
+                            <option value=2018 selected>2018</option>
+							<option value=2019>2019</option>
+                        </select>
+                    </div>
+                </div>
+            </header>
+            <div class="panel-body">
+            <table ng-table="ctrl.tableParams" class="table table-condensed table-striped">
+                <tr ng-repeat="row in $data" style="color:#333">
+                    <td data-title="'姓名'"
+						sortable="'coachdetail.displayname'">{{row.coachdetail.displayname}}</td>
+                    <td data-title="'开始日期'" sortable="'startdate'">{{row.startdate}}</td>
+                    <td data-title="'结束日期'" sortable="'enddate'">{{row.enddate}}</td>
+                    <td data-title="'项目'" sortable="'cate'">{{row.cate}}</td>
+                    <td data-title="'值'" sortable="'value'">{{row.value}}</td>
+                </tr>
+            </table>
+            </div>
+        </section>
+    </div>
+</div>
