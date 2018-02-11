@@ -13,6 +13,129 @@ class CurrentVersion(models.Model):
 	client = models.CharField(max_length=64)
         version = models.IntegerField()
 
+class CoachKpi(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=64)
+        startdate = models.DateField()
+        enddate = models.DateField()
+        dimension = models.CharField(max_length=64)
+        cate = models.CharField(max_length=64)
+        value = models.CharField(max_length=1024)
+        gym = models.IntegerField()
+
+        #private
+        @classmethod
+        def archieve_range(cls,name,startdate, enddate, dimension):
+            usr = User.objects.get(name=name)
+            gym = usr.gym.first().id
+            #query courses
+            courses = usr.sealed_time.filter(date__range=[startdate,enddate],\
+                    done=True)
+
+            ret = []
+            ret.append({"option":"活跃客户数",\
+                    "value":cls.count_customer(courses)})
+            ret.append({"option":"体验课完成",\
+                    "value":cls.count_trial(courses)})
+            ret.append({"option":"课程完成",\
+                    "value":cls.count_normal(courses)})
+            ret.append({"option":"训练计划完成",\
+                    "value":cls.count_planned(courses)})
+            ret.append({"option":"计划客户阅读",\
+                    "value":cls.count_plan_read(courses)})
+            ret.append({"option":"期望数据记录人数",\
+                    "value":cls.count_expected_eval(courses)})
+            ret.append({"option":"完成数据记录人数",\
+                    "value":cls.count_actual_eval(courses, startdate, enddate)})
+            #query eval
+            datestr = str(startdate)
+            for item in ret:
+                v = item['value']
+                if not isinstance(v, str) or not isinstance(v, unicode):
+                    v = str(item['value'])
+                CoachKpi.objects.create(name=name,\
+                        startdate=startdate,\
+                        enddate=enddate,\
+                        cate=item['option'],\
+                        value=v,\
+                        dimension=dimension,\
+                        gym=gym)
+
+
+        @classmethod
+        def count_order(self, usr, startdate,enddate):
+            enddate = enddate.datetime() + datetime.timedelta(days = 1)
+            return usr.income_orders.filter(\
+                    paidtime__range=[startdate.datetime(),enddate]).count()
+
+        @classmethod
+        def count_actual_eval(self, courses, startdate, enddate):
+            ret = []
+            cts = []
+            for c in courses:
+                if c.action_required == "数据测量" and c.coursetype != "trial" and not c.custom in cts:
+                    cts.append(c.custom)
+                    if BodyEval.objects.filter(date__range=[startdate,enddate], name = c.custom.name).count() > 0:
+                        ret.append(c.custom.displayname)
+            ret = str(len(ret)) + ":" + ",".join(ret)
+            return ret
+
+        @classmethod
+        def count_customer(self,courses):
+            cts = []
+            for c in courses:
+                if c.coursetype != "trial" and not c.custom in cts:
+                    cts.append(c.custom)
+            return len(cts)
+
+        #private
+
+        @classmethod
+        def count_normal(self, courses=None):
+            ret = 0
+            for c in courses:
+                if c.coursetype != "trial":
+                    ret += 1
+            return ret
+
+        @classmethod
+        def count_trial(self, courses=None):
+            ret = 0
+            for c in courses:
+                if c.coursetype == "trial":
+                    ret += 1
+            return ret
+
+
+        @classmethod
+        def count_expected_eval(self, courses):
+            cts = []
+            ret = []
+            for c in courses:
+                if c.action_required == "数据测量" and c.coursetype != "trial" and not c.custom in cts:
+                    cts.append(c.custom)
+                    ret.append(c.custom.displayname)
+            ret = str(len(cts)) + ":" + ",".join(ret)
+            return ret
+
+
+
+        @classmethod
+        def count_planned(self, courses):
+            ret = 0
+            for c in courses:
+                if not c.detail is None and len(c.detail)>5:
+                    ret += 1
+            return ret
+
+        @classmethod
+        def count_plan_read(self, courses):
+            ret = 0
+            for c in courses:
+                if c.user_confirmed:
+                    ret += 1
+            return ret
+
 
 class User(models.Model):
 	id = models.AutoField(primary_key=True)

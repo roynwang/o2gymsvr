@@ -49,6 +49,68 @@ class CurrentVersionItem(generics.RetrieveUpdateDestroyAPIView):
                 ret.version = 0
             return ret
 
+class GymMonthCoachKPI(APIView):
+        def get(self, request, gymid, year, month):
+            
+            begindate = datetime.date(int(year),int(month),1)
+            enddate = add_months(begindate,1)
+            day = begindate
+            
+
+            gym = Gym.objects.get(id=gymid)
+            coaches = []
+            for g in gym.coaches.all():
+                coaches.append(g.name)
+
+            for i in range(0,31):
+                delta = datetime.timedelta(days=i)
+                day = begindate + delta
+                
+                if day >= datetime.date.today() or day.month != int(month) or day.weekday() != 0:
+                    continue
+                #day_str = datetime.datetime.strftime(day,"%Y-%m-%d")
+
+                for name in coaches:
+                    start = day + datetime.timedelta(days=-7)
+                    end = day
+
+                    if CoachKpi.objects.filter(name=name, \
+                        enddate=day,\
+                        dimension='week').count() == 0:
+                        CoachKpi.archieve_range(name,start,end, "week")
+
+            kpis = CoachKpi.objects.filter(gym=gymid, enddate__year=year, enddate__month=month, dimension="week")
+            sls =  CoachKpiSerializer(kpis, many = True)
+            return Response(sls.data)
+
+
+        
+            
+            
+
+class CoachReportArchieve(APIView):
+        def get(self, request, name):
+            dimension = 7
+	    day = datetime.datetime.strptime(request.GET['day'],"%Y-%m-%d")
+            if request.GET['dimension'] == 'week':
+                start = day + datetime.timedelta(days=-7)
+                start = start.date()
+                if start.weekday() != 0:
+                    return Response()
+            if request.GET['dimension'] == 'month':
+                start = add_months(day, -1)
+                if start.day != 1:
+                    return Response()
+
+            end = day
+            # if not exist
+            if CoachKpi.objects.filter(name=name, \
+                    enddate=request.GET['day'],\
+                    dimension=request.GET['dimension']).count() == 0:
+                CoachKpi.archieve_range(name,start,end.date(), request.GET['dimension'])
+            return Response()
+            
+
 class CoachStatistics(APIView):
         def get(self, request, name):
             usr = get_object_or_404(User,name=name)

@@ -144,3 +144,12 @@ class TagIndexSerializer(serializers.ModelSerializer):
                 return sl.data
 
 
+class CoachKpiSerializer(serializers.ModelSerializer):
+	coachdetail = serializers.SerializerMethodField()
+	class Meta:
+		model = CoachKpi
+	def get_coachdetail(self, obj):
+                usr = User.objects.get(name=obj.name)
+		sl = SimpleUserSerilaizer(usr)
+                return sl.data
+
