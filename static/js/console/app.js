@@ -5210,16 +5210,45 @@ app.controller("CoachKpiCtrl", ['$scope', "Restangular", "NgTableParams",
         that.year = 2008
         that.month = 1
         that.gymid = $.cookie("gym")
+        that.bycoach = {}
+        that.tables = {}
         that.refresh = function() {
             Restangular.one('api/g/' + that.gymid + '/coachkpi/' + that.year + "/" + that.month + "/")
                 .get()
                 .then(function(data) {
-                    that.tableParams = new NgTableParams({
-                        sorting: {
+                    _.each(data, function(item) {
+                        if (!that.bycoach[item.coachdetail.displayname]) {
+                            that.bycoach[item.coachdetail.displayname] = []
                         }
-                    }, {
-                        dataset: data
-                    });
+                        that.bycoach[item.coachdetail.displayname].push(item)
+                    })
+                    _.each(that.bycoach, function(item, k) {
+                        console.log(item)
+                        var onecoach = {}
+                        _.each(item, function(t) {
+                            if (!onecoach[t.enddate]) {
+                                onecoach[t.enddate] = {
+                                    'enddate': t.enddate.substr(5).replace(/-/g,'/'),
+                                    'startdate': t.startdate.substr(5).replace(/-/g,'/'),
+									'displayname': t.coachdetail['displayname']
+                                }
+                            }
+                            onecoach[t.enddate][t.cate] = t.value
+                        })
+                        var r = []
+                        _.each(onecoach, function(p) {
+                            r.push(p)
+                        })
+                        var tableParams = new NgTableParams({
+                            sorting: {
+                                enddate: "desc"
+                            }
+                        }, {
+                            dataset: r
+                        });
+                        that.tables[k] = tableParams
+                    })
+
                 })
         }
 
