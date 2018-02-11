@@ -3,11 +3,11 @@
         <section class="panel">
             <header class="panel-heading">
                 <div class="row">
-                    <h4 class="col-sm-4"></h4>
+                    <h4 class="col-sm-4">周级统计</h4>
 					<div class="col-md-1 pull-right">
 						<a class="btn btn-primary btn-sm" ng-click="ctrl.refresh()">查询</a>
 					</div>
-                    <div class="col-md-3 pull-right">
+                    <div class="col-md-2 pull-right">
 						<div class="input-group input-group-sm m-bot15">
                         <span class="input-group-addon btn-primary"><i class="fa">月</i></span>
                         <select class="form-control input" ng-model="ctrl.month">
@@ -26,7 +26,7 @@
                         </select>
 					</div>
                     </div>
-                    <div class="col-md-3 pull-right">
+                    <div class="col-md-2 pull-right">
 						<div class="input-group input-group-sm m-bot15">
                         <span class="input-group-addon btn-primary"><i class="fa">年</i></span>
                         <select class="form-control input" ng-model="ctrl.year">
@@ -37,15 +37,20 @@
                     </div>
                 </div>
             </header>
-            <div class="panel-body">
-            <table ng-table="ctrl.tableParams" class="table table-condensed table-striped">
+            <div class="panel-body" ng-repeat="(k,t) in ctrl.tables">
+				<h4>{{k}}</h4>
+            <table ng-table="t" class="table table-condensed table-striped">
                 <tr ng-repeat="row in $data" style="color:#333">
-                    <td data-title="'姓名'"
-						sortable="'coachdetail.displayname'">{{row.coachdetail.displayname}}</td>
-                    <td data-title="'开始日期'" sortable="'startdate'">{{row.startdate}}</td>
-                    <td data-title="'结束日期'" sortable="'enddate'">{{row.enddate}}</td>
-                    <td data-title="'项目'" sortable="'cate'">{{row.cate}}</td>
-                    <td data-title="'值'" sortable="'value'">{{row.value}}</td>
+					<td data-title="'结束日期'" sortable="'enddate'">{{row.startdate}}~{{row.enddate}}</td>
+                    <td data-title="'活跃客户数'" sortable="'活跃客户数'">{{row['活跃客户数']}}</td>
+                    <td data-title="'体验课完成'" sortable="'体验课完成'">{{row['体验课完成']}}</td>
+                    <td data-title="'课程完成'" sortable="'课程完成'">{{row['课程完成']}}</td>
+                    <td data-title="'训练计划完成'" sortable="'训练计划完成'">{{row['训练计划完成']}}</td>
+                    <td data-title="'训练计划阅读'" sortable="'计划客户阅读'">{{row['计划客户阅读']}}</td>
+                    <td data-title="'期望数据记录'"
+					sortable="'期望数据记录人数'">{{row['期望数据记录人数']}}</td>
+                    <td data-title="'实际数据记录'"
+					sortable="'完成数据记录人数'">{{row['完成数据记录人数']}}</td>
                 </tr>
             </table>
             </div>
