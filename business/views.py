@@ -914,9 +914,7 @@ class CoachIncompleteList(generics.ListAPIView):
 		usr = get_object_or_404(User, name=self.kwargs.get("name"))
 		orders = usr.income_orders.exclude(status__in=["unpaid","done"]).values_list("id", flat=True)
 		today = datetime.datetime.today().date()
-                print today
 		ret = Schedule.objects.filter(date__lt=today,done=False,order__in=orders).order_by("date","hour")
-                print ret.query
 		return ret
 
 		
@@ -1168,6 +1166,7 @@ class GroupCourseBookItem(generics.RetrieveUpdateDestroyAPIView):
                 book = GroupCourseInstanceBook.objects.get(id=self.kwargs.get("pk"))
                 balance,_ =  Balance.objects.get_or_create(name=book.customer,gym=book.gym)
                 balance.cancelconsume(book.price)
+                balance.cancelconsume_groupcourse()
 	        ret = super(GroupCourseBookItem, self).destroy(request, args,kwargs)
                 return ret
 
