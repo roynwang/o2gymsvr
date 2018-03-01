@@ -38,6 +38,7 @@ class Order(models.Model):
 	amount = models.IntegerField(default=0)
 	duration = models.IntegerField(default=0)
 	subsidy = models.IntegerField(default=0)
+	ordertype = models.CharField(max_length=32,default="pt")
 
 	def done(self):
 		if self.status != 'done' and self.schedule_set.count() == self.product.amount:
@@ -114,6 +115,7 @@ class BalanceOrder(models.Model):
 	updated = models.DateTimeField(auto_now_add=True)
 	billid = models.CharField(max_length=20, blank=True, db_index=True)
         customer = models.CharField(max_length=64)
+        groupcourse_count = models.IntegerField()
         amount = models.IntegerField()
         gym = models.IntegerField()
         paid_amount = models.IntegerField(default=0)

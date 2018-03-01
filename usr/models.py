@@ -315,6 +315,10 @@ class Balance(models.Model):
             self.gift += gift
             self.save()
 
+        def charge_groupcourse_count(self,groupcourse_count):
+            self.groupcourse_count += groupcourse_count
+            self.save()
+
         def add_months(self, sourcedate,months):
             month = sourcedate.month - 1 + months
             year = int(sourcedate.year + month / 12 )
@@ -336,12 +340,20 @@ class Balance(models.Model):
             self.balance -= int(amount)
             self.save()
 
+        def consume_groupcourse(self):
+            self.groupcourse_count -= 1
+            self.save()
+
         def cancelconsume(self, amount):
             self.balance += int(amount)
             self.save()
+        
+        def cancelconsume_groupcourse(self):
+            self.groupcourse_count += 1
+            self.save()
 
         def precheck(self, amount):
-            if self.balance >= amount:
+            if self.balance >= amount or self.groupcourse_count >= 0:
                 return True
             return False
 
@@ -352,6 +364,7 @@ class Balance(models.Model):
             balance_order.save()
             gift = balance_order.amount - balance_order.paid_amount
             self.charge(balance_order.amount, gift)
+            self.charge_groupcourse_count(balance_order.groupcourse_count)
         
 
 class ChargeHistory(models.Model):
