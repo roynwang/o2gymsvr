@@ -309,6 +309,7 @@ class Balance(models.Model):
         balance = models.IntegerField(default=0)
         gift = models.IntegerField(default=0)
         group_enddate = models.DateField(null=True, blank=True)
+        groupcourse_count = models.IntegerField(default=0)
 
         def charge(self, amount, gift = 0):
             self.balance += int(amount)
