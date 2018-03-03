@@ -1235,6 +1235,13 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
                     request.data['price'] = 0
 		    ret = super(GymGroupCourseDayBookList, self).create(request, args,kwargs)
                     return ret
+                if b.groupcourse_count > 0:
+                    b.consume_groupcourse()
+                    request.data['price'] = 0
+                    request.groupcourse_price = 1
+		    ret = super(GymGroupCourseDayBookList, self).create(request, args,kwargs)
+                    return ret
+                    
 
                 _, discount = get_discount(request.data['customer'], date.date())
 

@@ -1,118 +1,48 @@
 <div class="row" ng-controller="HistoryCtrl as ctrl">
-    <div class="col-sm-12" ng-hide="ctrl.is_admin">
-        <div class="form-signin">
-            <h2 class="form-signin-heading">密码验证</h2>
-            <div class="login-wrap">
-                <input type="password" class="form-control" autocomplete="off" ng-model="ctrl.pwd"
-                placeholder="请输入密码" autofocus>
-                <i class="text-danger">{{ctrl.errmsg}}</i>
-                <button class="btn btn-lg btn-login btn-block" ng-click="ctrl.submit()">提交</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-sm-12" ng-show="ctrl.is_admin">
+    <div class="col-sm-12">
         <section class="panel">
             <header class="panel-heading">
                 <div class="row">
-                    <h4 class="col-sm-4">销售&nbsp;&nbsp;{{ctrl.startday.Format("yyyy-MM-dd")}} ~
-		{{ctrl.endday.Format("yyyy-MM-dd")}}</h4>
-                    <!--
-		<span class="tools pull-right">
-			<a href="javascript:;" class="fa fa-chevron-down"></a>
-			<a href="javascript:;" class="fa fa-cog"></a>
-			<a href="javascript:;" class="fa fa-times"></a>
-		</span>
-                    <div class="col-md-1 pull-right">
-                        <button ng-click="ctrl.refresh()" type="button" class="btn btn-info " style="position: relative;right: 10px;"><i class="fa fa-refresh"></i> 刷新</button>
-                    </div>
-
-		-->
+                    <h4 class="col-sm-4"></h4>
+					<div class="col-md-1 pull-right">
+						<a class="btn btn-primary-o btn-sm" ng-click="ctrl.refresh()">查询</a>
+					</div>
                     <div class="col-md-3 pull-right">
-					    <newdatepicker button-prev="<i class='fa fa-arrow-left'></i>" button-next="<i
-						class='fa fa-arrow-right'></i>" date-format="yyyy-MM-dd" selector="form-control" style="margin-bottom:10px;">
-                            <div class="col-lg-12 input-group">
-                                <input class="form-control" style="background: rgba(0,0,0,0);"
-								ng-model="ctrl.endday_str" ng-change="ctrl.refresh()" placeholder="Choose a date"/>
-                            </div>
-                            <span style="cursor: pointer;position: absolute;top: 6px;right: 20px;" style="cursor: pointer">
-							<i class="fa fa-lg fa-calendar"></i>
-						</span>
-                        </newdatepicker>
+                        <select class="form-control input" ng-model="ctrl.year">
+                            <option value=2017>2017</option>
+                            <option value=2018 selected>2018</option>
+							<option value=2019>2019</option>
+                        </select>
                     </div>
                     <div class="col-md-3 pull-right">
-                        <newdatepicker button-prev="<i class='fa fa-arrow-left'></i>" button-next="<i
-						class='fa fa-arrow-right'></i>" date-format="yyyy-MM-dd" selector="form-control" style="margin-bottom:10px;">
-                            <div class="col-lg-12 input-group">
-                                <input class="form-control" style="background: rgba(0,0,0,0);"
-								ng-model="ctrl.startday_str" ng-change="ctrl.refresh()" placeholder="Choose a date"/>
-                            </div>
-                            <span style="cursor: pointer;position: absolute;top: 6px;right: 20px;" style="cursor: pointer">
-							<i class="fa fa-lg fa-calendar"></i>
-						</span>
-                        </newdatepicker>
+                        <select class="form-control input" ng-model="ctrl.month">
+                            <option value=1>1</option>
+                            <option value=2>2</option>
+                            <option value=3>3</option>
+                            <option value=4>4</option>
+                            <option value=5>5</option>
+                            <option value=6>6</option>
+                            <option value=7>7</option>
+                            <option value=8>8</option>
+                            <option value=9>9</option>
+                            <option value=10>10</option>
+                            <option value=11>11</option>
+                            <option value=12>12</option>
+                        </select>
                     </div>
                 </div>
             </header>
             <div class="panel-body">
-                <table class="table table-invoice">
-                    <thead>
-                        <tr>
-                            <th>日期</th>
-                            <th>订单数量</th>
-                            <th>销售总价(元)</th>
-                            <th>销售课数</th>
-                            <th>销售均价</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="m in ctrl.monthdata" style="color:#333">
-                            <td>{{m.paidday}}</td>
-                            <td>{{m.sold_count}}</td>
-                            <td>{{m.sold_pirce}}</td>
-                            <td>{{m.sold_course}}</td>
-                            <td>{{m.course_price}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <h4 class="text-center">销售收入</h4>
-                        <p class="text-center" style="margin-bottom:20px">{{ctrl.startday.Format("yyyy-MM-dd")}} -{{ctrl.endday.Format("yyyy-MM-dd")}}</p>
-                        <br>
-                        <canvas id="line" class="chart chart-line"
-							chart-data="ctrl.salepricechart.data" chart-labels="ctrl.salepricechart.labels"
-                        chart-series="ctrl.salepricechart.series" chart-legend="true"></canvas>
-                    </div>
-                    <div class="col-lg-6">
-                        <h4 class="text-center">销售单数</h4>
-                        <p class="text-center" style="margin-bottom:20px">{{ctrl.startday.Format("yyyy-MM-dd")}} -{{ctrl.endday.Format("yyyy-MM-dd")}}</p>
-                        <br>
-                        <canvas id="line" class="chart chart-bar"
-							chart-data="ctrl.salecountchart.data" chart-labels="ctrl.salepricechart.labels"
-                        chart-series="ctrl.salecountchart.series" chart-legend="true"></canvas>
-                    </div>
-
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <h4 class="text-center">销售课数</h4>
-                        <p class="text-center" style="margin-bottom:20px">{{ctrl.startday.Format("yyyy-MM-dd")}} -{{ctrl.endday.Format("yyyy-MM-dd")}}</p>
-                        <br>
-                        <canvas id="line" class="chart chart-line"
-							chart-data="ctrl.coursecountchart.data" chart-labels="ctrl.coursecountchart.labels"
-                        chart-series="ctrl.coursecountchart.series" chart-legend="true"></canvas>
-                    </div>
-                    <div class="col-lg-6">
-                        <h4 class="text-center">销售单价</h4>
-                        <p class="text-center" style="margin-bottom:20px">{{ctrl.startday.Format("yyyy-MM-dd")}} -{{ctrl.endday.Format("yyyy-MM-dd")}}</p>
-                        <br>
-                        <canvas id="line" class="chart chart-bar"
-							chart-data="ctrl.coursepricechart.data" chart-labels="ctrl.coursepricechart.labels"
-                        chart-series="ctrl.coursepricechart.series" chart-legend="true"></canvas>
-                    </div>
-
-                </div>
+            <table ng-table="ctrl.tableParams" class="table table-condensed table-striped">
+                <tr ng-repeat="row in $data" style="color:#333">
+                    <td data-title="'姓名'"
+						sortable="'customer_detail.displayname'">{{row.coach_detail.displayname}}</td>
+                    <td data-title="'开始日期'" sortable="'startdate'">{{row.startdate}}</td>
+                    <td data-title="'结束日期'" sortable="'enddate'">{{row.enddate}}</td>
+                    <td data-title="'项目'" sortable="'cate'">{{row.cate}}</td>
+                    <td data-title="'值'" sortable="'value'">{{row.value}}</td>
+                </tr>
+            </table>
             </div>
         </section>
     </div>
