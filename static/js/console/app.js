@@ -2569,7 +2569,8 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         that.order_display = {
             "groupon": "包月",
             "normal": "普通",
-            "charge": "充值"
+            "charge": "充值",
+            "groupcourse": "团课"
         }
 
         Restangular.one("api/", coachname)
@@ -2664,7 +2665,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
                                 timer: 1500,
                                 showConfirmButton: false
                             });
-                            if (that.ordertype != "charge") {
+                            if (that.ordertype == "normal") {
                                 $state.transitionTo('orderdetail', {
                                     coachname: coachname,
                                     orderid: data.id
