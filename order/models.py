@@ -115,7 +115,7 @@ class BalanceOrder(models.Model):
 	updated = models.DateTimeField(auto_now_add=True)
 	billid = models.CharField(max_length=20, blank=True, db_index=True)
         customer = models.CharField(max_length=64)
-        groupcourse_count = models.IntegerField()
+        groupcourse_count = models.IntegerField(default=0)
         amount = models.IntegerField()
         gym = models.IntegerField()
         paid_amount = models.IntegerField(default=0)
