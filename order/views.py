@@ -274,6 +274,53 @@ class ChargeOrder(APIView):
 
 
 class ManualOrder(APIView):
+        def create_groupcourse_order(self,request,name):
+	    coach = get_object_or_404(User,name=name)
+	    phone = self.request.data["customer_phone"]
+	    displayname = self.request.data["customer_displayname"]
+            #1.create user
+	    if User.objects.filter(name=phone).exists():
+		customer = User.objects.get(name=phone)
+                customer.displayname = displayname
+                customer.trial = None
+                customer.save()
+            else:
+		sex = False
+		if request.data["sex"] == '1':
+		    sex = True
+		customer = User.objects.create(name=phone,displayname=displayname,sex=sex,iscoach=False,created=datetime.datetime.now())
+	    if "birthday" in self.request.data:
+		customer.birthday = datetime.datetime.strptime(self.request.data["birthday"],"%Y-%m-%d").date()
+		#customer.save()
+	    if "emergency_contact" in self.request.data and self.request.data["emergency_contact"] != "":
+		customer.emergency_contact = self.request.data["emergency_contact"]
+		#customer.save()
+            customer.order_status = None
+	    customer.save()
+
+	    billid = getbillid(coach.id, customer.id)
+	    gym = Gym.objects.get(name=coach.gym.all()[0])
+            product_promotion = int(request.data["product_promotion"])
+            if product_promotion < 0:
+                product_promotion = 0
+            amount = product_promotion + int(request.data["product_price"])
+            paid = int(request.data["product_price"])
+            coursecount = int(request.data["product_amount"])
+
+            balance_order = BalanceOrder.objects.create(billid = billid,\
+                    customer = customer.name,\
+		    amount = amount,\
+		    paid_amount = paid,\
+                    gym = gym.id,\
+                    status="unpaid",\
+                    groupcourse_count=coursecount)
+            b,_ = Balance.objects.get_or_create(name=balance_order.customer,gym=balance_order.gym)
+            b.complete_order(balance_order)
+	    serializer = BalanceOrderSerializer(balance_order)
+	    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+
         def create_charge_order(self, request,name):
 	    coach = get_object_or_404(User,name=name)
 	    phone = self.request.data["customer_phone"]
@@ -305,13 +352,15 @@ class ManualOrder(APIView):
 	    gym = Gym.objects.get(name=coach.gym.all()[0])
             amount = int(request.data["product_promotion"]) + int(request.data["product_price"])
             paid = int(request.data["product_price"])
+            coursecount = int(request.data["product_amount"])
 
             balance_order = BalanceOrder.objects.create(billid = billid,\
                     customer = customer.name,\
 		    amount = amount,\
 		    paid_amount = paid,\
                     gym = gym.id,\
-                    status="unpaid")
+                    status="unpaid",\
+                    groupcourse_count=coursecount)
             b,_ = Balance.objects.get_or_create(name=balance_order.customer,gym=balance_order.gym)
             b.complete_order(balance_order)
 	    serializer = BalanceOrderSerializer(balance_order)
@@ -322,6 +371,9 @@ class ManualOrder(APIView):
 	def post(self,request,name):
                 if request.data['ordertype'] == "charge":
                     return self.create_charge_order(request,name)
+
+                if request.data['ordertype'] == "groupcourse":
+                    return self.create_groupcourse_order(request,name)
 
 		coach = get_object_or_404(User,name=name)
 		#get/create customer

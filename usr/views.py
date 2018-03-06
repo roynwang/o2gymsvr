@@ -504,6 +504,10 @@ class InCome(APIView):
                 group_courses = GroupCourseInstanceBook.objects.filter(date__range=[start,end], coach = usr.name)
                 for c in group_courses:
                     c.update_coach()
+
+
+                print group_courses.values("course").distinct()
+                group_courses_count = group_courses.values("course").distinct().count()
                 
 		#courses = orders.value_list("schedule")
 		return Response({"sold_xu":sold_xu,\
@@ -512,6 +516,7 @@ class InCome(APIView):
                     "completed_course":courses.count() or 0, \
                     "completed_course_price":self.cal_course_income(courses), \
                     "exp_courses": exp_courses.count(), \
+                    "group_courses_count": group_courses_count,\
                     "group_courses": group_courses.count()})
 
 

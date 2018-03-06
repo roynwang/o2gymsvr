@@ -364,8 +364,10 @@ class Balance(models.Model):
             balance_order.status="completed"
             balance_order.save()
             gift = balance_order.amount - balance_order.paid_amount
-            self.charge(balance_order.amount, gift)
-            self.charge_groupcourse_count(balance_order.groupcourse_count)
+            if balance_order.groupcourse_count != 0:
+                self.charge_groupcourse_count(balance_order.groupcourse_count)
+            else:
+                self.charge(balance_order.amount, gift)
         
 
 class ChargeHistory(models.Model):

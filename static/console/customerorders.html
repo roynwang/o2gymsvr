@@ -9,20 +9,27 @@
 
         </header>
         <div class="panel-body">
-                <div class="row" ng-show="demo.summary.balance != 0 ">
-                    <div class="col-lg-4 invoice-block">
+                <div class="row" ng-show="demo.summary.balance != 0 ||
+					demo.summary.groupcourse_balance != 0">
+                    <div class="col-lg-2 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
                             <li class="text-center">完成私教课 : {{demo.summary.pt_count}}</li>
                         </ul>
                     </div>
-                    <div class="col-lg-4 invoice-block">
+                    <div class="col-lg-2 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
                             <li class="text-center">完成团体课 : {{demo.summary.gc_count}}</li>
                         </ul>
                     </div>
-                    <div class="col-lg-2 invoice-block">
+                    <div class="col-lg-3 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
-                            <li class="text-center" style="color:#1fb5ad;font-weight:600">余额 : {{demo.summary.balance}}</li>
+                            <li class="text-center" style="color:#1fb5ad;font-weight:600">团课余额 :
+							{{demo.summary.groupcourse_balance}}</li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-3 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+                            <li class="text-center" style="color:#1fb5ad;font-weight:600">金额余额 : {{demo.summary.balance}}</li>
                         </ul>
                     </div>
                     <div class="col-lg-2 invoice-block">
