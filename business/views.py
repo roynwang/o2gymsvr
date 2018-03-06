@@ -1230,7 +1230,7 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
 
 
                 #get balance
-                b = Balance.objects.get(name=request.data['customer'],gym=31)
+                b = Balance.objects.get(name=request.data['customer'],gym=course.gym)
                 if b.group_enddate and b.group_enddate>=date.date():
                     request.data['price'] = 0
 		    ret = super(GymGroupCourseDayBookList, self).create(request, args,kwargs)
@@ -1293,6 +1293,7 @@ class UserSummaryView(APIView):
             ret = {"name":usr.name,\
                     "displayname":usr.displayname,\
                     "balance":balance.balance,\
+                    "groupcourse_balance":balance.groupcourse_count,\
                     "group_enddate": balance.group_enddate, \
                     "pt_count":pt_count,\
                     "gc_count":gc_count,\

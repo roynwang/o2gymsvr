@@ -4750,8 +4750,8 @@ app.controller("DocCtrl", ['$scope', "Restangular", "NgTableParams", "$statePara
     }
 ])
 
-app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert", "$groupcoursesvc", "$customersvc",
-    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $groupcoursesvc, $customersvc) {
+app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert", "$groupcoursesvc", "$customersvc","$state",
+    function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $groupcoursesvc, $customersvc, $state) {
         var that = this
         that.tab = "schedule"
         var originalData = []
@@ -4760,6 +4760,9 @@ app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$s
         that.day = new Date();
         that.day_str = that.day.Format("yyyy-MM-dd")
         that.dayschedule = []
+		that.addschedule = function(){
+			$state.transitionTo("newgroupcourse")
+		}
 
         that.refresh = function() {
             $groupcoursesvc.courselist(function(data) {

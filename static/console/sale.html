@@ -86,6 +86,7 @@
                             <th>教练</th>
                             <th>体验课(节)</th>
                             <th>团课(人次)</th>
+                            <th>团课(节)</th>
                             <th>销售总价(元)</th>
                             <th>销售课时(节)</th>
                             <th>耗课总价(元)</th>
@@ -97,6 +98,7 @@
                             <td>{{coach.displayname}}</td>
 							<td>{{coach.income.exp_courses}}</td>
                             <td>{{coach.income.group_courses}}</td>
+                            <td>{{coach.income.group_courses_count}}</td>
                             <td>{{coach.income.sold_price}}</td>
                             <td>{{coach.income.sold_count}}</td>
                             <td>{{coach.income.completed_course_price}}</td>
@@ -191,7 +193,7 @@
 	</section>
 	<section class="panel" ng-show="ctrl.chargeOrders.length > 0">
 	<header class="panel-heading">
-		充值订单
+		其他订单
 	</header>
 	<div class="panel-body">
 		<table ng-table="ctrl.chargeOrderTableParams" class="table table-condensed table-striped">
@@ -201,7 +203,8 @@
 				<td data-title="'电话'">{{row.customerdetail.name}}</td>
 				<td data-title="'性别'">{{row.customerdetail.sex?"男":"女"}}</td>
 				<td data-title="'金额'">{{row.paid_amount}}</td>
-				<td data-title="'赠送'">{{row.amount-row.paid_amount}}</td>
+				<!--<td data-title="'赠送'">{{row.amount-row.paid_amount}}</td>-->
+				<td data-title="'数量'">{{row.groupcourse_count}}</td>
 			</tr>
 		</table>
 	</div>
