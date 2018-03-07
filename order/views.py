@@ -352,7 +352,10 @@ class ManualOrder(APIView):
 	    gym = Gym.objects.get(name=coach.gym.all()[0])
             amount = int(request.data["product_promotion"]) + int(request.data["product_price"])
             paid = int(request.data["product_price"])
-            coursecount = int(request.data["product_amount"])
+            if request.data["product_amount"] == "":
+                coursecount = 0
+            else:
+                coursecount = int(request.data["product_amount"])
 
             balance_order = BalanceOrder.objects.create(billid = billid,\
                     customer = customer.name,\
