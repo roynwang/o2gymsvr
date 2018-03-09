@@ -665,6 +665,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }, 2000)
 
         // check update
+		/*
         Restangular.one("api/", $.cookie('user'))
             .one("version", "mobile")
             .get()
@@ -673,6 +674,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     window.location.href = "/whatsnew/"
                 }
             });
+		*/
 
 
         that.showneworder = function() {
@@ -801,7 +803,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
             $ordersvc.getorders(customer.name, function(data) {
                     var os = _.reject(data.results, function(item) {
-                        return item.all_booked == true
+                        return item.all_booked == true 
                     })
                     os = _.sortBy(os, 'created')
 
