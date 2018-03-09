@@ -3,7 +3,7 @@
     <section class="panel">
         <header class="panel-heading">
             <div class="row">
-                <h4 class="col-sm-4">团课(测试中，请勿实际使用)</h4>
+                <h4 class="col-sm-4">团课</h4>
             </div>
         </header>
         <div class="panel-body">
@@ -27,7 +27,7 @@
                 <span ng-click="ctrl.tab = 'schedule'" class="salary-span" ng-class="{'active': ctrl.tab == 'schedule'}">日程</span>
                 <span ng-click="ctrl.tab = 'course'" class="salary-span" ng-class="{'active':ctrl.tab == 'course'}">课程</span>
                 <a ng-show="ctrl.tab =='course'" class="btn btn-primary btn-sm pull-right" style="margin-right:10px"
-                ng-click="ctrl.newschedule()">添加</a>
+                ng-click="ctrl.addcourse()">添加</a>
             </div>
             <div class="row" style="padding: 20px" ng-show="ctrl.tab == 'course'">
 				<h3 class="text-center" ng-show="ctrl.groupcourselist.length==0">暂无课程,请先<a ng-click="ctrl.addcourse()" style="color:#1FB5AD">添加</a>一个课程</h3>
