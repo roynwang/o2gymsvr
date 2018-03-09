@@ -904,6 +904,7 @@ app.factory("$groupcoursesvc", function(Restangular) {
                 brief: "请编辑",
                 serial: "请编辑",
                 step: "请编辑",
+				intensity: 0,
                 gym: gymid
             })
             .then(function(data) {
