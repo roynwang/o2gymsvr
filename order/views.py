@@ -350,7 +350,10 @@ class ManualOrder(APIView):
             print("xxxxxxxxxxxxxxxxxxxxxxxx")
 	    billid = getbillid(coach.id, customer.id)
 	    gym = Gym.objects.get(name=coach.gym.all()[0])
-            amount = int(request.data["product_promotion"]) + int(request.data["product_price"])
+            pro = int(request.data["product_promotion"])
+            if pro < 0 :
+                pro = 0
+            amount = pro + int(request.data["product_price"])
             paid = int(request.data["product_price"])
             if request.data["product_amount"] == "":
                 coursecount = 0
@@ -366,6 +369,9 @@ class ManualOrder(APIView):
                     groupcourse_count=coursecount)
             b,_ = Balance.objects.get_or_create(name=balance_order.customer,gym=balance_order.gym)
             b.complete_order(balance_order)
+            if int(request.data["product_duration"]) > 0:
+                b.charge_date(paid, int(request.data["product_duration"]))
+
 	    serializer = BalanceOrderSerializer(balance_order)
 	    return Response(serializer.data, status=status.HTTP_201_CREATED)
             
