@@ -1304,6 +1304,32 @@ class UserSummaryView(APIView):
             return Response(ret, status=status.HTTP_200_OK)
 
 
+def get_before_date_last_trained(name,day):
+            usr = get_object_or_404(User, name=name)
+            last_pt = None
+            if Schedule.objects.filter(date__lt=day, custom=usr).order_by("-date").count() >0 :
+                last_pt = Schedule.objects.filter(date__lt=day, custom=usr).order_by("-date")[0].date
+
+            last_gc = None
+            last_gc_query = GroupCourseInstanceBook.objects \
+                    .filter(customer=name,date__lte=datetime.datetime.today()) \
+                    .order_by("-date")
+            if last_gc_query.count() > 0:
+                last_gc = last_gc_query[0].date
+
+            last_trained_date = last_pt
+            
+            if last_trained_date is None:
+                last_trained_date = last_gc
+
+            if last_trained_date is None:
+                return None
+
+            if not last_gc is None and last_trained_date < last_gc:
+                last_trained_date = last_gc
+            return last_trained_date
+
+
 def get_last_trained(name):
             usr = get_object_or_404(User, name=name)
 
@@ -1333,7 +1359,7 @@ def get_last_trained(name):
 
 
 def get_discount(name, coursedate):
-            last_trained_date = get_last_trained(name)
+            last_trained_date = get_before_date_last_trained(name,coursedate)
             if last_trained_date is None:
                 return (0,10)
             dura = (coursedate - last_trained_date).days
