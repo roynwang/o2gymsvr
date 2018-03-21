@@ -518,6 +518,11 @@ class CoachKPI(APIView):
                     coursecount += 1
                     if not item.custom in customers:
                         customers.append(item.custom)
+                daterange = [floor, ceil]
+                allcourses = Schedule.objects.filter(custom__in=customers,\
+                        date__range=daterange,coursetype__in=["normal","charge"], done=True)
+                coursecount = allcourses.count()
+
                 return {"day": datetime.date.strftime(enddate, "%Y%m%d"), \
                         "customercount":len(customers),\
                         "average": float(coursecount)/len(customers),\
