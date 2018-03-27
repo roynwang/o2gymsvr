@@ -904,7 +904,7 @@ app.factory("$groupcoursesvc", function(Restangular) {
                 brief: "请编辑",
                 serial: "请编辑",
                 step: "请编辑",
-				intensity: 0,
+                intensity: 0,
                 gym: gymid
             })
             .then(function(data) {
@@ -1426,6 +1426,24 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                 .then(function(data) {
                     that.summary = data
                 })
+        }
+        that.addDays = function() {
+			var gymid = $.cookie("gym")
+            that.tasks = {
+                title: "延期",
+                url: "/api/"+$stateParams.customername+"/g/" + gymid + "/balance/",
+                method: "PATCH",
+                tasks: [{
+                    type: "date",
+                    key: "group_enddate",
+                    label: "日期",
+                    value: that.summary.group_enddate
+                }]
+            }
+			that.tasks.callback = function(){
+				that.refreshBalance()
+			}
+            that.tasks.show = true
         }
 
         that.refresh = function() {
@@ -4751,7 +4769,7 @@ app.controller("DocCtrl", ['$scope', "Restangular", "NgTableParams", "$statePara
     }
 ])
 
-app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert", "$groupcoursesvc", "$customersvc","$state",
+app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$stateParams", "SweetAlert", "$groupcoursesvc", "$customersvc", "$state",
     function($scope, Restangular, NgTableParams, $stateParams, SweetAlert, $groupcoursesvc, $customersvc, $state) {
         var that = this
         that.tab = "schedule"
@@ -4761,9 +4779,9 @@ app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$s
         that.day = new Date();
         that.day_str = that.day.Format("yyyy-MM-dd")
         that.dayschedule = []
-		that.addschedule = function(){
-			$state.transitionTo("newgroupcourse")
-		}
+        that.addschedule = function() {
+            $state.transitionTo("newgroupcourse")
+        }
 
         that.refresh = function() {
             $groupcoursesvc.courselist(function(data) {
@@ -5233,9 +5251,9 @@ app.controller("CoachKpiCtrl", ['$scope', "Restangular", "NgTableParams",
                         _.each(item, function(t) {
                             if (!onecoach[t.enddate]) {
                                 onecoach[t.enddate] = {
-                                    'enddate': t.enddate.substr(5).replace(/-/g,'/'),
-                                    'startdate': t.startdate.substr(5).replace(/-/g,'/'),
-									'displayname': t.coachdetail['displayname']
+                                    'enddate': t.enddate.substr(5).replace(/-/g, '/'),
+                                    'startdate': t.startdate.substr(5).replace(/-/g, '/'),
+                                    'displayname': t.coachdetail['displayname']
                                 }
                             }
                             onecoach[t.enddate][t.cate] = t.value
