@@ -12,25 +12,39 @@
                 <div class="row">
                     <div class="col-lg-2 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
-                            <li class="text-center">完成私教课 : {{demo.summary.pt_count}}</li>
+							<li class="text-center"><p>完成私教课</p>
+							<p>{{demo.summary.pt_count}}</p></li>
                         </ul>
                     </div>
                     <div class="col-lg-2 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
-                            <li class="text-center">完成团体课 : {{demo.summary.gc_count}}</li>
+							<li class="text-center"><p>完成团体课</p>
+							<p>{{demo.summary.gc_count}}</p></li>
                         </ul>
                     </div>
-                    <div class="col-lg-3 invoice-block">
+                    <div class="col-lg-2 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
-                            <li class="text-center" style="color:#1fb5ad;font-weight:600">团课余额 :
-							{{demo.summary.groupcourse_balance}}</li>
+                            <li class="text-center" style="color:#1fb5ad;font-weight:600">
+							<p>剩余团课(节)</p>
+							<p>{{demo.summary.groupcourse_balance}}<p>
+							</li>
                         </ul>
                     </div>
-                    <div class="col-lg-3 invoice-block">
+                    <div class="col-lg-2 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
-                            <li class="text-center" style="color:#1fb5ad;font-weight:600">金额余额 : {{demo.summary.balance}}</li>
+                            <li ng-click="demo.addDays()" class="text-center" style="color:#1fb5ad;font-weight:600">
+							<p>团课有效期</p>
+							<p>{{demo.summary.group_enddate}}</p></li>
                         </ul>
                     </div>
+                    <div class="col-lg-2 invoice-block">
+                        <ul class="unstyled amounts" style="padding-left:0">
+                            <li class="text-center" style="color:#1fb5ad;font-weight:600">
+							<p>账户余额(元)</p> <p>{{demo.summary.balance}}<p></li>
+                        </ul>
+                    </div>
+
+
                     <div class="col-lg-2 invoice-block">
                         <ul class="unstyled amounts" style="padding-left:0">
 							<li class="text-center grand-total"><a style="color:white"
@@ -83,4 +97,5 @@
 			</div>
         </div>
     </section>
+	<task-Form tasks="demo.tasks"></task-Form>
 </div>

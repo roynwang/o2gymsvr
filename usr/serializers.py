@@ -134,6 +134,11 @@ class ThresholdMsgSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ThresholdMsg
 
+class BalanceSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Balance
+
+
 class TagIndexSerializer(serializers.ModelSerializer):
 	customerdetail = serializers.SerializerMethodField()
 	class Meta:

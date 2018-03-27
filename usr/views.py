@@ -261,6 +261,13 @@ class UserItemPatch(generics.GenericAPIView, UpdateModelMixin):
         def put(self, request, *args, **kwargs):
             return self.partial_update(request, *args, **kwargs)
 
+class BalanceItemPatch(generics.RetrieveUpdateDestroyAPIView):
+	lookup_field = "name"
+	serializer_class = BalanceSerializer
+	def get_object(self):
+	    obj = get_object_or_404(Balance,name=self.kwargs.get("name"),gym=self.kwargs.get("gymid"))
+	    return obj
+
         
 class UserItem(generics.RetrieveUpdateDestroyAPIView):
 	lookup_field = "name"
