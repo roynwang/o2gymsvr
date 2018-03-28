@@ -190,7 +190,7 @@ class User(models.Model):
 	owner = models.CharField(max_length=64,default="") 
 	order_status = models.CharField(max_length=32,default=None,blank=True,null=True) 
 
-	train_comments = models.CharField(max_length=512, default="")
+	train_comments = models.CharField(max_length=512, default="",blank=True)
 
         def get_coach_gym(self):
             return self.gym.all()[0]
