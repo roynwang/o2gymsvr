@@ -476,6 +476,11 @@ class CoachTodayKPI(APIView):
                     coursecount += 1
                     if not item.custom in customers:
                         customers.append(item.custom)
+                daterange = [floor, ceil]
+                allcourses = Schedule.objects.filter(custom__in=customers,\
+                        date__range=daterange,coursetype__in=["normal","charge"], done=True)
+                coursecount = allcourses.count()
+
                 return {"day": datetime.date.strftime(enddate, "%Y%m%d"), \
                         "customercount":len(customers),\
                         "average": float(coursecount)/len(customers),\
@@ -487,20 +492,20 @@ class CoachTodayKPI(APIView):
 	        startdate = oristartdate - datetime.timedelta(days=30)
 	        enddate = datetime.datetime.today()
 		daterange = [startdate, enddate]
+
 	    	q = usr.sealed_time.filter(date__range=daterange,coursetype__in=["normal","charge"]).order_by("date","hour")
                 ret = []
                 d = oristartdate
                 while d < enddate:
                     ret.append(self.getkpi(d,q))
                     d = d + datetime.timedelta(days=1)
-
+       
                 maxaverage = 0
                 for item in ret:
                     if maxaverage < item['average']:
                         maxaverage = item['average']
                 lastday = ret[-1]
                 pprint.pprint(ret);
-                print maxaverage
                 return Response({"month":"{:1.2f}".format(maxaverage*0.95), "today":"{:1.2f}".format(lastday['average'])})
 
 
