@@ -1168,10 +1168,12 @@ class GroupCourseItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = GroupCourse.objects.all()
 	serializer_class = GroupCourseSerializer
 
+
 class GroupCourseBookItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = GroupCourseInstanceBook.objects.all()
 	serializer_class = GroupCourseInstanceBookSerializer
-
+            
+        '''
 	def destroy(self, request, *args, **kwargs):
                 book = GroupCourseInstanceBook.objects.get(id=self.kwargs.get("pk"))
                 balance,_ =  Balance.objects.get_or_create(name=book.customer,gym=book.gym)
@@ -1179,6 +1181,7 @@ class GroupCourseBookItem(generics.RetrieveUpdateDestroyAPIView):
                 balance.cancelconsume_groupcourse()
 	        ret = super(GroupCourseBookItem, self).destroy(request, args,kwargs)
                 return ret
+        '''
 
 
 class GroupCourseInstanceItem(generics.RetrieveUpdateDestroyAPIView):
@@ -1248,7 +1251,7 @@ class GymGroupCourseDayBookList(generics.ListCreateAPIView):
                 if b.groupcourse_count > 0:
                     b.consume_groupcourse()
                     request.data['price'] = 0
-                    request.groupcourse_price = 1
+                    request.data['groupcourse_price'] = 1
 		    ret = super(GymGroupCourseDayBookList, self).create(request, args,kwargs)
                     return ret
                     
