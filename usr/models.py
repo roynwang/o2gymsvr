@@ -351,8 +351,8 @@ class Balance(models.Model):
             self.balance += int(amount)
             self.save()
         
-        def cancelconsume_groupcourse(self):
-            self.groupcourse_count += 1
+        def cancelconsume_groupcourse(self, amount=1):
+            self.groupcourse_count += amount
             self.save()
 
         def precheck(self, amount):

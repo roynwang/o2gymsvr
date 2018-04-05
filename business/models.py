@@ -3,10 +3,13 @@ from django.db import models
 import datetime
 from utils import smsutils
 from django.shortcuts import get_object_or_404
-#from usr.models import *
 import json
 from order.models import *
+from django.db.models import get_model
 from django.core.cache import cache
+from django.db.models.signals import pre_delete, post_delete
+from django.dispatch import receiver
+
 
 class ChargePricing(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -61,6 +64,14 @@ class GroupCourseInstance(models.Model):
         hour = models.IntegerField(default=0)
         price = models.IntegerField(default=90)
 
+@receiver(pre_delete, sender=GroupCourseInstance)
+def clear_all_book(sender, **kwargs):
+    instance = kwargs["instance"]
+    books = GroupCourseInstanceBook.objects.filter(course=instance.id)
+    for book in books:
+        book.delete()
+
+
 class GroupCourseInstanceBook(models.Model):
 	id = models.AutoField(primary_key=True)
         customer = models.CharField(max_length=32)
@@ -79,6 +90,14 @@ class GroupCourseInstanceBook(models.Model):
                 course = GroupCourseInstance.objects.get(id=self.course)
                 self.coach = course.coach
                 self.save()
+
+@receiver(pre_delete, sender=GroupCourseInstanceBook)
+def cancel_book(sender, **kwargs):
+        book = kwargs["instance"]
+        Balance = get_model("usr","Balance")
+        balance =  Balance.objects.get(name=book.customer,gym=book.gym)
+        balance.cancelconsume(book.price)
+        balance.cancelconsume_groupcourse(book.groupcourse_price)
 
 
 class Course(models.Model):
