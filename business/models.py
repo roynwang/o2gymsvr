@@ -298,16 +298,6 @@ class Schedule(models.Model):
             ThresholdMsg.try_create_msg_by_frequency(self,\
                     7, 30, 31798,"7次奖励")
 
-
-@receiver(post_save, sender=BodyEval)
-def clear_required_action(sender, instance,created):
-    if not created or instance.group.startswith("6."):
-        return
-    User = get_model("usr","User")
-    usr = get_object_or_404(User, id=instance.name)
-    usr.booked_time.all().update(action_required="")
-	
-
 class BodyEval(models.Model):
 	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=64)
@@ -319,6 +309,17 @@ class BodyEval(models.Model):
 	comments = models.CharField(max_length=1024,blank=True,default="", null=True)
 	img = models.CharField(max_length=512,blank=True,default="", null=True)
 	risks = models.CharField(max_length=1024,blank=True,default="", null=True)
+
+@receiver(post_save, sender=BodyEval)
+def clear_required_action(sender, **kwargs ):
+    instance = kwargs['instance']
+    created = kwargs['created']
+    if not created or instance.group.startswith("6."):
+        return
+    User = get_model("usr","User")
+    usr = get_object_or_404(User, id=instance.name)
+    usr.booked_time.all().update(action_required="")
+
 
 class BodyEvalOptions(models.Model):
 	id = models.AutoField(primary_key=True)
