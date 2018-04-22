@@ -7,7 +7,7 @@ import json
 from order.models import *
 from django.db.models import get_model
 from django.core.cache import cache
-from django.db.models.signals import pre_delete, post_delete
+from django.db.models.signals import pre_delete, post_delete, post_save
 from django.dispatch import receiver
 
 
