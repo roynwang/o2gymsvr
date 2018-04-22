@@ -317,7 +317,7 @@ def clear_required_action(sender, **kwargs ):
     if not created or instance.group.startswith("6."):
         return
     User = get_model("usr","User")
-    usr = get_object_or_404(User, id=instance.name)
+    usr = get_object_or_404(User, name=instance.name)
     usr.booked_time.all().update(action_required="")
 
 
