@@ -7,7 +7,7 @@ import json
 from order.models import *
 from django.db.models import get_model
 from django.core.cache import cache
-from django.db.models.signals import pre_delete, post_delete
+from django.db.models.signals import pre_delete, post_delete, post_save
 from django.dispatch import receiver
 
 
@@ -299,7 +299,14 @@ class Schedule(models.Model):
                     7, 30, 31798,"7次奖励")
 
 
-		
+@receiver(post_save, sender=BodyEval)
+def clear_required_action(sender, instance,created):
+    if not created or instance.group.startswith("6."):
+        return
+    User = get_model("usr","User")
+    usr = get_object_or_404(User, id=instance.name)
+    usr.booked_time.all().update(action_required="")
+	
 
 class BodyEval(models.Model):
 	id = models.AutoField(primary_key=True)
