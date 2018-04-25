@@ -931,6 +931,10 @@ class CoachIncompleteList(generics.ListAPIView):
 		
 class GymSumSale(APIView):	
 	def get(self,request,pk):
+                mkey = "o2_salesum_" + str(pk)
+                mdetail = cache.get(mkey)
+                if mdetail:
+                    return Response(mdetail)
 		gym = get_object_or_404(Gym, id=pk)
 		sum_coursecount = 0
                 sum_completedcount = 0
@@ -944,8 +948,9 @@ class GymSumSale(APIView):
                         endtime = o.cal_endtime()
                         if endtime != "N/A" and endtime < today:
                             sum_expiredcount += (a - c)
-		#sum_completedcount = Schedule.objects.filter(coach__in=gym.coaches.values_list("id",flat=True), done=True).count()
-                return Response({"sum_expiredcount": sum_expiredcount, "sum_coursecount":sum_coursecount, "sum_completedcount": sum_completedcount})
+                result ={"sum_expiredcount": sum_expiredcount, "sum_coursecount":sum_coursecount, "sum_completedcount": sum_completedcount}
+                mdetail = cache.set(mkey, result, 60*60*24)
+                return Response(result)
 		
 
 
