@@ -257,6 +257,8 @@ class Schedule(models.Model):
                 if not self.order is None:
 		        self.order.done()
 	def getprice(self):
+                if self.price != 0:
+                    return self.price
 		o = self.order
 		'''
 		if o.subsidy != 0:
@@ -266,6 +268,8 @@ class Schedule(models.Model):
                     return 0
 		p = self.order.product
 		price  = p.price/p.amount
+                self.price = price
+                self.save()
 		return price
 		
         ''' OBSOLETE
