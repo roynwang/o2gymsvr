@@ -738,7 +738,7 @@ class GymSaleDetailByCoach(APIView):
             #build result
 
             result = {}
-            coaches = gym.coaches.values_list("name",flat=True)
+            coaches = gym.coaches.values_list("displayname",flat=True)
             for coach in coaches:
                 result[coach] = {"sold_xu":0, \
                         "sold_price": 0, \
@@ -752,13 +752,14 @@ class GymSaleDetailByCoach(APIView):
             #go through order
 	    gymorders = Order.objects.filter(gym=gym,paidtime__range=[start,end+datetime.timedelta(hours=24)])
             for coach in gym.coaches.all():
+                result[coach.displayname]["displayname"] = coach.displayname
                 coachorders = gymorders.filter(coach = coach)
                 prices = coachorders.values_list("amount", flat=True)
-                result[coach.name]["sold_price"] = sum(prices)
+                result[coach.displayname]["sold_price"] = sum(prices)
 
                 amounts = coachorders.select_related('product').values_list("product__amount",flat=True)
                 print amounts
-                result[coach.name]["sold_count"] = sum(amounts)
+                result[coach.displayname]["sold_count"] = sum(amounts)
 
 
             courses = Schedule.objects.filter(coach__in=gym.coaches.all(), date__range=[start,end],\
@@ -768,22 +769,22 @@ class GymSaleDetailByCoach(APIView):
             for coach in gym.coaches.all():
                 coachcourses = courses.filter(coach = coach).exclude(coursetype="trial")
                 prices = coachcourses.values_list("price",flat=True)
-                result[coach.name]['completed_course'] = coachcourses.count()
-                result[coach.name]['completed_course_price'] = sum(prices)
-                result[coach.name]['exp_courses'] = courses.filter(coach = coach,coursetype="trial").count()
+                result[coach.displayname]['completed_course'] = coachcourses.count()
+                result[coach.displayname]['completed_course_price'] = sum(prices)
+                result[coach.displayname]['exp_courses'] = courses.filter(coach = coach,coursetype="trial").count()
                 
                 #handle course without price
                 emptypricecourse = coachcourses.filter(price=0)
                 for e in emptypricecourse:
-                    result[coach.name]['completed_course_price'] += e.getprice()
+                    result[coach.displayname]['completed_course_price'] += e.getprice()
 
                 group_courses = GroupCourseInstanceBook.objects.filter(date__range=[start,end],\
                     coach = coach.name)
 
-                result[coach.name]['group_courses'] = group_courses.count()
-                result[coach.name]['group_courses_count'] = group_courses.values("course").distinct().count()
+                result[coach.displayname]['group_courses'] = group_courses.count()
+                result[coach.displayname]['group_courses_count'] = group_courses.values("course").distinct().count()
 
-            return Response(result);
+            return Response(result.values());
 
 class GymSaleDetail(generics.ListAPIView):
 	serializer_class = OrderSerializer
