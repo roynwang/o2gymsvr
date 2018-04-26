@@ -721,6 +721,70 @@ def backup_order(request):
     return sendmail(gid, ['1325990578@qq.com'])
 
 
+class GymSaleDetailByCoach(APIView):
+	def get(self, request, pk):
+            gym = get_object_or_404(Gym, id=pk)
+            if "end" in self.request.GET:
+                end = datetime.datetime.strptime(self.request.GET["end"], "%Y%m%d")
+            else:
+                end = datetime.date.today()
+            if "start" in self.request.GET:
+                start = datetime.datetime.strptime(self.request.GET["start"], "%Y%m%d")
+            else:
+                start = end - datetime.timedelta(days=365)
+
+            end = end + datetime.timedelta(days=1)
+
+            #build result
+
+            result = {}
+            coaches = gym.coaches.values_list("name",flat=True)
+            for coach in coaches:
+                result[coach] = {"sold_xu":0, \
+                        "sold_price": 0, \
+                        "sold_count": 0, \
+                        "completed_course": 0, \
+                        "completed_course_price": 0, \
+                        "exp_courses": 0, \
+                        "group_courses_count": 0,\
+                        "group_courses": 0}
+
+            #go through order
+	    gymorders = Order.objects.filter(gym=gym,paidtime__range=[start,end+datetime.timedelta(hours=24)])
+            for coach in gym.coaches.all():
+                coachorders = gymorders.filter(coach = coach)
+                prices = coachorders.values_list("amount", flat=True)
+                result[coach.name]["sold_price"] = sum(prices)
+
+                amounts = coachorders.select_related('product').values_list("product__amount",flat=True)
+                print amounts
+                result[coach.name]["sold_count"] = sum(amounts)
+
+
+            courses = Schedule.objects.filter(coach__in=gym.coaches.all(), date__range=[start,end],\
+                    done=True)
+
+            
+            for coach in gym.coaches.all():
+                coachcourses = courses.filter(coach = coach).exclude(coursetype="trial")
+                prices = coachcourses.values_list("price",flat=True)
+                result[coach.name]['completed_course'] = coachcourses.count()
+                result[coach.name]['completed_course_price'] = sum(prices)
+                result[coach.name]['exp_courses'] = courses.filter(coach = coach,coursetype="trial").count()
+                
+                #handle course without price
+                emptypricecourse = coachcourses.filter(price=0)
+                for e in emptypricecourse:
+                    result[coach.name]['completed_course_price'] += e.getprice()
+
+                group_courses = GroupCourseInstanceBook.objects.filter(date__range=[start,end],\
+                    coach = coach.name)
+
+                result[coach.name]['group_courses'] = group_courses.count()
+                result[coach.name]['group_courses_count'] = group_courses.values("course").distinct().count()
+
+            return Response(result);
+
 class GymSaleDetail(generics.ListAPIView):
 	serializer_class = OrderSerializer
 	pagination_class = None
