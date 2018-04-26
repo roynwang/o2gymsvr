@@ -126,12 +126,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
 		sum_amount = obj.order.product.amount
 		return str(completed) + "/" + str(sum_amount)
         def get_finalprice(self, obj):
-                if obj.coursetype == "charge":
-                        return  obj.price
-                if obj.order is None:
-                        return 0
-		sum_amount = obj.order.product.price/obj.order.product.amount
-		return sum_amount
+		return obj.getprice()
 
 
 class ScheduleSimpleSerializer(serializers.ModelSerializer):
