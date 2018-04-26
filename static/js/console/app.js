@@ -3279,6 +3279,7 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
 
 
         function refresh() {
+			that.loading = true
 
             that.startday = new Date(Date.parse(that.startday_str))
             that.endday = new Date(Date.parse(that.endday_str))
@@ -3336,9 +3337,37 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                 })
 
 
+			Restangular.one('api/g', gymid )
+				.customGETLIST('saledetailbycoach',{
+                    start: that.startday.Format("yyyyMMdd"),
+                    end: that.endday.Format("yyyyMMdd")
+                })
+				.then(function(data){
+
+					that.loading = false
+					$scope.saledetailbycoach = data
+					_.each(data, function(item){
+                        that.sumstatus.salesum += item.sold_price
+                        that.sumstatus.salecount += item.sold_count
+                        that.sumstatus.saleprice = that.sumstatus.salesum / that.sumstatus.salecount
+
+                        that.sumstatus.takesum += item.completed_course_price
+                        that.sumstatus.takecount += item.completed_course
+                        that.sumstatus.takeprice = that.sumstatus.takesum / that.sumstatus.takecount
+
+                        that.coachchart.labels.push(item.displayname)
+                        that.coachchart.data[0].push(item.sold_count)
+                        that.coachchart.data[1].push(item.completed_course)
+
+					})
+				})
+					
+
             Restangular.one('api/g', gymid).get().then(function(gym) {
                 $scope.coaches = gym.coaches_set
+				
 
+				/*
                 $.each($scope.coaches, function(i, item) {
                     //render income
                     Restangular.one("api/", item.name).one("income/").get({
@@ -3358,6 +3387,7 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                         that.coachchart.data[1].push(data.completed_course)
                     })
                 })
+				*/
             })
         }
 

@@ -12,7 +12,11 @@
     </div>
 
     <div class="col-sm-12" ng-show="ctrl.is_admin">
-        <section class="panel">
+		<div style="width:100%" ng-show="ctrl.loading">
+			<h4 style="text-align:center">查询中,请勿频繁刷新</h4>
+			<p style="text-align:center">历史数据首次访问需要预处理,查询每30天需要约15秒</p>
+		</div>
+        <section class="panel" ng-hide="ctrl.loading">
             <header class="panel-heading">
                 <div class="row">
                     <h4 class="col-sm-4">销售&nbsp;&nbsp;{{ctrl.startday.Format("yyyy-MM-dd")}} ~
@@ -94,15 +98,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="coach in coaches" style="color:#333">
+                        <tr ng-repeat="coach in saledetailbycoach" style="color:#333">
                             <td>{{coach.displayname}}</td>
-							<td>{{coach.income.exp_courses}}</td>
-                            <td>{{coach.income.group_courses}}</td>
-                            <td>{{coach.income.group_courses_count}}</td>
-                            <td>{{coach.income.sold_price}}</td>
-                            <td>{{coach.income.sold_count}}</td>
-                            <td>{{coach.income.completed_course_price}}</td>
-                            <td>{{coach.income.completed_course}}</td>
+							<td>{{coach.exp_courses}}</td>
+                            <td>{{coach.group_courses}}</td>
+                            <td>{{coach.group_courses_count}}</td>
+                            <td>{{coach.sold_price}}</td>
+                            <td>{{coach.sold_count}}</td>
+                            <td>{{coach.completed_course_price}}</td>
+                            <td>{{coach.completed_course}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -152,7 +156,7 @@
                 </div>
             </div>
         </section>
-	<section class="panel">
+    <section class="panel" ng-hide="ctrl.loading">
 	<header class="panel-heading">
 		过期订单
 	</header>
@@ -169,7 +173,7 @@
 	</div>
 	</section>
 
-	<section class="panel">
+    <section class="panel" ng-hide="ctrl.loading">
 	<header class="panel-heading">
 		新增客户
 			<span class="tools pull-right">
@@ -191,7 +195,7 @@
 		</table>
 	</div>
 	</section>
-	<section class="panel" ng-show="ctrl.chargeOrders.length > 0">
+	<section class="panel" ng-show="!ctrl.loading && ctrl.chargeOrders.length > 0">
 	<header class="panel-heading">
 		其他订单
 	</header>
