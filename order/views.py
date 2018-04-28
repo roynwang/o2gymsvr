@@ -733,8 +733,6 @@ class GymSaleDetailByCoach(APIView):
             else:
                 start = end - datetime.timedelta(days=365)
 
-            end = end + datetime.timedelta(days=1)
-
             #build result
 
             result = {}
