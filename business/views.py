@@ -1,5 +1,6 @@
 # coding=utf-8
 from django.shortcuts import render
+from django.db.models import Count
 from business.models import *
 from business.serializers import *
 from order.models import *
@@ -507,6 +508,40 @@ class CoachTodayKPI(APIView):
                 lastday = ret[-1]
                 pprint.pprint(ret);
                 return Response({"month":"{:1.2f}".format(maxaverage*0.95), "today":"{:1.2f}".format(lastday['average'])})
+
+class CustomerKPIDetailView(APIView):
+    def get(self, request, name):
+	    usr = get_object_or_404(User, name=name)
+	    ori_date = datetime.datetime.strptime(self.request.GET["date"],"%Y%m%d")
+            delta = range(1,8)[ori_date.weekday()]
+
+            enddate = ori_date - datetime.timedelta(days=delta)
+            startdate = enddate - datetime.timedelta(days=7)
+
+            schedules = usr.sealed_time.filter(date__range=[startdate.date(), enddate.date()], \
+                    done=True,coursetype__in=['normal','charge'])
+            schedules_count = schedules.count()
+            customer_group = schedules.values('custom__displayname','custom__name').annotate(total=Count('id'))
+
+            archived = CustomerWeeklyKPI.objects.filter(coach=usr.name,date=enddate)
+            if archived.filter(archived=True).count() != len(customer_group):
+                for item in customer_group:
+                    if archived.filter(coach=usr.name, archived=True,\
+                        customer=item['custom__name'], date=enddate) \
+                        .count() == 0 :
+                         CustomerWeeklyKPI.objects.update_or_create(\
+                            coach=usr.name,\
+                            customer=item['custom__name'],\
+                            date=enddate,\
+                            defaults={"archived":True, 'actual_times':item['total']})
+
+            
+            queryset = archived.filter(coach=usr.name, archived=True, date=enddate)
+            serializer = CustomerWeeklyKPISerializer(queryset, many=True)
+
+            return Response({'startdate':startdate, 'enddate':enddate, 'customers':serializer.data})
+            
+
 
 
 class CoachKPI(APIView):
