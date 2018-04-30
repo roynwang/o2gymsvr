@@ -444,5 +444,18 @@ class Homework(models.Model):
 	detail =  models.TextField(blank=True, default="[]")
 
         
-	
+class CustomerWeeklyKPI(models.Model):
+	id = models.AutoField(primary_key=True)
+	coach = models.CharField(max_length=32)
+	customer = models.CharField(max_length=32)
+	date = models.DateField()
+        archived = models.BooleanField(default=False)
+        expected_times = models.IntegerField(default=0)
+        actual_times = models.IntegerField(default=0)
+        diet_score = models.IntegerField(default=0)
+        train_score = models.IntegerField(default=0)
+        comments = models.CharField(default="", max_length=128)
+
+        
+
 

@@ -52,6 +52,7 @@ urlpatterns = patterns('',
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/w/(?P<date>[0-9]{8})/$',ScheduleForRead.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/w/$',ScheduleForReadQuery.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/kpi/$',CoachKPI.as_view()),
+		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/customerkpidetail/$',CustomerKPIDetailView.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/todaykpi/$',CoachTodayKPI.as_view()),
 		#read availiable hours in day
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/d/(?P<date>[0-9]{8})/$',DayAvaiableTime.as_view()),

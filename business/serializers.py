@@ -204,4 +204,11 @@ class HomeworkSerializer(serializers.ModelSerializer):
 	    serializer = SimpleUserSerilaizer(c)
             return {"name":c.name,"displayname":c.displayname, "avatar":c.avatar}
 
+class CustomerWeeklyKPISerializer(serializers.ModelSerializer):
+	class Meta:
+            model = CustomerWeeklyKPI
+	customerprofile = serializers.SerializerMethodField()
 
+        def get_customerprofile(self,obj):
+            c = User.objects.get(name=obj.customer)
+            return {"name":c.name,"displayname":c.displayname,"avatar":c.avatar}
