@@ -542,7 +542,16 @@ class CustomerKPIDetailView(APIView):
             startdatestr = datetime.date.strftime(startdate, "%m/%d")
             enddatestr = datetime.date.strftime(enddate, "%m/%d")
             return Response({'startdate':startdatestr, 'enddate':enddatestr, 'customers':serializer.data})
-            
+
+class CustomerWeeklyKPIItemView(generics.RetrieveUpdateAPIView):
+	serializer_class = CustomerWeeklyKPISerializer
+
+	def get_object(self):
+	    obj = get_object_or_404(CustomerWeeklyKPI, \
+                    customer=self.kwargs.get("name"), \
+                    date=self.kwargs.get("date"))
+            return obj
+
 
 
 
