@@ -539,7 +539,9 @@ class CustomerKPIDetailView(APIView):
             queryset = archived.filter(coach=usr.name, archived=True, date=enddate)
             serializer = CustomerWeeklyKPISerializer(queryset, many=True)
 
-            return Response({'startdate':startdate, 'enddate':enddate, 'customers':serializer.data})
+            startdatestr = datetime.date.strftime(startdate, "%m/%d")
+            enddatestr = datetime.date.strftime(enddate, "%m/%d")
+            return Response({'startdate':startdatestr, 'enddate':enddatestr, 'customers':serializer.data})
             
 
 
