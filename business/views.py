@@ -526,14 +526,18 @@ class CustomerKPIDetailView(APIView):
             archived = CustomerWeeklyKPI.objects.filter(coach=usr.name,date=enddate)
             if archived.filter(archived=True).count() != len(customer_group):
                 for item in customer_group:
-                    if archived.filter(coach=usr.name, archived=True,\
+                    if archived.filter(archived=True,\
                         customer=item['custom__name'], date=enddate) \
                         .count() == 0 :
-                         CustomerWeeklyKPI.objects.update_or_create(\
-                            coach=usr.name,\
-                            customer=item['custom__name'],\
-                            date=enddate,\
-                            defaults={"archived":True, 'actual_times':item['total']})
+                            custom = get_object_or_404(User,name=item['custom__name'])
+                            actual_times = Schedule.objects.filter(custom=custom, \
+                                    date__range=[startdate.date(), enddate.date()], \
+                                    done = True,
+                                    coursetype__in=['normal','charge']).count()
+                            CustomerWeeklyKPI.objects.update_or_create(\
+                                    customer=item['custom__name'],\
+                                    date=enddate,\
+                                    defaults={"archived":True, 'actual_times':actual_times, 'coach':usr.name})
 
             
             queryset = archived.filter(coach=usr.name, archived=True, date=enddate)

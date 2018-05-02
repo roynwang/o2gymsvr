@@ -1445,6 +1445,25 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
 			}
             that.tasks.show = true
         }
+        that.modifyBalance = function() {
+			var gymid = $.cookie("gym")
+            that.tasks = {
+                title: "延期",
+                url: "/api/"+$stateParams.customername+"/g/" + gymid + "/balance/",
+                method: "PATCH",
+                tasks: [{
+                    type: "shorttext",
+                    key: "balance",
+                    label: "日期",
+                    value: that.summary.balance
+                }]
+            }
+			that.tasks.callback = function(){
+				that.refreshBalance()
+			}
+            that.tasks.show = true
+        }
+
 
         that.refresh = function() {
             that.refreshBalance()
