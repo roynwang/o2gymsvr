@@ -1448,13 +1448,13 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
         that.modifyBalance = function() {
 			var gymid = $.cookie("gym")
             that.tasks = {
-                title: "延期",
+                title: "修改余额",
                 url: "/api/"+$stateParams.customername+"/g/" + gymid + "/balance/",
                 method: "PATCH",
                 tasks: [{
                     type: "shorttext",
                     key: "balance",
-                    label: "日期",
+                    label: "余额",
                     value: that.summary.balance
                 }]
             }
