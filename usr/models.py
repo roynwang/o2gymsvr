@@ -356,7 +356,7 @@ class Balance(models.Model):
             self.save()
 
         def precheck(self, amount):
-            if self.balance >= amount or self.groupcourse_count >= 0:
+            if self.balance >= amount:
                 return True
             return False
 
