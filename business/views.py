@@ -525,6 +525,9 @@ class CustomerKPIDetailView(APIView):
 
             archived = CustomerWeeklyKPI.objects.filter(coach=usr.name,date=enddate)
             if archived.filter(archived=True).count() != len(customer_group):
+                is_end = False
+                if enddate > datetime.datetime.today():
+                    is_end = True
                 for item in customer_group:
                     if archived.filter(archived=True,\
                         customer=item['custom__name'], date=enddate) \
@@ -537,7 +540,7 @@ class CustomerKPIDetailView(APIView):
                             CustomerWeeklyKPI.objects.update_or_create(\
                                     customer=item['custom__name'],\
                                     date=enddate,\
-                                    defaults={"archived":True, 'actual_times':actual_times, 'coach':usr.name})
+                                    defaults={"archived":is_end, 'actual_times':actual_times, 'coach':usr.name})
 
             
             queryset = archived.filter(coach=usr.name, archived=True, date=enddate)
