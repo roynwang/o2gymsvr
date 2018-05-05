@@ -526,7 +526,7 @@ class CustomerKPIDetailView(APIView):
             archived = CustomerWeeklyKPI.objects.filter(coach=usr.name,date=enddate)
             if archived.filter(archived=True).count() != len(customer_group):
                 is_end = False
-                if enddate > datetime.datetime.today():
+                if enddate < datetime.datetime.today():
                     is_end = True
                 for item in customer_group:
                     if archived.filter(archived=True,\
@@ -543,7 +543,7 @@ class CustomerKPIDetailView(APIView):
                                     defaults={"archived":is_end, 'actual_times':actual_times, 'coach':usr.name})
 
             
-            queryset = archived.filter(coach=usr.name, archived=True, date=enddate)
+            queryset = archived.filter(coach=usr.name, date=enddate)
             serializer = CustomerWeeklyKPISerializer(queryset, many=True)
 
             startdatestr = datetime.date.strftime(startdate, "%m/%d")
