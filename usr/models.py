@@ -221,6 +221,19 @@ class User(models.Model):
                     break
             self.save()
 
+        def get_to_next_eval(self):
+            evals = BodyEval.objects.filter(name=self.name).order_by("-date")
+            if evals.count() == 0:
+                return (0, 0)
+            last_eval = evals[0]
+            today = datetime.date.today()
+            delta_day = 30 - (today - last_eval.date).days
+            delta_train = 8 - self.booked_time.filter(date__gt=last_eval.date, done=True).count()
+            if delta_day < 0:
+                delta_day = 0
+            if delta_train < 0:
+                delta_train = 0
+            return (delta_day, delta_train)
 
         def trySendEvalNotification(self, schedule):
             require_measure = False
