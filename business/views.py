@@ -305,10 +305,6 @@ class ScheduleSurvey(APIView):
                         question = k["question"])
             return Response({}, status=status.HTTP_200_OK)
 
-
-
-
-
 class CurrentCoach(APIView):
         def get(self, request, name):
             usr = get_object_or_404(User, name = name)
@@ -317,6 +313,28 @@ class CurrentCoach(APIView):
             if course.count() != 0:
                 coachname = course[0].coach.name
             return Response({"coach":coachname}, status=status.HTTP_200_OK)
+
+class TargetView(APIView):
+        def get(self, request,name):
+            ret = { "done_count": 0,\
+                    "before_day": 0,\
+                    "before_trainning": 0,\
+                    "diet_score": 0, \
+                    "train_score": 0 }
+
+            usr = get_object_or_404(User, name=name)
+	    today = datetime.datetime.today()
+            ret['done_count'] = usr.booked_time.filter(done=True).count()
+            ret['before_day'], ret['before_trainning'] = usr.get_to_next_eval()
+            kpi = CustomerWeeklyKPI.objects.filter(customer=usr.name, archived=True) \
+                    .order_by("-date").first()
+            pprint.pprint(kpi.diet_score)
+
+            ret['diet_score'] =  kpi.diet_score
+            ret['train_score'] =  kpi.train_score
+
+            return Response(ret, status=status.HTTP_200_OK)
+
 
 class GymLoadList(APIView):
         def get(self, request, pk, date):
