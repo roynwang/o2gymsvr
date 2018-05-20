@@ -542,7 +542,7 @@ class CustomerKPIDetailView(APIView):
             customer_group = schedules.values('custom__displayname','custom__name').annotate(total=Count('id'))
 
             archived = CustomerWeeklyKPI.objects.filter(coach=usr.name,date=enddate)
-            if archived.filter(archived=True).count() != len(customer_group):
+            if archived.filter(archived=True).count() <= len(customer_group):
                 is_end = False
                 if enddate < datetime.datetime.today():
                     is_end = True
@@ -577,8 +577,14 @@ class CustomerWeeklyKPIItemView(generics.RetrieveUpdateAPIView):
                     date=self.kwargs.get("date"))
             return obj
 
-
-
+	def partial_update(self, request, *args, **kwargs):
+            obj, created = CustomerWeeklyKPI.objects.get_or_create(customer=kwargs["name"], date=kwargs["date"])
+	    date = datetime.datetime.strptime(kwargs["date"],"%Y-%m-%d")
+            if date <= datetime.datetime.today():
+                obj.archived = True
+                obj.save()
+	    ret = super(CustomerWeeklyKPIItemView, self).partial_update(request, args,kwargs)
+            return ret
 
 class CoachKPI(APIView):
         def getkpi(self,enddate,queryset):
