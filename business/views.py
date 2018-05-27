@@ -1210,6 +1210,18 @@ class GymGroupCourseDayList(generics.ListCreateAPIView):
 		ret = GroupCourseInstance.objects.filter(gym=self.kwargs.get("pk"),date=date.date())
 		return ret
 
+class GymGroupCourseWeekList(generics.ListAPIView):
+	serializer_class = GroupCourseInstanceSerializer
+	pagination_class = None
+	def get_queryset(self):
+		start_date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
+                end_date = start_date + datetime.timedelta( days = 7)
+		ret = GroupCourseInstance.objects.filter(gym=self.kwargs.get("pk"),
+                        date__range=[start_date.date(), end_date.date()])
+                print ret.query
+		return ret
+
+
 class GymSurveyList(generics.ListCreateAPIView):
 	serializer_class = SurveySerializer
         pagination_class = None

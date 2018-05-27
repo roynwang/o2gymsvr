@@ -156,7 +156,11 @@
                     </span>
                     <p class="todo-title" style="margin-left:20px">
 					{{timemap[c.hour]}} | {{c.course_detail.title}} | {{c.coach_detail.displayname}}<br>
-					<strong ng-repeat="b in c.booked" style="padding-left:4px">{{b.customer_detail.displayname}}</strong>
+					<strong ng-repeat="b in c.booked" style="padding-left:4px" ng-click="showCancel(b)">
+						{{ !b.canceling ? b.customer_detail.displayname : ""}}
+						<span ng-show="b.canceling" style="background:#4fd2c2;color:white"
+							ng-click="cancelGroupCourse(b)">取消</span>
+					</strong>
                     </p>
                     <div class="todo-actionlist pull-right clearfix">
                         <a ng-click="removeCourse(c)" href="javascript:;" class="todo-remove"><i class="ico-close"></i></a>

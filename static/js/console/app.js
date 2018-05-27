@@ -895,6 +895,17 @@ app.factory("$groupcoursesvc", function(Restangular) {
                 onsuccess && onsuccess(data)
             })
     }
+    function weekschedule(day, onsuccess) {
+        var gymid = $.cookie("gym")
+        Restangular.one('api/g/', gymid)
+            .one("groupcourseinstance", day)
+			.one("week")
+            .get()
+            .then(function(data) {
+                onsuccess && onsuccess(data)
+            })
+    }
+
 
     function create(onsuccess) {
         var gymid = $.cookie("gym")
@@ -926,6 +937,7 @@ app.factory("$groupcoursesvc", function(Restangular) {
         courselist: courselist,
         create: create,
         dayschedule: dayschedule,
+        weekschedule: weekschedule,
         createcourseinstance: createcourseinstance,
         book: book,
         cancel: cancel,
@@ -3626,8 +3638,8 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
     }
 ])
 
-app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state", "$todosvc", "SweetAlert", "$groupcoursesvc",
-        function($scope, Restangular, $customersvc, $state, $todosvc, SweetAlert, $groupcoursesvc) {
+app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state", "$todosvc", "SweetAlert", "$groupcoursesvc","$timeout",
+        function($scope, Restangular, $customersvc, $state, $todosvc, SweetAlert, $groupcoursesvc, $timeout) {
             var that = this
             $scope.day_str = new Date().Format("yyyy-MM-dd");
             var date = new Date().Format("yyyyMMdd");
@@ -3894,6 +3906,43 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                     renderTodo()
                 }
             }
+
+			$scope.showCancel = function(book){
+				book.canceling = true
+                $timeout(function(){
+					book.canceling = false
+				}, 2000)
+			}
+			$scope.cancelGroupCourse = function(book){
+            swal({
+                    title: "取消预约",
+                    text: "确认取消预约吗",
+                    type: "warning",
+                    showLoaderOnConfirm: true,
+                    showCancelButton: true,
+                    confirmButtonText: "确定",
+                    cancelButtonText: "取消",
+                    closeOnConfirm: false,
+                },
+                function(yes) {
+                    if (!yes) {
+                        return
+                    }
+                    $groupcoursesvc.cancel(book, function() {
+                        swal({
+                            title: "成功",
+                            text: "修改已保存",
+                            type: "success",
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+							$timeout(function() {
+	                                renderGroupCourse()
+								}, 1000)
+                    })
+                })
+
+			}
             recur()
         }
     ]) // end controller
@@ -4828,6 +4877,8 @@ app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$s
         that.day = new Date();
         that.day_str = that.day.Format("yyyy-MM-dd")
         that.dayschedule = []
+		that.groupedweekschedule = {"test":"xxxx"}
+		that.groupeddays = []
         that.addschedule = function() {
             $state.transitionTo("newgroupcourse")
         }
@@ -4966,8 +5017,16 @@ app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$s
         }
 
         that.refreshdayschedule = function() {
-            $groupcoursesvc.dayschedule(that.day_str.replace(/-/g, ""), function(data) {
+            $groupcoursesvc.weekschedule(that.day_str.replace(/-/g, ""), function(data) {
                 that.dayschedule = data
+				that.groupedweekschedule = {}
+				_.each(data, function(item){
+					if(!that.groupedweekschedule[item.date]){
+						that.groupedweekschedule[item.date] = []
+					}
+					that.groupedweekschedule[item.date].push(item)
+				})
+				that.groupeddays = Object.keys(that.groupedweekschedule)
             })
         }
         that.cancelcourse = function(course) {
