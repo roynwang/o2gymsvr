@@ -40,7 +40,7 @@ class SimpleUserSerilaizer(serializers.ModelSerializer):
 		return pinyin.get_initial(obj.displayname)
         
         def get_avatar(self, obj):
-            if obj.custom_avatar != '':
+            if obj.custom_avatar and obj.custom_avatar != '':
                 return obj.custom_avatar
             return obj.avatar
 
@@ -113,7 +113,7 @@ class UserSerializer(serializers.ModelSerializer):
 		return ret
 
         def get_avatar(self, obj):
-            if obj.custom_avatar != '':
+            if obj.custom_avatar and obj.custom_avatar != '':
                 return obj.custom_avatar
             return obj.avatar
 
