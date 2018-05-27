@@ -97,6 +97,7 @@ class UserSerializer(serializers.ModelSerializer):
 	gym_id = serializers.PrimaryKeyRelatedField(source="gym",many=True,read_only=True)
 	upped_person = serializers.StringRelatedField(many=True, read_only=True)
 	corps_list = serializers.SerializerMethodField()
+	avatar = serializers.SerializerMethodField()
 	class Meta:
 		model = User
 		#exclude = ("upped","fwded","commented")
