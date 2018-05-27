@@ -192,6 +192,8 @@ class User(models.Model):
 
 	train_comments = models.CharField(max_length=512, default="",blank=True)
 
+        custom_avatar = models.CharField(max_length=512, default="",blank=True)
+
         def get_coach_gym(self):
             return self.gym.all()[0]
 

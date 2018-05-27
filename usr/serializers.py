@@ -31,11 +31,18 @@ class UserRegisterationSerializer(serializers.ModelSerializer):
 
 class SimpleUserSerilaizer(serializers.ModelSerializer):
 	pinyin = serializers.SerializerMethodField()
+	avatar = serializers.SerializerMethodField()
 	class Meta:
 		model = User
 		exclude = ("upped","fwded","commented","upped_person")
+
 	def get_pinyin(self, obj):
 		return pinyin.get_initial(obj.displayname)
+        
+        def get_avatar(self, obj):
+            if obj.custom_avatar != '':
+                return obj.custom_avatar
+            return obj.avatar
 
 class SimpleUserWithLastDateSerilaizer(serializers.ModelSerializer):
 	pinyin = serializers.SerializerMethodField()
@@ -103,6 +110,11 @@ class UserSerializer(serializers.ModelSerializer):
 		for corp in corps:
 			ret.append({"k":corp, "v":unicode(Gym.objects.get(id=corp))})
 		return ret
+
+        def get_avatar(self, obj):
+            if obj.custom_avatar != '':
+                return obj.custom_avatar
+            return obj.avatar
 
 
 class FeedSerializer(serializers.ModelSerializer):
