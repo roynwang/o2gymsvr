@@ -229,7 +229,7 @@ class User(models.Model):
                 return (0, 0)
             last_eval = evals[0]
             today = datetime.date.today()
-            delta_day = 30 - (today - last_eval.date).days
+            delta_day = 40 - (today - last_eval.date).days
             delta_train = 8 - self.booked_time.filter(date__gt=last_eval.date, done=True).count()
             if delta_day < 0:
                 delta_day = 0
@@ -248,13 +248,15 @@ class User(models.Model):
                     return
                 last_eval = evals[0]
                 delta = schedule.date - last_eval.date 
-                if delta.days > 30:
+                if delta.days > 40:
                     require_measure = True
+                '''
                 else:
                     times = self.booked_time.filter(date__gt=last_eval.date).count()
                     if times < 8:
                         return
                     require_measure = True
+                '''
 
             #3 send all in the gym
             order = self.booked_time.order_by("-date")[0].order
