@@ -2944,7 +2944,7 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
         }
 
         that.submit = function() {
-            if (that.newrow.cate != "资金注入") {
+            if (that.newrow.cate != "资金注入" && that.newrow.amount > 0 ) {
                 that.newrow.amount *= -1
             }
             SweetAlert.swal({
