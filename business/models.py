@@ -32,6 +32,7 @@ class Finance(models.Model):
         memo = models.CharField(max_length=512, blank=True, default="")
 	created = models.DateTimeField(auto_now=True)
 	reimburse = models.BooleanField(default=False)
+	reimburse_done = models.BooleanField(default=True)
 
 class Flow(models.Model):
 	id = models.AutoField(primary_key=True)
