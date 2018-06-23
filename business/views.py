@@ -46,7 +46,7 @@ class ReimbursementList(generics.ListAPIView):
         def get_queryset(self):
             name = self.kwargs.get("name")
             usr = get_object_or_404(User, name=name)
-            return Finance.objects.filter(by=usr.displayname).order_by("-date").limit(30)
+            return Finance.objects.filter(by=usr.displayname).order_by("-date")[0:30]
 
 class FinanceList(generics.ListCreateAPIView):
 	serializer_class = FinanceSerializer
