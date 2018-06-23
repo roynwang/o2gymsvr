@@ -39,7 +39,14 @@ class ChargePricingList(generics.ListAPIView):
             gym = self.kwargs.get("pk")
             return ChargePricing.objects.filter(gym=gym)
 
+class ReimbursementList(generics.ListAPIView):
+	serializer_class = FinanceSerializer
+	pagination_class = None
 
+        def get_queryset(self):
+            name = self.kwargs.get("name")
+            usr = get_object_or_404(User, name=name)
+            return Finance.objects.filter(by=usr.displayname).order_by("-date").limit(30)
 
 class FinanceList(generics.ListCreateAPIView):
 	serializer_class = FinanceSerializer
