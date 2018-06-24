@@ -50,6 +50,7 @@ class ReimbursementList(generics.ListAPIView):
 
 class GymReimbursementList(generics.ListCreateAPIView):
 	serializer_class = FinanceSerializer
+	pagination_class = None
 
         def get_queryset(self):
             startdate = self.request.GET["start"]
