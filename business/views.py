@@ -48,6 +48,19 @@ class ReimbursementList(generics.ListAPIView):
             usr = get_object_or_404(User, name=name)
             return Finance.objects.filter(by=usr.displayname,cate="运营支出",reimburse=True).order_by("-date")[0:30]
 
+class GymReimbursementList(generics.ListCreateAPIView):
+	serializer_class = FinanceSerializer
+
+        def get_queryset(self):
+            startdate = self.request.GET["start"]
+            enddate = self.request.GET["end"]
+            pk = self.kwargs.get("pk")
+            startday = datetime.datetime.strptime(startdate,"%Y%m%d")
+            endday = datetime.datetime.strptime(enddate,"%Y%m%d")
+            allitems = Finance.objects.filter(gym=int(pk), reimburse=True, date__range=[ startday,endday]).order_by("-date")
+            return allitems
+
+
 class FinanceList(generics.ListCreateAPIView):
 	serializer_class = FinanceSerializer
 	pagination_class = None
