@@ -2933,7 +2933,8 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
             by: $.cookie("displayname"),
             op: $.cookie("displayname"),
             gym: gymid,
-            reimburse: 0
+            reimburse: 0,
+			reimburse_done: 0
         }
         that.edit = function(row) {
             that.tasks = $finance.editTask(row)
@@ -2947,6 +2948,7 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
             if (that.newrow.cate != "资金注入" && that.newrow.amount > 0 ) {
                 that.newrow.amount *= -1
             }
+			that.newrow.reimburse_done = that.newrow.reimburse
             SweetAlert.swal({
                     title: "提交",
                     text: "为保证数据准确，提交后不能更改，确认提交吗?",
