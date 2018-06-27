@@ -895,11 +895,12 @@ app.factory("$groupcoursesvc", function(Restangular) {
                 onsuccess && onsuccess(data)
             })
     }
+
     function weekschedule(day, onsuccess) {
         var gymid = $.cookie("gym")
         Restangular.one('api/g/', gymid)
             .one("groupcourseinstance", day)
-			.one("week")
+            .one("week")
             .get()
             .then(function(data) {
                 onsuccess && onsuccess(data)
@@ -1045,19 +1046,26 @@ app.factory("$customersvc", function(Restangular) {
     var customers = []
 
     function getcustomers(onsuccess, force) {
-        if (force == true || customers.length == 0) {
-            var gymid = $.cookie("gym")
-            var that = this
-            Restangular.one('api/g/', gymid)
-                .one("customers/")
-                .get()
-                .then(function(data) {
-                    customers = data
+        var that = this
+        var execution = function() {
+            let gid = $.cookie("gym")
+            if (!gid) {
+                setTimeout(execution, 5000);
+            } else {
+                if (force == true || customers.length == 0) {
+                    Restangular.one('api/g/', gid)
+                        .one("customers/")
+                        .get()
+                        .then(function(data) {
+                            customers = data
+                            onsuccess && onsuccess(customers)
+                        })
+                } else {
                     onsuccess && onsuccess(customers)
-                })
-        } else {
-            onsuccess && onsuccess(customers)
+                }
+            }
         }
+        execution();
     }
 
     function gettrialcustomers(onsuccess, force) {
@@ -1440,10 +1448,10 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                 })
         }
         that.addDays = function() {
-			var gymid = $.cookie("gym")
+            var gymid = $.cookie("gym")
             that.tasks = {
                 title: "延期",
-                url: "/api/"+$stateParams.customername+"/g/" + gymid + "/balance/",
+                url: "/api/" + $stateParams.customername + "/g/" + gymid + "/balance/",
                 method: "PATCH",
                 tasks: [{
                     type: "date",
@@ -1452,16 +1460,16 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                     value: that.summary.group_enddate
                 }]
             }
-			that.tasks.callback = function(){
-				that.refreshBalance()
-			}
+            that.tasks.callback = function() {
+                that.refreshBalance()
+            }
             that.tasks.show = true
         }
         that.modifyBalance = function() {
-			var gymid = $.cookie("gym")
+            var gymid = $.cookie("gym")
             that.tasks = {
                 title: "修改余额",
-                url: "/api/"+$stateParams.customername+"/g/" + gymid + "/balance/",
+                url: "/api/" + $stateParams.customername + "/g/" + gymid + "/balance/",
                 method: "PATCH",
                 tasks: [{
                     type: "shorttext",
@@ -1470,9 +1478,9 @@ app.controller("CustomerOrdersCtrl", ['$scope', "Restangular", "NgTableParams", 
                     value: that.summary.balance
                 }]
             }
-			that.tasks.callback = function(){
-				that.refreshBalance()
-			}
+            that.tasks.callback = function() {
+                that.refreshBalance()
+            }
             that.tasks.show = true
         }
 
@@ -2934,7 +2942,7 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
             op: $.cookie("displayname"),
             gym: gymid,
             reimburse: 0,
-			reimburse_done: 0
+            reimburse_done: 0
         }
         that.edit = function(row) {
             that.tasks = $finance.editTask(row)
@@ -2945,10 +2953,10 @@ app.controller("FinanceCtrl", ['$scope', "Restangular", "NgTableParams", "$login
         }
 
         that.submit = function() {
-            if (that.newrow.cate != "资金注入" && that.newrow.amount > 0 ) {
+            if (that.newrow.cate != "资金注入" && that.newrow.amount > 0) {
                 that.newrow.amount *= -1
             }
-			that.newrow.reimburse_done = that.newrow.reimburse
+            that.newrow.reimburse_done = that.newrow.reimburse
             SweetAlert.swal({
                     title: "提交",
                     text: "为保证数据准确，提交后不能更改，确认提交吗?",
@@ -3312,7 +3320,7 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
 
 
         function refresh() {
-			that.loading = true
+            that.loading = true
 
             that.startday = new Date(Date.parse(that.startday_str))
             that.endday = new Date(Date.parse(that.endday_str))
@@ -3370,16 +3378,16 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                 })
 
 
-			Restangular.one('api/g', gymid )
-				.customGETLIST('saledetailbycoach',{
+            Restangular.one('api/g', gymid)
+                .customGETLIST('saledetailbycoach', {
                     start: that.startday.Format("yyyyMMdd"),
                     end: that.endday.Format("yyyyMMdd")
                 })
-				.then(function(data){
+                .then(function(data) {
 
-					that.loading = false
-					$scope.saledetailbycoach = data
-					_.each(data, function(item){
+                    that.loading = false
+                    $scope.saledetailbycoach = data
+                    _.each(data, function(item) {
                         that.sumstatus.salesum += item.sold_price
                         that.sumstatus.salecount += item.sold_count
                         that.sumstatus.saleprice = that.sumstatus.salesum / that.sumstatus.salecount
@@ -3392,15 +3400,15 @@ app.controller("CoachSaleCtrl", ['$scope', "Restangular", "NgTableParams", "$log
                         that.coachchart.data[0].push(item.sold_count)
                         that.coachchart.data[1].push(item.completed_course)
 
-					})
-				})
-					
+                    })
+                })
+
 
             Restangular.one('api/g', gymid).get().then(function(gym) {
                 $scope.coaches = gym.coaches_set
-				
 
-				/*
+
+                /*
                 $.each($scope.coaches, function(i, item) {
                     //render income
                     Restangular.one("api/", item.name).one("income/").get({
@@ -3640,7 +3648,7 @@ app.controller("SalarySettingCtrl", ['$scope', "Restangular", "NgTableParams", "
     }
 ])
 
-app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state", "$todosvc", "SweetAlert", "$groupcoursesvc","$timeout",
+app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state", "$todosvc", "SweetAlert", "$groupcoursesvc", "$timeout",
         function($scope, Restangular, $customersvc, $state, $todosvc, SweetAlert, $groupcoursesvc, $timeout) {
             var that = this
             $scope.day_str = new Date().Format("yyyy-MM-dd");
@@ -3909,42 +3917,42 @@ app.controller("MainPageCtrl", ['$scope', "Restangular", "$customersvc", "$state
                 }
             }
 
-			$scope.showCancel = function(book){
-				book.canceling = true
-                $timeout(function(){
-					book.canceling = false
-				}, 2000)
-			}
-			$scope.cancelGroupCourse = function(book){
-            swal({
-                    title: "取消预约",
-                    text: "确认取消预约吗",
-                    type: "warning",
-                    showLoaderOnConfirm: true,
-                    showCancelButton: true,
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
-                    closeOnConfirm: false,
-                },
-                function(yes) {
-                    if (!yes) {
-                        return
-                    }
-                    $groupcoursesvc.cancel(book, function() {
-                        swal({
-                            title: "成功",
-                            text: "修改已保存",
-                            type: "success",
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
-							$timeout(function() {
-	                                renderGroupCourse()
-								}, 1000)
+            $scope.showCancel = function(book) {
+                book.canceling = true
+                $timeout(function() {
+                    book.canceling = false
+                }, 2000)
+            }
+            $scope.cancelGroupCourse = function(book) {
+                swal({
+                        title: "取消预约",
+                        text: "确认取消预约吗",
+                        type: "warning",
+                        showLoaderOnConfirm: true,
+                        showCancelButton: true,
+                        confirmButtonText: "确定",
+                        cancelButtonText: "取消",
+                        closeOnConfirm: false,
+                    },
+                    function(yes) {
+                        if (!yes) {
+                            return
+                        }
+                        $groupcoursesvc.cancel(book, function() {
+                            swal({
+                                title: "成功",
+                                text: "修改已保存",
+                                type: "success",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            $timeout(function() {
+                                renderGroupCourse()
+                            }, 1000)
+                        })
                     })
-                })
 
-			}
+            }
             recur()
         }
     ]) // end controller
@@ -4879,8 +4887,10 @@ app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$s
         that.day = new Date();
         that.day_str = that.day.Format("yyyy-MM-dd")
         that.dayschedule = []
-		that.groupedweekschedule = {"test":"xxxx"}
-		that.groupeddays = []
+        that.groupedweekschedule = {
+            "test": "xxxx"
+        }
+        that.groupeddays = []
         that.addschedule = function() {
             $state.transitionTo("newgroupcourse")
         }
@@ -5021,14 +5031,14 @@ app.controller("GroupCourseCtrl", ['$scope', "Restangular", "NgTableParams", "$s
         that.refreshdayschedule = function() {
             $groupcoursesvc.weekschedule(that.day_str.replace(/-/g, ""), function(data) {
                 that.dayschedule = data
-				that.groupedweekschedule = {}
-				_.each(data, function(item){
-					if(!that.groupedweekschedule[item.date]){
-						that.groupedweekschedule[item.date] = []
-					}
-					that.groupedweekschedule[item.date].push(item)
-				})
-				that.groupeddays = Object.keys(that.groupedweekschedule)
+                that.groupedweekschedule = {}
+                _.each(data, function(item) {
+                    if (!that.groupedweekschedule[item.date]) {
+                        that.groupedweekschedule[item.date] = []
+                    }
+                    that.groupedweekschedule[item.date].push(item)
+                })
+                that.groupeddays = Object.keys(that.groupedweekschedule)
             })
         }
         that.cancelcourse = function(course) {
