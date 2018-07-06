@@ -7,6 +7,10 @@ class ChargePricingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ChargePricing
 
+class InvoiceSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Invoice
+
 
 class FinanceSerializer(serializers.ModelSerializer):
 	class Meta:

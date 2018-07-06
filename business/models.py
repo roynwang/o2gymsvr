@@ -18,6 +18,17 @@ class ChargePricing(models.Model):
         gift = models.IntegerField()
 
 
+class Invoice(models.Model):
+	id = models.AutoField(primary_key=True)
+        gym = models.IntegerField()
+	date = models.DateField()
+	op = models.CharField(max_length=128)
+        cate = models.CharField(max_length=128)
+        customer = models.CharField(max_length=128)
+        amount = models.IntegerField()
+        taxid = models.CharField(max_length=128)
+	done = models.BooleanField(default=False)
+
 # Create your models here.
 class Finance(models.Model):
 	id = models.AutoField(primary_key=True)
