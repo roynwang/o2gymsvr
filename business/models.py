@@ -25,6 +25,7 @@ class Invoice(models.Model):
 	op = models.CharField(max_length=128)
         cate = models.CharField(max_length=128)
         customer = models.CharField(max_length=128)
+        header = models.CharField(max_length=128)
         amount = models.IntegerField()
         taxid = models.CharField(max_length=128)
 	done = models.BooleanField(default=False)
