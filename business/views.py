@@ -561,9 +561,11 @@ class CustomerKPIDetailView(APIView):
                     done=True,coursetype__in=['normal','charge'])
             schedules_count = schedules.count()
             customer_group = schedules.values('custom__displayname','custom__name').annotate(total=Count('id'))
+            customers = schedules.values_list("custom__name",flat=True).distinct()
 
-            archived = CustomerWeeklyKPI.objects.filter(coach=usr.name,date=enddate)
+            archived = CustomerWeeklyKPI.objects.filter(customer__in=customers, date=enddate)
             if archived.filter(archived=True).count() <= len(customer_group):
+                print "xxxxxxxxxxxxxxxxxxxx"
                 is_end = False
                 if enddate < datetime.datetime.today():
                     is_end = True
@@ -582,8 +584,7 @@ class CustomerKPIDetailView(APIView):
                                     defaults={"archived":is_end, 'actual_times':actual_times, 'coach':usr.name})
 
             
-            queryset = archived.filter(coach=usr.name, date=enddate)
-            serializer = CustomerWeeklyKPISerializer(queryset, many=True)
+            serializer = CustomerWeeklyKPISerializer(archived, many=True)
 
             startdatestr = datetime.date.strftime(startdate, "%m/%d")
             enddatestr = datetime.date.strftime(enddate, "%m/%d")
@@ -1526,11 +1527,6 @@ class HomeworkListView(generics.ListCreateAPIView):
             customer = self.kwargs.get("name")
             return Homework.objects.filter(customer=customer)
 
-        '''
-	def create(self, request, *args, **kwargs):
-            print request.data
-        '''
-
 class HomeworkItemView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Homework.objects.all()
 	serializer_class = HomeworkSerializer 
@@ -1538,4 +1534,21 @@ class HomeworkItemView(generics.RetrieveUpdateDestroyAPIView):
 class FinanceItemView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Finance.objects.all()
 	serializer_class = FinanceSerializer
+
+class InvoiceItemView(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Invoice.objects.all()
+	serializer_class = InvoiceSerializer
+
+class GymInvoiceList(generics.ListCreateAPIView):
+	serializer_class = InvoiceSerializer
+	pagination_class = None
+
+        def get_queryset(self):
+            startdate = self.request.GET["start"]
+            enddate = self.request.GET["end"]
+            pk = self.kwargs.get("pk")
+            startday = datetime.datetime.strptime(startdate,"%Y%m%d")
+            endday = datetime.datetime.strptime(enddate,"%Y%m%d")
+            allitems = Invoice.objects.filter(gym=int(pk), date__range=[ startday,endday]).order_by("-date")
+            return allitems
 
