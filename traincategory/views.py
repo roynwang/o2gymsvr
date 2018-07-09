@@ -89,10 +89,15 @@ class NewSimpleWorkoutActionList(generics.ListCreateAPIView):
 	serializer_class = NewSimpleWorkoutActionSerializer 
 	pagination_class = None
         queryset = NewSimpleWorkoutAction.objects.all()
-        '''
+
+class CustomerTargetList(generics.ListCreateAPIView):
+	serializer_class = CustomerTargetSerializer 
+	pagination_class = None
         def get_queryset(self):
-            t = WorkoutAction.objects.all()
-            for i in t:
-                SimpleWorkoutAction.objects.create(name=i.name)
-        '''
+            return CustomerTarget.objects.filter(customer=self.kwargs.get("customer"))
+
+class CustomerTargetItem(generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = CustomerTargetSerializer
+        lookup_field = "pk"
+        queryset = CustomerTarget.objects.all()
 

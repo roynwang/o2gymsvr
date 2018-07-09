@@ -2,6 +2,10 @@ from rest_framework import serializers
 from .models import *
 import pinyin
 
+class CustomerTargetSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = CustomerTarget
+
 class WorkoutCategeorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = WorkoutCategeory
