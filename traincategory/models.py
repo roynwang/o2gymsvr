@@ -48,3 +48,13 @@ class CustomerWorkoutValue(models.Model):
 	comments = models.CharField(max_length=128, default="")
 	workoutid = models.IntegerField()
 
+class CustomerTarget(models.Model):
+	id = models.AutoField(primary_key=True)
+	customer = models.CharField(max_length=32)
+	coach = models.CharField(max_length=32)
+        target = models.CharField(max_length=256)
+	created_date = models.DateField()
+	finished_date = models.DateField(null=True, blank=True)
+        duration = models.IntegerField()
+        rate = models.IntegerField()
+
