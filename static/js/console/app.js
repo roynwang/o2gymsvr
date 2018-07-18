@@ -4316,6 +4316,7 @@ app.controller("ExpCustomerCtrl", ["$scope", "Restangular", "$stateParams", "$st
 
         }
         that.savecustomer = function() {
+			that.newcustomer.name = ""
             Restangular.one("api")
                 .post("u", that.newcustomer)
                 .then(function(resp) {
