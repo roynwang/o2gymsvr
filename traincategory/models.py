@@ -67,5 +67,5 @@ class KanbanTask(models.Model):
 	start_date = models.DateField(null=True, blank=True)
 	finish_date = models.DateField(null=True, blank=True)
         point = models.IntegerField()
-        owner = models.CharField(max_length=32)
+        owner = models.CharField(max_length=32, null=True, blank=True)
 
