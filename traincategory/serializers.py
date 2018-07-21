@@ -6,6 +6,10 @@ class CustomerTargetSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CustomerTarget
 
+class KanbanTaskSerializer(serializers.ModelSerializer):
+	class Meta:
+            model = KanbanTask
+
 class WorkoutCategeorySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = WorkoutCategeory

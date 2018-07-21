@@ -16,4 +16,6 @@ urlpatterns = patterns('',
                 url(r'^api/(?P<customer>[0-9]{11})/sw/(?P<workoutid>[0-9]+)/$', CustomerWorkoutValueItem.as_view()),
                 url(r'^api/(?P<customer>[0-9]{11})/targets/$', CustomerTargetList.as_view()),
                 url(r'^api/target/(?P<pk>[0-9]+)/$', CustomerTargetItem.as_view()),
+                url(r'^api/g/(?P<gymid>[0-9]+)/kanban/$', KanbanTaskList.as_view()),
+                url(r'^api/kanban/(?P<pk>[0-9]+)/$', KanbanTaskItem.as_view()),
 		)
