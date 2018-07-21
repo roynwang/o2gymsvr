@@ -58,3 +58,14 @@ class CustomerTarget(models.Model):
         duration = models.IntegerField()
         rate = models.IntegerField()
 
+class KanbanTask(models.Model):
+	id = models.AutoField(primary_key=True)
+	gym = models.IntegerField()
+	request_by = models.CharField(max_length=32)
+        content = models.CharField(max_length=1024)
+	create_date = models.DateField()
+	start_date = models.DateField(null=True, blank=True)
+	finish_date = models.DateField(null=True, blank=True)
+        point = models.IntegerField()
+        owner = models.CharField(max_length=32)
+

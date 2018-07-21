@@ -101,3 +101,14 @@ class CustomerTargetItem(generics.RetrieveUpdateDestroyAPIView):
         lookup_field = "pk"
         queryset = CustomerTarget.objects.all()
 
+class KanbanTaskList(generics.ListCreateAPIView):
+	serializer_class = KanbanTaskSerializer
+	pagination_class = None
+        def get_queryset(self):
+            return KanbanTask.objects.filter(gym=self.kwargs.get("gymid"))
+
+class KanbanTaskItem(generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = KanbanTaskSerializer
+        lookup_field = "pk"
+        queryset = KanbanTask.objects.all()
+
