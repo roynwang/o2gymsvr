@@ -59,9 +59,9 @@ class GymReimbursementList(generics.ListCreateAPIView):
             startday = datetime.datetime.strptime(startdate,"%Y%m%d")
             endday = datetime.datetime.strptime(enddate,"%Y%m%d")
             if pk == 19 or pk == 31:
-                allitems = Invoice.objects.filter(gym__in=[19, 31], reimburse=True, date__range=[ startday,endday]).order_by("-date")
+                allitems = Finance.objects.filter(gym__in=[19, 31], reimburse=True, date__range=[ startday,endday]).order_by("-date")
             else:
-                allitems = Invoice.objects.filter(gym=pk, reimburse=True, date__range=[ startday,endday]).order_by("-date")
+                allitems = Finance.objects.filter(gym=pk, reimburse=True, date__range=[ startday,endday]).order_by("-date")
             return allitems
 
 
