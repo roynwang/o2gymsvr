@@ -1546,9 +1546,12 @@ class GymInvoiceList(generics.ListCreateAPIView):
         def get_queryset(self):
             startdate = self.request.GET["start"]
             enddate = self.request.GET["end"]
-            pk = self.kwargs.get("pk")
+            pk = int(self.kwargs.get("pk"))
             startday = datetime.datetime.strptime(startdate,"%Y%m%d")
             endday = datetime.datetime.strptime(enddate,"%Y%m%d")
-            allitems = Invoice.objects.filter(gym=int(pk), date__range=[ startday,endday]).order_by("-date")
+            if pk == 19 or pk == 31:
+                allitems = Invoice.objects.filter(gym__in=[19, 31], date__range=[ startday,endday]).order_by("-date")
+            else:
+                allitems = Invoice.objects.filter(gym=pk, date__range=[ startday,endday]).order_by("-date")
             return allitems
 
