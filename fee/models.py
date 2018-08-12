@@ -1,6 +1,8 @@
+# coding=utf-8
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from usr.models import *
 from business.models import *
 
 # Create your models here.
@@ -119,4 +121,14 @@ class SalaryReceipt(models.Model):
 
 
         def to_finance(self):
-            pass
+            usr = get_object_or_404("usr.User", name=self.name)
+            memo = usr.displayname + "  " + self.year + "/" + self.month + "  " + self.final
+            Finance.objects.create(gym=gym, \
+                    date = datetime.datetime.today(),
+                    brief = memo,
+                    by = 'system',
+                    op = 'system',
+                    cate = '工资支出',
+                    amount = int(self.final),
+                    channel = '现金',
+                    memo = 'auto archieve')
