@@ -82,7 +82,8 @@ class SalaryReceipt(models.Model):
 
                 ##############
                 enddate = enddate - datetime.timedelta(days=1)
-                average.append(float(coursecount)/len(customers))
+                if len(customers) != 0 :
+                    average.append(float(coursecount)/len(customers))
                 
             return sorted(average)[-1] * 0.95
 
