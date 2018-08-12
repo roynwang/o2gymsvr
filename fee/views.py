@@ -17,6 +17,44 @@ def add_months(sourcedate,months):
 	day = min(sourcedate.day,calendar.monthrange(year,month)[1])
 	return datetime.date(year,month,day)
 
+# Create your views here.
+class SalaryReceiptList(generics.ListAPIView):
+	pagination_class = None
+	serializer_class = SalaryReceiptSerializer
+	def get_queryset(self):
+            #get all coach
+	    gym = Gym.objects.get(id = self.kwargs["gymid"])
+            for coach in gym.coaches.all():
+                r, created = SalaryReceipt.objects.get_or_create( \
+                        name =  coach.name, \
+                        gym = gym.id, \
+                        year = int(self.kwargs["year"]), \
+                        month = int(self.kwargs["month"]))
+                if created:
+                    r.fix_default()
+            return SalaryReceipt.objects.filter( \
+                        gym = gym.id, \
+                        year = int(self.kwargs["year"]), \
+                        month = int(self.kwargs["month"]))
+
+
+class SalaryReceiptItemView(generics.RetrieveUpdateDestroyAPIView):
+	serializer_class = SalaryReceiptSerializer
+	def get_object(self):
+            usr = User.objects.get(name=self.kwargs["name"])
+            gym = usr.get_coach_gym()
+            r, created = SalaryReceipt.objects.get_or_create(name=self.kwargs["name"], \
+                    gym = gym.id, \
+                    year = int(self.kwargs["year"]), \
+                    month = int(self.kwargs["month"]))
+            if created:
+                r.fix_default()
+            return r
+	def partial_update(self, request, *args, **kwargs):
+	    ret = super(SalaryReceiptItemView, self).partial_update(request, args,kwargs)
+            #complete finance item
+            #self.get_object().to_finance()
+            return ret
 
 # Create your views here.
 class GymCoachSalarySettingView(generics.ListAPIView):
