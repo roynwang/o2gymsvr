@@ -15,3 +15,8 @@ class GymFeeSerializer(serializers.ModelSerializer):
 		model = CoachSalarySetting
 
 	
+class SalaryReceiptSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = SalaryReceipt 
+
+
