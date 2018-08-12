@@ -121,9 +121,9 @@ class SalaryReceipt(models.Model):
 
 
         def to_finance(self):
-            usr = get_object_or_404("usr.User", name=self.name)
-            memo = usr.displayname + "  " + self.year + "/" + self.month + "  " + self.final
-            Finance.objects.create(gym=gym, \
+            usr = get_object_or_404(User, name=self.name)
+            memo = usr.displayname + "  " + str(self.year) + "/" + str(self.month) + "  " + str(self.final)
+            Finance.objects.create(gym=self.gym, \
                     date = datetime.datetime.today(),
                     brief = memo,
                     by = 'system',
