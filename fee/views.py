@@ -51,7 +51,7 @@ class SalaryReceiptItemView(generics.RetrieveUpdateDestroyAPIView):
 	def partial_update(self, request, *args, **kwargs):
 	    ret = super(SalaryReceiptItemView, self).partial_update(request, args,kwargs)
             #complete finance item
-            #self.get_object().to_finance()
+            self.get_object().to_finance()
             return ret
 
 # Create your views here.
