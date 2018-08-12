@@ -16,7 +16,15 @@ class GymFeeSerializer(serializers.ModelSerializer):
 
 	
 class SalaryReceiptSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = SalaryReceipt 
+	displayname = serializers.SerializerMethodField()
+	avatar = serializers.SerializerMethodField()
 
+	class Meta:
+            model = SalaryReceipt 
+
+	def get_coachname(self, obj):
+            return User.objects.get(name=obj.name).displayname 
+
+	def get_avatar(self, obj):
+            return User.objects.get(name=obj.name).avatar
 
