@@ -30,8 +30,7 @@ class SalaryReceiptList(generics.ListAPIView):
                         gym = gym.id, \
                         year = int(self.kwargs["year"]), \
                         month = int(self.kwargs["month"]))
-                if created:
-                    r.fix_default()
+                r.fix_default()
             return SalaryReceipt.objects.filter( \
                         gym = gym.id, \
                         year = int(self.kwargs["year"]), \
@@ -47,8 +46,7 @@ class SalaryReceiptItemView(generics.RetrieveUpdateDestroyAPIView):
                     gym = gym.id, \
                     year = int(self.kwargs["year"]), \
                     month = int(self.kwargs["month"]))
-            if created:
-                r.fix_default()
+            r.fix_default()
             return r
 	def partial_update(self, request, *args, **kwargs):
 	    ret = super(SalaryReceiptItemView, self).partial_update(request, args,kwargs)
