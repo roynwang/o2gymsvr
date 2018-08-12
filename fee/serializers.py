@@ -22,7 +22,7 @@ class SalaryReceiptSerializer(serializers.ModelSerializer):
 	class Meta:
             model = SalaryReceipt 
 
-	def get_coachname(self, obj):
+	def get_displayname(self, obj):
             return User.objects.get(name=obj.name).displayname 
 
 	def get_avatar(self, obj):
