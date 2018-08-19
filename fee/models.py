@@ -92,11 +92,10 @@ class SalaryReceipt(models.Model):
         def fix_default(self):
             if self.archived == True:
                 return
-            if self.base == 0:
-                self.base = 2000
-            if self.shebao == 0:
-                self.shebao = 383
-
+            usr = get_object_or_404(User, name=self.name)
+            setting = get_object_or_404(CoachSalarySetting, coach = usr.id)
+            self.base = setting.base_salary
+            self.shebao = 383
 
             #count course
             courses = Schedule.objects.filter(date__year=self.year,
