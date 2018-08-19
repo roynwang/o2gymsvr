@@ -843,7 +843,7 @@ class BodyEvalByOptionView(generics.ListAPIView):
 	serializer_class = BodyEvalSerializer
 	def get_queryset(self):
                 option = self.kwargs.get("option")
-		return BodyEval.objects.filter(name=self.kwargs.get("name"),option=option).order_by("-date")
+		return BodyEval.objects.filter(name=self.kwargs.get("name"),option=option).order_by("date")
 
 
 
