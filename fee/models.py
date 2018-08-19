@@ -107,17 +107,16 @@ class SalaryReceipt(models.Model):
                     done=True)
             self.course_count = courses.count()
             
+
+            self.kpi = self.getkpi()
             #caculate full
             if setting.shangke > 0:
-                self.base += courses.aggregate(Sum('price')) * setting.shangke / 100
+                self.base += courses.aggregate(Sum('price'))['price__sum'] * setting.shangke / 100
 
-            #calc kpi
-            self.kpi = self.getkpi()
-
-            #calc course_fee
-            self.course_fee = 100
+            self.course_fee = setting.fixed_shangke
             if self.kpi >= 6:
-                self.course_fee = 120
+                self.course_fee *= 1.2
+
             '''
             if self.adjustment == 0:
                 pass
