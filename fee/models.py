@@ -108,8 +108,8 @@ class SalaryReceipt(models.Model):
             self.course_count = courses.count()
             
             #caculate full
-            if settings.shangke > 0:
-                self.base += courses.aggregate(Sum('price')) * settings.shangke / 100
+            if setting.shangke > 0:
+                self.base += courses.aggregate(Sum('price')) * setting.shangke / 100
 
             #calc kpi
             self.kpi = self.getkpi()
