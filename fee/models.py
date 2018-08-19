@@ -4,6 +4,7 @@ from django.conf import settings
 from django.utils import timezone
 from usr.models import *
 from business.models import *
+from django.db.models import Sum
 
 # Create your models here.
 def last_day_of_month(date):
@@ -95,6 +96,7 @@ class SalaryReceipt(models.Model):
             usr = get_object_or_404(User, name=self.name)
             setting = get_object_or_404(CoachSalarySetting, coach = usr.id)
             self.base = setting.base_salary
+
             self.shebao = 383
 
             #count course
@@ -104,6 +106,11 @@ class SalaryReceipt(models.Model):
                     coursetype__in=["normal","charge"], 
                     done=True)
             self.course_count = courses.count()
+            
+            #caculate full
+            if settings.shangke > 0:
+                self.base += courses.aggregate(Sum('price')) * settings.shangke / 100
+
             #calc kpi
             self.kpi = self.getkpi()
 
