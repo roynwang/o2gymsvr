@@ -26,7 +26,7 @@ class Refund(models.Model):
 	account = models.CharField(max_length=128)
         done = models.BooleanField(default=False)
 	created_date = models.DateField()
-	finish_date = models.DateField()
+	finish_date = models.DateField(empty=True, null=True, default=None)
 
 
 class Invoice(models.Model):
