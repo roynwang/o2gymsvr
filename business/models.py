@@ -23,7 +23,7 @@ class Refund(models.Model):
 	displayname = models.CharField(max_length=128)
         amount = models.IntegerField(default=0)
         gym = models.IntegerField()
-	account = models.CharField(max_length=128)
+	account = models.CharField(blank=True, max_length=128)
         done = models.BooleanField(default=False)
 	created_date = models.DateField()
 	finish_date = models.DateField(blank=True, null=True, default=None)
