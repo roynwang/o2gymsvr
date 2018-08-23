@@ -39,6 +39,18 @@ class ChargePricingList(generics.ListAPIView):
             gym = self.kwargs.get("pk")
             return ChargePricing.objects.filter(gym=gym)
 
+class RefundList(generics.ListCreateAPIView):
+	serializer_class = RefundSerializer
+	pagination_class = None
+
+        def get_queryset(self):
+            gym = self.kwargs.get("pk")
+            return Refund.objects.filter(gym=gym)
+
+class RefundItem(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Refund.objects.all()
+	serializer_class = RefundSerializer 
+
 class ReimbursementList(generics.ListAPIView):
 	serializer_class = FinanceSerializer
 	pagination_class = None

@@ -3,6 +3,10 @@ from rest_framework import serializers
 from business.models import *
 from usr.serializers import *
 
+class RefundSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Refund
+
 class ChargePricingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ChargePricing

@@ -17,6 +17,17 @@ class ChargePricing(models.Model):
         price = models.IntegerField()
         gift = models.IntegerField()
 
+class Refund(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=128)
+	displayname = models.CharField(max_length=128)
+        amount = models.IntegerField(default=0)
+        gym = models.IntegerField()
+	account = models.CharField(max_length=128)
+        done = models.BooleanField(default=False)
+	created_date = models.DateField()
+	finish_date = models.DateField()
+
 
 class Invoice(models.Model):
 	id = models.AutoField(primary_key=True)
