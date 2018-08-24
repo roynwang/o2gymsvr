@@ -10,6 +10,12 @@ from django.core.cache import cache
 from django.db.models.signals import pre_delete, post_delete, post_save
 from django.dispatch import receiver
 
+class Liveness(models.Model):
+	id = models.AutoField(primary_key=True)
+	name = models.CharField(max_length=64)
+        person_value = models.DecimalField(max_digits=5, decimal_places=2)
+        date = models.DateField()
+        gym = models.IntegerField()
 
 class ChargePricing(models.Model):
 	id = models.AutoField(primary_key=True)
