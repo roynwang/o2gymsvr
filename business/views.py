@@ -102,7 +102,9 @@ class GymCustomerLiveness(APIView):
                     if not created:
                         obj.person_value = v
                         obj.save()
-            return Response(data30, status=status.HTTP_200_OK)
+
+            data60 = self.count_last_train(allschedule, base_day.date(), 60)
+            return Response(data60, status=status.HTTP_200_OK)
 
 class ChargePricingList(generics.ListAPIView):
 	serializer_class = ChargePricingSerializer
