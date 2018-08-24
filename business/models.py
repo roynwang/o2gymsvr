@@ -28,6 +28,18 @@ class Refund(models.Model):
 	created_date = models.DateField()
 	finish_date = models.DateField(blank=True, null=True, default=None)
 
+        def save_to_finance(self):
+            finance = Finance.objects.create(\
+                    gym=self.gym, \
+                    date=self.finish_date, \
+                    brief=self.displayname + '退款', \
+                    cate='用户退款', \
+                    amount=-self.amount, \
+                    channel='其他', \
+                    by='system', \
+                    op='system', \
+                    memo=self.account)
+            return
 
 class Invoice(models.Model):
 	id = models.AutoField(primary_key=True)
