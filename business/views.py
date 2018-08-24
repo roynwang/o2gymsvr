@@ -45,11 +45,19 @@ class RefundList(generics.ListCreateAPIView):
 
         def get_queryset(self):
             gym = self.kwargs.get("pk")
+            if gym == 19 or gym == 31:
+                return Refund.objects.filter(gym__in=[19, 31])
             return Refund.objects.filter(gym=gym)
 
 class RefundItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Refund.objects.all()
 	serializer_class = RefundSerializer 
+
+	def partial_update(self, request, *args, **kwargs):
+            ret = super(RefundItem, self).partial_update(request, args,kwargs)
+            if 'done' in request.data and request.data['done']:
+                self.get_object().save_to_finance()
+            return ret
 
 class ReimbursementList(generics.ListAPIView):
 	serializer_class = FinanceSerializer
