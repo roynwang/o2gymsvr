@@ -45,7 +45,7 @@ class RefundList(generics.ListCreateAPIView):
 
         def get_queryset(self):
             gym = self.kwargs.get("pk")
-            if gym == 19 or gym == 31:
+            if gym == '19' or gym == '31':
                 return Refund.objects.filter(gym__in=[19, 31])
             return Refund.objects.filter(gym=gym).order_by("-created_date")
 
