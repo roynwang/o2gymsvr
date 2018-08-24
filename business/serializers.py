@@ -7,6 +7,15 @@ class RefundSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Refund
 
+class LivenessSerializer(serializers.ModelSerializer):
+        coach_detail = serializers.SerializerMethodField()
+	class Meta:
+		model = Liveness
+        def get_coach_detail(self,obj):
+            c = User.objects.get(name=obj.name)
+	    serializer = SimpleUserSerilaizer(c)
+            return serializer.data
+
 class ChargePricingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = ChargePricing

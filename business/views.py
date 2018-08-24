@@ -32,43 +32,78 @@ from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 class GymCustomerLiveness(APIView):
-        def get(self, request, pk):
+        def count_last_train(self, courses, endday, delta=30):
+            startday = endday - datetime.timedelta(days=delta)
+            ret = {}
+            print courses
+            for s in courses:
+                if s.date >= startday and s.date < endday:
+                    if s.custom.name in ret:
+                        ret[s.custom.name]['last_train_date'] = s.date
+                        ret[s.custom.name]['last_coach_displayname'] = s.coach.displayname
+                        ret[s.custom.name]['last_coach_name'] = s.coach.name
+                        ret[s.custom.name]['train_times'] += 1
+                    else:
+                        tmp = {'last_train_date': s.date, \
+                                'last_coach_displayname': s.coach.displayname, \
+                                'last_coach_name': s.coach.name,\
+                                'name': s.custom.name, \
+                                'displayname': s.custom.displayname, \
+                                'train_times': 1}
+                        ret[s.custom.name] = tmp
+
+            piv_day = endday
+            flatted = []
+            for k in ret:
+                inactive_days = (piv_day - ret[k]['last_train_date']).days
+                if inactive_days >= 0:
+                    ret[k]['inactive_days'] = inactive_days
+                    flatted.append(ret[k])
+            flatted = sorted(flatted, key=lambda c: c['inactive_days'])
+            return flatted
+
+        def calc_coach_value(self, data):
+            coach_v = {}
+            for item in data:
+                if not item['last_coach_name'] in coach_v:
+                    coach_v[item['last_coach_name']] = {'v':0, 'c': 0}
+                coach_v[item['last_coach_name']]['v'] += item['inactive_days']
+                coach_v[item['last_coach_name']]['c'] += 1
+            return coach_v
+
+        def get(self, request, pk, year, month):
             # 1. get gym coaches
             gyminst = Gym.objects.get(id=pk)
             # 2. set start day
 	    today = datetime.datetime.today()
-            startday = today - datetime.timedelta(days=30)
+            day = datetime.datetime(int(year), int(month), 1)
+	    endday = add_months(day,1) - datetime.timedelta(days=1)
+	    startday = endday - datetime.timedelta(days=60)
             # 3. query
             allschedule = Schedule.objects.filter(coach__in=gyminst.coaches.values_list("id",flat=True), \
                     done=True,
-                    date__gte=startday.date()).exclude(coursetype='trial').order_by('date')
-            print allschedule
-            # 4. merge data
-            ret = {}
-            for s in allschedule:
-                if s.custom.name in ret:
-                    ret[s.custom.name]['last_train_date'] = s.date
-                    ret[s.custom.name]['last_coach_displayname'] = s.coach.displayname
-                    ret[s.custom.name]['last_coach_name'] = s.coach.name
-                    ret[s.custom.name]['train_times'] += 1
-                    pass
-                else:
-                    tmp = {'last_train_date': s.date, \
-                            'last_coach_displayname': s.coach.displayname, \
-                            'last_coach_name': s.coach.name,\
-                            'name': s.custom.name, \
-                            'displayname': s.custom.displayname, \
-                            'train_times': 1}
-                    ret[s.custom.name] = tmp
-            flatted = []
-            for k in ret:
-                # 5 is dangerour ?
-                inactive_days = (today.date() - ret[k]['last_train_date']).days
-                ret[k]['inactive_days'] = inactive_days
-                flatted.append(ret[k])
-            flatted = sorted(flatted, key=lambda c: c['inactive_days'])
-            return Response(flatted, status=status.HTTP_200_OK)
-                
+                    date__range=[startday, endday]).exclude(coursetype='trial').order_by('date')
+
+            for i in range(0, 30):
+                base_day = day + datetime.timedelta(days=i)
+
+                if base_day > today:
+                    break
+                data30 = self.count_last_train(allschedule, base_day.date())
+                coach_v = self.calc_coach_value(data30)
+                # 4. merge data
+                for k in coach_v:
+                    v = float(coach_v[k]['v'])/float(coach_v[k]['c'])
+                    obj, created = Liveness.objects.get_or_create(\
+                            name = k, \
+                            date = base_day, \
+                            gym = int(pk), \
+                            defaults = { 'person_value':  v})
+                    if not created:
+                        obj.person_value = v
+                        obj.save()
+            return Response(data30, status=status.HTTP_200_OK)
+
 class ChargePricingList(generics.ListAPIView):
 	serializer_class = ChargePricingSerializer
 	pagination_class = None
