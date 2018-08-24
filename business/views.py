@@ -47,7 +47,7 @@ class RefundList(generics.ListCreateAPIView):
             gym = self.kwargs.get("pk")
             if gym == 19 or gym == 31:
                 return Refund.objects.filter(gym__in=[19, 31])
-            return Refund.objects.filter(gym=gym)
+            return Refund.objects.filter(gym=gym).order_by("-created_date")
 
 class RefundItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Refund.objects.all()
