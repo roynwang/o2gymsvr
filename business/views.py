@@ -41,7 +41,7 @@ class GymCustomerLiveness(APIView):
             # 3. query
             allschedule = Schedule.objects.filter(coach__in=gyminst.coaches.values_list("id",flat=True), \
                     done=True,
-                    date__gte=startday.date()).order_by('date')
+                    date__gte=startday.date()).exclude(coursetype='trial').order_by('date')
             print allschedule
             # 4. merge data
             ret = {}
@@ -56,21 +56,19 @@ class GymCustomerLiveness(APIView):
                     tmp = {'last_train_date': s.date, \
                             'last_coach_displayname': s.coach.displayname, \
                             'last_coach_name': s.coach.name,\
+                            'name': s.custom.name, \
                             'displayname': s.custom.displayname, \
                             'train_times': 1}
                     ret[s.custom.name] = tmp
-
-            return Response(ret, status=status.HTTP_200_OK)
+            flatted = []
+            for k in ret:
+                # 5 is dangerour ?
+                inactive_days = (today.date() - ret[k]['last_train_date']).days
+                ret[k]['inactive_days'] = inactive_days
+                flatted.append(ret[k])
+            flatted = sorted(flatted, key=lambda c: c['inactive_days'])
+            return Response(flatted, status=status.HTTP_200_OK)
                 
-            '''
-            {
-                usrprofile: {}
-                last_train: {}
-                last_coach: {}
-            }
-
-            '''
-
 class ChargePricingList(generics.ListAPIView):
 	serializer_class = ChargePricingSerializer
 	pagination_class = None
