@@ -31,6 +31,46 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
+class GymCustomerLiveness(APIView):
+        def get(self, request, pk):
+            # 1. get gym coaches
+            gyminst = Gym.objects.get(id=pk)
+            # 2. set start day
+	    today = datetime.datetime.today()
+            startday = today - datetime.timedelta(days=30)
+            # 3. query
+            allschedule = Schedule.objects.filter(coach__in=gyminst.coaches.values_list("id",flat=True), \
+                    done=True,
+                    date__gte=startday.date()).order_by('date')
+            print allschedule
+            # 4. merge data
+            ret = {}
+            for s in allschedule:
+                if s.custom.name in ret:
+                    ret[s.custom.name]['last_train_date'] = s.date
+                    ret[s.custom.name]['last_coach_displayname'] = s.coach.displayname
+                    ret[s.custom.name]['last_coach_name'] = s.coach.name
+                    ret[s.custom.name]['train_times'] += 1
+                    pass
+                else:
+                    tmp = {'last_train_date': s.date, \
+                            'last_coach_displayname': s.coach.displayname, \
+                            'last_coach_name': s.coach.name,\
+                            'displayname': s.custom.displayname, \
+                            'train_times': 1}
+                    ret[s.custom.name] = tmp
+
+            return Response(ret, status=status.HTTP_200_OK)
+                
+            '''
+            {
+                usrprofile: {}
+                last_train: {}
+                last_coach: {}
+            }
+
+            '''
+
 class ChargePricingList(generics.ListAPIView):
 	serializer_class = ChargePricingSerializer
 	pagination_class = None
