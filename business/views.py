@@ -35,7 +35,6 @@ class GymCustomerLiveness(APIView):
         def count_last_train(self, courses, endday, delta=30):
             startday = endday - datetime.timedelta(days=delta)
             ret = {}
-            print courses
             for s in courses:
                 if s.date >= startday and s.date < endday:
                     if s.custom.name in ret:
