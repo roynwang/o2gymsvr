@@ -10,6 +10,19 @@ from django.core.cache import cache
 from django.db.models.signals import pre_delete, post_delete, post_save
 from django.dispatch import receiver
 
+
+class CourseReview(models.Model):
+	id = models.AutoField(primary_key=True)
+        course = models.IntegerField()
+        coach = models.CharField(max_length=64, default="")
+        customer = models.CharField(max_length=64, default="")
+        date = models.DateField(default=datetime.date.today)
+        gym = models.IntegerField(default=0)
+        question = models.CharField(max_length=512, blank=True, null=True, default="")
+        anwser = models.IntegerField(default=-1)
+        user_confirmed = models.BooleanField(default=False)
+        coach_review = models.CharField(max_length=512, blank=True, null=True, default="")
+
 class Liveness(models.Model):
 	id = models.AutoField(primary_key=True)
 	name = models.CharField(max_length=64)

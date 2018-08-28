@@ -101,7 +101,6 @@ class GymCustomerLiveness(APIView):
                     if not created:
                         obj.person_value = v
                         obj.save()
-
             data60 = self.count_last_train(allschedule, base_day.date(), 60)
             return Response(data60, status=status.HTTP_200_OK)
 
@@ -302,6 +301,27 @@ class ScheduleComplete(generics.RetrieveAPIView):
             s = get_object_or_404(Schedule, id=sid)
             s.user_confirm()
             return s
+
+class CourseReviewItem(generics.RetrieveUpdateAPIView):
+        serializer_class = CourseReviewSerializer
+        def get_object(self):
+            course_id = int(self.kwargs.get("pk"))
+            ret, created = CourseReview.objects.get_or_create(course=course_id)
+            if created or ret.gym == 0:
+                schedule = get_object_or_404(Schedule, id = course_id)
+                ret.customer = schedule.custom.name
+                ret.coach = schedule.coach.name
+                ret.date = schedule.date
+                ret.gym = schedule.coach.get_coach_gym().id
+                ret.save()
+            return ret
+
+class CustomerCourseReviewList(generics.ListAPIView):
+        serializer_class = CourseReviewSerializer
+        pagination_class = None
+        def get_queryset(self):
+            customer_name = self.kwargs.get("name")
+            return CourseReview.objects.filter(customer=customer_name).order_by('-date')
 
 class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Schedule.objects.all()
