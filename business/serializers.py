@@ -4,8 +4,19 @@ from business.models import *
 from usr.serializers import *
 
 class CourseReviewSerializer(serializers.ModelSerializer):
+        coach_detail = serializers.SerializerMethodField()
+        customer_detail = serializers.SerializerMethodField()
 	class Meta:
 		model = CourseReview
+        def get_coach_detail(self,obj):
+            c = User.objects.get(name=obj.coach)
+	    serializer = SimpleUserSerilaizer(c)
+            return serializer.data
+        def get_customer_detail(self,obj):
+            c = User.objects.get(name=obj.customer)
+	    serializer = SimpleUserSerilaizer(c)
+            return serializer.data
+
 
 class RefundSerializer(serializers.ModelSerializer):
 	class Meta:
