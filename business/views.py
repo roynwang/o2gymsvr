@@ -28,8 +28,30 @@ from traincategory.models import *
 from rest_framework.exceptions import NotAcceptable
 from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
+from random import choice
 
 # Create your views here.
+
+Questions = ["您是否在今天课前收到了训练计划？|收到了|没有", \
+        "这次课程的强度是否过大？|还好|有点大", \
+        "这次课程的强度是否过小？|还好", \
+        "这节课中的教学是否清楚？|挺清楚|不大清楚", \
+        "这节课中您是否感受到了教练的鼓励？|感受到了|并没有", \
+        "这节课中教练是否给您进行了充分的保护？|充分|不清楚/不充分", \
+        "这节课中教练是纠正过您的技术动作？|纠正过|没有", \
+        "这节课中教练是否精神饱满？|是|否", \
+        "这节课是教练主动和您约的吗？|是|不是", \
+        "这节课教练教授了新的动作吗？|有新动作|没有", \
+        "这节课的内容和训练计划一致吗？|一致|不一致/不清楚", \
+        "课后教练是否有协助您拉伸？|有|没有", \
+        "教练是否与您沟通过近期的训练目标？|有|没有", \
+        "教练最近3天是否关注过您饮食？|有|没有", \
+        "教练是否为您提供过具体的饮食建议？|提供过|没有", \
+        "您是否知道教练会定期为您测量身体数据？|知道|不清楚", \
+        "最近上课教练迟到过吗？|没有|迟到过"]
+
+def get_question():
+    return choice(Questions)
 
 class GymCustomerLiveness(APIView):
         def count_last_train(self, courses, endday, delta=30):
@@ -310,6 +332,8 @@ class CourseReviewItem(generics.RetrieveUpdateAPIView):
             if created or ret.gym == 0:
                 schedule = get_object_or_404(Schedule, id = course_id)
                 ret.customer = schedule.custom.name
+                ret.question = get_question()
+                print(ret.question)
                 ret.coach = schedule.coach.name
                 ret.date = schedule.date
                 ret.gym = schedule.coach.get_coach_gym().id
