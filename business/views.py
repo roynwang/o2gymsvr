@@ -321,6 +321,9 @@ class CourseReviewItemPatch(generics.RetrieveUpdateAPIView):
         queryset = CourseReview.objects.all()
         lookup_field = "course"
         def put(self, request, *args, **kwargs):
+            if 'user_confirmed' in request.data and request.data['user_confirmed'] == 1:
+                s = get_object_or_404(Schedule, id=request.data['course'])
+                s.doneBook()
             return self.partial_update(request, *args, **kwargs)
 
 
