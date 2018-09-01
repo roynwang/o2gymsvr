@@ -55,6 +55,7 @@ urlpatterns = patterns('',
 		url(r'^api/s/(?P<pk>[0-9]+)/patch/$',ScheduleDetailItemPatch.as_view()),
 		url(r'^api/s/(?P<pk>[0-9]+)/complete/$',ScheduleComplete.as_view()),
 		url(r'^api/s/(?P<pk>[0-9]+)/review/$',CourseReviewItem.as_view()),
+		url(r'^api/s/(?P<course>[0-9]+)/review/patch/$',CourseReviewItemPatch.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/review/$', CustomerCourseReviewList.as_view()),
 		#schedule day booked items
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/b/(?P<date>[0-9]{8})/$',ScheduleList.as_view()),
