@@ -118,7 +118,7 @@ class SMSGet(generics.CreateAPIView):
 class ForceBindOpenid(APIView):
 	def post(self,request,number):
             usr = User.objects.get(name=number)
-            if "openid" in request.data and usr.openid is None:
+            if "openid" in request.data and (usr.openid is None or usr.openid == ''):
                 usr.openid = request.data["openid"]
                 usr.save()
             return Response({"result":"done"} , status=status.HTTP_200_OK)
