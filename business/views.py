@@ -316,6 +316,14 @@ class CourseReviewItem(generics.RetrieveUpdateAPIView):
                 ret.save()
             return ret
 
+class CourseReviewItemPatch(generics.RetrieveUpdateAPIView):
+        serializer_class = CourseReviewSerializer
+        queryset = CourseReview.objects.all()
+        lookup_field = "course"
+        def put(self, request, *args, **kwargs):
+            return self.partial_update(request, *args, **kwargs)
+
+
 class CustomerCourseReviewList(generics.ListAPIView):
         serializer_class = CourseReviewSerializer
         pagination_class = None
