@@ -329,7 +329,7 @@ class CustomerCourseReviewList(generics.ListAPIView):
         pagination_class = None
         def get_queryset(self):
             customer_name = self.kwargs.get("name")
-            return CourseReview.objects.filter(customer=customer_name).order_by('-date')
+            return CourseReview.objects.filter(customer=customer_name, user_confirmed=True).order_by('-date')
 
 class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Schedule.objects.all()
