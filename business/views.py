@@ -969,7 +969,7 @@ class BodyEvalDateView(generics.ListAPIView):
 	pagination_class = None
 	serializer_class = BodyEvalDateSerializer 
 	def get_queryset(self):
-		return BodyEval.objects.filter(name=self.kwargs.get("name")).values('date').distinct()
+		return BodyEval.objects.filter(name=self.kwargs.get("name")).order_by("-date").values('date').distinct()
 
 class BodyEvalAllView(generics.ListAPIView):
 	pagination_class = None
