@@ -333,7 +333,6 @@ class CourseReviewItem(generics.RetrieveUpdateAPIView):
                 schedule = get_object_or_404(Schedule, id = course_id)
                 ret.customer = schedule.custom.name
                 ret.question = get_question()
-                print(ret.question)
                 ret.coach = schedule.coach.name
                 ret.date = schedule.date
                 ret.gym = schedule.coach.get_coach_gym().id
@@ -355,8 +354,17 @@ class CustomerCourseReviewList(generics.ListAPIView):
         serializer_class = CourseReviewSerializer
         pagination_class = None
         def get_queryset(self):
-            customer_name = self.kwargs.get("name")
-            return CourseReview.objects.filter(customer=customer_name, user_confirmed=True).order_by('-date')
+            return CourseReview.objects.filter(customer=self.kwargs.get("name"), user_confirmed=True).order_by('-date')
+
+class CustomerCourseReviewListByMonth(generics.ListAPIView):
+        serializer_class = CourseReviewSerializer
+        pagination_class = None
+        def get_queryset(self):
+            year = int(self.kwargs.get("year"))
+            month = int(self.kwargs.get("month"))
+            return CourseReview.objects.filter(coach=self.kwargs.get("name"), date__year=month.year,
+                    date__month=month.month,user_confirmed=True).order_by('-date')
+
 
 class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Schedule.objects.all()
