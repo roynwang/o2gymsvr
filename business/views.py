@@ -360,10 +360,11 @@ class CustomerCourseReviewListByMonth(generics.ListAPIView):
         serializer_class = CourseReviewSerializer
         pagination_class = None
         def get_queryset(self):
-            year = int(self.kwargs.get("year"))
-            month = int(self.kwargs.get("month"))
-            return CourseReview.objects.filter(coach=self.kwargs.get("name"), date__year=month,
+            year = self.kwargs.get("year")
+            month = self.kwargs.get("month")
+            ret = CourseReview.objects.filter(coach=self.kwargs.get("name"), date__year=year,
                     date__month=month,user_confirmed=True).order_by('-date')
+            return ret
 
 
 class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
