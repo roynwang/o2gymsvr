@@ -362,8 +362,8 @@ class CustomerCourseReviewListByMonth(generics.ListAPIView):
         def get_queryset(self):
             year = int(self.kwargs.get("year"))
             month = int(self.kwargs.get("month"))
-            return CourseReview.objects.filter(coach=self.kwargs.get("name"), date__year=month.year,
-                    date__month=month.month,user_confirmed=True).order_by('-date')
+            return CourseReview.objects.filter(coach=self.kwargs.get("name"), date__year=month,
+                    date__month=month,user_confirmed=True).order_by('-date')
 
 
 class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
