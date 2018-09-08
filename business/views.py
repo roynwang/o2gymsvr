@@ -586,7 +586,6 @@ class ScheduleList(generics.ListCreateAPIView):
 		return queryset
 	'''
 	def create(self, request, *args, **kwargs):
-		print json.dumps(request.data)
 		#ret = super(ScheduleList, self).create(request, args,kwargs)
 		customer = User.objects.get(id=request.data["custom"])
 		coach = User.objects.get(id=request.data["coach"])
@@ -599,6 +598,8 @@ class ScheduleList(generics.ListCreateAPIView):
                 if "order" in request.data:
          	        order = Order.objects.get(id=request.data["order"])
                         coursetype = "normal"
+                        if order.status == "done":
+                            return Response({"error":"no budget"}, status=status.HTTP_400_BAD_REQUEST)
 
                 if "coursetype" in request.data and request.data['coursetype'] == "charge":
                         coursetype = "charge"
