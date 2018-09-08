@@ -390,6 +390,11 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
                 if schedule.detail != "[]":
                     print schedule.detail
                     cache.set("o2_detailcache_" + schedule.custom.name, schedule.detail, None)
+
+                if not schedule.order is None:
+                    order = schedule.order 
+                    order.status = "inprogress"
+                    order.save()
                 
 		return super(ScheduleItem, self).destroy(request, args,kwargs)
 
@@ -632,13 +637,12 @@ class ScheduleList(generics.ListCreateAPIView):
 
 
 		sl = ScheduleSerializer(instance=book)
-		print sl.data
                 #if is an order book
                 if "order" in request.data:
      		        ordered_count = Schedule.objects.filter(order=request.data["order"],deleted=False).count()
 		        order_count = order.product.amount
 		        if order.status == "paid" and ordered_count == order_count:
-		                order.status = "inprogress" 
+		                order.status = "done" 
 		                order.save()
 		#send sms
                 customer.trySendEvalNotification(book)
