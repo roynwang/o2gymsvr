@@ -1911,6 +1911,15 @@ app.controller("OrderDetailCtrl", ['$scope', "Restangular", "NgTableParams", '$s
             if (that.pendingaction == 0) {
                 return
             }
+			if(that.sum - that.booked.length - that.done.length - addlist.length < 0) {
+                swal({
+                    type: "warning",
+                    title: "",
+                    text: "超出课程数量了",
+                });
+                return
+			}
+
             swal({
                 title: "提交",
                 text: "确认提交预约请求吗?",
