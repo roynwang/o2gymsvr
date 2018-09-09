@@ -121,7 +121,13 @@ class SalaryReceipt(models.Model):
             if self.adjustment == 0:
                 pass
             '''
-
+            groupcoures = GroupCourseInstanceBook.objects.filter(date__year=self.year,
+                    date__month=self.month,
+                    coach = self.name)
+            self.adjustment = (groupcoures.count() * setting.group_person)
+            self.adjustment_reason = "团课: " + str(groupcoures.count()) + "人次*" + str(setting.group_person)
+            #adjustment = models.IntegerField(default=0)
+            #adjustment_reason = models.CharField(max_length=512, default="")
             self.save()
 
 
