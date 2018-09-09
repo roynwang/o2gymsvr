@@ -347,6 +347,7 @@ class CourseReviewItemPatch(generics.RetrieveUpdateAPIView):
             if 'user_confirmed' in request.data and request.data['user_confirmed'] == 1:
                 s = get_object_or_404(Schedule, id=request.data['course'])
                 s.doneBook()
+            print(request.data['coach_review'])
             return self.partial_update(request, *args, **kwargs)
 
 
@@ -566,25 +567,6 @@ class ScheduleList(generics.ListCreateAPIView):
 		queryset = Schedule.objects.filter(coach=coach.id, 
 				date=date).order_by("hour")
 		return queryset
-	'''
-	def get_queryset(self):
-		coach = get_object_or_404(User, name=self.kwargs.get("name"))
-		date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
-		#filter 
-		workingday = get_object_or_404(WorkingDays, name=self.kwargs.get("name"))
-		working = map(lambda x: datetime.datetime.strptime(x,"%Y/%m/%d"),
-				filter(bool, workingday.excep_work.split("|")))
-		rest = map(lambda x: datetime.datetime.strptime(x,"%Y/%m/%d"),
-				filter(bool, workingday.excep_rest.split("|")))
-		weekrest = workingday.weekrest.split("|")
-		if not (date.weekday() + 1)%7 in weekrest:
-			working.append(date)
-		queryset = Schedule.objects.filter(coach=coach.id, 
-				date=date,
-				date__in=working
-				).exclude(date__in=rest).order_by("hour")
-		return queryset
-	'''
 	def create(self, request, *args, **kwargs):
 		#ret = super(ScheduleList, self).create(request, args,kwargs)
 		customer = User.objects.get(id=request.data["custom"])
@@ -618,8 +600,6 @@ class ScheduleList(generics.ListCreateAPIView):
                 detail = "[]"
                 mkey = "o2_detailcache_" + customer.name
                 mdetail = cache.get(mkey)
-                print mdetail
-                print "xxxxxxxxxxxx"
                 if not mdetail is None:
                     detail = mdetail
 
@@ -642,7 +622,7 @@ class ScheduleList(generics.ListCreateAPIView):
                 if "order" in request.data:
      		        ordered_count = Schedule.objects.filter(order=request.data["order"],deleted=False).count()
 		        order_count = order.product.amount
-		        if order.status == "paid" and ordered_count == order_count:
+		        if (order.status == "paid" or order.status == "inprogress") and ordered_count >= order_count:
 		                order.status = "done" 
 		                order.save()
 		#send sms
