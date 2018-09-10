@@ -88,13 +88,15 @@ class SalaryReceipt(models.Model):
                 if len(customers) != 0 :
                     average.append(float(coursecount)/len(customers))
                 
+            if len(average) == 0:
+                return 0
             return sorted(average)[-1] * 0.95
 
         def fix_default(self):
             if self.archived == True:
                 return
             usr = get_object_or_404(User, name=self.name)
-            setting = get_object_or_404(CoachSalarySetting, coach = usr.id)
+            setting = get_object_or_404(CoachSalarySetting, coach = usr.id, gymfee__gym=self.gym)
             self.base = setting.base_salary
 
             self.shebao = 383
