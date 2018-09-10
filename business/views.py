@@ -51,7 +51,9 @@ Questions = ["您是否在今天课前收到了训练计划？|收到了|没有"
         "最近上课教练迟到过吗？|没有|迟到过"]
 
 def get_question():
-    return choice(Questions)
+    if choice([0,1]) == 1:
+        return choice(Questions)
+    return ''
 
 class GymCustomerLiveness(APIView):
         def count_last_train(self, courses, endday, delta=30):
