@@ -134,7 +134,7 @@ class CustomerTrainTimeline(APIView):
         # 2 get eval event
         eval_dates = BodyEval.objects.filter(name=pk, date__year=year, date__month=month).values('date').distinct()
         for item in eval_dates:
-            events.append(self.bodyeval_to_event(item))
+            events.append(self.bodyeval_to_event(item['date']))
 
         # 3 get target creating event
         targets_creation = CustomerTarget.objects.filter( \
@@ -153,7 +153,8 @@ class CustomerTrainTimeline(APIView):
         # 5 get photo event
         usr = get_object_or_404(User, name = pk)
         photos = usr.album.filter(created__year=year, created__month=month)
-        events += self.photos_to_events(photos)
+        photo_event = self.photos_to_events(photos)
+        events += photo_event
         events = sorted(events, key=lambda e: e['date'])
         events.reverse()
         return Response(events, status=status.HTTP_200_OK)
