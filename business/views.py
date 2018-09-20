@@ -104,7 +104,6 @@ class CustomerTrainTimeline(APIView):
             event["title"] = "目标达成！"
             event["title_avatar"] = "https://dn-o2fit.qbox.me/medal.png"
             event["event_type"] = "target_complete"
-        event["title_avatar"] = coach.avatar
         event["body_text"] = target.target
         return event
     def photos_to_events(self, photos):
