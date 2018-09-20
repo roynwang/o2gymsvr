@@ -109,18 +109,20 @@ class CustomerTrainTimeline(APIView):
     def photos_to_events(self, photos):
         events = {}
         for photo in photos:
-            if not events[photo.created.date()]:
-                events[photo.created.date()] = []
-            events[photo.created.date()].append(photo.url)
+            datestr = datetime.datetime.strftime(photo.created.date(), "%Y-%m-%d")
+            if not datestr in events:
+                events[datestr] = []
+            events[datestr].append(photo.url)
+        
         ret = []
         for k in events:
             event = self.get_empty_event()
-            event["date"] = k
+            event["date"] = datetime.datetime.strptime(k, "%Y-%m-%d").date()
             event["title"] = "照相"
             event["body_images"] = events[k]
             event["event_type"] = "photo"
             event["title_avatar"] = "https://dn-o2fit.qbox.me/photo-camera.png"
-            ret.append(ret)
+            ret.append(event)
         return ret
 
     def get(self, request, pk, year, month):
@@ -152,9 +154,11 @@ class CustomerTrainTimeline(APIView):
             events.append(self.target_to_event(item, False))
         # 5 get photo event
         usr = get_object_or_404(User, name = pk)
-        photos = usr.album.filter(created__year=year, created__month=month)
+        photos = usr.album.filter(created__year=year)
         photo_event = self.photos_to_events(photos)
-        events += photo_event
+        for p in photo_event:
+            print p['date']
+            events.append(p)
         events = sorted(events, key=lambda e: e['date'])
         events.reverse()
         return Response(events, status=status.HTTP_200_OK)
