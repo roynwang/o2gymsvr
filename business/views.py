@@ -83,11 +83,15 @@ class CustomerTrainTimeline(APIView):
         event["body_text"] = course_review.coach_review
         return event
     
-    def bodyeval_to_event(self, e):
+    def bodyeval_to_event(self, es):
+        print es
         event = self.get_empty_event()
-        event["date"] = e.date
+        event["date"] = es[0].date
         event["title"] = "数据测量"
-        event["body_text"] = e.option + ": " + e.value + " " + e.unit + "\n..."
+        estrs = []
+        for e in es:
+            estrs.append(e.option + ": " + e.value + " " + e.unit)
+        event["body_text"] = "\n".join(estrs)
         event["event_type"] = "eval"
         event["title_avatar"] = "https://dn-o2fit.qbox.me/measuring-tape.png"
         return event
@@ -138,13 +142,11 @@ class CustomerTrainTimeline(APIView):
         eval_dates = evals.values('date').distinct()
          
         for item in eval_dates:
-            weight = None
+            es = []
             for e in evals:
-                weight = e
-                if e.option == "体重":
-                    weight = e
-                    break
-            events.append(self.bodyeval_to_event(weight))
+                if e.date == item["date"]:
+                    es.append(e)
+            events.append(self.bodyeval_to_event(es))
 
         # 3 get target creating event
         targets_creation = CustomerTarget.objects.filter( \
