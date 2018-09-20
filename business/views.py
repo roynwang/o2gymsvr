@@ -78,7 +78,7 @@ class CustomerTrainTimeline(APIView):
         coach = get_object_or_404(User, name=course_review.coach)
         event["date"] = course_review.date
         event["title"] = coach.displayname
-        event["title_avatar"] = coach.avatar
+        event["title_avatar"] = coach.custom_avatar
         event["event_type"] = "review"
         event["body_text"] = course_review.coach_review
         return event
