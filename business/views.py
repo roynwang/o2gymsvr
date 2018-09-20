@@ -154,11 +154,11 @@ class CustomerTrainTimeline(APIView):
             events.append(self.target_to_event(item, False))
         # 5 get photo event
         usr = get_object_or_404(User, name = pk)
-        photos = usr.album.filter(created__year=year)
+        startday = datetime.datetime(int(year), int(month), 1)
+	endday = add_months(startday,1) - datetime.timedelta(days=1)
+        photos = usr.album.filter(created__range=[startday, endday])
         photo_event = self.photos_to_events(photos)
-        for p in photo_event:
-            print p['date']
-            events.append(p)
+        events += photo_event
         events = sorted(events, key=lambda e: e['date'])
         events.reverse()
         return Response(events, status=status.HTTP_200_OK)
