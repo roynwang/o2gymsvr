@@ -2,6 +2,7 @@
 from django.shortcuts import render
 from django.db.models import Count
 from business.models import *
+from traincategory.models import *
 from business.serializers import *
 from order.models import *
 from usr.models import *
@@ -54,6 +55,109 @@ def get_question():
     if choice([0,1]) == 1:
         return choice(Questions)
     return ''
+
+class CustomerTrainTimeline(APIView):
+    '''
+    { date: 2018-09-02, 
+    title: test,
+    title_avatar: ,
+    body_text:
+    body_image:
+    '''
+    def get_empty_event(self):
+        return { "date": "", \
+                "title": "", \
+                "title_avatar": "", \
+                "body_text": "", \
+                "link": "", \
+                "event_type": "", \
+                "body_images": []}
+
+    def coursereview_to_event(self, course_review):
+        event = self.get_empty_event()
+        coach = get_object_or_404(User, name=course_review.coach)
+        event["date"] = course_review.date
+        event["title"] = coach.displayname
+        event["title_avatar"] = coach.avatar
+        event["event_type"] = "review"
+        event["body_text"] = course_review.coach_review
+        return event
+    
+    def bodyeval_to_event(self, date):
+        event = self.get_empty_event()
+        event["date"] = date
+        event["title"] = "测量日"
+        event["body_text"] = "点击查看"
+        event["event_type"] = "eval"
+        event["title_avatar"] = "https://dn-o2fit.qbox.me/measuring-tape.png"
+        return event
+
+    def target_to_event(self, target, is_create=True):
+        event = self.get_empty_event()
+        coach = get_object_or_404(User, name=target.coach)
+        event["date"] = target.created_date
+        event["title"] = "新的目标"
+        event["event_type"] = "target_create"
+        event["title_avatar"] = "https://dn-o2fit.qbox.me/new.png"
+        if not is_create:
+            event["date"] = target.finished_date
+            event["title"] = "目标达成！"
+            event["title_avatar"] = "https://dn-o2fit.qbox.me/medal.png"
+            event["event_type"] = "target_complete"
+        event["title_avatar"] = coach.avatar
+        event["body_text"] = target.target
+        return event
+    def photos_to_events(self, photos):
+        events = {}
+        for photo in photos:
+            if not events[photo.created.date()]:
+                events[photo.created.date()] = []
+            events[photo.created.date()].append(photo.url)
+        ret = []
+        for k in events:
+            event = self.get_empty_event()
+            event["date"] = k
+            event["title"] = "照相"
+            event["body_images"] = events[k]
+            event["event_type"] = "photo"
+            event["title_avatar"] = "https://dn-o2fit.qbox.me/photo-camera.png"
+            ret.append(ret)
+        return ret
+
+    def get(self, request, pk, year, month):
+        events = []
+        year = int(year)
+        month = int(month)
+        # 1 get course review event
+        reviews = CourseReview.objects.filter(customer=pk, date__year=year, date__month=month)
+        for item in reviews:
+            events.append(self.coursereview_to_event(item))
+        # 2 get eval event
+        eval_dates = BodyEval.objects.filter(name=pk, date__year=year, date__month=month).values('date').distinct()
+        for item in eval_dates:
+            events.append(self.bodyeval_to_event(item))
+
+        # 3 get target creating event
+        targets_creation = CustomerTarget.objects.filter( \
+                customer=pk, \
+                created_date__year=year, \
+                created_date__month=month)
+        for item in targets_creation:
+            events.append(self.target_to_event(item))
+        # 4 get target finish event
+        targets_completion = CustomerTarget.objects.filter( \
+                customer=pk, \
+                finished_date__year=year, \
+                finished_date__month=month)
+        for item in targets_completion:
+            events.append(self.target_to_event(item, False))
+        # 5 get photo event
+        usr = get_object_or_404(User, name = pk)
+        photos = usr.album.filter(created__year=year, created__month=month)
+        events += self.photos_to_events(photos)
+        events = sorted(events, key=lambda e: e['date'])
+        events.reverse()
+        return Response(events, status=status.HTTP_200_OK)
 
 class GymCustomerLiveness(APIView):
         def count_last_train(self, courses, endday, delta=30):
