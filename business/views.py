@@ -83,11 +83,11 @@ class CustomerTrainTimeline(APIView):
         event["body_text"] = course_review.coach_review
         return event
     
-    def bodyeval_to_event(self, date):
+    def bodyeval_to_event(self, e):
         event = self.get_empty_event()
-        event["date"] = date
-        event["title"] = "测量日"
-        event["body_text"] = "点击查看"
+        event["date"] = e.date
+        event["title"] = "数据测量"
+        event["body_text"] = e.option + ": " + e.value + " " + e.unit + "\n..."
         event["event_type"] = "eval"
         event["title_avatar"] = "https://dn-o2fit.qbox.me/measuring-tape.png"
         return event
@@ -118,7 +118,7 @@ class CustomerTrainTimeline(APIView):
         for k in events:
             event = self.get_empty_event()
             event["date"] = datetime.datetime.strptime(k, "%Y-%m-%d").date()
-            event["title"] = "照相"
+            event["title"] = "精彩瞬间"
             event["body_images"] = events[k]
             event["event_type"] = "photo"
             event["title_avatar"] = "https://dn-o2fit.qbox.me/photo-camera.png"
@@ -134,9 +134,17 @@ class CustomerTrainTimeline(APIView):
         for item in reviews:
             events.append(self.coursereview_to_event(item))
         # 2 get eval event
-        eval_dates = BodyEval.objects.filter(name=pk, date__year=year, date__month=month).values('date').distinct()
+        evals = BodyEval.objects.filter(name=pk, date__year=year, date__month=month)
+        eval_dates = evals.values('date').distinct()
+         
         for item in eval_dates:
-            events.append(self.bodyeval_to_event(item['date']))
+            weight = None
+            for e in evals:
+                weight = e
+                if e.option == "体重":
+                    weight = e
+                    break
+            events.append(self.bodyeval_to_event(weight))
 
         # 3 get target creating event
         targets_creation = CustomerTarget.objects.filter( \
@@ -154,11 +162,11 @@ class CustomerTrainTimeline(APIView):
             events.append(self.target_to_event(item, False))
         # 5 get photo event
         usr = get_object_or_404(User, name = pk)
-        photos = usr.album.filter(created__year=year)
+        startday = datetime.datetime(int(year), int(month), 1)
+	endday = add_months(startday,1) - datetime.timedelta(days=1)
+        photos = usr.album.filter(created__range=[startday, endday])
         photo_event = self.photos_to_events(photos)
-        for p in photo_event:
-            print p['date']
-            events.append(p)
+        events += photo_event
         events = sorted(events, key=lambda e: e['date'])
         events.reverse()
         return Response(events, status=status.HTTP_200_OK)
