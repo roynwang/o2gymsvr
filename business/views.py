@@ -68,10 +68,23 @@ class CustomerTrainTimeline(APIView):
         return { "date": "", \
                 "title": "", \
                 "title_avatar": "", \
-                "body_text": "", \
                 "link": "", \
                 "event_type": "", \
+                "body_text": "", \
+                "train_score": "", \
+                "diet_score": "", \
                 "body_images": []}
+
+    def customerkpi_to_event(self, kpi):
+        event = self.get_empty_event()
+        coach = get_object_or_404(User, name=kpi.coach)
+        event["date"] = kpi.date
+        event["title"] = "一周KPI"
+        event["title_avatar"] = coach.custom_avatar
+        event["event_type"] = "customerkpi"
+        event["train_score"] = kpi.train_score
+        event["diet_score"] = kpi.diet_score
+        return event
 
     def coursereview_to_event(self, course_review):
         event = self.get_empty_event()
@@ -162,7 +175,15 @@ class CustomerTrainTimeline(APIView):
                 finished_date__month=month)
         for item in targets_completion:
             events.append(self.target_to_event(item, False))
-        # 5 get photo event
+        # 5 get customer week kpi
+        kpis = CustomerWeeklyKPI.objects.filter( \
+                archived=True, \
+                customer=pk, \
+                date__year=year, \
+                date__month=month)
+        for item in kpis:
+            events.append(self.customerkpi_to_event(item))
+        # 6 get photo event
         usr = get_object_or_404(User, name = pk)
         startday = datetime.datetime(int(year), int(month), 1)
 	endday = add_months(startday,1) - datetime.timedelta(days=1)
