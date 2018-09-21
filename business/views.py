@@ -80,7 +80,7 @@ class CustomerTrainTimeline(APIView):
         coach = get_object_or_404(User, name=kpi.coach)
         event["date"] = kpi.date
         event["title"] = "一周KPI"
-        event["title_avatar"] = "https://dn-o2fit.qbox.me/schedule.png"
+        event["title_avatar"] = "https://dn-o2fit.qbox.me/score.png"
         event["event_type"] = "customerkpi"
         event["train_score"] = kpi.train_score
         event["diet_score"] = kpi.diet_score
