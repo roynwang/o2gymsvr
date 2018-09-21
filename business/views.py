@@ -94,6 +94,7 @@ class CustomerTrainTimeline(APIView):
         event["title_avatar"] = coach.custom_avatar
         event["event_type"] = "review"
         event["body_text"] = course_review.coach_review
+        event["link"] = "../coursedetail/coursedetail?id=" + course_review.course
         return event
     
     def bodyeval_to_event(self, es):
