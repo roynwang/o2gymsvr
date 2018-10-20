@@ -146,7 +146,7 @@ class CustomerTrainTimeline(APIView):
     def bonus_to_event(self, bonus):
         event = self.get_empty_event()
         event["date"] = bonus.date
-        event["title"] = "来自氧气的训练奖励"
+        event["title"] = "触发训练奖励!"
         event["title_avatar"] = "http://static.o2-fit.com/bonus.png"
         event["event_type"] = "bonus"
         event["body_text"] = bonus.reason
