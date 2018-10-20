@@ -80,7 +80,7 @@ class CustomerTrainTimeline(APIView):
         coach = get_object_or_404(User, name=kpi.coach)
         event["date"] = kpi.date
         event["title"] = "一周KPI"
-        event["title_avatar"] = "https://dn-o2fit.qbox.me/score.png"
+        event["title_avatar"] = "http://static.o2-fit.com/score.png"
         event["event_type"] = "customerkpi"
         event["train_score"] = kpi.train_score
         event["diet_score"] = kpi.diet_score
@@ -107,7 +107,7 @@ class CustomerTrainTimeline(APIView):
             estrs.append(e.option + ": " + e.value + " " + e.unit)
         event["body_text"] = "\n".join(estrs)
         event["event_type"] = "eval"
-        event["title_avatar"] = "https://dn-o2fit.qbox.me/measuring-tape.png"
+        event["title_avatar"] = "http://static.o2-fit.com/measuring-tape.png"
         return event
 
     def target_to_event(self, target, is_create=True):
@@ -116,11 +116,11 @@ class CustomerTrainTimeline(APIView):
         event["date"] = target.created_date
         event["title"] = "新的目标"
         event["event_type"] = "target_create"
-        event["title_avatar"] = "https://dn-o2fit.qbox.me/new.png"
+        event["title_avatar"] = "http://static.o2-fit.com/new.png"
         if not is_create:
             event["date"] = target.finished_date
             event["title"] = "目标达成！"
-            event["title_avatar"] = "https://dn-o2fit.qbox.me/medal.png"
+            event["title_avatar"] = "http://static.o2-fit.com/medal.png"
             event["event_type"] = "target_complete"
         event["body_text"] = target.target
         return event
@@ -139,9 +139,18 @@ class CustomerTrainTimeline(APIView):
             event["title"] = "精彩瞬间"
             event["body_images"] = events[k]
             event["event_type"] = "photo"
-            event["title_avatar"] = "https://dn-o2fit.qbox.me/photo-camera.png"
+            event["title_avatar"] = "http://static.o2-fit.com/photo-camera.png"
             ret.append(event)
         return ret
+
+    def bonus_to_event(self, bonus):
+        event = self.get_empty_event()
+        event["date"] = bonus.date
+        event["title"] = "来自氧气的训练奖励"
+        event["title_avatar"] = "http://static.o2-fit.com/bonus.png"
+        event["event_type"] = "bonus"
+        event["body_text"] = bonus.reason
+        return event
 
     def get(self, request, pk, year, month):
         events = []
@@ -184,6 +193,14 @@ class CustomerTrainTimeline(APIView):
                 date__month=month)
         for item in kpis:
             events.append(self.customerkpi_to_event(item))
+        # 6 get bonus
+        bonuses = CustomerBonus.objects.filter(\
+                customer=pk, \
+                date__year=year, \
+                date__month=month)
+        for item in bonuses:
+            events.append(self.bonus_to_event(item))
+
         # 6 get photo event
         usr = get_object_or_404(User, name = pk)
         startday = datetime.datetime(int(year), int(month), 1)
@@ -1826,6 +1843,15 @@ class FinanceItemView(generics.RetrieveUpdateDestroyAPIView):
 class InvoiceItemView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Invoice.objects.all()
 	serializer_class = InvoiceSerializer
+
+class CustomerBonusView(generics.ListCreateAPIView):
+	serializer_class = CustomerBonusSerializer 
+	pagination_class = None
+
+        def get_queryset(self):
+            return CustomerBonus.objects.filter(customer=self.kwargs.get("customer")) \
+                    .order_by("-date")
+        
 
 class GymInvoiceList(generics.ListCreateAPIView):
 	serializer_class = InvoiceSerializer

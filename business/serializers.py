@@ -18,6 +18,10 @@ class CourseReviewSerializer(serializers.ModelSerializer):
             return serializer.data
 
 
+class CustomerBonusSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = CustomerBonus
+
 class RefundSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Refund

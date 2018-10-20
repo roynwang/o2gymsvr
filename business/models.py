@@ -1,6 +1,7 @@
 # coding=utf-8
 from django.db import models
 import datetime
+import time
 from utils import smsutils
 from django.shortcuts import get_object_or_404
 import json
@@ -9,7 +10,12 @@ from django.db.models import get_model
 from django.core.cache import cache
 from django.db.models.signals import pre_delete, post_delete, post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
+
+def getbillid(customerid, coachid):
+	ts = int(time.time())
+	return int(str(ts) + str(customerid) + str(coachid))
 
 class CourseReview(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -303,12 +309,46 @@ class Schedule(models.Model):
 		if self.order.gym.id != 20:
 			return smsutils.sendBookNotification(self)
 		return True
+        def frequencyBonus(self):
+            if not self.coach.gym.all()[0].id in [19, 31]:
+                return
+            # get month
+            month = self.date.month
+            year = self.date.year
+            # get the count of this month
+            month_course = Schedule.objects.filter(done=True, custom=self.custom, date__year = year, date__month = month)
+            c = month_course.count()
+            # if meet the condition 
+            if month_course.count() == 8:
+                # create a bonus
+                reason = "训练次数到达8次"
+                bonus = CustomerBonus.objects.filter( \
+                        customer=self.custom.name, \
+                        year=year, \
+                        month=month,\
+                        reason=reason)
+                # the bonus can only be triggered once a month
+                if bonus.count() == 0:
+                    b = CustomerBonus.objects.create( \
+                            customer = self.custom.name, \
+                            coach = self.coach.name, \
+                            date = self.date, \
+                            year = year, \
+                            month = month,\
+                            reason = reason)
+                    b.create_bonus_order()
+
+
 	def doneBook(self):
 		self.done = True
-		self.coach.course_count += 1
 		self.save()
+		self.coach.course_count += 1
 		self.coach.save()
                 self.custom.save_owner(self.coach)
+
+                #add a bonus order  if meet the frequency threshold
+                self.frequencyBonus()
+
                 if not self.order is None:
 		        self.order.done()
 	def getprice(self):
@@ -327,25 +367,6 @@ class Schedule(models.Model):
                 self.save()
 		return price
 		
-        ''' OBSOLETE
-        def send_launch_notification(self):
-            if not self.order is None and self.order.amount != 0 and self.order.subsidy != 0:
-                #1 send to coach
-                message = Message.objects.create(name=self.coach.name, \
-                        by=self.custom.name, \
-                        content= self.custom.displayname +"需要订餐", \
-                        link="", \
-                        dismiss_date=self.date)
-                #2 send to admin
-                for admin in self.coach.get_coach_gym().get_admin():
-                    if admin.name == self.coach.name:
-                        continue
-                    message = Message.objects.create(name=admin.name, \
-                        by=self.custom.name, \
-                        content= self.custom.displayname +"需要订餐", \
-                        link="", \
-                        dismiss_date=self.date)
-        '''
 
         def create_threshold_msg(self):
             ThresholdMsg.try_create_msg_by_frequency(self,\
@@ -511,6 +532,39 @@ class CustomerWeeklyKPI(models.Model):
         train_score = models.IntegerField(default=0)
         comments = models.CharField(default="", max_length=128)
 
-        
+class CustomerBonus(models.Model):
+	id = models.AutoField(primary_key=True)
+	coach = models.CharField(max_length=32)
+	customer = models.CharField(max_length=32)
+        reason = models.CharField(max_length=512)
+        year = models.IntegerField()
+        month = models.IntegerField()
+        date = models.DateField()
 
 
+        def create_bonus_order(self):
+            User = get_model("usr","User")
+            coach = get_object_or_404(User, name=self.coach)
+            customer = get_object_or_404(User, name=self.customer)
+            # create product
+            product = Product.objects.create(coach=coach,
+                    introduction=self.reason,
+                    price = 0,
+                    amount = 1,
+                    promotion = 0,
+                    product_type = 1)
+            # create order
+	    billid = getbillid(coach.id, customer.id)
+
+            order = Order.objects.create(
+                    custom = customer,
+                    coach = coach,
+                    billid = billid,
+                    paidtime = timezone.now(),
+                    status = "paid",
+                    product = product,
+                    amount = 0,
+                    gym = coach.gym.all()[0],
+                    channel = "offline",
+                    isfirst = False,
+                    subsidy = 120)
