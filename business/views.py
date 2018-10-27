@@ -287,7 +287,7 @@ class GymCustomerLiveness(APIView):
 
 class CustomerTipsView(APIView):
     def bonus_tips(self, pk):
-        img = "http://static.o2-fit.com/balloons.png"
+        img = "http://static.o2-fit.com/fireworks.png"
 	today = datetime.datetime.today()
         month = today.month
 	year = today.year
@@ -313,7 +313,7 @@ class CustomerTipsView(APIView):
                 done = True, \
                 custom__name = pk)
         distance = 8 - finished.count()
-        if distance > 0:
+        if distance > 0 and distance <= 4:
             return img, str(month) + "月还差" + str(distance) + "次训练触发奖励"
         return None, None
 
