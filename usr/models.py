@@ -174,6 +174,8 @@ class User(models.Model):
 
 	can_book = models.BooleanField(default=True)
 
+	disable_complete = models.BooleanField(default=False)
+
 	birthday = models.DateField(blank=True, null=True)
 
 	flag = models.IntegerField(default=0)

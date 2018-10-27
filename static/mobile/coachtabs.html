@@ -142,7 +142,7 @@
                             <div flex=20 ng-click="ctrl.logtrain(c.book); $event.stopPropagation();" class="course-time icon-list event-action-btn">
                                 <div class="icon ion-images"></div>
                             </div>
-                            <div flex=20 ng-hide="c.book.done" ng-click="ctrl.complete(c.book); $event.stopPropagation();"
+                            <div flex=20 ng-hide="ctrl.user.disable_complete || c.book.done" ng-click="ctrl.complete(c.book); $event.stopPropagation();"
                             class="course-time icon-list event-action-btn">
                                 <div class="icon ion-ios-checkmark-empty" style="font-size:44px"></div>
                             </div>
