@@ -1739,6 +1739,41 @@ class UserDateDiscountView(APIView):
                 b =  Balance.objects.get(name=name,gym=31)
                 return Response({"dura":dura,"discount":discount,"enddate":b.group_enddate},status.HTTP_200_OK)
 
+class TrainTimesRanking(APIView):
+    def get(self, request, gymid):
+	today = datetime.datetime.today()
+        month = today.month
+	year = today.year
+
+        courses =  Schedule.objects.filter(date__year = year, \
+                date__month = month, \
+                order__gym__id__in = [19, 31], \
+                done = True)
+        customer_times_counter = {}
+        for c in courses:
+            if not c.custom.id in customer_times_counter:
+                customer_times_counter[c.custom.id] = \
+                        {"profile": { 
+                                "name": c.custom.name, 
+                                "displayname": c.custom.displayname, 
+                                "avatar": c.custom.avatar 
+                            }, 
+                            "times": 0 
+                        }
+            customer_times_counter[c.custom.id]["times"] += 1
+        vs = customer_times_counter.values()
+        sort_customer = sorted(vs, key=lambda e: e['times'])
+        times_to_customer = {}
+        for c in sort_customer:
+            if not c["times"] in times_to_customer:
+                times_to_customer[c["times"]] = []
+            times_to_customer[c["times"]].append(c)
+        ret = []
+        sorted_times = sorted(times_to_customer.keys())
+        for s in sorted_times:
+            ret.append(times_to_customer[s])
+        ret.reverse()
+        return Response(ret, status.HTTP_200_OK)
 
 class UserSummaryView(APIView):
         def get(self, request, name, gym):
