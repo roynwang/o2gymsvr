@@ -43,6 +43,11 @@
 								class="pull-right" type="checkbox" ng-model="ctrl.coaches[3*i +c].can_book" ng-change="ctrl.modify_can_book(ctrl.coaches[3*i + c])"> 
                         </a>
                         </li>
+	                     <li>
+                            <a href="javascript:;"><i class="fa fa-eye"></i> 禁用完成 <input
+								class="pull-right" type="checkbox" ng-model="ctrl.coaches[3*i +c].disable_complete" ng-change="ctrl.modify_disable_complete(ctrl.coaches[3*i + c])"> 
+                        </a>
+                        </li>
                         <li>
                             <a href="#customer/{{ctrl.coaches[3*i + c].name}}/orders"><i class="fa
 									fa-file" style="margin-right:4px"></i> 订单数量<span class="badge label-success

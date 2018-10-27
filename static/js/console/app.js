@@ -1670,6 +1670,13 @@ app.controller("CoachesControl", ['$scope', "Restangular", "$uibModal", "SweetAl
                 })
                 .then(function(data) {})
         }
+        that.modify_disable_complete = function(c) {
+            Restangular.one("api", c.name)
+                .patch({
+                    disable_complete: c.disable_complete
+                })
+                .then(function(data) {})
+        }
 
         that.newcoach = function(size) {
             var modalInstance = $uibModal.open({
