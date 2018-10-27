@@ -1740,7 +1740,7 @@ class UserDateDiscountView(APIView):
                 return Response({"dura":dura,"discount":discount,"enddate":b.group_enddate},status.HTTP_200_OK)
 
 class TrainTimesRanking(APIView):
-    def get(self, request, gymid):
+    def get(self, request, name):
 	today = datetime.datetime.today()
         month = today.month
 	year = today.year
