@@ -1750,9 +1750,10 @@ class TrainTimesRanking(APIView):
                 order__gym__id__in = [19, 31], \
                 done = True)
         customer_times_counter = {}
+        customer_times = 0
         for c in courses:
-            if not c.custom.id in customer_times_counter:
-                customer_times_counter[c.custom.id] = \
+            if not c.custom.name in customer_times_counter:
+                customer_times_counter[c.custom.name] = \
                         {"profile": { 
                                 "name": c.custom.name, 
                                 "displayname": c.custom.displayname, 
@@ -1760,7 +1761,11 @@ class TrainTimesRanking(APIView):
                             }, 
                             "times": 0 
                         }
-            customer_times_counter[c.custom.id]["times"] += 1
+            customer_times_counter[c.custom.name]["times"] += 1
+
+        if name in customer_times_counter:
+            customer_times = customer_times_counter[name]
+
         vs = customer_times_counter.values()
         sort_customer = sorted(vs, key=lambda e: e['times'])
         times_to_customer = {}
@@ -1770,10 +1775,15 @@ class TrainTimesRanking(APIView):
             times_to_customer[c["times"]].append(c)
         ret = []
         sorted_times = sorted(times_to_customer.keys())
+        sorted_times.reverse()
+        rank = -1
+        i = 0
         for s in sorted_times:
+            i += 1
+            if times_to_customer[s][0]["times"] == customer_times:
+                rank = i
             ret.append(times_to_customer[s])
-        ret.reverse()
-        return Response(ret, status.HTTP_200_OK)
+        return Response({"rank": rank, "list": ret}, status.HTTP_200_OK)
 
 class UserSummaryView(APIView):
         def get(self, request, name, gym):
