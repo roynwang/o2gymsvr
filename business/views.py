@@ -287,6 +287,7 @@ class GymCustomerLiveness(APIView):
 
 class CustomerTipsView(APIView):
     def bonus_tips(self, pk):
+        img = "http://static.o2-fit.com/balloons.png"
 	today = datetime.datetime.today()
         month = today.month
 	year = today.year
@@ -299,10 +300,11 @@ class CustomerTipsView(APIView):
         for b in month_bonus:
             i += 1
             if b.customer == pk:
-                return "你是" + str(month) + "月第" + str(i) + "个奖励获得者!"
-        return None
+                return img, "你是" + str(month) + "月第" + str(i) + "个奖励获得者!"
+        return None, None
 
     def bonus_encourage(self, pk):
+        img = "http://static.o2-fit.com/balloons.png"
 	today = datetime.datetime.today()
         month = today.month
 	year = today.year
@@ -312,17 +314,17 @@ class CustomerTipsView(APIView):
                 custom__name = pk)
         distance = 8 - finished.count()
         if distance > 0:
-            return str(month) + "月还差" + str(distance) + "次训练触发奖励"
-        return None
+            return img, str(month) + "月还差" + str(distance) + "次训练触发奖励"
+        return None, None
 
     def train_billboard(self):
         pass
         
     def get(self, request, pk):
-        msg = self.bonus_tips(pk)
+        img, msg = self.bonus_tips(pk)
         if msg is None:
-            msg = self.bonus_encourage(pk)
-        return Response({"message":msg}, status=status.HTTP_200_OK)
+            img, msg = self.bonus_encourage(pk)
+        return Response({"image": img, "text":msg}, status=status.HTTP_200_OK)
 
 class ChargePricingList(generics.ListAPIView):
 	serializer_class = ChargePricingSerializer
