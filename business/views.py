@@ -285,6 +285,45 @@ class GymCustomerLiveness(APIView):
             data60 = self.count_last_train(allschedule, base_day.date(), 60)
             return Response(data60, status=status.HTTP_200_OK)
 
+class CustomerTipsView(APIView):
+    def bonus_tips(self, pk):
+	today = datetime.datetime.today()
+        month = today.month
+	year = today.year
+        month_bonus = CustomerBonus.objects.filter( \
+                month = month, \
+                year = year).order_by("date")
+        if month_bonus.count() == 0:
+            return None
+        i = 0
+        for b in month_bonus:
+            i += 1
+            if b.customer == pk:
+                return "你是" + str(month) + "月第" + str(i) + "个奖励获得者!"
+        return None
+
+    def bonus_encourage(self, pk):
+	today = datetime.datetime.today()
+        month = today.month
+	year = today.year
+        finished = Schedule.objects.filter(date__year = year, \
+                date__month = month, \
+                done = True, \
+                custom__name = pk)
+        distance = 8 - finished.count()
+        if distance > 0:
+            return str(month) + "月还差" + str(distance) + "次训练触发奖励"
+        return None
+
+    def train_billboard(self):
+        pass
+        
+    def get(self, request, pk):
+        msg = self.bonus_tips(pk)
+        if msg is None:
+            msg = self.bonus_encourage(pk)
+        return Response({"message":msg}, status=status.HTTP_200_OK)
+
 class ChargePricingList(generics.ListAPIView):
 	serializer_class = ChargePricingSerializer
 	pagination_class = None
