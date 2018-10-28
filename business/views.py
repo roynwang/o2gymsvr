@@ -1777,11 +1777,11 @@ class TrainTimesRanking(APIView):
         sorted_times = sorted(times_to_customer.keys())
         sorted_times.reverse()
         rank = -1
-        i = 0
+        i = 1
         for s in sorted_times:
-            i += 1
             if times_to_customer[s][0]["times"] == customer_times:
                 rank = i
+            i += len(times_to_customer[s])
             ret.append(times_to_customer[s])
         return Response({"rank": rank, "list": ret}, status.HTTP_200_OK)
 
