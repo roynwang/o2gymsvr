@@ -1764,7 +1764,7 @@ class TrainTimesRanking(APIView):
             customer_times_counter[c.custom.name]["times"] += 1
 
         if name in customer_times_counter:
-            customer_times = customer_times_counter[name]
+            customer_times = customer_times_counter[name]["times"]
 
         vs = customer_times_counter.values()
         sort_customer = sorted(vs, key=lambda e: e['times'])
