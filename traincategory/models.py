@@ -17,6 +17,13 @@ class WorkoutAction(models.Model):
 	categeory = models.ForeignKey(WorkoutCategeory, related_name="actions")
 	units = models.CharField(max_length=32,blank=True, default="")
 	by = models.CharField(max_length=64,blank=True, default="")
+        # 1: primary
+        # 2: heal
+        # 4: senior
+        # 8: secondary
+        # 16:
+        tag = models.IntegerField(default=0, blank=True)
+        
 	
 
 class SimpleWorkoutAction(models.Model):
