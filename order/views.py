@@ -95,11 +95,18 @@ class AvailableOrderItem(generics.RetrieveAPIView):
                 #gymid = self.request.data['gym']
                 #ret = usr.orders.exclude(gym=get_object_or_404(Gym,id=gymid), status__in=["unpaid","done"]).order_by('paidtime')[:1]
                 ret = usr.orders.exclude(status__in=["unpaid","done"]).order_by('paidtime')
-            
+                
+                gift_order = None
                 for item in ret:
-                    item.done()
-                    return item
-                raise Http404
+                    #skip gift order
+                    if item.amount == 0:
+                        gift_order = item
+                    else:
+                        item.done()
+                        return item
+                if gift_order is None:
+                    raise Http404
+                return gift_order
 
 
 class ChargeScheduleList(generics.ListAPIView):
