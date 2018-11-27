@@ -368,7 +368,16 @@ app.factory("$ordersvc", function(Restangular) {
             .get()
             .then(onsuccess, onfail)
     }
+
+    function getavailableorder(username, onsuccess, onfail) {
+        Restangular.one("api", username)
+            .one("o", "available")
+            .get()
+            .then(onsuccess, onfail)
+    }
+
     return {
+        getavailableorder: getavailableorder,
         setorder: setorder,
         getorder: getorder,
         getorders: getorders
@@ -665,7 +674,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         }, 2000)
 
         // check update
-		/*
+        /*
         Restangular.one("api/", $.cookie('user'))
             .one("version", "mobile")
             .get()
@@ -718,7 +727,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
             })
         }
 
-		that.kpisummary = {}
+        that.kpisummary = {}
 
         that.init = function() {
             user = $.cookie("user")
@@ -728,8 +737,8 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     Restangular.one("api/g", that.user.gym_id[0])
                         .get()
                         .then(function(data) {
-							that.displaycustomers = !data.hide_customers
-						})
+                            that.displaycustomers = !data.hide_customers
+                        })
                 },
                 function(data) {})
 
@@ -801,15 +810,9 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 return
             }
 
-            $ordersvc.getorders(customer.name, function(data) {
-                    var os = _.reject(data.results, function(item) {
-                        return item.all_booked == true 
-                    })
-                    os = _.sortBy(os, 'created')
-
-                    //订单预定
-                    if (os && os.length > 0) {
-                        var o = os[0]
+            $ordersvc.getavailableorder(customer.name, function(data) {
+                    if (true) {
+                        var o = data
                         that.pendingbook = {
                             date: that.selected.Format("yyyy-MM-dd"),
                             hour: c.index,
@@ -820,7 +823,6 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                         that.querystatus = "pending"
                         console.log(that.pendingbook)
                     } else {
-
                         //余额预定
                         $usersvc.getsummary(customer.name, that.user.gym_id[0], function(summary) {
                             if (summary.balance > 0) {
@@ -886,18 +888,44 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                     }
                 },
                 function(data) {
-                    that.showtoast = true
-                    $mdToast.show(
-                        $mdToast.simple()
-                        .textContent('查询订单失败')
-                        .parent(angular.element(document.querySelector("#toast-placeholder")))
-                        .hideDelay(3000)
-                    ).then(function() {
+                    swal({
+                        title: "体验预约",
+                        text: "无匹配订单，确认是体验预约吗?",
+                        type: "info",
+                        showCancelButton: true,
+                        closeOnConfirm: false,
+                        confirmButtonText: "是",
+                        cancelButtonText: "否",
+                        closeOnConfirm: true
+                    }, function(yes) {
+                        if (!yes) {
+                            that.showtoast = true
+                            $mdToast.show(
+                                $mdToast.simple()
+                                .textContent('查询订单失败')
+                                .parent(angular.element(document.querySelector("#toast-placeholder")))
+                                .hideDelay(3000)
+                            ).then(function() {
+                                $timeout(function() {
+                                    that.showtoast = false
+                                }, 500)
+                            });
+                            that.querystatus = "unmatch"
+                            return
+                        }
+                        that.pendingbook = {
+                            date: that.selected.Format("yyyy-MM-dd"),
+                            hour: c.index,
+                            coach: that.user.id,
+                            custom: customer.id,
+                            coursetype: "trial"
+                        }
                         $timeout(function() {
-                            that.showtoast = false
-                        }, 500)
+                            that.querystatus = "pending"
+                        }, 1000)
+                        console.log(that.pendingbook)
                     });
-                    that.querystatus = "unmatch"
+
                 })
         }
         that.submitbook = function() {
@@ -989,7 +1017,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 .one("todaykpi")
                 .get()
                 .then(function(data) {
-					that.kpi = data
+                        that.kpi = data
                     },
                     function(data) {})
 
