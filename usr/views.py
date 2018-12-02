@@ -257,7 +257,7 @@ class UserList(generics.CreateAPIView):
 class UserItemPatch(generics.GenericAPIView, UpdateModelMixin):
 	lookup_field = "name"
 	queryset = User.objects.all()
-	serializer_class = UserSerializer
+	serializer_class = UserUpdateSerializer
         def put(self, request, *args, **kwargs):
             return self.partial_update(request, *args, **kwargs)
 

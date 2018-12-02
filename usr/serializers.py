@@ -92,6 +92,10 @@ class TimeLineSerializer(serializers.ModelSerializer):
 		model = TimeLine
 
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = User
+
 class UserSerializer(serializers.ModelSerializer):
 	gym = serializers.StringRelatedField(many=True,read_only=True)
 	gym_id = serializers.PrimaryKeyRelatedField(source="gym",many=True,read_only=True)
