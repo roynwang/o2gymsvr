@@ -74,6 +74,15 @@ class CustomerTrainTimeline(APIView):
                 "train_score": "", \
                 "diet_score": "", \
                 "body_images": []}
+    def usercomments_to_event(self, obj):
+        event = self.get_empty_event()
+        event["date"] = obj.created.date()
+        event["title_avatar"] = obj.by.avatar
+        event["title"] = obj.by.displayname
+        event["event_type"] = "weibo"
+        event["body_text"] = obj.brief
+        print event
+        return event
 
     def customerkpi_to_event(self, kpi):
         event = self.get_empty_event()
@@ -208,6 +217,15 @@ class CustomerTrainTimeline(APIView):
         photos = usr.album.filter(created__range=[startday, endday])
         photo_event = self.photos_to_events(photos)
         events += photo_event
+
+        # 7 get usercomments event
+        print usr.history.count()
+        weibos = usr.history.filter( \
+                created__range=[startday, endday])
+        for wb in weibos:
+            user_comments_event = self.usercomments_to_event(wb)
+            events.append(user_comments_event)
+
         events = sorted(events, key=lambda e: e['date'])
         events.reverse()
         return Response(events, status=status.HTTP_200_OK)
@@ -1757,7 +1775,8 @@ class TrainTimesRanking(APIView):
                         {"profile": { 
                                 "name": c.custom.name, 
                                 "displayname": c.custom.displayname, 
-                                "avatar": c.custom.avatar 
+                                "avatar": c.custom.avatar,
+                                "gym": c.coach.get_coach_gym().id
                             }, 
                             "times": 0 
                         }
