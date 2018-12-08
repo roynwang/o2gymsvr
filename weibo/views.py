@@ -63,6 +63,10 @@ class WeiboList(generics.ListCreateAPIView):
 		if serializer.is_valid():
 			wb = serializer.save()
 			#save pic
+                        if wb.by != usr:
+                            wb.by = usr
+                            wb.save()
+
 			self.saveimg(usr, wb.imgs)
 			if wb.isfwd == True:
 				usr.fwded.add(wb.fwdfrom)
