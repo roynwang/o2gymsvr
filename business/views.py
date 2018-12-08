@@ -221,7 +221,7 @@ class CustomerTrainTimeline(APIView):
         # 7 get usercomments event
         print usr.history.count()
         weibos = usr.history.filter( \
-                created__range=[startday, endday])
+                created__range=[startday, endday]).order_by("created")
         for wb in weibos:
             user_comments_event = self.usercomments_to_event(wb)
             events.append(user_comments_event)
