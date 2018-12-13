@@ -37,7 +37,7 @@ class SimpleUserSerilaizer(serializers.ModelSerializer):
 		exclude = ("upped","fwded","commented","upped_person")
 
 	def get_pinyin(self, obj):
-		return pinyin.get_initial(obj.displayname)
+		return pinyin.get_initial(obj.displayname).lower()
         
         def get_avatar(self, obj):
             if obj.custom_avatar and obj.custom_avatar != '':
