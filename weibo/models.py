@@ -7,7 +7,7 @@ class Weibo(models.Model):
 	id = models.AutoField(primary_key=True)
 
 	title = models.CharField(max_length=16, blank = True)
-	brief = models.CharField(max_length=128, blank = True)
+	brief = models.CharField(max_length=512, blank = True)
 	imgs = models.CharField(max_length=1024, blank = True)
 
 	islong = models.BooleanField(default=False)
