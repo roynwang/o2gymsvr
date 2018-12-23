@@ -18,6 +18,7 @@ import uuid
 
 from rest_framework.decorators import api_view,renderer_classes
 from utils import wxutils
+import base64
 
 # Create your views here.
 
@@ -59,6 +60,8 @@ class WeiboList(generics.ListCreateAPIView):
 		#check whether the 'by' field is them same as url parameter 
 		#if  unicode(by.id) != request.data.get('by'):
 		#	return Response({"error":"author mismatch"}, status=status.HTTP_400_BAD_REQUEST)
+                if request.data['title'] == 'user_comments':
+                    request.data['brief'] =  base64.b64encode(request.data['brief'])
 		serializer = WeiboSerializer(data=request.data)
 		if serializer.is_valid():
 			wb = serializer.save()

@@ -30,6 +30,7 @@ from rest_framework.exceptions import NotAcceptable
 from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
 from random import choice
+import base64
 
 # Create your views here.
 
@@ -75,13 +76,14 @@ class CustomerTrainTimeline(APIView):
                 "diet_score": "", \
                 "body_images": []}
     def usercomments_to_event(self, obj):
+        if obj.brief.endswith('=='):
+            obj.brief = base64.b64decode(obj.brief)
         event = self.get_empty_event()
         event["date"] = obj.created.date()
         event["title_avatar"] = obj.by.avatar
         event["title"] = obj.by.displayname
         event["event_type"] = "weibo"
         event["body_text"] = obj.brief
-        print event
         return event
 
     def customerkpi_to_event(self, kpi):
@@ -219,7 +221,6 @@ class CustomerTrainTimeline(APIView):
         events += photo_event
 
         # 7 get usercomments event
-        print usr.history.count()
         weibos = usr.history.filter( \
                 created__range=[startday, endday]).order_by("created")
         for wb in weibos:
