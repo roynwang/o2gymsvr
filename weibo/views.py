@@ -51,7 +51,7 @@ class WeiboList(generics.ListCreateAPIView):
 	def create(self, request, *args, **kwargs):
 		#pprint.pprint(request.data)
 		#by = TimeLine.objects.get(name=self.kwargs.get('by'))
-
+                print request.data
 		usr = get_object_or_404(User, name=self.kwargs.get('by'))
 		by, created = TimeLine.objects.get_or_create(name=usr)
                 if created:
