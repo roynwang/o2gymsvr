@@ -17,6 +17,13 @@ class CourseReviewSerializer(serializers.ModelSerializer):
 	    serializer = SimpleUserSerilaizer(c)
             return serializer.data
 
+        def to_representation(self, instance):
+            """Convert `username` to lowercase."""
+            ret = super().to_representation(instance)
+            if ret['coach_review'].endswith('=='):
+                ret['coach_review'] = base64.b64decode(ret['coach_review'])
+            return ret
+
 
 class CustomerBonusSerializer(serializers.ModelSerializer):
 	class Meta:

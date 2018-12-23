@@ -98,6 +98,8 @@ class CustomerTrainTimeline(APIView):
         return event
 
     def coursereview_to_event(self, course_review):
+        if course_review.coach_review.endswith('=='):
+            course_review.coach_review = base64.b64decode(course_review.coach_review)
         event = self.get_empty_event()
         coach = get_object_or_404(User, name=course_review.coach)
         event["date"] = course_review.date
@@ -558,6 +560,10 @@ class CourseReviewItem(generics.RetrieveUpdateAPIView):
                 ret.save()
             return ret
 
+	def partial_update(self, request, *args, **kwargs):
+            request.data['coach_review'] = base64.b64encode(request.data['coach_review'])
+            return super(CourseReviewItem, self).partial_update(request, args,kwargs)
+
 class CourseReviewItemPatch(generics.RetrieveUpdateAPIView):
         serializer_class = CourseReviewSerializer
         queryset = CourseReview.objects.all()
@@ -566,7 +572,8 @@ class CourseReviewItemPatch(generics.RetrieveUpdateAPIView):
             if 'user_confirmed' in request.data and request.data['user_confirmed'] == 1:
                 s = get_object_or_404(Schedule, id=request.data['course'])
                 s.doneBook()
-            print(request.data['coach_review'])
+            if 'coach_review' in request.data:
+                request.data['coach_review'] = base64.b64encode(request.data['coach_review'])
             return self.partial_update(request, *args, **kwargs)
 
 
