@@ -31,6 +31,8 @@ from django.core.cache import cache
 from django.views.decorators.csrf import csrf_exempt
 from random import choice
 import base64
+from utils import o2utils
+
 
 # Create your views here.
 
@@ -76,7 +78,7 @@ class CustomerTrainTimeline(APIView):
                 "diet_score": "", \
                 "body_images": []}
     def usercomments_to_event(self, obj):
-        if obj.brief.endswith('=='):
+        if o2utils.isBase64(obj.brief):
             obj.brief = base64.b64decode(obj.brief)
         event = self.get_empty_event()
         event["date"] = obj.created.date()
@@ -98,7 +100,7 @@ class CustomerTrainTimeline(APIView):
         return event
 
     def coursereview_to_event(self, course_review):
-        if course_review.coach_review.endswith('=='):
+        if o2utils.isBase64(course_review.coach_review):
             course_review.coach_review = base64.b64decode(course_review.coach_review)
         event = self.get_empty_event()
         coach = get_object_or_404(User, name=course_review.coach)
