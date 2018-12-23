@@ -2,6 +2,8 @@
 from rest_framework import serializers
 from business.models import *
 from usr.serializers import *
+from utils import o2utils
+import base64
 
 class CourseReviewSerializer(serializers.ModelSerializer):
         coach_detail = serializers.SerializerMethodField()
@@ -16,6 +18,13 @@ class CourseReviewSerializer(serializers.ModelSerializer):
             c = User.objects.get(name=obj.customer)
 	    serializer = SimpleUserSerilaizer(c)
             return serializer.data
+
+        def to_representation(self, instance):
+            """Convert `username` to lowercase."""
+            ret = super(CourseReviewSerializer, self).to_representation(instance)
+            if o2utils.isBase64(ret['coach_review']):
+                ret['coach_review'] = base64.b64decode(ret['coach_review'])
+            return ret
 
 
 class CustomerBonusSerializer(serializers.ModelSerializer):
