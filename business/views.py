@@ -563,6 +563,7 @@ class CourseReviewItem(generics.RetrieveUpdateAPIView):
             return ret
 
 	def partial_update(self, request, *args, **kwargs):
+            print request.data
             request.data['coach_review'] = base64.b64encode(request.data['coach_review'])
             return super(CourseReviewItem, self).partial_update(request, args,kwargs)
 
