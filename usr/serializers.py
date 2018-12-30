@@ -34,6 +34,21 @@ class UserRegisterationSerializer(serializers.ModelSerializer):
 class SimpleUserSerilaizer(serializers.ModelSerializer):
 	pinyin = serializers.SerializerMethodField()
 	avatar = serializers.SerializerMethodField()
+	class Meta:
+		model = User
+		exclude = ("upped","fwded","commented","upped_person")
+
+	def get_pinyin(self, obj):
+		return pinyin.get_initial(obj.displayname).lower()
+        
+        def get_avatar(self, obj):
+            if obj.custom_avatar and obj.custom_avatar != '':
+                return obj.custom_avatar
+            return obj.avatar
+
+class SimpleUserWithMonthTrainTimesSerilaizer(serializers.ModelSerializer):
+	pinyin = serializers.SerializerMethodField()
+	avatar = serializers.SerializerMethodField()
         month_train = serializers.SerializerMethodField()
 	class Meta:
 		model = User
@@ -49,6 +64,7 @@ class SimpleUserSerilaizer(serializers.ModelSerializer):
 
         def get_month_train(self, obj):
             return obj.get_30_train_times()
+
 
 
 class SimpleUserWithLastDateSerilaizer(serializers.ModelSerializer):
