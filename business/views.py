@@ -530,13 +530,15 @@ class ScheduleDetailItemPatch(generics.GenericAPIView, UpdateModelMixin):
                 cache.set("o2_coachaction_" + course.coach.name, request.data["detail"], None)
                 actions = json.loads(request.data["detail"])
                 cache.delete("o2_detailcache_" + course.custom.name)
+                if not 'level' in item:
+                    item[level] = 0
                 for item in actions:
                     if item["contenttype"] == "action":
                         CustomerWorkoutValue.objects.update_or_create(customer=course.custom.name,\
                             name=item['name'], \
                             workoutid=item['workoutid'], \
                             defaults={"unit":item["unit"],"weight":item['weight'],"repeattimes":item['repeattimes'], \
-                            "comments":item['comments']})
+                            "comments":item['comments'], "level":item['level']})
             return ret
 
 
@@ -654,12 +656,14 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
                     cache.delete("o2_detailcache_" + course.custom.name)
 
                     for item in actions:
+                        if not 'level' in item:
+                            item[level] = 0
                         if item["contenttype"] == "action":
                             CustomerWorkoutValue.objects.update_or_create(customer=course.custom.name,\
                                     name=item['name'], \
                                     workoutid=item['workoutid'], \
                                     defaults={"unit":item["unit"],"weight":item['weight'],"repeattimes":item['repeattimes'], \
-                                    "comments":item['comments']})
+                                    "comments":item['comments'], "level":item['level']})
 		return ret
 
 class GymScheduleList(generics.ListAPIView):

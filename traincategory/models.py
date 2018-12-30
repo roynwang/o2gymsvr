@@ -54,6 +54,7 @@ class CustomerWorkoutValue(models.Model):
 	repeattimes = models.IntegerField(default=0)
 	comments = models.CharField(max_length=128, default="")
 	workoutid = models.IntegerField()
+        level = models.IntegerField(default=0)
 
 class CustomerTarget(models.Model):
 	id = models.AutoField(primary_key=True)
