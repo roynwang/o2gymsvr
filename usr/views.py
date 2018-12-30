@@ -450,6 +450,9 @@ class CustomerList(generics.ListAPIView):
                         c.update_owner_status()
 		return ret
 
+class CustomerWithMonthTrainTimesList(CustomerList):
+	serializer_class = SimpleUserWithMonthTrainTimesSerilaizer
+	pagination_class = None
 
 class ModifyGym(APIView):
 	def post(self, request, name):
