@@ -531,7 +531,7 @@ class ScheduleDetailItemPatch(generics.GenericAPIView, UpdateModelMixin):
                 actions = json.loads(request.data["detail"])
                 cache.delete("o2_detailcache_" + course.custom.name)
                 if not 'level' in item:
-                    item[level] = 0
+                    item['level'] = 0
                 for item in actions:
                     if item["contenttype"] == "action":
                         CustomerWorkoutValue.objects.update_or_create(customer=course.custom.name,\
@@ -657,7 +657,7 @@ class ScheduleItem(generics.RetrieveUpdateDestroyAPIView):
 
                     for item in actions:
                         if not 'level' in item:
-                            item[level] = 0
+                            item['level'] = 0
                         if item["contenttype"] == "action":
                             CustomerWorkoutValue.objects.update_or_create(customer=course.custom.name,\
                                     name=item['name'], \
