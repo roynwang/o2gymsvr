@@ -22,7 +22,7 @@ class WorkoutActionList(generics.ListCreateAPIView):
 		return WorkoutAction.objects.filter(categeory = cate, by__in = [by, ""])
 
 class CustomerWorkoutValueItem(generics.RetrieveAPIView):
-	serializer_class = SimpleWorkoutActionSerializer 
+	serializer_class = SimpleWorkoutActionWithCustomerValueSerializer
         def get_object(self):
             customer = self.kwargs.get("customer")
             workoutid = self.kwargs.get("workoutid")
