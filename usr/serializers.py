@@ -5,6 +5,8 @@ from weibo.models import *
 from django.contrib.auth import get_user_model
 import json
 import pinyin
+from django.core.cache import cache
+from datetime import datetime, timedelta
 
 
 class CurrentVersionSerializer(serializers.ModelSerializer):
@@ -32,6 +34,7 @@ class UserRegisterationSerializer(serializers.ModelSerializer):
 class SimpleUserSerilaizer(serializers.ModelSerializer):
 	pinyin = serializers.SerializerMethodField()
 	avatar = serializers.SerializerMethodField()
+        month_train = serializers.SerializerMethodField()
 	class Meta:
 		model = User
 		exclude = ("upped","fwded","commented","upped_person")
@@ -43,6 +46,10 @@ class SimpleUserSerilaizer(serializers.ModelSerializer):
             if obj.custom_avatar and obj.custom_avatar != '':
                 return obj.custom_avatar
             return obj.avatar
+
+        def get_month_train(self, obj):
+            return obj.get_30_train_times()
+
 
 class SimpleUserWithLastDateSerilaizer(serializers.ModelSerializer):
 	pinyin = serializers.SerializerMethodField()
