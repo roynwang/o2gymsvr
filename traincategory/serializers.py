@@ -23,13 +23,15 @@ class WorkoutActionSerializer(serializers.ModelSerializer):
 
 class SimpleWorkoutActionWithCustomerValueSerializer(serializers.ModelSerializer):
 	pinyin = serializers.SerializerMethodField()
-        level = serializers.SerializerMethodField()
+        tag = serializers.SerializerMethodField()
 	class Meta:
 		model = CustomerWorkoutValue
 	def get_pinyin(self, obj):
 		return pinyin.get_initial(obj.name).replace(" ","").lower()
-        def get_level(self, obj):
-                return obj.level
+        def get_tag(self, obj):
+                obj = get_object_or_404(SimpleWorkoutAction,pk=obj.workoutid) 
+                return obj.tag
+
 
 class SimpleWorkoutActionSerializer(serializers.ModelSerializer):
 	pinyin = serializers.SerializerMethodField()
