@@ -320,6 +320,16 @@ class User(models.Model):
 
         def get_unactive_customer(self,start,end):
             pass
+        
+        def get_30_train_times(self):
+            mkey = self.name + "_30_train_times"
+            mdetail = cache.get(mkey)
+            if not mdetail:
+                mdetail = self.booked_time.filter(done=True,\
+                        date__gte=datetime.datetime.now() - datetime.timedelta(days=30)).count()
+                cache.set(mkey, mdetail, 60*60*24)
+            return mdetail
+
 
 
 class Balance(models.Model):
