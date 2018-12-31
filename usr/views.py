@@ -122,7 +122,10 @@ class CustomerTrainByMonth(APIView):
                 day_str = datetime.datetime.strftime(q.date,"%Y-%m")
                 if day_str in resp:
                     resp[day_str] += 1
-            return Response(resp)
+            res = []
+            for d in resp:
+                res.append({"month":d, "times": resp[d]})
+            return Response(res)
 
 class CoachStatistics(APIView):
         def get(self, request, name):
