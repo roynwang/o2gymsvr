@@ -17,7 +17,6 @@ from business.models import *
 from usr.serializers import *
 from weibo.serializers import *
 from business.serializers import *
-
 import calendar
 import pprint
 import datetime 
@@ -110,6 +109,20 @@ class CoachReportArchieve(APIView):
                 CoachKpi.archieve_range(name,start,end.date(), request.GET['dimension'])
             return Response()
             
+class CustomerTrainByMonth(APIView):
+        def get(self, request, name):
+            usr = get_object_or_404(User,name=name)
+            queryset = usr.booked_time.filter(done=True)
+            resp = {}
+            today = datetime.datetime.today()
+            for i in range(0,14):
+                key = datetime.datetime.strftime(add_months(today, -i), "%Y-%m")
+                resp[key] = 0
+            for q in queryset:
+                day_str = datetime.datetime.strftime(q.date,"%Y-%m")
+                if day_str in resp:
+                    resp[day_str] += 1
+            return Response(resp)
 
 class CoachStatistics(APIView):
         def get(self, request, name):
