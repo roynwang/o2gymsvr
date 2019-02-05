@@ -383,7 +383,7 @@ class BodyEval(models.Model):
 	name = models.CharField(max_length=64)
 	date = models.DateField(default=datetime.date.today)
 	option = models.CharField(max_length=64)
-	value = models.CharField(max_length=64)
+	value = models.CharField(max_length=1024, blank=True, default="")
 	unit = models.CharField(max_length=64, blank=True)
 	group = models.CharField(max_length=64)
 	comments = models.CharField(max_length=1024,blank=True,default="", null=True)
