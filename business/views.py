@@ -514,7 +514,7 @@ class GymItem(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Gym.objects.all()
 	serializer_class = GymSerializer
 
-class ScheduleDetailItem(generics.RetrieveUpdateAPIView):
+class ScheduleDetailItem(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = ScheduleSerializer
         lookup_field = "pk"
         queryset = Schedule.objects.all()
@@ -1232,6 +1232,9 @@ class BodyEvalByDateView(ListBulkCreateAPIView):
 		date_str = datetime.datetime.strftime(date,"%Y-%m-%d")
 		name = self.kwargs.get("name")
 		return BodyEval.objects.filter(date=date_str, name=name)
+	def create(self, request, *args, **kwargs):
+            print request.data
+	    return super(BodyEvalByDateView, self).partial_update(request, args,kwargs)
 
 @permission_classes((AllowAny, ))
 class AllHealthQuesOptionsView(generics.ListCreateAPIView):
