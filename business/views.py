@@ -736,6 +736,12 @@ class CurrentCoach(APIView):
                 coachname = course[0].coach.name
             return Response({"coach":coachname}, status=status.HTTP_200_OK)
 
+class CurrentCoaches(generics.ListCreateAPIView):
+	serializer_class = SimpleUserSerilaizer
+        pagination_class = None
+	def get_queryset(self):
+            return User.objects.filter(gym__id__in=[19,31])
+
 class TargetView(APIView):
         def get(self, request,name):
             ret = { "done_count": 0,\
