@@ -174,7 +174,8 @@ class CustomerTrainTimeline(APIView):
         # 1 get course review event
         reviews = CourseReview.objects.filter(customer=pk, date__year=year, date__month=month)
         for item in reviews:
-            events.append(self.coursereview_to_event(item))
+            if len(item.coach_review) > 0:
+                events.append(self.coursereview_to_event(item))
         # 2 get eval event
         evals = BodyEval.objects.filter(name=pk, date__year=year, date__month=month)
         eval_dates = evals.values('date').distinct()
