@@ -1,5 +1,5 @@
 'use strict';
-var bukcet = "https://dn-o2fit.qbox.me"
+var bukcet = "http://static.o2-fit.com"
 
 function dict2arr(dict) {
     var arr = []
