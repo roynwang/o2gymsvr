@@ -27,7 +27,7 @@ class CourseReview(models.Model):
         question = models.CharField(max_length=512, blank=True, null=True, default="")
         anwser = models.IntegerField(default=-1)
         user_confirmed = models.BooleanField(default=False)
-        coach_review = models.CharField(max_length=512, blank=True, null=True, default="")
+        coach_review = models.CharField(max_length=2048, blank=True, null=True, default="")
 
 class Liveness(models.Model):
 	id = models.AutoField(primary_key=True)
