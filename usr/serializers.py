@@ -136,8 +136,9 @@ class UserSerializer(serializers.ModelSerializer):
 		#exclude = ("upped","fwded","commented")
 
         def get_month_completed(self, obj):
-	    today = datetime.date.today()
-            month = today.month() + 1
+	    today = datetime.today()
+            year = today.year
+            month = today.month + 1
             s = obj.sealed_time
             if not obj.iscoach:
                 s = obj.booked_time
@@ -145,8 +146,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
         def get_year_completed(self, obj):
-	    today = datetime.date.today()
-            year = today.year()
+	    today = datetime.today()
+            year = today.year
             s = obj.sealed_time
             if not obj.iscoach:
                 s = obj.booked_time
