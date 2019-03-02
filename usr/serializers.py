@@ -138,7 +138,7 @@ class UserSerializer(serializers.ModelSerializer):
         def get_month_completed(self, obj):
 	    today = datetime.today()
             year = today.year
-            month = today.month + 1
+            month = today.month
             s = obj.sealed_time
             if not obj.iscoach:
                 s = obj.booked_time
