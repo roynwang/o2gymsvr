@@ -130,15 +130,27 @@ class UserSerializer(serializers.ModelSerializer):
 	corps_list = serializers.SerializerMethodField()
 	avatar = serializers.SerializerMethodField()
         year_completed = serializers.SerializerMethodField()
+        month_completed = serializers.SerializerMethodField()
 	class Meta:
 		model = User
 		#exclude = ("upped","fwded","commented")
 
-        def get_year_completed(self, obj):
+        def get_month_completed(self, obj):
+	    today = datetime.date.today()
+            month = today.month() + 1
             s = obj.sealed_time
             if not obj.iscoach:
                 s = obj.booked_time
-            return s.filter(date__year=2019,done=True, coursetype="normal").count()
+            return s.filter(date__year=year, date__month=month, done=True, coursetype="normal").count()
+
+
+        def get_year_completed(self, obj):
+	    today = datetime.date.today()
+            year = today.year()
+            s = obj.sealed_time
+            if not obj.iscoach:
+                s = obj.booked_time
+            return s.filter(date__year=year,done=True, coursetype="normal").count()
 
 	def get_corps_list(self, obj):
 		if obj.corps == None or obj.corps == "":
