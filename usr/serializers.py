@@ -34,6 +34,7 @@ class UserRegisterationSerializer(serializers.ModelSerializer):
 class SimpleUserSerilaizer(serializers.ModelSerializer):
 	pinyin = serializers.SerializerMethodField()
 	avatar = serializers.SerializerMethodField()
+        times = serializers.SerializerMethodField()
 	class Meta:
 		model = User
 		exclude = ("upped","fwded","commented","upped_person")
@@ -45,6 +46,9 @@ class SimpleUserSerilaizer(serializers.ModelSerializer):
             if obj.custom_avatar and obj.custom_avatar != '':
                 return obj.custom_avatar
             return obj.avatar
+        
+        def get_times(self, obj):
+            return obj.booked_time.filter(date__year=2018, done=True).count()
 
 class SimpleUserWithMonthTrainTimesSerilaizer(serializers.ModelSerializer):
 	pinyin = serializers.SerializerMethodField()
@@ -122,12 +126,20 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
 	gym = serializers.StringRelatedField(many=True,read_only=True)
 	gym_id = serializers.PrimaryKeyRelatedField(source="gym",many=True,read_only=True)
-	upped_person = serializers.StringRelatedField(many=True, read_only=True)
+	#upped_person = serializers.StringRelatedField(many=True, read_only=True)
 	corps_list = serializers.SerializerMethodField()
 	avatar = serializers.SerializerMethodField()
+        year_completed = serializers.SerializerMethodField()
 	class Meta:
 		model = User
 		#exclude = ("upped","fwded","commented")
+
+        def get_year_completed(self, obj):
+            s = obj.sealed_time
+            if not obj.iscoach:
+                s = obj.booked_time
+            return s.filter(date__year=2019,done=True, coursetype="normal").count()
+
 	def get_corps_list(self, obj):
 		if obj.corps == None or obj.corps == "":
 			return []
