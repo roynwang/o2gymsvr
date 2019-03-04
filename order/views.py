@@ -31,6 +31,7 @@ from sms.models import *
 import os
 from django.http import Http404
 import xmltodict
+from django.core.cache import cache
 
 
 def create_pay(request, order,channel):
@@ -307,6 +308,10 @@ class ManualOrder(APIView):
 
 	    billid = getbillid(coach.id, customer.id)
 	    gym = Gym.objects.get(name=coach.gym.all()[0])
+
+            mkey = "o2_gym_customers_" + str(gym.id)
+            cache.delete(mkey)
+
             product_promotion = int(request.data["product_promotion"])
             if product_promotion < 0:
                 product_promotion = 0
