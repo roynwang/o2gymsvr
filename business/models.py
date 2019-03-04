@@ -214,7 +214,11 @@ class Gym(models.Model):
 			ret.append(Gym.objects.get(id=i))
 		return ret
 	def get_customers(self):
-		ret = list(self.orders.values_list("custom", flat=True))
+                mkey = "o2_gym_customers_" + str(self.id)
+                ret = cache.get(mkey)
+                if ret is None:
+		    ret = list(self.orders.values_list("custom", flat=True))
+                    cache.set(mkey, ret, 60*60*24*30)
 		return ret
 	def get_all_customers(self):
 		customlist = self.get_customers()
