@@ -309,9 +309,6 @@ class ManualOrder(APIView):
 	    billid = getbillid(coach.id, customer.id)
 	    gym = Gym.objects.get(name=coach.gym.all()[0])
 
-            mkey = "o2_gym_customers_" + str(gym.id)
-            cache.delete(mkey)
-
             product_promotion = int(request.data["product_promotion"])
             if product_promotion < 0:
                 product_promotion = 0
@@ -471,6 +468,9 @@ class ManualOrder(APIView):
 				channel = "offline",
 				isfirst = isfirst,
 				subsidy = subsidy)
+                #clear cache
+                coach.gym.all()[0].clear_customer_cache()
+
 		if "product_duration" in request.data:
 			order.duration = int(request.data["product_duration"])
 			order.save()

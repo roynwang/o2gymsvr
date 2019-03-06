@@ -213,8 +213,11 @@ class Gym(models.Model):
 		for i in json.loads(self.shared_gyms):
 			ret.append(Gym.objects.get(id=i))
 		return ret
+        def clear_customer_cache(self):
+                mkey = "o2_gym_customers_list_" + str(self.id)
+                cache.delete(mkey)
 	def get_customers(self):
-                mkey = "o2_gym_customers_" + str(self.id)
+                mkey = "o2_gym_customers_list_" + str(self.id)
                 ret = cache.get(mkey)
                 if ret is None:
 		    ret = list(self.orders.values_list("custom", flat=True))
