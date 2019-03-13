@@ -237,6 +237,23 @@ class CustomerTrainTimeline(APIView):
         events.reverse()
         return Response(events, status=status.HTTP_200_OK)
 
+class GymCustomerMonthBillboard(APIView):
+        def get(self, request, pk, year, month):
+            # 1. get gym coaches
+            gyminst = Gym.objects.get(id=pk)
+            customers = Gym.objects.get(id=pk).get_all_customers()
+            allschedule = Schedule.objects.filter(coach__in=gyminst.coaches.values_list("id",flat=True), \
+                    done=True,
+                    date__year=year,
+                    date__month=month)
+            ret = {}
+            for s in allschedule:
+                if s.custom.name in customers:
+                    if not s.custom.name in ret:
+                        ret[s.custom.name] = 0
+                    ret[s.custom.name] += 1
+            return Response(ret, status=status.HTTP_200_OK)
+
 class GymCustomerLiveness(APIView):
         def count_last_train(self, courses, endday, delta=30):
             startday = endday - datetime.timedelta(days=delta)
