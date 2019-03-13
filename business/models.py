@@ -235,7 +235,6 @@ class Gym(models.Model):
         def get_charge_customers(self):
                 ret = list(BalanceOrder.objects.filter(gym=self.id,status="completed") \
                         .values_list("customer",flat=True))
-                print ret
                 return ret
 
         def get_admin(self):
