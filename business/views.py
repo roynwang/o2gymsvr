@@ -251,7 +251,10 @@ class GymCustomerMonthBillboard(APIView):
                     ret[s.custom.name] = {"name": s.custom.name, "avatar": s.custom.avatar,\
                             "displayname":s.custom.displayname,  "additional": 0}
                 ret[s.custom.name]['additional'] += 1
-            return Response(ret, status=status.HTTP_200_OK)
+            arr = []
+            for n in ret:
+                arr.append(ret[n])
+            return Response(arr, status=status.HTTP_200_OK)
 
 class GymCustomerLiveness(APIView):
         def count_last_train(self, courses, endday, delta=30):
