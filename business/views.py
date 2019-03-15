@@ -1823,7 +1823,7 @@ class TrainTimesRanking(APIView):
                                 "name": c.custom.name, 
                                 "displayname": c.custom.displayname, 
                                 "avatar": c.custom.avatar,
-                                "gym": c.coach.get_coach_gym().id
+                                #"gym": c.coach.get_coach_gym().id
                             }, 
                             "times": 0 
                         }
