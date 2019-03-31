@@ -9,9 +9,13 @@
 body {
     font-family: Montserrat, sans-serif
 }
+
+input { -webkit-user-select:text;}
+
 .card {
     box-shadow: none;
 }
+
 /*color*/
 
 .o2-bg-red,
@@ -1223,4 +1227,66 @@ body {
 	color: rgb(79, 210, 194); 
 }
 
+.o2-timeline.simple-card {
+    height: 100px;
+    margin: 40px 20px;
+	box-shadow: 4px 3px 13px 4px #ddd;
+	padding: 10px 20px;
+	border-radius: 0;
+}
+.simple-card .o2-timeline-line {
+	border: none;
+}
+.simple-card .o2-timline-date.day {
+	margin-top: 20px;
+}
+.simple-card #booknow {
+	width: 100%;
+	text-align: center;
+	font-size: 30px;
+	font-weight: bolder;
+}
+
+.simple-card #booknow i{
+	margin-right: 8px;
+}
+
+.simple-card .o2-book-detail {
+	height: 100%;
+	font-size: 26px;
+	padding-left: 40px;
+}
+
+.simple-card .o2-book-detail .o2-book-hour{
+	margin: 0;
+	font-size: 18px;
+	margin-top: 16px;
+	color: #333;
+}
+
+.simple-card .o2-book-detail .o2-book-coach{
+    text-align: left;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0;
+}
+
+.simple-card.inprogress {
+	border-right: solid 4px rgb(79, 210, 194);
+}
+.simple-card.done {
+	border-right: solid 4px #666;
+}
+
+.simple-card .button {
+	float: right;
+	color: rgb(79, 210, 194);
+	border-radius: 0;
+	border: solid rgb(79, 210, 194) 2px;
+	font-weight: 900;
+	font-size: 16px;
+	line-height: 20px;
+	position: relative;
+	top: -8px;
+}
 
