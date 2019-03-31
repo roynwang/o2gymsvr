@@ -4,6 +4,9 @@
     font-weight: 400;
     src: local('Montserrat-Regular'), url(/static/fonts/Montserrat-Regular.ttf) format('truetype');
 }
+
+input { -webkit-user-select:text;}
+
 .tab-pane {
 	padding:0
 }
