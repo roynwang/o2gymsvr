@@ -1,8 +1,10 @@
 # coding=utf-8
+from django.utils import timezone
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from usr.models import *
+import pytz
 from business.models import *
 from django.db.models import Sum
 
@@ -112,7 +114,7 @@ class SalaryReceipt(models.Model):
 
             self.kpi = self.getkpi()
             #caculate full
-            if setting.shangke > 0:
+            if setting.shangke > 0 and courses.count() > 0:
                 self.base += courses.aggregate(Sum('price'))['price__sum'] * setting.shangke / 100
 
             self.course_fee = setting.fixed_shangke
@@ -123,11 +125,27 @@ class SalaryReceipt(models.Model):
             if self.adjustment == 0:
                 pass
             '''
+            self.adjustment_reason = ""
+            self.adjustment = 0
             groupcoures = GroupCourseInstanceBook.objects.filter(date__year=self.year,
                     date__month=self.month,
                     coach = self.name)
-            self.adjustment = (groupcoures.count() * setting.group_person)
-            self.adjustment_reason = "团课: " + str(groupcoures.count()) + "人次*" + str(setting.group_person)
+            if groupcoures.count() > 0:
+                self.adjustment += (groupcoures.count() * setting.group_person)
+                self.adjustment_reason += "团课: " + str(groupcoures.count()) + "人次*" + str(setting.group_person)
+
+            if setting.xiaoshou > 0:
+		utc = pytz.utc
+		tz = pytz.timezone('Asia/Chongqing')
+                startday = datetime.datetime(self.year, self.month, 1).replace(tzinfo=utc)
+                endday = last_day_of_month(startday) + datetime.timedelta(days=1)
+                p = usr.income_orders.filter( \
+                        paidtime__range=[startday, endday])
+
+                sale = p.aggregate(Sum('amount'))['amount__sum']
+                if sale > 0:
+                    self.adjustment += sale * setting.xiaoshou / 100
+                    self.adjustment_reason += "销售提成: " + str(sale) + "*" + str(setting.xiaoshou) + "%"
             #adjustment = models.IntegerField(default=0)
             #adjustment_reason = models.CharField(max_length=512, default="")
             self.save()
