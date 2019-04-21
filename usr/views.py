@@ -444,7 +444,7 @@ class CoachTrainList(generics.ListAPIView):
 	def get_queryset(self):
             end = datetime.date.today()
             start = add_months(end, -1)
-            return Weibo.objects.filter(title="coach_train", created__gte = start)
+            return Weibo.objects.filter(title="coach_train", created__gte = start).order_by("-created")
 
 
 class CustomerList(generics.ListAPIView):
