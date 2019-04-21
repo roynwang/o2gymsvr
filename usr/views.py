@@ -438,6 +438,14 @@ class RespCustomerList(generics.ListAPIView):
 		ret = User.objects.filter(owner = self.kwargs['name'], order_status__in = ['paid','inprogress'])
                 return ret
 
+class CoachTrainList(generics.ListAPIView):
+	serializer_class = ReadWeiboSerializer
+	pagination_class = None
+	def get_queryset(self):
+            end = datetime.date.today()
+            start = add_months(end, -1)
+            return Weibo.objects.filter(title="coach_train", created__gte = start)
+
 
 class CustomerList(generics.ListAPIView):
 	serializer_class = SimpleUserSerilaizer
