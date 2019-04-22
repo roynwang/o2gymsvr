@@ -87,7 +87,7 @@
                     <td><a ng-if="row.status!='unpaid'" class="btn {{row.status=='done'?'btn-success':'btn-primary'}}"
                         href="#order/{{row.coachdetail.name}}/{{row.id}}">{{row.status ==
 						"done"?"查看":"预约"}}</a>
-                        <a ng-if="demo.role == 'admin'" class="btn btn-danger" ng-click="demo.remove(row.id)">移除</a>
+                        <!--<a ng-if="demo.role == 'admin'" class="btn btn-danger" ng-click="demo.remove(row.id)">移除</a>-->
                     </td>
                 </tr>
             </table>
