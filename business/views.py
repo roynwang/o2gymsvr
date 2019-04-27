@@ -77,6 +77,19 @@ class CustomerTrainTimeline(APIView):
                 "train_score": "", \
                 "diet_score": "", \
                 "body_images": []}
+
+    def coach_train_to_event(self, obj):
+        if o2utils.isBase64(obj.brief):
+            obj.brief = base64.b64decode(obj.brief)
+        event = self.get_empty_event()
+        event["date"] = obj.created.date()
+        event["title_avatar"] = obj.by.avatar
+        event["title"] = "教练打卡"
+        event["event_type"] = "target_create"
+        event["body_text"] = obj.brief
+        return event
+
+
     def usercomments_to_event(self, obj):
         if o2utils.isBase64(obj.brief):
             obj.brief = base64.b64decode(obj.brief)
@@ -232,6 +245,15 @@ class CustomerTrainTimeline(APIView):
         for wb in weibos:
             user_comments_event = self.usercomments_to_event(wb)
             events.append(user_comments_event)
+
+        # 8 get coach train event
+        coach_trains = usr.history.filter( \
+                title = 'coach_train', \
+                created__range=[startday, endday]).order_by("created")
+        for wb in coach_trains:
+            coach_train_event = self.coach_train_to_event(wb)
+            events.append(coach_train_event)
+
 
         events = sorted(events, key=lambda e: e['date'])
         events.reverse()
