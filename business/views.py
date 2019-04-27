@@ -194,6 +194,7 @@ class CustomerTrainTimeline(APIView):
         month = int(month)
         # 1 get course review event
         reviews = CourseReview.objects.filter(customer=pk, date__year=year, date__month=month)
+        coaches = reviews.values_list('coach', flat=True).distinct()
         for item in reviews:
             if len(item.coach_review) > 0:
                 events.append(self.coursereview_to_event(item))
@@ -255,11 +256,14 @@ class CustomerTrainTimeline(APIView):
             events.append(user_comments_event)
 
         # 8 get coach train event
+        '''
         coach_trains = Weibo.objects.filter( \
                 title = 'coach_train', \
+                by__in = coaches, \
                 created__range=[startday, endday]).order_by("created")
         coach_train_event = self.coach_train_to_event(coach_trains)
         events += coach_train_event
+        '''
 
 
         events = sorted(events, key=lambda e: e['date'])
