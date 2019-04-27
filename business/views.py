@@ -277,7 +277,7 @@ class GymChart(APIView):
             "unit": "",\
             "xaxis": ["a","b","c","d"],\
             "values": [1,3,2,4]}
-        return Response(data, status=status.HTTP_200_OK)
+        return Response([data], status=status.HTTP_200_OK)
 
 class GymCustomerMonthBillboard(APIView):
         def get(self, request, pk, year, month):
