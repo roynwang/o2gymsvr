@@ -80,8 +80,6 @@ class CustomerTrainTimeline(APIView):
                 "body_images": []}
 
     def coach_train_to_event(self, obj):
-        if o2utils.isBase64(obj.brief):
-            obj.brief = base64.b64decode(obj.brief)
         event = self.get_empty_event()
         event["date"] = obj.created.date()
         event["title_avatar"] = obj.by.avatar
