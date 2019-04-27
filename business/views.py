@@ -79,15 +79,24 @@ class CustomerTrainTimeline(APIView):
                 "diet_score": "", \
                 "body_images": []}
 
-    def coach_train_to_event(self, obj):
-        event = self.get_empty_event()
-        event["date"] = obj.created.date()
-        event["title_avatar"] = obj.by.avatar
-        event["title"] = "教练打卡"
-        event["event_type"] = "target_create"
-        event["body_text"] = obj.brief
-        return event
-
+    def coach_train_to_event(self, photos):
+        events = {}
+        for photo in photos:
+            datestr = datetime.datetime.strftime(photo.created.date(), "%Y-%m-%d")
+            if not datestr in events:
+                events[datestr] = []
+            events[datestr].append(photo.by.avatar)
+        
+        ret = []
+        for k in events:
+            event = self.get_empty_event()
+            event["date"] = datetime.datetime.strptime(k, "%Y-%m-%d").date()
+            event["title"] = "教练打卡"
+            event["body_images"] = events[k]
+            event["event_type"] = "photo"
+            event["title_avatar"] = "http://static.o2-fit.com/strong.png"
+            ret.append(event)
+        return ret
 
     def usercomments_to_event(self, obj):
         if o2utils.isBase64(obj.brief):
@@ -249,9 +258,8 @@ class CustomerTrainTimeline(APIView):
         coach_trains = Weibo.objects.filter( \
                 title = 'coach_train', \
                 created__range=[startday, endday]).order_by("created")
-        for wb in coach_trains:
-            coach_train_event = self.coach_train_to_event(wb)
-            events.append(coach_train_event)
+        coach_train_event = self.coach_train_to_event(coach_trains)
+        events += coach_train_event
 
 
         events = sorted(events, key=lambda e: e['date'])
