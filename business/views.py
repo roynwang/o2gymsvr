@@ -294,7 +294,7 @@ class GymChart(APIView):
                     "xaxis": [],\
                     "values": []}
             for row in allschedule: 
-                data["xaxis"].append(row["m"])
+                data["xaxis"].append(str(row["m"]))
                 data["values"].append(row["total"])
             return data
 
@@ -313,7 +313,7 @@ class GymChart(APIView):
                     "xaxis": [],\
                     "values": []}
             for row in allschedule: 
-                data["xaxis"].append(row["m"])
+                data["xaxis"].append(str(row["m"]))
                 data["values"].append(row["total"])
             return data
             
