@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.db.models import Count
 from business.models import *
 from traincategory.models import *
+from weibo.models import *
 from business.serializers import *
 from order.models import *
 from usr.models import *
@@ -247,7 +248,7 @@ class CustomerTrainTimeline(APIView):
             events.append(user_comments_event)
 
         # 8 get coach train event
-        coach_trains = usr.history.filter( \
+        coach_trains = Weibo.objects.filter( \
                 title = 'coach_train', \
                 created__range=[startday, endday]).order_by("created")
         for wb in coach_trains:
