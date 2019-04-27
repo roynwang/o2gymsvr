@@ -270,6 +270,15 @@ class CustomerTrainTimeline(APIView):
         events.reverse()
         return Response(events, status=status.HTTP_200_OK)
 
+class GymChart(APIView):
+    def get(self, request, pk):
+        data = { \
+            "title": "测试", \
+            "unit": "",\
+            "xaxis": ["a","b","c","d"],\
+            "values": [1,3,2,4]}
+        return Response(data, status=status.HTTP_200_OK)
+
 class GymCustomerMonthBillboard(APIView):
         def get(self, request, pk, year, month):
             # 1. get gym coaches
