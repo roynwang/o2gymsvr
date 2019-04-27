@@ -33,6 +33,7 @@ from django.views.decorators.csrf import csrf_exempt
 from random import choice
 import base64
 from utils import o2utils
+from django.db.models import Func
 
 
 # Create your views here.
@@ -270,14 +271,57 @@ class CustomerTrainTimeline(APIView):
         events.reverse()
         return Response(events, status=status.HTTP_200_OK)
 
+
+class Month(Func):
+    function = 'EXTRACT'
+    template = '%(function)s(MONTH from %(expressions)s)'
+    output_field = models.IntegerField()
+
 class GymChart(APIView):
+
+    def get_month_course(self, pk):
+            # 1. get gym coaches
+            allschedule = Schedule.objects.filter(
+                    order__gym__id__in = [19, 31], \
+                    done=True,\
+                    coursetype='normal',\
+                    date__year=2019).annotate(m=Month('date')).values('m') \
+                    .annotate(total=Count('id')) \
+                    .order_by('m')
+            data = { \
+                    "title": "月课程数", \
+                    "unit": "节",\
+                    "xaxis": [],\
+                    "values": []}
+            for row in allschedule: 
+                data["xaxis"].append(row["m"])
+                data["values"].append(row["total"])
+            return data
+
+    def get_month_active(self, pk):
+            # 1. get gym coaches
+            allschedule = Schedule.objects.filter(
+                    order__gym__id__in = [19, 31], \
+                    done=True,\
+                    coursetype='normal',\
+                    date__year=2019).annotate(m=Month('date')).values('m') \
+                    .annotate(total=Count('custom__name', distinct=True)) \
+                    .order_by('m')
+            data = { \
+                    "title": "月活跃", \
+                    "unit": "人数",\
+                    "xaxis": [],\
+                    "values": []}
+            for row in allschedule: 
+                data["xaxis"].append(row["m"])
+                data["values"].append(row["total"])
+            return data
+            
+
     def get(self, request, pk):
-        data = { \
-            "title": "测试", \
-            "unit": "",\
-            "xaxis": ["a","b","c","d"],\
-            "values": [1,3,2,4]}
-        return Response([data], status=status.HTTP_200_OK)
+        month_active = self.get_month_active(pk)
+        month_course = self.get_month_course(pk)
+        return Response([month_active, month_course], status=status.HTTP_200_OK)
 
 class GymCustomerMonthBillboard(APIView):
         def get(self, request, pk, year, month):
