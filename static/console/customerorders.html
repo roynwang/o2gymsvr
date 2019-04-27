@@ -56,8 +56,8 @@
                 <tr ng-repeat="row in $data">
                     <td data-title="'订单号'">{{row.billid}}</td>
                     <td data-title="'金额'">{{row.amount}}
-						<!--<a ng-if="demo.role == 'admin'" style="margin-left:3px;font-size:12px;color:#1fb5ad;text-decoration: underline;"
-							ng-click="demo.modify(row,'price')">修改</a>-->
+						<a ng-if="demo.role == 'admin'" style="margin-left:3px;font-size:12px;color:#1fb5ad;text-decoration: underline;"
+							ng-click="demo.modify(row,'price')">修改</a>
                     </td>
                     <td data-title="'状态'">{{demo.statusmap[row.status]}}</td>
 
@@ -67,8 +67,8 @@
                     </td>
                     <td data-title="'截至日期'">{{row.endtime}}</td>
                     <td data-title="'完成度'">{{row.complete_status}}
-						<!--<a ng-if="demo.role =='admin'" style="margin-left:3px;font-size:12px;color:#1fb5ad;text-decoration: underline;"
-						ng-click="demo.modify(row,'coursecount')">修改</a>-->
+						<a ng-if="demo.role =='admin'" style="margin-left:3px;font-size:12px;color:#1fb5ad;text-decoration: underline;"
+						ng-click="demo.modify(row,'coursecount')">修改</a>
 					</td>
                     <td data-title="'单价'">{{row.price}}</td>
                     <td data-title="'客户'">{{row.customerdetail.displayname}}</td>
@@ -88,7 +88,7 @@
                     <td><a ng-if="row.status!='unpaid'" class="btn {{row.status=='done'?'btn-success':'btn-primary'}}"
                         href="#order/{{row.coachdetail.name}}/{{row.id}}">{{row.status ==
 						"done"?"查看":"预约"}}</a>
-                        <!--<a ng-if="demo.role == 'admin'" class="btn btn-danger" ng-click="demo.remove(row.id)">移除</a>-->
+                        <a ng-if="demo.role == 'admin'" class="btn btn-danger" ng-click="demo.remove(row.id)">移除</a>
                     </td>
                 </tr>
             </table>
