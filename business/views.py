@@ -281,15 +281,15 @@ class GymChart(APIView):
 
     def get_month_course(self, pk):
             # 1. get gym coaches
-            allschedule = Schedule.objects.filter(
-                    order__gym__id__in = [19, 31], \
+            gyminst = Gym.objects.get(id=pk)
+            allschedule = Schedule.objects.filter(coach__in=gyminst.coaches.values_list("id",flat=True), \
                     done=True,\
                     coursetype='normal',\
                     date__year=2019).annotate(m=Month('date')).values('m') \
                     .annotate(total=Count('id')) \
                     .order_by('m')
             data = { \
-                    "title": "月课程数", \
+                    "title": "月课程数 ", \
                     "unit": "节",\
                     "xaxis": [],\
                     "values": []}
@@ -300,15 +300,15 @@ class GymChart(APIView):
 
     def get_month_active(self, pk):
             # 1. get gym coaches
-            allschedule = Schedule.objects.filter(
-                    order__gym__id__in = [19, 31], \
+            gyminst = Gym.objects.get(id=pk)
+            allschedule = Schedule.objects.filter(coach__in=gyminst.coaches.values_list("id",flat=True), \
                     done=True,\
                     coursetype='normal',\
                     date__year=2019).annotate(m=Month('date')).values('m') \
                     .annotate(total=Count('custom__name', distinct=True)) \
                     .order_by('m')
             data = { \
-                    "title": "月活跃", \
+                    "title": "月活跃 " + gyminst.name, \
                     "unit": "人数",\
                     "xaxis": [],\
                     "values": []}
@@ -319,9 +319,12 @@ class GymChart(APIView):
             
 
     def get(self, request, pk):
-        month_active = self.get_month_active(pk)
-        month_course = self.get_month_course(pk)
-        return Response([month_active, month_course], status=status.HTTP_200_OK)
+        month_active_19 = self.get_month_active(19)
+        month_active_31 = self.get_month_active(31)
+        month_course_19 = self.get_month_course(19)
+        month_course_31 = self.get_month_course(31)
+        ret = [month_active_19, month_course_19, month_active_31, month_course_31]
+        return Response(ret, status=status.HTTP_200_OK)
 
 class GymCustomerMonthBillboard(APIView):
         def get(self, request, pk, year, month):
