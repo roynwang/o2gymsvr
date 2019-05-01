@@ -40,6 +40,11 @@ class Order(models.Model):
 	subsidy = models.IntegerField(default=0)
 	ordertype = models.CharField(max_length=32,default="pt")
 
+        def refresh(self):
+		if self.status == 'done' and self.schedule_set.filter(done=True).count() != self.product.amount:
+			self.status = "inprogress"
+                        self.save()
+
 	def done(self):
 		if self.status != 'done' and self.schedule_set.filter(done=True).count() == self.product.amount:
 			self.status = "done"
