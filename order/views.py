@@ -81,7 +81,7 @@ class OrderList(generics.ListCreateAPIView):
 		if cname:
 			c = get_object_or_404(User, name = cname)
 			ret = ret.filter(coach = c)
-                for o in order:
+                for o in ret:
                     o.refresh()
 		return ret
 	def create(self,request, *args, **kwargs):
