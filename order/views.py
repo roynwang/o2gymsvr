@@ -95,6 +95,9 @@ class AvailableOrderItem(generics.RetrieveAPIView):
 	def get_object(self):
                 #get
 		usr = get_object_or_404(User, name=self.kwargs["name"])
+                done = usr.orders.filter(status='done')
+                for o in done:
+                    o.refresh()
                 #gymid = self.request.data['gym']
                 #ret = usr.orders.exclude(gym=get_object_or_404(Gym,id=gymid), status__in=["unpaid","done"]).order_by('paidtime')[:1]
                 ret = usr.orders.exclude(status__in=["unpaid","done"]).order_by('paidtime')
