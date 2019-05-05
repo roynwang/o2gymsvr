@@ -41,7 +41,7 @@ class Order(models.Model):
 	ordertype = models.CharField(max_length=32,default="pt")
 
         def refresh(self):
-		if self.status == 'done' and self.schedule_set.filter(done=True).count() != self.product.amount:
+		if self.status == 'done' and self.schedule_set.all().count() != self.product.amount:
 			self.status = "inprogress"
                         self.save()
 
