@@ -104,7 +104,7 @@ class AvailableOrderItem(generics.RetrieveAPIView):
                 
                 gift_order = None
                 for item in ret:
-                    if item.schedule_set.all().count() == item.product.amount:
+                    if item.schedule_set.all().count() >= item.product.amount:
                         continue
                     #skip gift order
                     if item.amount == 0:
