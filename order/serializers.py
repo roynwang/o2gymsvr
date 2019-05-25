@@ -78,7 +78,7 @@ class TSerializer(serializers.ModelSerializer):
 
 	def get_left_money(self, obj):
 	        left_course = self.get_left_course(obj)
-                return left_course * obj.price / obj.amount
+                return left_course * obj.product.price / obj.product.amount
 
 	def get_endtime(self, obj):
 		return obj.cal_endtime()
