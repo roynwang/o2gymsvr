@@ -58,7 +58,7 @@ class TSerializer(serializers.ModelSerializer):
 	coachdetail = serializers.SerializerMethodField()
 	customerdetail = serializers.SerializerMethodField()
 	left_course = serializers.SerializerMethodField()
-	left_mondey = serializers.SerializerMethodField()
+	left_money = serializers.SerializerMethodField()
 	endtime = serializers.SerializerMethodField()
 	paid_day = serializers.SerializerMethodField()
 
