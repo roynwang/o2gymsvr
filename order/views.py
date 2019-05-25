@@ -843,3 +843,11 @@ class DeadOrderList(generics.ListAPIView):
                     order.expire_notification()
 		return ret
 
+class TerminateList(generics.ListAPIView):
+        serializer_class = TSerializer
+	pagination_class = None
+	def get_queryset(self):
+		gym = get_object_or_404(Gym, id=self.kwargs.get("pk"))
+		orders = gym.orders.exclude(status__in=["unpaid","done"])
+		return orders
+

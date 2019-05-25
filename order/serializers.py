@@ -54,6 +54,41 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 	def get_course_count(self, obj):
 		return obj.product.amount
 
+class TSerializer(serializers.ModelSerializer):
+	coachdetail = serializers.SerializerMethodField()
+	customerdetail = serializers.SerializerMethodField()
+	left_course = serializers.SerializerMethodField()
+	left_mondey = serializers.SerializerMethodField()
+	endtime = serializers.SerializerMethodField()
+	paid_day = serializers.SerializerMethodField()
+
+	class Meta:
+		model =	Order 
+
+        def coachdetail(self,obj):
+            return obj.custom.displayname
+
+        def customerdetail(self,obj):
+            return obj.custom.displayname
+
+	def get_left_course(self, obj):
+		completed = Schedule.objects.filter(order=obj,deleted = False, done = True).count()
+		sum_amount = obj.product.amount
+		return sum_amount - completed
+
+	def get_left_money(self, obj):
+	        left_course = self.get_left_course(obj)
+                return left_course * obj.price / obj.amount
+
+	def get_endtime(self, obj):
+		return obj.cal_endtime()
+
+        def get_paid_day(self, obj):
+            d = obj.paidtime + datetime.timedelta(hours=8)
+            return datetime.datetime.strftime(d,"%Y-%m-%d")
+		
+
+
 class OrderSerializer(serializers.ModelSerializer):
 	coachdetail = SimpleUserSerilaizer(source="coach", read_only = True)
 	customerdetail = SimpleUserSerilaizer(source="custom", read_only = True)
