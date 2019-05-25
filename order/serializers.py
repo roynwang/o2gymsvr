@@ -61,9 +61,14 @@ class TSerializer(serializers.ModelSerializer):
 	left_money = serializers.SerializerMethodField()
 	endtime = serializers.SerializerMethodField()
 	paid_day = serializers.SerializerMethodField()
+	last_come = serializers.SerializerMethodField()
 
 	class Meta:
 		model =	Order 
+
+        def get_last_come(self,obj):
+            l = Schedule.objects.filter(order=obj,deleted = False, done = True).order_by('-date').limit(1)
+            return l.date
 
         def get_coachdetail(self,obj):
             return obj.custom.displayname
