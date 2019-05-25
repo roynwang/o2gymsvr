@@ -848,6 +848,6 @@ class TerminateList(generics.ListAPIView):
 	pagination_class = None
 	def get_queryset(self):
 		gym = get_object_or_404(Gym, id=self.kwargs.get("pk"))
-		orders = gym.orders.exclude(status__in=["unpaid","done"])
+		orders = gym.orders.exclude(status__in=["unpaid","done"], amount=0)
 		return orders
 
