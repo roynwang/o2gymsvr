@@ -3,6 +3,7 @@ from order.views import *
 from django.views.generic import TemplateView
 
 urlpatterns = patterns('',
+
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/o/available/$',AvailableOrderItem.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/o/$',OrderList.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/b/(?P<billid>[0-9]+)/$',OrderItemByBillid.as_view()),
@@ -13,6 +14,7 @@ urlpatterns = patterns('',
 		url(r'^api/pay/(?P<billid>[0-9]+)/(?P<channel>wx|alipay)/$',create_pay),
 		url(r'^api/pay/callback/$',pay_callback),
 		url(r'^api/pay/chargecallback/$',charge_callback),
+		url(r'^api/g/(?P<pk>[0-9]+)/left/$', TerminateList.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/saledetail/$', GymSaleDetail.as_view()),
 		url(r'^api/g/(?P<pk>[0-9]+)/saledetailbycoach/$', GymSaleDetailByCoach.as_view()),
 		url(r'^api/(?P<name>[a-zA-Z0-9]{4,64})/manualorder/$',ManualOrder.as_view()),
