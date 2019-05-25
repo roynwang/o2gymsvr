@@ -65,10 +65,10 @@ class TSerializer(serializers.ModelSerializer):
 	class Meta:
 		model =	Order 
 
-        def coachdetail(self,obj):
+        def get_coachdetail(self,obj):
             return obj.custom.displayname
 
-        def customerdetail(self,obj):
+        def get_customerdetail(self,obj):
             return obj.custom.displayname
 
 	def get_left_course(self, obj):
