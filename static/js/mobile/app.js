@@ -665,6 +665,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
         that.customerlist = []
         that.selectedItem = undefined
         that.querystatus = "unset"
+        that.workload = []
         that.pendingbook = {}
         that.isSelecting = false
         that.animating = -1
@@ -1029,6 +1030,22 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 }, 700)
             }
 
+
+            let gymid = user.gym_id[0];
+            Restangular.one("api/g", gymid)
+                .one(that.selected.Format("yyyyMMdd"), 'workload')
+                .getList()
+                .then(function(data) {
+                        that.workload = data
+                    },
+                    function(data) {
+                        //console.log(data.data)
+                        if (data.status == 403) {
+                            window.location.href = "/mobile/login/"
+                        } else {
+                            swal("", data.status + "获取信息失败，请稍后重试。", "warning")
+                        }
+                    })
 
             Restangular.one("api", user)
                 .one("b", that.selected.Format("yyyyMMdd"))
