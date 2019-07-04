@@ -111,10 +111,10 @@
                     <div flex ng-class="{'half': t.index%2==1}" class="title-list"
 						style="text-align:center">{{t.time}}
 					</div>
-						<span ng-style="ctrl.workload[t.index].course_count >=4 ? {'background':'#4fd2c2'} :{'background':'rgb(173 0 61)'}"
+						<span ng-style="ctrl.workload[t.index].course_count < 4 ?
+							{'background':'white', 'color':'#999'} :{'background':'rgb(173 0 61)'}"
 							style="display: block;
 							    position: relative;
-								background: #4fd2c2;
 								color: white;
 								width: 16px;
 								height: 16px;
