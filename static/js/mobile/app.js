@@ -1030,22 +1030,25 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
                 }, 700)
             }
 
+            $usersvc.getuser(undefined, false, function(data) {
+                    let gymid = data.gym_id[0];
+                    Restangular.one("api/g", gymid)
+                        .one(that.selected.Format("yyyyMMdd"), 'load')
+                        .getList()
+                        .then(function(data) {
+                                that.workload = data
+                            },
+                            function(data) {
+                                if (data.status == 403) {
+                                    window.location.href = "/mobile/login/"
+                                } else {
+                                    swal("", data.status + "获取信息失败，请稍后重试。", "warning")
+                                }
+                            })
 
-            let gymid = user.gym_id[0];
-            Restangular.one("api/g", gymid)
-                .one(that.selected.Format("yyyyMMdd"), 'workload')
-                .getList()
-                .then(function(data) {
-                        that.workload = data
-                    },
-                    function(data) {
-                        //console.log(data.data)
-                        if (data.status == 403) {
-                            window.location.href = "/mobile/login/"
-                        } else {
-                            swal("", data.status + "获取信息失败，请稍后重试。", "warning")
-                        }
-                    })
+                },
+                function(data) {})
+
 
             Restangular.one("api", user)
                 .one("b", that.selected.Format("yyyyMMdd"))

@@ -110,7 +110,7 @@
                 <li ng-repeat="t in ctrl.bookmap" layout="row" class="list-item" style="border:none">
                     <div flex ng-class="{'half': t.index%2==1}" class="title-list"
 						style="text-align:center">{{t.time}}
-						<span>{{ctrl.workload[t.index].course_count}}</span></div>
+						<span style="color:#999">{{ctrl.workload[t.index].course_count}}</span></div>
                 </li>
             </ul>
             <ul class="list" flex>
