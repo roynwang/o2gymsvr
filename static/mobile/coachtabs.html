@@ -110,7 +110,19 @@
                 <li ng-repeat="t in ctrl.bookmap" layout="row" class="list-item" style="border:none">
                     <div flex ng-class="{'half': t.index%2==1}" class="title-list"
 						style="text-align:center">{{t.time}}
-						<span style="color:#999">{{ctrl.workload[t.index].course_count}}</span></div>
+					</div>
+						<span ng-style="ctrl.workload[t.index].course_count >=4 ? {'background':'#4fd2c2'} :{'background':'rgb(173 0 61)'}"
+							style="display: block;
+							    position: relative;
+								background: #4fd2c2;
+								color: white;
+								width: 16px;
+								height: 16px;
+								font-size: 12px;
+								margin-top: 36%;
+								text-align: center;
+								border-radius: 50%;
+								line-height: 16px;">{{ctrl.workload[t.index].course_count}}</span>
                 </li>
             </ul>
             <ul class="list" flex>
