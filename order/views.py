@@ -449,6 +449,7 @@ class ManualOrder(APIView):
 		amount = self.request.data["product_amount"]
 		promotion = self.request.data["product_promotion"]
 		subsidy = self.request.data["subsidy"]
+		ordertype = self.request.data["ordertype"]
 		product = Product.objects.create(coach=coach,
 				introduction=introduction,
 				price = price,
@@ -474,6 +475,7 @@ class ManualOrder(APIView):
 				gym = coach.gym.all()[0],
 				channel = "offline",
 				isfirst = isfirst,
+				ordertype = ordertype,
 				subsidy = subsidy)
                 #clear cache
                 coach.gym.all()[0].clear_customer_cache()

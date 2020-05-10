@@ -2642,6 +2642,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
 
         that.order_display = {
             "groupon": "包月",
+            "mini": "小课",
             "normal": "普通",
             "charge": "充值",
             "groupcourse": "团课"
