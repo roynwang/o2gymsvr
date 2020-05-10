@@ -929,6 +929,9 @@ class ScheduleList(generics.ListCreateAPIView):
                 if "order" in request.data:
          	        order = Order.objects.get(id=request.data["order"])
                         coursetype = "normal"
+                        if order.ordertype == "mini":
+                            coursetype = "mini"
+
                         if order.status == "done":
                             return Response({"error":"no budget"}, status=status.HTTP_400_BAD_REQUEST)
 

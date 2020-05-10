@@ -790,6 +790,7 @@ class GymSaleDetailByCoach(APIView):
                 prices = coachcourses.values_list("price",flat=True)
                 result[coach.displayname]['completed_course'] = coachcourses.count()
                 result[coach.displayname]['completed_course_price'] = sum(prices)
+                result[coach.displayname]['completed_mini_course'] = courses.filter(coach = coach,coursetype="mini").count()
                 result[coach.displayname]['exp_courses'] = courses.filter(coach = coach,coursetype="trial").count()
                 
                 #handle course without price
