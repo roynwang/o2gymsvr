@@ -1511,9 +1511,9 @@ class GymIncompleteList(generics.ListAPIView):
 	def get_queryset(self):
 		gym = get_object_or_404(Gym, id=self.kwargs.get("pk"))
 		orders = gym.orders.exclude(status__in=["unpaid","done"]).values_list("id", flat=True)
-		print orders
 		today = datetime.datetime.today().date()
-		ret = Schedule.objects.filter(date__lt=today,done=False,order__in=orders).order_by("date","hour")
+        	startday = datetime.datetime.today() + datetime.timedelta(days=-30)
+		ret = Schedule.objects.filter(date__gt=startday.date(), date__lt=today,done=False,order__in=orders).order_by("date","hour")
 		return ret
 
 class CoachIncompleteList(generics.ListAPIView):
@@ -1756,9 +1756,9 @@ class GymTodoList(generics.ListCreateAPIView):
         pagination_class = None
 	def get_queryset(self):
             date = datetime.datetime.strptime(self.kwargs.get("date"),"%Y%m%d")
-	    pending = Todo.objects.filter(gym=self.kwargs.get("pk"), done = False, schedule_date__lt=date.date())
+	    #pending = Todo.objects.filter(gym=self.kwargs.get("pk"), done = False, schedule_date__lt=date.date())
 	    tody = Todo.objects.filter(gym=self.kwargs.get("pk"), schedule_date=date.date())
-            return pending | tody
+            return tody
 
 class RecurTodoView(APIView):
         def post(self, request, pk):

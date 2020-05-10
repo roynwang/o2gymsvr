@@ -1,1 +1,1 @@
-*/2 * * * *	cd ~/o2gym/crontab && sh refreshAccessToken.sh
+*/2 * * * *	cd ~/o2gymsvr/crontab && sh refreshAccessToken.sh

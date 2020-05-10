@@ -448,7 +448,7 @@ class CoachTrainList(generics.ListAPIView):
 
 
 class CustomerList(generics.ListAPIView):
-	serializer_class = SimpleUserSerilaizer
+	serializer_class = SimpleUserSerilaizer 
 	pagination_class = None
 	def get_queryset(self):
 		usr = get_object_or_404(User, name=self.kwargs["name"])

@@ -48,7 +48,8 @@ class SimpleUserSerilaizer(serializers.ModelSerializer):
             return obj.avatar
         
         def get_times(self, obj):
-            return obj.booked_time.filter(date__year=2018, done=True).count()
+            return 0 
+            #return obj.booked_time.filter(date__year=2018, done=True).count()
 
 class SimpleUserWithMonthTrainTimesSerilaizer(serializers.ModelSerializer):
 	pinyin = serializers.SerializerMethodField()
@@ -129,7 +130,7 @@ class UserSerializer(serializers.ModelSerializer):
 	#upped_person = serializers.StringRelatedField(many=True, read_only=True)
 	corps_list = serializers.SerializerMethodField()
 	avatar = serializers.SerializerMethodField()
-        year_completed = serializers.SerializerMethodField()
+        #year_completed = serializers.SerializerMethodField()
         month_completed = serializers.SerializerMethodField()
 	class Meta:
 		model = User
@@ -137,12 +138,21 @@ class UserSerializer(serializers.ModelSerializer):
 
         def get_month_completed(self, obj):
 	    today = datetime.today()
+
+            datestr = datetime.strftime(today.date(), "%Y%m%d")
+	    mkey = "o2_user_month_completed_3hours_" + str(obj.id)
+
+            ret = cache.get(mkey)
+	    if not ret is None:
+	    	return ret
             year = today.year
             month = today.month
             s = obj.sealed_time
             if not obj.iscoach:
                 s = obj.booked_time
-            return s.filter(date__year=year, date__month=month, done=True, coursetype="normal").count()
+            c = s.filter(date__year=year, date__month=month, done=True, coursetype="normal").count()
+            cache.set(mkey, c, 60*60*3)
+	    return c
 
 
         def get_year_completed(self, obj):

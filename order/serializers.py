@@ -68,6 +68,8 @@ class TSerializer(serializers.ModelSerializer):
 
         def get_last_come(self,obj):
             l = Schedule.objects.filter(order=obj,deleted = False, done = True).order_by('-date').first()
+	    if l == None:
+		return  '--'
             return l.date
 
         def get_coachdetail(self,obj):

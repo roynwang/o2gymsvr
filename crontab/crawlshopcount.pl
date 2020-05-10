@@ -29,7 +29,12 @@ $url = "http://www.dianping.com/search/keyword/$area/0_$keyword";
 
 #while (<>) { $document .= $_ }
 $document = `curl http://www.dianping.com/search/keyword/$area/0_$keyword`;
+print $document;
+
 @m = $document =~ /<span class="num">（(\d+)）</g;
+print "xxxxxxxxxxxxxxxxx\n";
+print @m;
+die;
 $result =  $m[0];
 
 my $current_date = `date +"%Y-%m-%d"`;

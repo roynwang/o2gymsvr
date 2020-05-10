@@ -3,7 +3,7 @@ import sys
 import requests
 
 def sendReq(phone,params):
-	resp = requests.post("http://localhost:8000/api/"+phone+"/manualorder/", params)
+	resp = requests.post("http://o2-fit.com/api/"+phone+"/manualorder/", params)
 	return resp.json()
 
 
@@ -18,7 +18,7 @@ def createBook(resp,datestr,hour):
 
 	data = {"coach":coachid, "custom":customerid, "order":orderid,"hour":hour,
 			"date":datestr,"done":True}
-	url = "http://localhost:8000/api/" + coachphone + "/b/" + datestr.replace("-","") + "/"
+	url = "http://o2-fit.com/api/" + coachphone + "/b/" + datestr.replace("-","") + "/"
 	print "xxxxxxxxxxxxxxx"
 	print json.dumps(data)
 	print "xxxxxxxxxxxxxxx"
@@ -41,14 +41,13 @@ def buildOrderParam(line):
 
 def execute(line):
 	orderparam = buildOrderParam(line)
-	#order = sendReq("15810020288", orderparam)
-	order = sendReq("18311286007", orderparam)
+	order = sendReq("15101089789", orderparam)
+	#order = sendReq("18311286007", orderparam)
 	arr = line.split("\t")
 	for i in range(0,int(arr[-1])):
 		print createBook(order, "2015-01-01",1).text.encode("utf-8")
 
 if __name__ == '__main__':
-	f = open("test.csv","r")
+	f = open("zhongguancun.csv","r")
 	for line in f.readlines():
 		execute(line)
-                break

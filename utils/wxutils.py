@@ -63,7 +63,7 @@ def XmlData(orderid,openid,title, price, ip, callbackurl, key):
     attachvalue ="o2_pay"
     mch_idvalue = "1334658401" #mch_id
     nonce_strvalue = GetRandomStr()
-    bodyvalue = title
+    bodyvalue = title.encode('utf-8')
     out_trade_novalue = orderid
     total_feevalue = str(price)    
     spbill_create_ipvalue = ip
@@ -104,7 +104,7 @@ def XmlData(orderid,openid,title, price, ip, callbackurl, key):
 def Post(data):
     url = "https://api.mch.weixin.qq.com/pay/unifiedorder"
     headers = {"Content-Type":"text/xml"}
-    rep = urllib2.Request(url=url,headers =headers,data=data)
+    rep = urllib2.Request(url=url,headers =headers,data=data.encode('utf-8'))
     response = urllib2.urlopen(rep)
     res = response.read()
     return xmltodict.parse(res);

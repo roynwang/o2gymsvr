@@ -7,6 +7,7 @@ urlpatterns = [
 		# url(r'^$', 'o2gym.views.home', name='home'),
 		# url(r'^blog/', include('blog.urls')),
 	#	url(r'^favicon.ico$','django.views.generic.simple.redirect_to',{'url':'/static/images/favicon.ico'}),
+		url(r'^.well-known/pki-validation/7E8BE0BD349CBD48336CF1A94DD7D051.txt$', TemplateView.as_view(template_name="crt.txt")),
 		url(r'^$',TemplateView.as_view(template_name="index.html")),
 		url(r'^onboard/$',TemplateView.as_view(template_name="onboard.html")),
 		url(r'^',include("console.urls")),

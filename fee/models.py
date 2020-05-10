@@ -101,7 +101,7 @@ class SalaryReceipt(models.Model):
             setting = get_object_or_404(CoachSalarySetting, coach = usr.id, gymfee__gym=self.gym)
             self.base = setting.base_salary
 
-            self.shebao = 383
+            self.shebao = 411
 
             #count course
             courses = Schedule.objects.filter(date__year=self.year,

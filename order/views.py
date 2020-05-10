@@ -827,6 +827,12 @@ class DeadOrderList(generics.ListAPIView):
 	serializer_class = OrderSerializer 
 	pagination_class = None
 	def get_queryset(self):
+
+		mkey = "o2_dead_order" + self.kwargs.get("pk")
+            	ret = cache.get(mkey)
+		if not ret is None:
+		    return ret
+
 		gym = get_object_or_404(Gym, id=self.kwargs.get("pk"))
 		orders = gym.orders.exclude(status__in=["unpaid","done"])
 		today = datetime.datetime.today().date()
@@ -841,6 +847,8 @@ class DeadOrderList(generics.ListAPIView):
                         ret.append(order)
                     #send expire notification
                     order.expire_notification()
+
+            	cache.set(mkey, ret, 60*60*12)
 		return ret
 
 class TerminateList(generics.ListAPIView):

@@ -1014,14 +1014,7 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
 
         that.refresh = function() {
-            Restangular.one("api", user)
-                .one("todaykpi")
-                .get()
-                .then(function(data) {
-                        that.kpi = data
-                    },
-                    function(data) {})
-
+		
             that.searchText = undefined
             if (that.animating == -1) {
                 that.animating = 0
@@ -1032,6 +1025,16 @@ app.controller("TodayCourseCtrl", ["$state", "$usersvc", "$date", "Restangular",
 
             $usersvc.getuser(undefined, false, function(data) {
                     let gymid = data.gym_id[0];
+		    if(gymid == 19) {
+		    Restangular.one("api", user)
+		    	.one("todaykpi")
+			.get()
+			.then(function(data) {
+					that.kpi = data
+					},
+				function(data) {})
+
+		    }
                     Restangular.one("api/g", gymid)
                         .one(that.selected.Format("yyyyMMdd"), 'load')
                         .getList()

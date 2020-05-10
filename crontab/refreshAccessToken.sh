@@ -1,1 +1,1 @@
-curl 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx72a88ef05d4fadc0&secret=629d00d5bbf75f8ca4728aee7c3feed2' > wxtoken
+curl 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx16b7c88b07f552fd&secret=597dd05df9c6ba53b9c278fc8e9cee5c' > wxtoken
