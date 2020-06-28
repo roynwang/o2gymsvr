@@ -2633,6 +2633,7 @@ app.controller("NewOrderCtrl", ['$scope', "Restangular", "NgTableParams", '$stat
         that.mo.product_promotion = -1
         that.mo.product_amount = ""
         that.mo.product_duration = ""
+        that.mo.product_duration_type = "day"
         that.mo.sex = '0'
         that.mo.age = undefined
         that.mo.subsidy = undefined
