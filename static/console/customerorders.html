@@ -60,11 +60,11 @@
 							ng-click="demo.modify(row,'price')">修改</a>
                     </td>
                     <td data-title="'状态'">{{demo.statusmap[row.status]}}</td>
-
-                    <td data-title="'有效期(月)'">{{row.duration}}
+                    <td data-title="'有效期'">{{row.duration}}
 						<a ng-if="demo.role =='admin'" style="margin-left:3px;font-size:12px;color:#1fb5ad;text-decoration: underline;"
                         ng-click="demo.modify(row,'duration')">修改</a>
                     </td>
+                    <td data-title="''">{{{'day': '天', 'month': '月'}[row.product_duration_type]}}
                     <td data-title="'截至日期'">{{row.endtime}}</td>
                     <td data-title="'完成度'">{{row.complete_status}}
 						<a ng-if="demo.role =='admin'" style="margin-left:3px;font-size:12px;color:#1fb5ad;text-decoration: underline;"
