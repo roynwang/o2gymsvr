@@ -484,6 +484,10 @@ class ManualOrder(APIView):
 			order.duration = int(request.data["product_duration"])
 			order.save()
 
+		if "product_duration_type" in request.data:
+			order.product_duration_type = request.data["product_duration_type"]
+			order.save()
+
 		#if "qr"
 		if "channel" in request.data and request.data["channel"] != "offline":
 			return self.trackQRPay(order, request, request.data["channel"])

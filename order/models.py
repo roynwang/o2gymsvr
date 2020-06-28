@@ -32,6 +32,7 @@ class Order(models.Model):
 	parentorder = models.ForeignKey("self", related_name="sub_orders", null=True)
 	product = models.ForeignKey("Product", related_name="sold", null=True)
 	channel = models.CharField(max_length=10,blank=True)
+	product_duration_type = models.CharField(max_length=32,blank=True, default='month')
 	
 	isfirst =  models.BooleanField(default=False)
 	#this is mean price
@@ -56,7 +57,10 @@ class Order(models.Model):
 	def cal_endtime(self):
 		if self.duration == None or self.duration == 0:
 			return "N/A"
-		endtime = add_months(self.created, self.duration)
+		if self.product_duration_type == 'month':
+			endtime = add_months(self.created, self.duration)
+		if self.product_duration_type == 'day':
+			endtime = self.created + datetime.timedelta(days=1)
 		date_str = datetime.datetime.strftime(endtime,"%Y-%m-%d")
 		return date_str
 
